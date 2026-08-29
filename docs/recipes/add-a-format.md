@@ -40,5 +40,5 @@ original after C14N canonicalisation — that test is what proves the raw-preser
 
 ## 5. Publish the fact
 
-Update `docs/coverage.json` and run `dotnet run build/SyncCoverage.cs`. A capability that is not in the matrix
+Update `docs/coverage.json` and run `dotnet run --project build/Tools -- coverage`. A capability that is not in the matrix
 does not exist as far as users are concerned.

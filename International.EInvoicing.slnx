@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/build/">
+    <Project Path="build/Tools/Tools.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
   </Folder>

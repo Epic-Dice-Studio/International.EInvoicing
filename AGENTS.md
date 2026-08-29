@@ -13,6 +13,9 @@ dotnet test  -c Release                       # runs on net10.0
 dotnet test  -c Release -p:TestAllTargetFrameworks=true   # adds net8.0 (CI does this)
 dotnet format --verify-no-changes             # style gate, also enforced in CI
 dotnet pack  -c Release -o artifacts          # versions come from git tags via MinVer
+
+dotnet run --project build/Tools -- coverage     # regenerate the README support matrix
+dotnet run --project build/Tools -- diagnostics  # every emitted EIV code has a catalogue page
 ```
 
 ## 2. Code style
@@ -54,7 +57,8 @@ A pull request that adds parsing or generation is not complete until all five te
 4. **Rules** — one passing and one failing case per business rule implemented.
 5. **Diagnostics** — one test per diagnostic code the new code can emit.
 
-Plus: the coverage table entry in `docs/coverage.yml`, and the matching page in `docs/standards/`.
+Plus: the entry in `docs/coverage.json` (then `dotnet run --project build/Tools -- coverage`), and the
+matching page in `docs/standards/`.
 
 ## 5. Where to look before writing code
 

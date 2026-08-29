@@ -22,7 +22,7 @@ jobs:
         run: dotnet --version && dotnet --list-sdks
 
       - name: Support matrix in README matches docs/coverage.json
-        run: dotnet run build/SyncCoverage.cs -- --check
+        run: dotnet run --project build/Tools -- coverage --check
 
       - name: Every diagnostic code has a catalogue page
-        run: dotnet run build/CheckDiagnostics.cs
+        run: dotnet run --project build/Tools -- diagnostics

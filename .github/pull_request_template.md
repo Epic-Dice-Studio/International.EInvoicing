@@ -8,7 +8,7 @@
 - [ ] `dotnet format --verify-no-changes` passes
 - [ ] Code follows AGENTS.md §2 — it explains itself; comments are rare and only where the code cannot speak
 - [ ] New diagnostic codes have a page in `docs/diagnostics/`
-- [ ] `docs/coverage.json` updated and `dotnet run build/SyncCoverage.cs` run, if support changed
+- [ ] `docs/coverage.json` updated and `dotnet run --project build/Tools -- coverage` run, if support changed
 - [ ] New dependency justified by an ADR in `docs/adr/`
 
 ## For a new format, profile or country

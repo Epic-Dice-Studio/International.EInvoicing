@@ -1,5 +1,5 @@
 {
-  "$comment": "Single source of truth for the support matrix. Run `dotnet run build/SyncCoverage.cs` after editing; CI verifies README.md matches.",
+  "$comment": "Single source of truth for the support matrix. Run `dotnet run --project build/Tools -- coverage` after editing; CI verifies README.md matches.",
   "statuses": {
     "done": "✅ Implemented",
     "in-progress": "🚧 In progress",

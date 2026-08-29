@@ -24,7 +24,7 @@ Tests run on `net10.0` locally. CI additionally installs the .NET 8 runtime and 
   itself, comments are rare) and §4 (definition of done).
 - If you added a diagnostic code, add its page under `docs/diagnostics/`. CI checks this.
 - If you changed what the library supports, edit `docs/coverage.json` and run
-  `dotnet run build/SyncCoverage.cs`. CI checks this too.
+  `dotnet run --project build/Tools -- coverage`. CI checks this too.
 - If you added a dependency, add an ADR under `docs/adr/` explaining why.
 
 ## Adding support for a standard, a country or a profile
