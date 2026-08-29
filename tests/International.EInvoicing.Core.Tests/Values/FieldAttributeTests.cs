@@ -54,6 +54,17 @@ public class FieldAttributeTests
     }
 
     [Fact]
+    public void ATimestampKeepsItsFormatCode()
+    {
+        var issued = new DateTimeField(
+            new DateTimeOffset(2025, 7, 1, 15, 15, 0, TimeSpan.Zero),
+            DateTimeField.FormatCcyyMmDdHhMmSs);
+
+        issued.FormatCode.ShouldBe("204");
+        issued.ToString().ShouldBe("2025-07-01 15:15:00+00:00");
+    }
+
+    [Fact]
     public void BinaryContentComparesByValueNotByReference()
     {
         var first = new BinaryField([1, 2, 3], "application/pdf", "annex.pdf");

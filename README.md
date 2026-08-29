@@ -54,11 +54,13 @@ validation is never presented as a success.
 | UBL 2.1 — Invoice <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Credit Note <sub>OASIS UBL 2.1</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Ubl` |
 | UN/CEFACT CII <sub>D22B</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Cii` |
-| UN/CEFACT CDAR <sub>generic</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Cdar` |
+| UN/CEFACT CDAR <sub>generic</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Cdar` |
 
 > **UBL 2.1 — Invoice** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine.
 
 > **UN/CEFACT CII** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data on the node that contained it. Round-tripped against the 41 CII invoices of the official XRechnung test suite without losing an element.
+
+> **UN/CEFACT CDAR** — The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported.
 
 ### Profiles
 
@@ -66,13 +68,13 @@ validation is never presented as a success.
 |---|---|---|---|---|
 | EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Validation.En16931` |
 | Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX` |
-| Factur-X hybrid PDF/A-3 <sub>ISO 19005-3</sub> | ✅ | 🚧 | 📋 | `International.EInvoicing.FacturX.PdfSharp` |
+| Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX.PdfSharp` |
 | Peppol BIS Billing <sub>3.0</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Germany` |
 
 > **Factur-X / ZUGFeRD — MINIMUM → EXTENDED** — All five profiles registered. MINIMUM and BASIC WL are read and reported as not being EN 16931 invoices (EIV4010) rather than silently accepted.
 
-> **Factur-X hybrid PDF/A-3** — Embedding and extracting the payload works, with the Factur-X XMP metadata. The writer does not turn a plain PDF into a PDF/A-3 one: start from a PDF/A-conforming document when the receiver requires conformance. veraPDF verification in CI is still to come.
+> **Factur-X hybrid PDF** — Embeds the CII payload into a PDF you already produce, and extracts it back, with the Factur-X XMP metadata. Rendering a PDF and converting one to PDF/A-3 are out of scope: those are properties of the document you start from.
 
 > **Peppol BIS Billing** — Validation artefacts are not redistributable (no licence declared upstream): run build/fetch-specs.sh peppol to obtain them locally. See ADR 0009.
 
@@ -81,12 +83,14 @@ validation is never presented as a success.
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
 | France — invoicing (CIUS FR, Factur-X) <sub>DSE 3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.France` |
-| France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.France` |
+| France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | 🚧 | 🚧 | 📋 | `International.EInvoicing.Countries.France` |
 | France — legal identifiers (SIREN, SIRET, VAT) | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.France` |
 | France — e-reporting <sub>DSE 3.x</sub> | 🔬 | 🔬 | 🔬 | — |
 | Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Germany` |
 | Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Belgium` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
+
+> **France — lifecycle statuses (CDAR)** — The French profile is registered, so a CDV message resolves exactly. Giving meaning to the status codes and enforcing their sequence needs the DGFiP specification, which is not redistributable - see specs/fr-dse.
 
 > **France — e-reporting** — Deferred past 1.0; specification still moving.
 
@@ -97,8 +101,11 @@ validation is never presented as a success.
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
 | Peppol AS4, French PA APIs, Chorus Pro, Mercurius | ⛔ | ⛔ | ⛔ | — |
+| PDF rendering and PDF/A conversion | ⛔ | ⛔ | ⛔ | — |
 
 > **Peppol AS4, French PA APIs, Chorus Pro, Mercurius** — This library produces and reads documents. Sending them is your access point's job.
+
+> **PDF rendering and PDF/A conversion** — A hybrid invoice starts from the PDF you produce for humans. Building that PDF, and making it PDF/A-conforming, belongs to your reporting or PDF library.
 
 **Legend** — ✅ Implemented · 🚧 In progress · 📋 Planned · 🔬 Researching · ⛔ Out of scope
 

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Cdar</PackageId>
+    <Description>
+      Reads and writes UN/CEFACT Cross Domain Acknowledgement and Response messages: the lifecycle statuses
+      that say what happened to an invoice after it was sent. Generic by design, so a national profiling it
+      does not know still parses.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;cdar;lifecycle;status;uncefact;france;cdv;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+  </ItemGroup>
+
+</Project>

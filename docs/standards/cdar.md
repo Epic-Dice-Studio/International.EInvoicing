@@ -22,6 +22,27 @@ of it — the French one in `International.EInvoicing.Countries.France`.
 `specs/cdar/` — generic schema, redistributable. The French profiling lives in the DGFiP specification
 package, which is **not** committed (see `specs/fr-dse/PROVENANCE.md`).
 
+## Structure
+
+Three sections under `rsm:CrossDomainAcknowledgementAndResponse`:
+
+| Section | Carries |
+|---|---|
+| `rsm:ExchangedDocumentContext` | The business process and the profile identifier. The French profiling declares `urn.cpro.gouv.fr:1p0:CDV:invoice`. |
+| `rsm:ExchangedDocument` | The message itself: its id, its name, when it was written, and the parties — sender, issuer, and one or more recipients. |
+| `rsm:AcknowledgementDocument` | What is being reported: whether it covers several documents, when the status occurred, and one `ram:ReferenceReferencedDocument` per document. |
+
+Each `ram:ReferenceReferencedDocument` carries the invoice's identifier (BT-1) and issue date (BT-2), the
+document type (BT-3), when it was received, and the status itself in `ram:ProcessConditionCode` with its
+label in `ram:ProcessCondition`.
+
+Timestamps use format `204` (`CCYYMMDDHHMMSS`), not the `102` of invoice dates: *when* a status occurred is
+the point of the message, so `DateTimeField` carries them rather than `DateField`.
+
+The French status codes are 200 filed, 201 issued by the platform, 202 received by the platform, 203 made
+available, 204 taken in charge, 205 approved, 207 disputed, 210 refused, 211 payment sent, 212 collected,
+213 rejected.
+
 ## Model mapping
 
 The canonical model is `LifecycleStatusMessage`: which document is being reported on, by whom, what status,
@@ -56,5 +77,9 @@ says so and `IsComplete` is false — a lifecycle message must never appear to h
 
 ## Reference implementations
 
-None mature in the open-source world at the time of writing — this is one of the areas where this library has
-no prior art to lean on. Be correspondingly careful, and cite the specification section in the tests.
+Little prior art exists. [phax/phive-rules](https://github.com/phax/phive-rules) carries the French
+`BR-FR-CDV` Schematron and the DGFiP lifecycle test files, which is where the structure documented above was
+verified — that repository declares no licence, so nothing from it is redistributed here. The test documents
+in this repository were written by hand to mirror it.
+
+Be correspondingly careful, and cite the specification section in the tests.

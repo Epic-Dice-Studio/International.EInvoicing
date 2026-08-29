@@ -41,9 +41,10 @@
           "name": "UN/CEFACT CDAR",
           "version": "generic",
           "package": "International.EInvoicing.Cdar",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "done",
+          "validate": "planned",
+          "notes": "The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported."
         }
       ]
     },
@@ -68,13 +69,13 @@
           "notes": "All five profiles registered. MINIMUM and BASIC WL are read and reported as not being EN 16931 invoices (EIV4010) rather than silently accepted."
         },
         {
-          "name": "Factur-X hybrid PDF/A-3",
-          "version": "ISO 19005-3",
+          "name": "Factur-X hybrid PDF",
+          "version": "CII payload",
           "package": "International.EInvoicing.FacturX.PdfSharp",
           "read": "done",
-          "write": "in-progress",
+          "write": "done",
           "validate": "planned",
-          "notes": "Embedding and extracting the payload works, with the Factur-X XMP metadata. The writer does not turn a plain PDF into a PDF/A-3 one: start from a PDF/A-conforming document when the receiver requires conformance. veraPDF verification in CI is still to come."
+          "notes": "Embeds the CII payload into a PDF you already produce, and extracts it back, with the Factur-X XMP metadata. Rendering a PDF and converting one to PDF/A-3 are out of scope: those are properties of the document you start from."
         },
         {
           "name": "Peppol BIS Billing",
@@ -110,9 +111,10 @@
           "name": "France — lifecycle statuses (CDAR)",
           "version": "DSE 3.x",
           "package": "International.EInvoicing.Countries.France",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "in-progress",
+          "write": "in-progress",
+          "validate": "planned",
+          "notes": "The French profile is registered, so a CDV message resolves exactly. Giving meaning to the status codes and enforcing their sequence needs the DGFiP specification, which is not redistributable - see specs/fr-dse."
         },
         {
           "name": "France — legal identifiers (SIREN, SIRET, VAT)",
@@ -169,6 +171,15 @@
           "write": "out-of-scope",
           "validate": "out-of-scope",
           "notes": "This library produces and reads documents. Sending them is your access point's job."
+        },
+        {
+          "name": "PDF rendering and PDF/A conversion",
+          "version": "—",
+          "package": "—",
+          "read": "out-of-scope",
+          "write": "out-of-scope",
+          "validate": "out-of-scope",
+          "notes": "A hybrid invoice starts from the PDF you produce for humans. Building that PDF, and making it PDF/A-conforming, belongs to your reporting or PDF library."
         }
       ]
     }

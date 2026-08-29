@@ -3,6 +3,7 @@
     <Project Path="build/Tools/Tools.csproj" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="src/International.EInvoicing.Cdar/International.EInvoicing.Cdar.csproj" />
     <Project Path="src/International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
     <Project Path="src/International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
     <Project Path="src/International.EInvoicing.FacturX.PdfSharp/International.EInvoicing.FacturX.PdfSharp.csproj" />
@@ -10,6 +11,7 @@
     <Project Path="src/International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/International.EInvoicing.Cdar.Tests/International.EInvoicing.Cdar.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Cii.Tests/International.EInvoicing.Cii.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Core.Tests/International.EInvoicing.Core.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.FacturX.Tests/International.EInvoicing.FacturX.Tests.csproj" />

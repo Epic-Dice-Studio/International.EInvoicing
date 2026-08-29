@@ -17,3 +17,4 @@ in place with a link to the one that replaced it.
 | [0007](0007-target-frameworks.md) | Target `net8.0` and `net10.0` | Accepted |
 | [0008](0008-schematron-engine.md) | How to execute Schematron rules | Proposed |
 | [0009](0009-artefact-licensing.md) | Licensing of the normative artefacts we redistribute | Accepted |
+| [0010](0010-no-pdf-rendering.md) | Hybrid invoices attach to an existing PDF; we never render one | Accepted |
