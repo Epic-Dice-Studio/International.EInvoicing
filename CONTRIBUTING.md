@@ -43,3 +43,32 @@ redistribution are not committed; the `PROVENANCE.md` tells you where to downloa
 ## Reporting a security issue
 
 Do not open a public issue. See [SECURITY.md](SECURITY.md).
+
+## Releasing (maintainers)
+
+Versions come from git tags via MinVer: tagging `v0.1.0` publishes `0.1.0`. Pushes to `main` publish
+`x.y.z-preview.N` to GitHub Packages automatically, which needs no configuration.
+
+Publishing to NuGet.org needs three things set up once, and no API key. NuGet.org keys now expire after 30
+days, so the release workflow uses **trusted publishing**: it exchanges the workflow's OIDC token for a key
+that lives about an hour.
+
+1. **Reserve the package ID prefix.** On nuget.org, Account → Reserved package ID prefixes → request
+   `International.EInvoicing.*`. Without it, anyone can publish a package under that name.
+2. **Create the trusted publishing policy.** On nuget.org, user menu → Trusted Publishing → new policy:
+   - package owner: the nuget.org account or organisation that will own the packages
+   - repository: `Epic-Dice-Studio/International.EInvoicing`
+   - workflow file: `release.yml`
+   - environment: `nuget`
+3. **Add the repository secret `NUGET_USER`** with your nuget.org *username* — the profile name, not the
+   email address. It is the only secret the release needs.
+
+Optionally create the `nuget` GitHub environment (Settings → Environments) with required reviewers, so a
+release waits for an explicit approval before anything leaves the repository.
+
+Then:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
