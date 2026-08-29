@@ -1,6 +1,7 @@
 #:property PublishAot=false
 
 using System.Runtime.CompilerServices;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 
@@ -71,7 +72,7 @@ static string Render(CoverageDocument coverage)
 
     foreach (CoverageSection section in coverage.Sections)
     {
-        builder.AppendLine($"### {section.Title}").AppendLine();
+        builder.AppendLine(CultureInfo.InvariantCulture, $"### {section.Title}").AppendLine();
         builder.AppendLine("| | Read | Write | Validate | Package |");
         builder.AppendLine("|---|---|---|---|---|");
 
@@ -79,6 +80,7 @@ static string Render(CoverageDocument coverage)
         {
             string name = entry.Version is null or "—" ? entry.Name : $"{entry.Name} <sub>{entry.Version}</sub>";
             builder.AppendLine(
+                CultureInfo.InvariantCulture,
                 $"| {name} | {Label(coverage, entry.Read)} | {Label(coverage, entry.Write)} " +
                 $"| {Label(coverage, entry.Validate)} | {Package(entry.Package)} |");
         }
@@ -87,7 +89,7 @@ static string Render(CoverageDocument coverage)
 
         foreach (CoverageEntry entry in section.Entries.Where(e => e.Notes is not null))
         {
-            builder.AppendLine($"> **{entry.Name}** — {entry.Notes}").AppendLine();
+            builder.AppendLine(CultureInfo.InvariantCulture, $"> **{entry.Name}** — {entry.Notes}").AppendLine();
         }
     }
 
