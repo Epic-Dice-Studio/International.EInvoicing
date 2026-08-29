@@ -1,6 +1,6 @@
 # 0001 — Native models and a canonical model, in two layers
 
-**Status:** Accepted · 2026-08-29
+**Status:** Amended 2026-08-29 — see *Amendment* below · originally accepted 2026-08-29
 
 ## Context
 
@@ -24,3 +24,17 @@ level.
   it is accepted deliberately.
 - The canonical model must never gain syntax-specific concepts. When tempted, the answer is `ExtensionData`
   or the native layer.
+
+## Amendment — the native layer is deferred, not dropped
+
+Once `ExtensionData` existed on every node of the canonical model, the low layer lost most of what justified
+it. An element the reader does not map is already kept verbatim and written back unchanged, so "reading a
+document loses nothing" holds without a second model.
+
+What the native layer would still buy is *typed* access to elements outside EN 16931 — Factur-X EXTENDED,
+the XRechnung Extension. That is real, but it roughly doubles the model and mapper work for every syntax, and
+nobody has asked for it yet. AGENTS.md forbids speculative generality for exactly this situation.
+
+**Decision:** readers and writers map directly to and from the canonical model. Anything outside it goes to
+`ExtensionData`. A native layer is added for a specific syntax when a concrete need appears, and this ADR is
+amended again when it does.

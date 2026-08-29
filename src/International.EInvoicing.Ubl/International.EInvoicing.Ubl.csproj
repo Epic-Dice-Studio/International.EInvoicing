@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Ubl</PackageId>
+    <Description>
+      Reads and writes OASIS UBL 2.1 invoices and credit notes for International.EInvoicing, mapping them to
+      and from the EN 16931 canonical model while preserving the raw text of every field.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;en16931;ubl;peppol;invoice;xml</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+  </ItemGroup>
+
+</Project>

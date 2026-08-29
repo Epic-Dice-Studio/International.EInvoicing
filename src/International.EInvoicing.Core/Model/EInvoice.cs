@@ -126,11 +126,13 @@ public sealed class EInvoice : InvoiceNode
     /// What was reported while this invoice was read: unknown profiles, values that could not be typed,
     /// elements kept as extension data. Empty for an invoice built in code.
     /// </summary>
-    public IReadOnlyList<Diagnostic> Diagnostics { get; internal set; } = [];
+    /// <remarks>Set by whichever reader produced the invoice, including a reader you wrote yourself.</remarks>
+    public IReadOnlyList<Diagnostic> Diagnostics { get; set; } = [];
 
     /// <summary>
     /// How the declared specification identifier was resolved, and what was given up along the way.
     /// <c>null</c> for an invoice built in code.
     /// </summary>
-    public ProfileResolution? Profile { get; internal set; }
+    /// <remarks>Set by whichever reader produced the invoice, including a reader you wrote yourself.</remarks>
+    public ProfileResolution? Profile { get; set; }
 }

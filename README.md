@@ -51,10 +51,12 @@ validation is never presented as a success.
 
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
-| UBL 2.1 — Invoice <sub>OASIS UBL 2.1</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Ubl` |
+| UBL 2.1 — Invoice <sub>OASIS UBL 2.1</sub> | 🚧 | 📋 | 📋 | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Credit Note <sub>OASIS UBL 2.1</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Ubl` |
 | UN/CEFACT CII <sub>D22B</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Cii` |
 | UN/CEFACT CDAR <sub>generic</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Cdar` |
+
+> **UBL 2.1 — Invoice** — Reading maps the EN 16931 core and keeps everything else as extension data; writing is next. Tested against the 45 UBL invoices of the official XRechnung test suite.
 
 ### Profiles
 

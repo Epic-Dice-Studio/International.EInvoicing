@@ -11,6 +11,13 @@ namespace International.EInvoicing.Profiles;
 /// </remarks>
 public static class KnownProfiles
 {
+    private static readonly ProfileIdentifier XRechnung3CiusId =
+        new("urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0");
+
+    private static readonly ProfileIdentifier XRechnung3ExtensionId = new(
+        "urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0"
+        + "#conformant#urn:xeinkauf.de:kosit:extension:xrechnung_3.0");
+
     /// <summary>The EN 16931 core invoice model, the profile every CIUS restricts.</summary>
     public static Profile En16931Cii { get; } =
         new(new ProfileIdentifier("urn:cen.eu:en16931:2017"), "EN 16931", DocumentSyntax.Cii);
@@ -60,19 +67,33 @@ public static class KnownProfiles
         DocumentSyntax.Cii,
         En16931Cii.Id);
 
-    /// <summary>XRechnung 3.x, the German CIUS.</summary>
-    public static Profile XRechnung3Cius { get; } = new(
-        new ProfileIdentifier("urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_3.0"),
+    /// <summary>XRechnung 3.x, the German CIUS. The same identifier is used in both syntaxes.</summary>
+    public static Profile XRechnung3CiusUbl { get; } = new(
+        XRechnung3CiusId,
         "XRechnung 3.0 (CIUS)",
         DocumentSyntax.Ubl,
         En16931Ubl.Id);
 
+    /// <summary>XRechnung 3.x, the German CIUS, in CII.</summary>
+    public static Profile XRechnung3CiusCii { get; } = new(
+        XRechnung3CiusId,
+        "XRechnung 3.0 (CIUS)",
+        DocumentSyntax.Cii,
+        En16931Cii.Id);
+
     /// <summary>XRechnung 3.x Extension, which adds elements beyond EN 16931.</summary>
-    public static Profile XRechnung3Extension { get; } = new(
-        new ProfileIdentifier("urn:cen.eu:en16931:2017#conformant#urn:xoev-de:kosit:extension:xrechnung_3.0"),
+    public static Profile XRechnung3ExtensionUbl { get; } = new(
+        XRechnung3ExtensionId,
         "XRechnung 3.0 (Extension)",
         DocumentSyntax.Ubl,
-        XRechnung3Cius.Id);
+        XRechnung3CiusId);
+
+    /// <summary>XRechnung 3.x Extension, in CII.</summary>
+    public static Profile XRechnung3ExtensionCii { get; } = new(
+        XRechnung3ExtensionId,
+        "XRechnung 3.0 (Extension)",
+        DocumentSyntax.Cii,
+        XRechnung3CiusId);
 
     /// <summary>Every profile listed here.</summary>
     public static IReadOnlyList<Profile> All { get; } =
@@ -85,8 +106,10 @@ public static class KnownProfiles
         FacturXExtended,
         PeppolBisBilling3Ubl,
         PeppolBisBilling3Cii,
-        XRechnung3Cius,
-        XRechnung3Extension,
+        XRechnung3CiusUbl,
+        XRechnung3CiusCii,
+        XRechnung3ExtensionUbl,
+        XRechnung3ExtensionCii,
     ];
 
     /// <summary>Finds a published profile by identifier and syntax.</summary>
