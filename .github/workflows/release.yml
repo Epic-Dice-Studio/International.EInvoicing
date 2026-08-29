@@ -19,11 +19,10 @@ jobs:
 
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          global-json-file: global.json
+          dotnet-version: 8.0.x   # runtime only, so the net8.0 tests can execute
 
-      - run: dotnet build -c Release
+      - run: dotnet build -c Release -p:TestAllTargetFrameworks=true
       - run: dotnet test -c Release --no-build -p:TestAllTargetFrameworks=true
       - run: dotnet pack -c Release --no-build -o artifacts
 
