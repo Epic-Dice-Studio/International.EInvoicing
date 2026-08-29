@@ -11,40 +11,52 @@ namespace International.EInvoicing.Ubl.Reading;
 /// Turns UBL elements into fields. A value that cannot be converted is never dropped and never throws: the
 /// field keeps the raw text, carries the diagnostic explaining why, and the document goes on being read.
 /// </summary>
-[SuppressMessage(
-    "Performance",
-    "CA1822:Mark members as static",
-    Justification = "One uniform instance API: a call site should not have to know which conversions can fail.")]
-internal sealed class UblValueReader(DiagnosticCollector diagnostics)
+/// <remarks>
+/// Reading an element also marks it as mapped, so whatever is left at the end of the document is exactly what
+/// nobody claimed, and can be kept as extension data.
+/// </remarks>
+internal sealed class UblValueReader(DiagnosticCollector diagnostics, HashSet<XElement> mapped)
 {
+    /// <summary>Marks an element as mapped. Returns false when there is no element to read.</summary>
+    public bool Consume([NotNullWhen(true)] XElement? element)
+    {
+        if (element is null)
+        {
+            return false;
+        }
+
+        mapped.Add(element);
+        return true;
+    }
+
     public TextField ReadText(XElement? element) =>
-        element is null
-            ? TextField.Unset
-            : new TextField(element.Value, Attribute(element, "languageID"), Source(element));
+        Consume(element)
+            ? new TextField(element.Value, Attribute(element, "languageID"), Source(element))
+            : TextField.Unset;
 
     public CodeField ReadCode(XElement? element) =>
-        element is null
-            ? CodeField.Unset
-            : new CodeField(
+        Consume(element)
+            ? new CodeField(
                 element.Value,
                 Attribute(element, "listID"),
                 Attribute(element, "listVersionID"),
                 Attribute(element, "listAgencyID"),
-                Source(element));
+                Source(element))
+            : CodeField.Unset;
 
     public IdentifierField ReadIdentifier(XElement? element) =>
-        element is null
-            ? IdentifierField.Unset
-            : new IdentifierField(
+        Consume(element)
+            ? new IdentifierField(
                 element.Value,
                 Attribute(element, "schemeID"),
                 Attribute(element, "schemeAgencyID"),
                 Attribute(element, "schemeVersionID"),
-                Source(element));
+                Source(element))
+            : IdentifierField.Unset;
 
     public AmountField ReadAmount(XElement? element, string? businessTerm = null)
     {
-        if (element is null)
+        if (!Consume(element))
         {
             return AmountField.Unset;
         }
@@ -58,7 +70,7 @@ internal sealed class UblValueReader(DiagnosticCollector diagnostics)
 
     public QuantityField ReadQuantity(XElement? element, string? businessTerm = null)
     {
-        if (element is null)
+        if (!Consume(element))
         {
             return QuantityField.Unset;
         }
@@ -72,7 +84,7 @@ internal sealed class UblValueReader(DiagnosticCollector diagnostics)
 
     public Field<decimal> ReadDecimal(XElement? element, string? businessTerm = null)
     {
-        if (element is null)
+        if (!Consume(element))
         {
             return Field<decimal>.Unset;
         }
@@ -82,10 +94,10 @@ internal sealed class UblValueReader(DiagnosticCollector diagnostics)
             : new Field<decimal>(null, Source(element, Report(element, "a number", businessTerm)));
     }
 
-    /// <summary>Reads an <c>xs:date</c>. A trailing time zone offset is accepted and preserved in the raw text.</summary>
+    /// <summary>Reads an <c>xs:date</c>. A trailing time zone offset is accepted and kept in the raw text.</summary>
     public DateField ReadDate(XElement? element, string? businessTerm = null)
     {
-        if (element is null)
+        if (!Consume(element))
         {
             return DateField.Unset;
         }
@@ -93,14 +105,19 @@ internal sealed class UblValueReader(DiagnosticCollector diagnostics)
         string text = element.Value.Trim();
         ReadOnlySpan<char> datePart = text.Length >= 10 ? text.AsSpan(0, 10) : text;
 
-        return DateOnly.TryParseExact(datePart, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly date)
+        return DateOnly.TryParseExact(
+            datePart,
+            "yyyy-MM-dd",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out DateOnly date)
             ? new DateField(date, null, Source(element))
             : new DateField(null, null, Source(element, Report(element, "a date", businessTerm)));
     }
 
     public IndicatorField ReadIndicator(XElement? element)
     {
-        if (element is null)
+        if (!Consume(element))
         {
             return IndicatorField.Unset;
         }

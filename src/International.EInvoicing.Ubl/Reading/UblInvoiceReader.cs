@@ -73,10 +73,9 @@ public sealed class UblInvoiceReader
 
     private EInvoice ReadInvoice(XElement root, DiagnosticCollector diagnostics)
     {
-        var values = new UblValueReader(diagnostics);
-        var invoice = new EInvoice();
-
         var mapped = new HashSet<XElement>();
+        var values = new UblValueReader(diagnostics, mapped);
+        var invoice = new EInvoice();
 
         invoice.SpecificationIdentifier =
             ProfileIdentifier.FromDocument(Take(root, UblNames.Cbc + "CustomizationID", mapped)?.Value);
@@ -102,7 +101,7 @@ public sealed class UblInvoiceReader
 
         foreach (XElement billing in TakeAll(root, UblNames.Cac + "BillingReference", mapped))
         {
-            XElement? reference = billing.Element(UblNames.Cac + "InvoiceDocumentReference");
+            XElement? reference = Descend(values, billing, UblNames.Cac + "InvoiceDocumentReference");
             invoice.PrecedingInvoices.Add(new DocumentReference
             {
                 Identifier = values.ReadIdentifier(reference?.Element(UblNames.Cbc + "ID")),
@@ -121,15 +120,17 @@ public sealed class UblInvoiceReader
         }
 
         invoice.Seller = ReadParty(
-            Take(root, UblNames.Cac + "AccountingSupplierParty", mapped)?.Element(UblNames.Cac + "Party"), values);
+            Descend(values, Take(root, UblNames.Cac + "AccountingSupplierParty", mapped), UblNames.Cac + "Party"), values);
         invoice.Buyer = ReadParty(
-            Take(root, UblNames.Cac + "AccountingCustomerParty", mapped)?.Element(UblNames.Cac + "Party"), values);
+            Descend(values, Take(root, UblNames.Cac + "AccountingCustomerParty", mapped), UblNames.Cac + "Party"), values);
         invoice.Payee = ReadParty(Take(root, UblNames.Cac + "PayeeParty", mapped), values);
         invoice.SellerTaxRepresentative = ReadParty(
             Take(root, UblNames.Cac + "TaxRepresentativeParty", mapped), values);
 
         invoice.Delivery = ReadDelivery(Take(root, UblNames.Cac + "Delivery", mapped), values);
         invoice.Payment = ReadPayment(root, values, mapped);
+        invoice.PaymentTerms = values.ReadText(
+            Descend(values, Take(root, UblNames.Cac + "PaymentTerms", mapped), UblNames.Cbc + "Note"));
 
         foreach (XElement allowance in TakeAll(root, UblNames.Cac + "AllowanceCharge", mapped))
         {
@@ -144,7 +145,7 @@ public sealed class UblInvoiceReader
             invoice.Lines.Add(ReadLine(line, values));
         }
 
-        KeepUnmapped(root, mapped, invoice, diagnostics);
+        KeepEverythingElse(root, invoice, mapped, diagnostics);
 
         ProfileResolution resolution = _profiles.Resolve(invoice.SpecificationIdentifier, DocumentSyntax.Ubl);
         foreach (Diagnostic diagnostic in resolution.Diagnostics)
@@ -184,11 +185,9 @@ public sealed class UblInvoiceReader
 
     private static AdditionalDocument ReadAdditionalDocument(XElement element, UblValueReader values)
     {
-        XElement? attachment = element.Element(UblNames.Cac + "Attachment");
+        XElement? attachment = Descend(values, element, UblNames.Cac + "Attachment");
         XElement? embedded = attachment?.Element(UblNames.Cbc + "EmbeddedDocumentBinaryObject");
-        XElement? external = attachment
-            ?.Element(UblNames.Cac + "ExternalReference")
-            ?.Element(UblNames.Cbc + "URI");
+        XElement? external = Descend(values, Descend(values, attachment, UblNames.Cac + "ExternalReference"), UblNames.Cbc + "URI");
 
         var document = new AdditionalDocument
         {
@@ -225,16 +224,16 @@ public sealed class UblInvoiceReader
 
         var party = new Party
         {
-            Name = values.ReadText(element.Element(UblNames.Cac + "PartyName")?.Element(UblNames.Cbc + "Name")),
+            Name = values.ReadText(Descend(values, Descend(values, element, UblNames.Cac + "PartyName"), UblNames.Cbc + "Name")),
             ElectronicAddress = values.ReadIdentifier(element.Element(UblNames.Cbc + "EndpointID")),
         };
 
-        foreach (XElement identification in element.Elements(UblNames.Cac + "PartyIdentification"))
+        foreach (XElement identification in DescendAll(values, element, UblNames.Cac + "PartyIdentification"))
         {
             party.Identifiers.Add(values.ReadIdentifier(identification.Element(UblNames.Cbc + "ID")));
         }
 
-        XElement? legalEntity = element.Element(UblNames.Cac + "PartyLegalEntity");
+        XElement? legalEntity = Descend(values, element, UblNames.Cac + "PartyLegalEntity");
         if (legalEntity is not null)
         {
             party.LegalRegistrationIdentifier = values.ReadIdentifier(legalEntity.Element(UblNames.Cbc + "CompanyID"));
@@ -246,9 +245,10 @@ public sealed class UblInvoiceReader
             }
         }
 
-        foreach (XElement taxScheme in element.Elements(UblNames.Cac + "PartyTaxScheme"))
+        foreach (XElement taxScheme in DescendAll(values, element, UblNames.Cac + "PartyTaxScheme"))
         {
-            string? scheme = taxScheme.Element(UblNames.Cac + "TaxScheme")?.Element(UblNames.Cbc + "ID")?.Value;
+            string? scheme = Descend(values, Descend(values, taxScheme, UblNames.Cac + "TaxScheme"), UblNames.Cbc + "ID")?.Value;
+            values.Consume(Descend(values, taxScheme, UblNames.Cac + "TaxScheme"));
             IdentifierField companyId = values.ReadIdentifier(taxScheme.Element(UblNames.Cbc + "CompanyID"));
 
             if (string.Equals(scheme, "VAT", StringComparison.OrdinalIgnoreCase))
@@ -261,8 +261,8 @@ public sealed class UblInvoiceReader
             }
         }
 
-        party.Address = ReadAddress(element.Element(UblNames.Cac + "PostalAddress"), values);
-        party.Contact = ReadContact(element.Element(UblNames.Cac + "Contact"), values);
+        party.Address = ReadAddress(Descend(values, element, UblNames.Cac + "PostalAddress"), values);
+        party.Contact = ReadContact(Descend(values, element, UblNames.Cac + "Contact"), values);
         return party;
     }
 
@@ -274,12 +274,12 @@ public sealed class UblInvoiceReader
                 Line1 = values.ReadText(element.Element(UblNames.Cbc + "StreetName")),
                 Line2 = values.ReadText(element.Element(UblNames.Cbc + "AdditionalStreetName")),
                 Line3 = values.ReadText(
-                    element.Element(UblNames.Cac + "AddressLine")?.Element(UblNames.Cbc + "Line")),
+                    Descend(values, Descend(values, element, UblNames.Cac + "AddressLine"), UblNames.Cbc + "Line")),
                 City = values.ReadText(element.Element(UblNames.Cbc + "CityName")),
                 PostCode = values.ReadText(element.Element(UblNames.Cbc + "PostalZone")),
                 CountrySubdivision = values.ReadText(element.Element(UblNames.Cbc + "CountrySubentity")),
                 CountryCode = values.ReadCode(
-                    element.Element(UblNames.Cac + "Country")?.Element(UblNames.Cbc + "IdentificationCode")),
+                    Descend(values, Descend(values, element, UblNames.Cac + "Country"), UblNames.Cbc + "IdentificationCode")),
             };
 
     private static Contact? ReadContact(XElement? element, UblValueReader values) =>
@@ -299,51 +299,44 @@ public sealed class UblInvoiceReader
             return null;
         }
 
-        XElement? location = element.Element(UblNames.Cac + "DeliveryLocation");
+        XElement? location = Descend(values, element, UblNames.Cac + "DeliveryLocation");
 
         return new DeliveryInformation
         {
             ActualDeliveryDate = values.ReadDate(element.Element(UblNames.Cbc + "ActualDeliveryDate"), "BT-72"),
             LocationIdentifier = values.ReadIdentifier(location?.Element(UblNames.Cbc + "ID")),
             Name = values.ReadText(
-                element.Element(UblNames.Cac + "DeliveryParty")
-                    ?.Element(UblNames.Cac + "PartyName")
-                    ?.Element(UblNames.Cbc + "Name")),
-            Address = ReadAddress(location?.Element(UblNames.Cac + "Address"), values),
+                Descend(values, Descend(values, Descend(values, element, UblNames.Cac + "DeliveryParty"), UblNames.Cac + "PartyName"), UblNames.Cbc + "Name")),
+            Address = ReadAddress(Descend(values, location, UblNames.Cac + "Address"), values),
         };
     }
 
     private static PaymentInstructions? ReadPayment(XElement root, UblValueReader values, HashSet<XElement> mapped)
     {
         XElement? means = Take(root, UblNames.Cac + "PaymentMeans", mapped);
-        XElement? terms = Take(root, UblNames.Cac + "PaymentTerms", mapped);
-
-        if (means is null && terms is null)
+        if (means is null)
         {
             return null;
         }
 
-        var payment = new PaymentInstructions();
-
-        if (means is not null)
+        var payment = new PaymentInstructions
         {
-            payment.MeansTypeCode = values.ReadCode(means.Element(UblNames.Cbc + "PaymentMeansCode"));
-            payment.MeansText = values.ReadText(
-                means.Element(UblNames.Cbc + "PaymentMeansCode")?.Attribute("name") is { } name
-                    ? new XElement(UblNames.Cbc + "PaymentMeansText", name.Value)
-                    : null);
-            payment.RemittanceInformation = values.ReadText(means.Element(UblNames.Cbc + "PaymentID"));
+            MeansTypeCode = values.ReadCode(Descend(values, means, UblNames.Cbc + "PaymentMeansCode")),
+            RemittanceInformation = values.ReadText(Descend(values, means, UblNames.Cbc + "PaymentID")),
+        };
 
-            foreach (XElement account in means.Elements(UblNames.Cac + "PayeeFinancialAccount"))
+        foreach (XElement account in DescendAll(values, means, UblNames.Cac + "PayeeFinancialAccount"))
+        {
+            payment.CreditTransfers.Add(new CreditTransfer
             {
-                payment.CreditTransfers.Add(new CreditTransfer
-                {
-                    AccountIdentifier = values.ReadIdentifier(account.Element(UblNames.Cbc + "ID")),
-                    AccountName = values.ReadText(account.Element(UblNames.Cbc + "Name")),
-                    ServiceProviderIdentifier = values.ReadIdentifier(
-                        account.Element(UblNames.Cac + "FinancialInstitutionBranch")?.Element(UblNames.Cbc + "ID")),
-                });
-            }
+                AccountIdentifier = values.ReadIdentifier(Descend(values, account, UblNames.Cbc + "ID")),
+                AccountName = values.ReadText(Descend(values, account, UblNames.Cbc + "Name")),
+                ServiceProviderIdentifier = values.ReadIdentifier(
+                    Descend(
+                        values,
+                        Descend(values, account, UblNames.Cac + "FinancialInstitutionBranch"),
+                        UblNames.Cbc + "ID")),
+            });
         }
 
         return payment;
@@ -351,7 +344,9 @@ public sealed class UblInvoiceReader
 
     private static AllowanceCharge ReadAllowanceCharge(XElement element, UblValueReader values)
     {
-        XElement? category = element.Element(UblNames.Cac + "TaxCategory");
+        XElement? category = Descend(values, element, UblNames.Cac + "TaxCategory");
+        values.Consume(Descend(values, category, UblNames.Cac + "TaxScheme"));
+        values.Consume(Descend(values, Descend(values, category, UblNames.Cac + "TaxScheme"), UblNames.Cbc + "ID"));
 
         return new AllowanceCharge
         {
@@ -378,9 +373,11 @@ public sealed class UblInvoiceReader
 
         invoice.Totals.TaxAmount = values.ReadAmount(element.Element(UblNames.Cbc + "TaxAmount"), "BT-110");
 
-        foreach (XElement subtotal in element.Elements(UblNames.Cac + "TaxSubtotal"))
+        foreach (XElement subtotal in DescendAll(values, element, UblNames.Cac + "TaxSubtotal"))
         {
-            XElement? category = subtotal.Element(UblNames.Cac + "TaxCategory");
+            XElement? category = Descend(values, subtotal, UblNames.Cac + "TaxCategory");
+            values.Consume(Descend(values, category, UblNames.Cac + "TaxScheme"));
+            values.Consume(Descend(values, Descend(values, category, UblNames.Cac + "TaxScheme"), UblNames.Cbc + "ID"));
 
             invoice.VatBreakdown.Add(new VatBreakdownEntry
             {
@@ -421,16 +418,16 @@ public sealed class UblInvoiceReader
             NetAmount = values.ReadAmount(element.Element(UblNames.Cbc + "LineExtensionAmount"), "BT-131"),
             BuyerAccountingReference = values.ReadText(element.Element(UblNames.Cbc + "AccountingCost")),
             OrderLineReference = values.ReadIdentifier(
-                element.Element(UblNames.Cac + "OrderLineReference")?.Element(UblNames.Cbc + "LineID")),
-            Period = ReadPeriod(element.Element(UblNames.Cac + "InvoicePeriod"), values),
+                Descend(values, Descend(values, element, UblNames.Cac + "OrderLineReference"), UblNames.Cbc + "LineID")),
+            Period = ReadPeriod(Descend(values, element, UblNames.Cac + "InvoicePeriod"), values),
         };
 
-        foreach (XElement allowance in element.Elements(UblNames.Cac + "AllowanceCharge"))
+        foreach (XElement allowance in DescendAll(values, element, UblNames.Cac + "AllowanceCharge"))
         {
             line.AllowancesAndCharges.Add(ReadAllowanceCharge(allowance, values));
         }
 
-        XElement? price = element.Element(UblNames.Cac + "Price");
+        XElement? price = Descend(values, element, UblNames.Cac + "Price");
         if (price is not null)
         {
             line.Price = new LinePrice
@@ -438,18 +435,25 @@ public sealed class UblInvoiceReader
                 NetPrice = values.ReadAmount(price.Element(UblNames.Cbc + "PriceAmount"), "BT-146"),
                 BaseQuantity = values.ReadQuantity(price.Element(UblNames.Cbc + "BaseQuantity"), "BT-149"),
                 Discount = values.ReadAmount(
-                    price.Element(UblNames.Cac + "AllowanceCharge")?.Element(UblNames.Cbc + "Amount"), "BT-147"),
+                    Descend(values, Descend(values, price, UblNames.Cac + "AllowanceCharge"), UblNames.Cbc + "Amount"),
+                    "BT-147"),
                 GrossPrice = values.ReadAmount(
-                    price.Element(UblNames.Cac + "AllowanceCharge")?.Element(UblNames.Cbc + "BaseAmount"), "BT-148"),
+                    Descend(
+                        values,
+                        Descend(values, price, UblNames.Cac + "AllowanceCharge"),
+                        UblNames.Cbc + "BaseAmount"),
+                    "BT-148"),
             };
         }
 
-        XElement? item = element.Element(UblNames.Cac + "Item");
+        XElement? item = Descend(values, element, UblNames.Cac + "Item");
         if (item is not null)
         {
             line.Item = ReadItem(item, values);
 
-            XElement? category = item.Element(UblNames.Cac + "ClassifiedTaxCategory");
+            XElement? category = Descend(values, item, UblNames.Cac + "ClassifiedTaxCategory");
+            values.Consume(Descend(values, category, UblNames.Cac + "TaxScheme"));
+            values.Consume(Descend(values, Descend(values, category, UblNames.Cac + "TaxScheme"), UblNames.Cbc + "ID"));
             line.VatCategoryCode = values.ReadCode(category?.Element(UblNames.Cbc + "ID"));
             line.VatRate = values.ReadDecimal(category?.Element(UblNames.Cbc + "Percent"), "BT-152");
         }
@@ -464,22 +468,22 @@ public sealed class UblInvoiceReader
             Name = values.ReadText(element.Element(UblNames.Cbc + "Name")),
             Description = values.ReadText(element.Element(UblNames.Cbc + "Description")),
             SellerIdentifier = values.ReadIdentifier(
-                element.Element(UblNames.Cac + "SellersItemIdentification")?.Element(UblNames.Cbc + "ID")),
+                Descend(values, Descend(values, element, UblNames.Cac + "SellersItemIdentification"), UblNames.Cbc + "ID")),
             BuyerIdentifier = values.ReadIdentifier(
-                element.Element(UblNames.Cac + "BuyersItemIdentification")?.Element(UblNames.Cbc + "ID")),
+                Descend(values, Descend(values, element, UblNames.Cac + "BuyersItemIdentification"), UblNames.Cbc + "ID")),
             StandardIdentifier = values.ReadIdentifier(
-                element.Element(UblNames.Cac + "StandardItemIdentification")?.Element(UblNames.Cbc + "ID")),
+                Descend(values, Descend(values, element, UblNames.Cac + "StandardItemIdentification"), UblNames.Cbc + "ID")),
             OriginCountryCode = values.ReadCode(
-                element.Element(UblNames.Cac + "OriginCountry")?.Element(UblNames.Cbc + "IdentificationCode")),
+                Descend(values, Descend(values, element, UblNames.Cac + "OriginCountry"), UblNames.Cbc + "IdentificationCode")),
         };
 
-        foreach (XElement classification in element.Elements(UblNames.Cac + "CommodityClassification"))
+        foreach (XElement classification in DescendAll(values, element, UblNames.Cac + "CommodityClassification"))
         {
             item.ClassificationCodes.Add(
                 values.ReadCode(classification.Element(UblNames.Cbc + "ItemClassificationCode")));
         }
 
-        foreach (XElement property in element.Elements(UblNames.Cac + "AdditionalItemProperty"))
+        foreach (XElement property in DescendAll(values, element, UblNames.Cac + "AdditionalItemProperty"))
         {
             item.Characteristics.Add(new ItemCharacteristic
             {
@@ -491,27 +495,23 @@ public sealed class UblInvoiceReader
         return item;
     }
 
-    private static void KeepUnmapped(
-        XElement root,
-        HashSet<XElement> mapped,
-        EInvoice invoice,
-        DiagnosticCollector diagnostics)
+    /// <summary>Finds a composite child and marks it mapped, so it is not later kept as extension data.</summary>
+    private static XElement? Descend(UblValueReader values, XElement? parent, XName name)
     {
-        foreach (XElement element in root.Elements().Where(e => !mapped.Contains(e)))
-        {
-            invoice.Extensions.Add(new ExtensionElement(
-                element.Name.NamespaceName,
-                element.Name.LocalName,
-                element.ToString(SaveOptions.DisableFormatting),
-                UblValueReader.LocationOf(element)));
+        XElement? child = parent?.Element(name);
+        values.Consume(child);
+        return child;
+    }
 
-            diagnostics.Add(Diagnostic.Create(UblDiagnostics.UnmappedElement, element.Name.LocalName) with
-            {
-                Location = UblValueReader.LocationOf(element),
-                Found = element.Name.LocalName,
-                AppliedFallback = "kept verbatim as extension data",
-            });
+    private static List<XElement> DescendAll(UblValueReader values, XElement? parent, XName name)
+    {
+        List<XElement> children = [.. parent?.Elements(name) ?? []];
+        foreach (XElement child in children)
+        {
+            values.Consume(child);
         }
+
+        return children;
     }
 
     private static XElement? Take(XElement parent, XName name, HashSet<XElement> mapped)
@@ -534,5 +534,39 @@ public sealed class UblInvoiceReader
         }
 
         return elements;
+    }
+
+    /// <summary>
+    /// Walks the whole document and gives every element the reader did not map to the node that contained it.
+    /// Doing this once at the end, rather than per mapping method, is what makes the guarantee total: an
+    /// element nobody thought about is still kept, wherever it sits.
+    /// </summary>
+    private static void KeepEverythingElse(
+        XElement source,
+        InvoiceNode node,
+        HashSet<XElement> mapped,
+        DiagnosticCollector diagnostics)
+    {
+        foreach (XElement element in source.Elements())
+        {
+            if (mapped.Contains(element))
+            {
+                KeepEverythingElse(element, node, mapped, diagnostics);
+                continue;
+            }
+
+            node.Extensions.Add(new ExtensionElement(
+                element.Name.NamespaceName,
+                element.Name.LocalName,
+                element.ToString(SaveOptions.DisableFormatting),
+                UblValueReader.LocationOf(element)));
+
+            diagnostics.Add(Diagnostic.Create(UblDiagnostics.UnmappedElement, element.Name.LocalName) with
+            {
+                Location = UblValueReader.LocationOf(element),
+                Found = element.Name.LocalName,
+                AppliedFallback = "kept verbatim as extension data",
+            });
+        }
     }
 }

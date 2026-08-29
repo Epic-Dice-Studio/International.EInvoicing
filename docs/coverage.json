@@ -15,10 +15,10 @@
           "name": "UBL 2.1 — Invoice",
           "version": "OASIS UBL 2.1",
           "package": "International.EInvoicing.Ubl",
-          "read": "in-progress",
-          "write": "planned",
+          "read": "done",
+          "write": "done",
           "validate": "planned",
-          "notes": "Reading maps the EN 16931 core and keeps everything else as extension data; writing is next. Tested against the 45 UBL invoices of the official XRechnung test suite."
+          "notes": "Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine."
         },
         {
           "name": "UBL 2.1 — Credit Note",
