@@ -19,7 +19,8 @@ Tests run on `net10.0` locally. CI additionally installs the .NET 8 runtime and 
 ## Before you open a pull request
 
 - `dotnet build -c Release` is warning-free. Warnings are errors here.
-- `dotnet format --verify-no-changes` passes.
+- `dotnet format --verify-no-changes --no-restore` passes. Keep `--no-restore`: without it, `dotnet format`
+  reports fewer rules than CI does.
 - Read [AGENTS.md](AGENTS.md). It is short and it is binding — especially §2 (code style: the code explains
   itself, comments are rare) and §4 (definition of done).
 - If you added a diagnostic code, add its page under `docs/diagnostics/`. CI checks this.

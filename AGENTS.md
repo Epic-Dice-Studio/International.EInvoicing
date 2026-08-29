@@ -11,7 +11,7 @@ This file is short on purpose. It states the rules that are **not** negotiable. 
 dotnet build -c Release                       # must be warning-free (warnings are errors)
 dotnet test  -c Release                       # runs on net10.0
 dotnet test  -c Release -p:TestAllTargetFrameworks=true   # adds net8.0 (CI does this)
-dotnet format --verify-no-changes             # style gate, also enforced in CI
+dotnet format --verify-no-changes --no-restore   # exactly what CI runs; without --no-restore it misses rules
 dotnet pack  -c Release -o artifacts          # versions come from git tags via MinVer
 
 dotnet run --project build/Tools -- coverage     # regenerate the README support matrix
