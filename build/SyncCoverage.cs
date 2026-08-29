@@ -105,16 +105,16 @@ static string Label(CoverageDocument coverage, string status) =>
 static string Package(string? package) =>
     package is null or "—" ? "—" : $"`{package}`";
 
-static class Json
+internal static class Json
 {
     public static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
 }
 
-sealed record CoverageDocument(Dictionary<string, string> Statuses, List<CoverageSection> Sections);
+internal sealed record CoverageDocument(Dictionary<string, string> Statuses, List<CoverageSection> Sections);
 
-sealed record CoverageSection(string Title, List<CoverageEntry> Entries);
+internal sealed record CoverageSection(string Title, List<CoverageEntry> Entries);
 
-sealed record CoverageEntry(
+internal sealed record CoverageEntry(
     string Name,
     string? Version,
     string? Package,

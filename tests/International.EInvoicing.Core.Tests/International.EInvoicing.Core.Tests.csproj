@@ -7,6 +7,8 @@
     <TargetFrameworks>net10.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(TestAllTargetFrameworks)' == 'true'">net8.0;net10.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <!-- Culture-safety is a promise of this library, so the tests run under real cultures. -->
+    <InvariantGlobalization>false</InvariantGlobalization>
     <IsTestProject>true</IsTestProject>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
