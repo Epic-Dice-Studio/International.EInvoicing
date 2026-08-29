@@ -6,6 +6,20 @@ namespace International.EInvoicing.Diagnostics;
 /// </summary>
 public static class DiagnosticCodes
 {
+    /// <summary>The declared profile identifier matches nothing the library knows.</summary>
+    public static DiagnosticDescriptor UnknownProfile { get; } = new(
+        "EIV1042",
+        DiagnosticCategory.UnknownProfile,
+        DiagnosticSeverity.Warning,
+        "Profile '{0}' is not registered and is not a profile this library knows.");
+
+    /// <summary>The declared profile is a published standard, but no implementation is registered.</summary>
+    public static DiagnosticDescriptor UnsupportedProfile { get; } = new(
+        "EIV1043",
+        DiagnosticCategory.UnsupportedProfile,
+        DiagnosticSeverity.Error,
+        "Profile '{0}' is a known standard but no implementation is registered.");
+
     /// <summary>A value could not be interpreted as its declared type; the raw text is preserved.</summary>
     public static DiagnosticDescriptor InvalidValue { get; } = new(
         "EIV2001",
