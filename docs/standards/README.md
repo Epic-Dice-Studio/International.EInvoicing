@@ -16,6 +16,9 @@ format is a matter of following the page rather than rediscovering the norm.
 | [country-de.md](country-de.md) | Germany: mandate, accepted formats, Leitweg-ID. |
 | [country-be.md](country-be.md) | Belgium: mandate, Peppol rules, national identifiers. |
 
+Before a standard is declared done, its page should also record what [prior art](../prior-art.md) revealed:
+mature implementations have already met the documents that break new ones.
+
 ## Page template
 
 When adding a standard, copy this structure:

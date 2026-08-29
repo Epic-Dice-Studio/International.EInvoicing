@@ -17,7 +17,7 @@
           "package": "International.EInvoicing.Ubl",
           "read": "done",
           "write": "done",
-          "validate": "planned",
+          "validate": "done",
           "notes": "Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine."
         },
         {
@@ -34,7 +34,7 @@
           "package": "International.EInvoicing.Cii",
           "read": "done",
           "write": "done",
-          "validate": "planned",
+          "validate": "done",
           "notes": "Reading and writing the EN 16931 core, with everything else kept verbatim as extension data on the node that contained it. Round-tripped against the 41 CII invoices of the official XRechnung test suite without losing an element."
         },
         {
@@ -57,7 +57,8 @@
           "package": "International.EInvoicing.Validation.En16931",
           "read": "planned",
           "write": "planned",
-          "validate": "planned"
+          "validate": "done",
+          "notes": "The published Schematron artefacts are executed as data. Measured against the 23 official example documents and the 80 CIUS documents of the XRechnung test suite: all accepted."
         },
         {
           "name": "Factur-X / ZUGFeRD — MINIMUM → EXTENDED",

@@ -1,6 +1,6 @@
 # 0008 — How to execute Schematron rules
 
-**Status:** Proposed · 2026-08-29 — decide at the start of the validation phase
+**Status:** Accepted · 2026-08-30 — option 2, confirmed by measurement
 
 ## Context
 
@@ -48,3 +48,30 @@ artefacts, and does the engine run under WebAssembly for the demo site.
 
 Whatever is chosen, the rule identifiers, severities and messages of the official artefacts are reproduced
 faithfully, and the artefact version appears in every validation report.
+
+## Outcome — measured, not estimated
+
+The spike ran over the real artefacts before anything was built.
+
+**The XPath subset is small.** Of 1972 expressions in the EN 16931 UBL and CII rule sets, everything is
+XPath 1.0 except ten constructs: `xs:decimal` (308 uses), `upper-case` (264), `exists` (257), `abs` (24),
+`ends-with` (9), `every … satisfies` (9), and single-figure uses of `xs:date`, `cast as`, `matches` and
+`distinct-values`. Four axes appear: `self`, `ancestor`, `preceding`, `child`.
+
+**Two constructs are not expressible in XPath 1.0 at all**, which settled the question of extending .NET's
+built-in engine rather than writing one: a function call standing as a path step
+(`ram:RateApplicablePercent/xs:decimal(.)`), and quantification. Both are used by the rules on VAT
+breakdowns — the rules that matter most.
+
+**The engine agrees with the norm.** It parses 1972 of 1972 expressions, accepts all 23 documents EN 16931
+publishes as correct, and accepts all 80 CIUS documents of the XRechnung test suite. The six conformant
+extension documents are run and reported on; EN 16931 rejects some of them correctly, because a conformant
+extension may add what the base rules forbid.
+
+**Arithmetic is exact.** Numbers are `decimal`, not `double`. The rules compare invoice totals against sums
+of lines after rounding, and binary floating point is how a validator reports a correct invoice as wrong by a
+hundredth.
+
+Option 1 (Saxon-HE) remains the fallback if a future rule set exceeds this subset. The parser raises on an
+expression it cannot read rather than skipping it, so that would be noticed immediately rather than silently
+reducing coverage.

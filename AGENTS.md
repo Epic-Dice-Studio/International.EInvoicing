@@ -79,6 +79,11 @@ version and re-run `build/fetch-specs.sh`.
 When a mapping is unclear, compare against these before inventing an interpretation. Read them for the
 *semantics*; do not copy code.
 
+**Before declaring a format or a country done, mine their issue trackers** — see
+[docs/prior-art.md](docs/prior-art.md). Their open issues are the edge cases we have not met yet, and reading
+them costs an hour where rediscovering them costs a production incident. Record what you find, including
+findings that led to nothing.
+
 - **Java** — [mustangproject](https://github.com/ZUGFeRD/mustangproject) (Factur-X/ZUGFeRD reference),
   [ph-schematron](https://github.com/phax/ph-schematron), [peppol-commons](https://github.com/phax/peppol-commons).
 - **PHP** — [horstoeko/zugferd](https://github.com/horstoeko/zugferd) (profile-driven builder design).

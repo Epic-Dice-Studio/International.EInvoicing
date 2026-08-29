@@ -51,9 +51,9 @@ validation is never presented as a success.
 
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
-| UBL 2.1 — Invoice <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Ubl` |
+| UBL 2.1 — Invoice <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Credit Note <sub>OASIS UBL 2.1</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Ubl` |
-| UN/CEFACT CII <sub>D22B</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Cii` |
+| UN/CEFACT CII <sub>D22B</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Cii` |
 | UN/CEFACT CDAR <sub>generic</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Cdar` |
 
 > **UBL 2.1 — Invoice** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine.
@@ -66,11 +66,13 @@ validation is never presented as a success.
 
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
-| EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Validation.En16931` |
+| EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | ✅ | `International.EInvoicing.Validation.En16931` |
 | Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX` |
 | Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX.PdfSharp` |
 | Peppol BIS Billing <sub>3.0</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Germany` |
+
+> **EN 16931 (core invoice model)** — The published Schematron artefacts are executed as data. Measured against the 23 official example documents and the 80 CIUS documents of the XRechnung test suite: all accepted.
 
 > **Factur-X / ZUGFeRD — MINIMUM → EXTENDED** — All five profiles registered. MINIMUM and BASIC WL are read and reported as not being EN 16931 invoices (EIV4010) rather than silently accepted.
 

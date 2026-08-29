@@ -55,6 +55,9 @@ fetch_en16931() {
     rm -rf "$SPECS_DIR/en16931/ubl" "$SPECS_DIR/en16931/cii"
     sync_into "$src/ubl/schematron" "$SPECS_DIR/en16931/ubl"
     sync_into "$src/cii/schematron" "$SPECS_DIR/en16931/cii"
+    # The official examples: what the engine is measured against, rather than documents we wrote ourselves.
+    sync_into "$src/ubl/examples" "$SPECS_DIR/en16931/ubl"
+    sync_into "$src/cii/examples" "$SPECS_DIR/en16931/cii"
     copy_licence "$src" "$SPECS_DIR/en16931"
 }
 

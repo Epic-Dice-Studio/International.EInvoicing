@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Validation.En16931</PackageId>
+    <Description>
+      The EN 16931 validation artefacts, ready to run: the published Schematron rules for UBL and CII,
+      embedded so validation works offline and ships with the version it was tested against.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;en16931;validation;schematron;ubl;cii;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Validation.Schematron/International.EInvoicing.Validation.Schematron.csproj" />
+  </ItemGroup>
+
+  <!--
+    The artefacts are redistributed verbatim under their own licence, EUPL-1.2, which travels with them.
+    See docs/adr/0009-artefact-licensing.md.
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="../../specs/en16931/ubl/schematron/preprocessed/EN16931-UBL-validation-preprocessed.sch"
+                      LogicalName="EN16931-UBL.sch" />
+    <EmbeddedResource Include="../../specs/en16931/cii/schematron/preprocessed/EN16931-CII-validation-preprocessed.sch"
+                      LogicalName="EN16931-CII.sch" />
+    <EmbeddedResource Include="../../specs/en16931/LICENSE.upstream.txt" LogicalName="EN16931-LICENSE.txt" />
+    <None Include="../../specs/en16931/LICENSE.upstream.txt" Pack="true" PackagePath="EN16931-LICENSE.txt" />
+  </ItemGroup>
+
+</Project>
