@@ -1,0 +1,44 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../src",
+          "files": ["**/*.csproj"]
+        }
+      ],
+      "dest": "api",
+      "properties": {
+        "TargetFramework": "net10.0"
+      }
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": ["**/*.md", "**/toc.yml"],
+        "exclude": ["_site/**", "api/**"]
+      },
+      {
+        "files": ["api/**.yml", "api/index.md"]
+      }
+    ],
+    "resource": [
+      {
+        "files": ["images/**"]
+      }
+    ],
+    "output": "_site",
+    "template": ["default", "modern"],
+    "globalMetadata": {
+      "_appName": "International.EInvoicing",
+      "_appTitle": "International.EInvoicing",
+      "_description": "Generate, read and validate electronic invoices in .NET",
+      "_enableSearch": true,
+      "_gitContribute": {
+        "repo": "https://github.com/Epic-Dice-Studio/International.EInvoicing",
+        "branch": "main"
+      }
+    }
+  }
+}

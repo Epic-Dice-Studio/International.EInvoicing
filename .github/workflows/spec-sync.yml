@@ -1,0 +1,58 @@
+name: Specification sync
+
+# Normative artefacts move on their own schedule. This job notices before our users do.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare pinned refs against upstream releases
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          report=""
+          check_repo() {
+            local repo="$1" pinned="$2" name="$3"
+            local latest
+            latest="$(gh release view --repo "$repo" --json tagName --jq .tagName 2>/dev/null || echo "")"
+            if [[ -n "$latest" && "$latest" != "$pinned" ]]; then
+              report+="- **$name**: pinned \`$pinned\`, upstream \`$latest\` (https://github.com/$repo/releases)"$'\n'
+            fi
+          }
+
+          en16931="$(grep -oP 'EN16931_REF="\K[^"]+' build/fetch-specs.sh)"
+          check_repo ConnectingEurope/eInvoicing-EN16931 "$en16931" "EN 16931 validation artefacts"
+          check_repo OpenPEPPOL/peppol-bis-invoice-3 "unpinned" "Peppol BIS Billing 3.0"
+          check_repo itplr-kosit/xrechnung-schematron "unpinned" "XRechnung Schematron"
+          check_repo itplr-kosit/validator-configuration-xrechnung "unpinned" "KoSIT validator configuration"
+
+          {
+            echo "report<<EOREPORT"
+            echo "$report"
+            echo "EOREPORT"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open an issue when something moved
+        if: steps.check.outputs.report != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "Upstream normative artefacts have new releases" \
+            --label "specs" \
+            --body "$(printf '%s\n\n%s\n' \
+              "${{ steps.check.outputs.report }}" \
+              "Update the pinned refs in \`build/fetch-specs.sh\`, run it, refresh the relevant \`PROVENANCE.md\`, and run the conformance tests. Manually published standards (Factur-X, UBL, CII, the French DGFiP package) are not covered by this check.")"

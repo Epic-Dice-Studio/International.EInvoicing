@@ -1,0 +1,18 @@
+- name: Overview
+  href: README.md
+- name: 0001 — Native models and a canonical model, in two layers
+  href: 0001-two-model-layers.md
+- name: 0002 — Every data property is a raw-preserving `Field<T>`
+  href: 0002-raw-preserving-fields.md
+- name: 0003 — Readers report diagnostics instead of throwing
+  href: 0003-diagnostics-not-exceptions.md
+- name: 0004 — Hand-written `XmlReader`/`XmlWriter` serialisation
+  href: 0004-hand-written-xml.md
+- name: 0005 — Core + one package per format + one per country
+  href: 0005-package-layout.md
+- name: 0006 — No network transport, ever
+  href: 0006-no-transport.md
+- name: 0007 — Target `net8.0` and `net10.0`
+  href: 0007-target-frameworks.md
+- name: 0008 — How to execute Schematron rules
+  href: 0008-schematron-engine.md

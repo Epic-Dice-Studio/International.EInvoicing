@@ -1,0 +1,12 @@
+- name: Guides
+  href: guides/
+- name: Standards
+  href: standards/
+- name: Diagnostics
+  href: diagnostics/
+- name: Recipes
+  href: recipes/
+- name: Decisions
+  href: adr/
+- name: API
+  href: api/

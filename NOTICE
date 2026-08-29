@@ -1,0 +1,25 @@
+International.EInvoicing
+Copyright (c) Epic-Dice-Studio and contributors
+Licensed under the MIT License (see LICENSE).
+
+This repository redistributes normative artefacts that are covered by their own licences. They are located
+under specs/, and each folder carries a PROVENANCE.md naming the source, version, retrieval date and licence.
+
+- EN 16931 validation artefacts (Schematron, code lists)
+  Source: https://github.com/ConnectingEurope/eInvoicing-EN16931 — Apache License 2.0
+
+- Peppol BIS Billing 3.0 validation artefacts
+  Source: https://github.com/OpenPEPPOL/peppol-bis-invoice-3 — Apache License 2.0
+
+- XRechnung Schematron and test suite
+  Source: https://github.com/itplr-kosit — Apache License 2.0
+
+- OASIS UBL 2.1 schemas
+  Source: https://docs.oasis-open.org/ubl/os-UBL-2.1/ — OASIS IPR Policy, redistribution permitted
+
+- UN/CEFACT Cross Industry Invoice (D22B) and CDAR schemas
+  Source: https://unece.org/trade/uncefact/xml-schemas — free to use and redistribute
+
+Specifications that may not be redistributed (EN 16931 standard text sold by CEN members, Factur-X
+specification documents, AFNOR XP Z12-01x) are NOT included. The relevant PROVENANCE.md explains where to
+obtain them.

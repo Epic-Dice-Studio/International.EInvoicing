@@ -1,0 +1,49 @@
+{
+  "$comment": "Single source of truth for the support matrix. Run `dotnet run build/SyncCoverage.cs` after editing; CI verifies README.md matches.",
+  "statuses": {
+    "done": "✅ Implemented",
+    "in-progress": "🚧 In progress",
+    "planned": "📋 Planned",
+    "researching": "🔬 Researching",
+    "out-of-scope": "⛔ Out of scope"
+  },
+  "sections": [
+    {
+      "title": "Syntaxes",
+      "entries": [
+        { "name": "UBL 2.1 — Invoice", "version": "OASIS UBL 2.1", "package": "International.EInvoicing.Ubl", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "UBL 2.1 — Credit Note", "version": "OASIS UBL 2.1", "package": "International.EInvoicing.Ubl", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "UN/CEFACT CII", "version": "D22B", "package": "International.EInvoicing.Cii", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "UN/CEFACT CDAR", "version": "generic", "package": "International.EInvoicing.Cdar", "read": "planned", "write": "planned", "validate": "planned" }
+      ]
+    },
+    {
+      "title": "Profiles",
+      "entries": [
+        { "name": "EN 16931 (core invoice model)", "version": "1.3.x artefacts", "package": "International.EInvoicing.Validation.En16931", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "Factur-X / ZUGFeRD — MINIMUM → EXTENDED", "version": "1.07.3 / 2.3.3", "package": "International.EInvoicing.FacturX", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "Factur-X hybrid PDF/A-3", "version": "ISO 19005-3", "package": "International.EInvoicing.FacturX.PdfSharp", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "Peppol BIS Billing", "version": "3.0", "package": "International.EInvoicing.Peppol", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "XRechnung (CIUS + Extension)", "version": "3.x", "package": "International.EInvoicing.Countries.Germany", "read": "planned", "write": "planned", "validate": "planned" }
+      ]
+    },
+    {
+      "title": "Countries",
+      "entries": [
+        { "name": "France — invoicing (CIUS FR, Factur-X)", "version": "DSE 3.x", "package": "International.EInvoicing.Countries.France", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "France — lifecycle statuses (CDAR)", "version": "DSE 3.x", "package": "International.EInvoicing.Countries.France", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "France — legal identifiers (SIREN, SIRET, VAT)", "version": "—", "package": "International.EInvoicing.Countries.France", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "France — e-reporting", "version": "DSE 3.x", "package": "—", "read": "researching", "write": "researching", "validate": "researching", "notes": "Deferred past 1.0; specification still moving." },
+        { "name": "Germany — XRechnung, ZUGFeRD, Leitweg-ID", "version": "XRechnung 3.x", "package": "International.EInvoicing.Countries.Germany", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "Belgium — Peppol BIS, KBO/BCE, structured communication", "version": "BIS 3.0", "package": "International.EInvoicing.Countries.Belgium", "read": "planned", "write": "planned", "validate": "planned" },
+        { "name": "Rest of the world", "version": "—", "package": "—", "read": "researching", "write": "researching", "validate": "researching", "notes": "See the roadmap below." }
+      ]
+    },
+    {
+      "title": "Transport",
+      "entries": [
+        { "name": "Peppol AS4, French PA APIs, Chorus Pro, Mercurius", "version": "—", "package": "—", "read": "out-of-scope", "write": "out-of-scope", "validate": "out-of-scope", "notes": "This library produces and reads documents. Sending them is your access point's job." }
+      ]
+    }
+  ]
+}

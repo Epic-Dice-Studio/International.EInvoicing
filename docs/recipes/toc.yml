@@ -1,0 +1,10 @@
+- name: Overview
+  href: README.md
+- name: Recipe — add a country
+  href: add-a-country.md
+- name: Recipe — add a syntax
+  href: add-a-format.md
+- name: Recipe — add a profile
+  href: add-a-profile.md
+- name: Recipe — add or suppress a validation rule
+  href: add-a-rule.md

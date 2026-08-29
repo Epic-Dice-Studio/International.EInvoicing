@@ -1,0 +1,37 @@
+name: Support a standard, profile or country
+description: Ask for a format, profile, CIUS or country that is not implemented yet
+labels: [support-request]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Before opening this: you can register your own profile, reader, writer or rules from your own code
+        today, without waiting for us — see `docs/recipes/add-a-profile.md`. This issue is for support we
+        should ship for everyone.
+  - type: input
+    id: what
+    attributes:
+      label: What should be supported
+      placeholder: "Italy — FatturaPA 1.2.2 / Factur-X EXTENDED / Peppol BIS 3.0 CII"
+    validations: { required: true }
+  - type: textarea
+    id: sources
+    attributes:
+      label: Official sources
+      description: >
+        Links to the specification, the schemas, the validation artefacts and the official sample files.
+        Say which of them may be redistributed — we cannot commit artefacts we are not allowed to.
+    validations: { required: true }
+  - type: input
+    id: deadline
+    attributes:
+      label: Regulatory deadline, if any
+      placeholder: "Mandatory for domestic B2B from 1 January 2027"
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Can you help?
+      options:
+        - label: I can provide real-world sample documents (redacted)
+        - label: I can test a preview package against my own traffic
+        - label: I can contribute the implementation

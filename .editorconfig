@@ -1,0 +1,71 @@
+# EditorConfig — https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,yml,yaml,csproj,props,targets,xml,xsd,sch,xslt,xsl}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+max_line_length = 120
+
+# --- Language conventions -----------------------------------------------
+csharp_using_directive_placement = outside_namespace:warning
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_braces = true:warning
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_prefer_pattern_matching = true:suggestion
+dotnet_style_readonly_field = true:warning
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# --- Naming --------------------------------------------------------------
+dotnet_naming_rule.constants_pascal_case.severity = warning
+dotnet_naming_rule.constants_pascal_case.symbols = constant_fields
+dotnet_naming_rule.constants_pascal_case.style = pascal_case
+dotnet_naming_symbols.constant_fields.applicable_kinds = field
+dotnet_naming_symbols.constant_fields.required_modifiers = const
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_rule.private_fields_underscore.severity = warning
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel_case
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+
+# --- Analyzer severities -------------------------------------------------
+# Public API of an extensibility library must be documented.
+dotnet_diagnostic.CS1591.severity = warning
+# Do not declare visible instance fields.
+dotnet_diagnostic.CA1051.severity = error
+# Specify CultureInfo / IFormatProvider: non-negotiable when parsing invoice amounts and dates.
+dotnet_diagnostic.CA1304.severity = error
+dotnet_diagnostic.CA1305.severity = error
+dotnet_diagnostic.CA1310.severity = error
+# Do not use insecure XML settings (XXE).
+dotnet_diagnostic.CA3075.severity = error
+dotnet_diagnostic.CA5372.severity = error
+dotnet_diagnostic.CA5369.severity = error
+
+[tests/**/*.cs]
+# Tests may skip XML docs.
+dotnet_diagnostic.CS1591.severity = none
+# Method_Scenario_Expectation is the convention for test names; underscores are deliberate.
+dotnet_diagnostic.CA1707.severity = none
+# Test classes are instantiated by the runner, not by us.
+dotnet_diagnostic.CA1515.severity = none

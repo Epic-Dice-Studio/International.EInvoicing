@@ -1,0 +1,33 @@
+name: Bug report
+description: Something behaves differently from the norm or from the documentation
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead.
+    validations: { required: true }
+  - type: textarea
+    id: document
+    attributes:
+      label: Minimal document
+      description: >
+        The smallest XML or PDF that reproduces it. Redact real party names, addresses and amounts —
+        an invoice is commercial data.
+      render: xml
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics and validation report
+      description: Paste the diagnostic codes and validation messages you received.
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+    validations: { required: true }
+  - type: input
+    id: standard
+    attributes:
+      label: Standard and profile
+      placeholder: "Factur-X 1.07.3 EN 16931 / XRechnung 3.0 CII / Peppol BIS 3.0"

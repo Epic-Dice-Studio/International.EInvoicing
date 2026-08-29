@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/International.EInvoicing.Core.Tests/International.EInvoicing.Core.Tests.csproj" />
+  </Folder>
+</Solution>
