@@ -53,8 +53,11 @@ Publishing to NuGet.org needs three things set up once, and no API key. NuGet.or
 days, so the release workflow uses **trusted publishing**: it exchanges the workflow's OIDC token for a key
 that lives about an hour.
 
-1. **Reserve the package ID prefix.** On nuget.org, Account → Reserved package ID prefixes → request
-   `International.EInvoicing.*`. Without it, anyone can publish a package under that name.
+1. **Reserve the package ID prefix** — optional, and not a form on the site. Review the criteria at
+   <https://learn.microsoft.com/nuget/nuget-org/id-prefix-reservation>, then email `account@nuget.org` with
+   the owner display name and the prefix requested. Note that the criteria discourage generic words, so
+   `International.EInvoicing.*` may well be refused where a prefix naming the owner would not be. Publishing
+   works either way; a reservation only stops someone else publishing under the same prefix.
 2. **Create the trusted publishing policy.** On nuget.org, user menu → Trusted Publishing → new policy:
    - package owner: the nuget.org account or organisation that will own the packages
    - repository: `Epic-Dice-Studio/International.EInvoicing`
