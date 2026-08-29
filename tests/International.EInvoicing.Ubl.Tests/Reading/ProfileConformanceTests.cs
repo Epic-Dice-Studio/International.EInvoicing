@@ -57,6 +57,6 @@ public class ProfileConformanceTests
         int exact = GoldenCorpus.UblInvoicePaths.Count(path =>
             Reader().Read(File.ReadAllText(path)).Value!.Profile!.IsExact);
 
-        exact.ShouldBeGreaterThan(GoldenCorpus.UblInvoicePaths.Count() / 2);
+        exact.ShouldBeGreaterThan(GoldenCorpus.UblInvoicePaths.Count / 2);
     }
 }
