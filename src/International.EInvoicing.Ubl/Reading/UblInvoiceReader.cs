@@ -74,6 +74,7 @@ public sealed class UblInvoiceReader
     private EInvoice ReadInvoice(XElement root, DiagnosticCollector diagnostics)
     {
         var mapped = new HashSet<XElement>();
+        var owners = new Dictionary<XElement, InvoiceNode>();
         var values = new UblValueReader(diagnostics, mapped);
         var invoice = new EInvoice();
 
@@ -116,7 +117,9 @@ public sealed class UblInvoiceReader
 
         foreach (XElement document in TakeAll(root, UblNames.Cac + "AdditionalDocumentReference", mapped))
         {
-            invoice.AdditionalDocuments.Add(ReadAdditionalDocument(document, values));
+            AdditionalDocument mappedDocument = ReadAdditionalDocument(document, values);
+            owners[document] = mappedDocument;
+            invoice.AdditionalDocuments.Add(mappedDocument);
         }
 
         invoice.Seller = ReadParty(
@@ -142,10 +145,12 @@ public sealed class UblInvoiceReader
 
         foreach (XElement line in TakeAll(root, UblNames.Cac + "InvoiceLine", mapped))
         {
-            invoice.Lines.Add(ReadLine(line, values));
+            InvoiceLine mappedLine = ReadLine(line, values, owners);
+            owners[line] = mappedLine;
+            invoice.Lines.Add(mappedLine);
         }
 
-        KeepEverythingElse(root, invoice, mapped, diagnostics);
+        KeepEverythingElse(root, invoice, mapped, owners, diagnostics);
 
         ProfileResolution resolution = _profiles.Resolve(invoice.SpecificationIdentifier, DocumentSyntax.Ubl);
         foreach (Diagnostic diagnostic in resolution.Diagnostics)
@@ -408,7 +413,10 @@ public sealed class UblInvoiceReader
         totals.DuePayableAmount = values.ReadAmount(element.Element(UblNames.Cbc + "PayableAmount"), "BT-115");
     }
 
-    private static InvoiceLine ReadLine(XElement element, UblValueReader values)
+    private static InvoiceLine ReadLine(
+        XElement element,
+        UblValueReader values,
+        Dictionary<XElement, InvoiceNode> owners)
     {
         var line = new InvoiceLine
         {
@@ -450,6 +458,7 @@ public sealed class UblInvoiceReader
         if (item is not null)
         {
             line.Item = ReadItem(item, values);
+            owners[item] = line.Item;
 
             XElement? category = Descend(values, item, UblNames.Cac + "ClassifiedTaxCategory");
             values.Consume(Descend(values, category, UblNames.Cac + "TaxScheme"));
@@ -545,13 +554,21 @@ public sealed class UblInvoiceReader
         XElement source,
         InvoiceNode node,
         HashSet<XElement> mapped,
+        IReadOnlyDictionary<XElement, InvoiceNode> owners,
         DiagnosticCollector diagnostics)
     {
         foreach (XElement element in source.Elements())
         {
             if (mapped.Contains(element))
             {
-                KeepEverythingElse(element, node, mapped, diagnostics);
+                // Descend with the node that owns this element, when one exists, so what it contains is kept
+                // where it belongs and can be written back inside it.
+                KeepEverythingElse(
+                    element,
+                    owners.TryGetValue(element, out InvoiceNode? owner) ? owner : node,
+                    mapped,
+                    owners,
+                    diagnostics);
                 continue;
             }
 

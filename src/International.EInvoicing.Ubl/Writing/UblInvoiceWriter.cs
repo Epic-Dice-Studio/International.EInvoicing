@@ -183,6 +183,7 @@ public sealed class UblInvoiceWriter
             writer.WriteEndElement();
         }
 
+        WriteExtensions(document.Extensions, writer);
         writer.WriteEndElement();
     }
 
@@ -545,6 +546,7 @@ public sealed class UblInvoiceWriter
             writer.WriteEndElement();
         }
 
+        WriteExtensions(item.Extensions, writer);
         writer.WriteEndElement();
     }
 
