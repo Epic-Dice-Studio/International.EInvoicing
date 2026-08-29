@@ -13,14 +13,14 @@ UBL is the syntax in practice; a CII rule set also exists.
 | Source | Use it for |
 |---|---|
 | <https://docs.peppol.eu/poacc/billing/3.0/> | The specification, with readable rule explanations and examples. |
-| <https://github.com/OpenPEPPOL/peppol-bis-invoice-3> | Schematron rules and example documents. Apache-2.0. |
+| <https://github.com/OpenPEPPOL/peppol-bis-invoice-3> | Schematron rules and example documents. **No licence declared**, so this repository does not redistribute them — see [ADR 0009](../adr/0009-artefact-licensing.md). |
 | Peppol release notes | Which EN 16931 artefact version a given release adopts. Record it — mismatches cause false failures. |
 | Peppol code lists (EAS, ICD, participant identifiers) | Electronic address and organisation identifier schemes. |
 
 ## Artefacts
 
-`specs/peppol/` — `PEPPOL-EN16931-UBL.sch`, `PEPPOL-EN16931-CII.sch` and examples. Fetched by
-`build/fetch-specs.sh`.
+`specs/peppol/` — fetched by `build/fetch-specs.sh peppol` into a git-ignored folder. Nothing from Peppol is
+committed to this repository: the upstream project declares no licence, so redistribution is not established.
 
 ## Model mapping
 

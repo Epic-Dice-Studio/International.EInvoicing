@@ -37,13 +37,25 @@ sync_into() {
     cp -r "$source" "$destination/"
 }
 
+# Apache-2.0 requires the licence to travel with the artefacts it covers.
+copy_licence() {
+    local source="$1" destination="$2" name
+    for name in LICENSE LICENSE.txt LICENSE.md COPYING; do
+        if [[ -f "$source/$name" ]]; then
+            cp "$source/$name" "$destination/LICENSE.upstream.txt"
+            return 0
+        fi
+    done
+    warn "no licence file found in $source"
+}
+
 fetch_en16931() {
     local src="$WORK_DIR/en16931"
     clone_at https://github.com/ConnectingEurope/eInvoicing-EN16931.git "$EN16931_REF" "$src"
     rm -rf "$SPECS_DIR/en16931/ubl" "$SPECS_DIR/en16931/cii"
     sync_into "$src/ubl/schematron" "$SPECS_DIR/en16931/ubl"
     sync_into "$src/cii/schematron" "$SPECS_DIR/en16931/cii"
-    sync_into "$src/LICENSE" "$SPECS_DIR/en16931"
+    copy_licence "$src" "$SPECS_DIR/en16931"
 }
 
 fetch_peppol() {
@@ -51,7 +63,7 @@ fetch_peppol() {
     clone_at https://github.com/OpenPEPPOL/peppol-bis-invoice-3.git "$PEPPOL_REF" "$src"
     rm -rf "$SPECS_DIR/peppol/rules"
     sync_into "$src/rules/sch" "$SPECS_DIR/peppol/rules"
-    sync_into "$src/LICENSE" "$SPECS_DIR/peppol"
+    copy_licence "$src" "$SPECS_DIR/peppol"
 }
 
 fetch_xrechnung() {
@@ -61,6 +73,7 @@ fetch_xrechnung() {
     clone_at https://github.com/itplr-kosit/xrechnung-testsuite.git "$XRECHNUNG_TESTSUITE_REF" "$testsuite"
     rm -rf "$SPECS_DIR/xrechnung/schematron" "$SPECS_DIR/xrechnung/testsuite"
     sync_into "$schematron/src" "$SPECS_DIR/xrechnung/schematron"
+    copy_licence "$schematron" "$SPECS_DIR/xrechnung"
     sync_into "$testsuite/src" "$SPECS_DIR/xrechnung/testsuite"
 }
 

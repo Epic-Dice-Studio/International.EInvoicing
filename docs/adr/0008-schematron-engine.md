@@ -22,6 +22,13 @@ work in a browser.
    the goal of very clear validation output. Still requires evaluating the XPath subset, at build time rather
    than at runtime.
 
+## A licensing constraint found after this ADR was written
+
+The EN 16931 artefacts are EUPL-1.2, not Apache-2.0 (see [0009](0009-artefact-licensing.md)). Option 3
+translates those rules into source code, which plausibly produces a derivative work under a reciprocal
+licence. Option 3 is therefore **blocked pending legal review**, not merely pending a technical spike.
+Options 1 and 2 execute the artefacts as data and do not raise the same question.
+
 ## Recommendation pending the spike
 
 Option 3, with option 2's evaluator reused at build time. Run a spike over the real EN 16931 artefacts before

@@ -16,8 +16,8 @@ committed — their `PROVENANCE.md` explains where to obtain them and where to p
 | `ubl-2.1/` | OASIS UBL 2.1 schemas | yes |
 | `cii-d22b/` | UN/CEFACT Cross Industry Invoice D22B | yes |
 | `cdar/` | UN/CEFACT Cross Domain Acknowledgement and Response | yes |
-| `en16931/` | EN 16931 validation artefacts and code lists | yes (Apache-2.0) |
-| `peppol/` | Peppol BIS Billing 3.0 artefacts | yes (Apache-2.0) |
+| `en16931/` | EN 16931 validation artefacts | yes, verbatim (EUPL-1.2) |
+| `peppol/` | Peppol BIS Billing 3.0 artefacts | **no** — no licence declared upstream; fetched locally, git-ignored |
 | `xrechnung/` | XRechnung Schematron and test suite | yes (Apache-2.0) |
 | `facturx/` | Factur-X / ZUGFeRD schemas and samples | partly — specification text is not |
 | `fr-dse/` | French DGFiP external specifications | no — download required |

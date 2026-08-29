@@ -62,3 +62,6 @@ nunit-*.xml
 # DocFX output
 docs/_site/
 docs/api/
+
+# Artefacts fetched locally but not redistributable (see specs/peppol/PROVENANCE.md)
+specs/peppol/rules/

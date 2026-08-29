@@ -5,8 +5,12 @@
 | **Source** | <https://github.com/OpenPEPPOL/peppol-bis-invoice-3> |
 | **Version** | 3.0, current quarterly release |
 | **Retrieved** | *(not yet fetched)* |
-| **Licence** | Apache License 2.0 |
-| **Redistributable** | yes |
+| **Licence** | **none declared upstream** |
+| **Redistributable** | **no** — nothing from this folder is committed |
+
+`build/fetch-specs.sh peppol` downloads these into `specs/peppol/rules/`, which is git-ignored. The
+repository at <https://github.com/OpenPEPPOL/peppol-bis-invoice-3> declares no licence, so redistribution is
+not established; the artefacts are governed by OpenPEPPOL's own terms. Fetch them yourself.
 
 Expected content: `rules/sch/PEPPOL-EN16931-UBL.sch`, `rules/sch/PEPPOL-EN16931-CII.sch`, and the
 example documents.

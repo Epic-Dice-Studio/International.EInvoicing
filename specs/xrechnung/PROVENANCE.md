@@ -3,8 +3,8 @@
 | | |
 |---|---|
 | **Source** | <https://github.com/itplr-kosit/xrechnung-schematron>, <https://github.com/itplr-kosit/xrechnung-testsuite> |
-| **Version** | 3.x (track the KoSIT releases) |
-| **Retrieved** | *(not yet fetched)* |
+| **Version** | `master` at the retrieval date — pin a release tag before 1.0 |
+| **Retrieved** | 2026-08-29 |
 | **Licence** | Apache License 2.0 |
 | **Redistributable** | yes |
 

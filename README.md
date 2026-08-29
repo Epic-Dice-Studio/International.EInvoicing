@@ -66,6 +66,8 @@ validation is never presented as a success.
 | Peppol BIS Billing <sub>3.0</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Germany` |
 
+> **Peppol BIS Billing** — Validation artefacts are not redistributable (no licence declared upstream): run build/fetch-specs.sh peppol to obtain them locally. See ADR 0009.
+
 ### Countries
 
 | | Read | Write | Validate | Package |

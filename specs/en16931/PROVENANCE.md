@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | **Source** | <https://github.com/ConnectingEurope/eInvoicing-EN16931> |
-| **Version** | 1.3.x (track upstream releases) |
-| **Retrieved** | *(not yet fetched)* |
-| **Licence** | Apache License 2.0 |
-| **Redistributable** | yes — keep the licence header and the NOTICE entry |
+| **Version** | `validation-1.3.13` |
+| **Retrieved** | 2026-08-29 |
+| **Licence** | European Union Public Licence v1.2 — see `LICENSE.upstream.txt` |
+| **Redistributable** | verbatim, yes. Derived works are another matter — see `docs/adr/0009-artefact-licensing.md` |
 
 Expected content: `ubl/schematron/EN16931-UBL-model.sch`, `cii/schematron/EN16931-CII-model.sch`, the
 code lists, and the official test files.

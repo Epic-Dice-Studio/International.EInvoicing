@@ -1,5 +1,9 @@
 * text=auto eol=lf
 
+# Normative artefacts are stored exactly as published: no line-ending normalisation,
+# so their bytes still match upstream and their hashes stay verifiable.
+specs/** -text
+
 *.png binary
 *.jpg binary
 *.pdf binary

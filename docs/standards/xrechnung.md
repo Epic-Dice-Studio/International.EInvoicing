@@ -12,7 +12,7 @@ We target the **3.x** line.
 | Source | Use it for |
 |---|---|
 | <https://xeinkauf.de/xrechnung/> | The specification, CIUS and Extension. |
-| <https://github.com/itplr-kosit/xrechnung-schematron> | Schematron rules. Apache-2.0. |
+| <https://github.com/itplr-kosit/xrechnung-schematron> | Schematron rules. Apache-2.0, redistributed under `specs/xrechnung/`. |
 | <https://github.com/itplr-kosit/xrechnung-testsuite> | Official test documents — our golden corpus for Germany. |
 | <https://github.com/itplr-kosit/validator> and its [configuration](https://github.com/itplr-kosit/validator-configuration-xrechnung) | The reference validator our CI cross-checks against. |
 
