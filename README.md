@@ -83,14 +83,14 @@ validation is never presented as a success.
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
 | France — invoicing (CIUS FR, Factur-X) <sub>DSE 3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.France` |
-| France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | 🚧 | 🚧 | 📋 | `International.EInvoicing.Countries.France` |
+| France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.France` |
 | France — legal identifiers (SIREN, SIRET, VAT) | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.France` |
 | France — e-reporting <sub>DSE 3.x</sub> | 🔬 | 🔬 | 🔬 | — |
 | Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Germany` |
 | Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Belgium` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
-> **France — lifecycle statuses (CDAR)** — The French profile is registered, so a CDV message resolves exactly. Giving meaning to the status codes and enforcing their sequence needs the DGFiP specification, which is not redistributable - see specs/fr-dse.
+> **France — lifecycle statuses (CDAR)** — Both profiles - to a partner and to the public portal - with a builder where naming a status fills in the codes it implies. Seven statuses carry codes read from the DGFiP sample messages; the other four follow the pattern those establish and say so.
 
 > **France — e-reporting** — Deferred past 1.0; specification still moving.
 

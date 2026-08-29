@@ -111,10 +111,10 @@
           "name": "France — lifecycle statuses (CDAR)",
           "version": "DSE 3.x",
           "package": "International.EInvoicing.Countries.France",
-          "read": "in-progress",
-          "write": "in-progress",
+          "read": "done",
+          "write": "done",
           "validate": "planned",
-          "notes": "The French profile is registered, so a CDV message resolves exactly. Giving meaning to the status codes and enforcing their sequence needs the DGFiP specification, which is not redistributable - see specs/fr-dse."
+          "notes": "Both profiles - to a partner and to the public portal - with a builder where naming a status fills in the codes it implies. Seven statuses carry codes read from the DGFiP sample messages; the other four follow the pattern those establish and say so."
         },
         {
           "name": "France — legal identifiers (SIREN, SIRET, VAT)",
