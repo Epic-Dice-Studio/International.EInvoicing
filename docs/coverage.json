@@ -62,17 +62,19 @@
           "name": "Factur-X / ZUGFeRD — MINIMUM → EXTENDED",
           "version": "1.07.3 / 2.3.3",
           "package": "International.EInvoicing.FacturX",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "done",
+          "validate": "planned",
+          "notes": "All five profiles registered. MINIMUM and BASIC WL are read and reported as not being EN 16931 invoices (EIV4010) rather than silently accepted."
         },
         {
           "name": "Factur-X hybrid PDF/A-3",
           "version": "ISO 19005-3",
           "package": "International.EInvoicing.FacturX.PdfSharp",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "in-progress",
+          "validate": "planned",
+          "notes": "Embedding and extracting the payload works, with the Factur-X XMP metadata. The writer does not turn a plain PDF into a PDF/A-3 one: start from a PDF/A-conforming document when the receiver requires conformance. veraPDF verification in CI is still to come."
         },
         {
           "name": "Peppol BIS Billing",

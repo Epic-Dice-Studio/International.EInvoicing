@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Runtime dependencies">
+    <PackageVersion Include="PDFsharp" Version="6.2.4" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
   </ItemGroup>
 

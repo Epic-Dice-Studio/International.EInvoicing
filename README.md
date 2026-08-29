@@ -65,10 +65,14 @@ validation is never presented as a success.
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
 | EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Validation.En16931` |
-| Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.FacturX` |
-| Factur-X hybrid PDF/A-3 <sub>ISO 19005-3</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.FacturX.PdfSharp` |
+| Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX` |
+| Factur-X hybrid PDF/A-3 <sub>ISO 19005-3</sub> | ✅ | 🚧 | 📋 | `International.EInvoicing.FacturX.PdfSharp` |
 | Peppol BIS Billing <sub>3.0</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Germany` |
+
+> **Factur-X / ZUGFeRD — MINIMUM → EXTENDED** — All five profiles registered. MINIMUM and BASIC WL are read and reported as not being EN 16931 invoices (EIV4010) rather than silently accepted.
+
+> **Factur-X hybrid PDF/A-3** — Embedding and extracting the payload works, with the Factur-X XMP metadata. The writer does not turn a plain PDF into a PDF/A-3 one: start from a PDF/A-conforming document when the receiver requires conformance. veraPDF verification in CI is still to come.
 
 > **Peppol BIS Billing** — Validation artefacts are not redistributable (no licence declared upstream): run build/fetch-specs.sh peppol to obtain them locally. See ADR 0009.
 
