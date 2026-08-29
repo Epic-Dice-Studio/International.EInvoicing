@@ -32,9 +32,10 @@
           "name": "UN/CEFACT CII",
           "version": "D22B",
           "package": "International.EInvoicing.Cii",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "done",
+          "validate": "planned",
+          "notes": "Reading and writing the EN 16931 core, with everything else kept verbatim as extension data on the node that contained it. Round-tripped against the 41 CII invoices of the official XRechnung test suite without losing an element."
         },
         {
           "name": "UN/CEFACT CDAR",

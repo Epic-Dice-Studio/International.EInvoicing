@@ -53,10 +53,12 @@ validation is never presented as a success.
 |---|---|---|---|---|
 | UBL 2.1 — Invoice <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Credit Note <sub>OASIS UBL 2.1</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Ubl` |
-| UN/CEFACT CII <sub>D22B</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Cii` |
+| UN/CEFACT CII <sub>D22B</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Cii` |
 | UN/CEFACT CDAR <sub>generic</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Cdar` |
 
 > **UBL 2.1 — Invoice** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine.
+
+> **UN/CEFACT CII** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data on the node that contained it. Round-tripped against the 41 CII invoices of the official XRechnung test suite without losing an element.
 
 ### Profiles
 
