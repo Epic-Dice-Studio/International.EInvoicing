@@ -22,17 +22,29 @@ work in a browser.
    the goal of very clear validation output. Still requires evaluating the XPath subset, at build time rather
    than at runtime.
 
-## A licensing constraint found after this ADR was written
+## A licensing constraint, and what it settles
 
-The EN 16931 artefacts are EUPL-1.2, not Apache-2.0 (see [0009](0009-artefact-licensing.md)). Option 3
-translates those rules into source code, which plausibly produces a derivative work under a reciprocal
-licence. Option 3 is therefore **blocked pending legal review**, not merely pending a technical spike.
-Options 1 and 2 execute the artefacts as data and do not raise the same question.
+The EN 16931 artefacts are EUPL-1.2, not Apache-2.0 (see [0009](0009-artefact-licensing.md)). That licence is
+reciprocal, and it separates the options cleanly:
 
-## Recommendation pending the spike
+- Options 1 and 2 **execute the artefacts as data**. Using a file is not deriving from it, so nothing about
+  the library's own licensing changes.
+- Option 3 **translates the rules into source code**, which plausibly produces a derivative work. The
+  generated rules would then be EUPL inside an MIT package — workable, but it turns every consumer's licence
+  review into a conversation.
 
-Option 3, with option 2's evaluator reused at build time. Run a spike over the real EN 16931 artefacts before
-committing: measure how large the XPath subset actually is, and confirm behaviour in WebAssembly.
+## Recommendation
+
+**Option 2**: a minimal XPath 2.0 evaluator covering the subset the published artefacts actually use, running
+the `.sch` files as data.
+
+It avoids the derivation question entirely, and the reason that matters most is not legal: an engine that
+executes the official artefacts stays correct when they are revised, whereas generated or hand-written rules
+drift from the norm at every upstream release. Option 1 (Saxon-HE) remains the fallback if the XPath subset
+turns out to be larger than expected.
+
+The spike still has to happen, and its questions are unchanged: how large is that subset over the real
+artefacts, and does the engine run under WebAssembly for the demo site.
 
 Whatever is chosen, the rule identifiers, severities and messages of the official artefacts are reproduced
 faithfully, and the artefact version appears in every validation report.

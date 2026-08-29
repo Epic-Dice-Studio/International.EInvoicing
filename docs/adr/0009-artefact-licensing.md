@@ -1,6 +1,6 @@
 # 0009 — Licensing of the normative artefacts we redistribute
 
-**Status:** Accepted, with one open question · 2026-08-29
+**Status:** Accepted · 2026-08-29
 
 ## Context
 
@@ -28,28 +28,28 @@ and an entry in `NOTICE`. They are not relicensed: MIT covers this repository's 
 **Apache-2.0 artefacts (XRechnung) are redistributed** with their licence and a `NOTICE` entry, as that
 licence requires.
 
-## The open question
+## Resolved by the project owner, 2026-08-29
 
-The EUPL is a **reciprocal** licence. Redistributing the Schematron files unchanged is clearly permitted.
-Two things are not clearly permitted, and both are on the roadmap:
+Verbatim redistribution of the EUPL artefacts alongside MIT code is **accepted**: the files keep their own
+licence, the repository keeps MIT, and mere aggregation creates no derivative work. The project stays MIT.
 
-1. **Compiling the rules into C#** — ADR 0008's preferred route. A generated rule class is plausibly a
-   derivative work of the Schematron, which would put it under EUPL rather than MIT.
-2. **Embedding the artefacts in a NuGet package** — distribution of the Work, which the EUPL allows, but
-   which requires the licence and notices to travel with it and constrains how the whole is offered.
+Peppol artefacts stay **out of the repository**, fetched locally by anyone who needs them. OpenPEPPOL's
+published terms are explicit — Peppol BIS documents may not be redistributed or repackaged without their
+prior consent — so this is not a gap to be closed later but the intended arrangement. Asking OpenPEPPOL for
+consent remains possible if the local fetch ever becomes a burden.
 
-Until this is resolved, the safe positions are: keep the artefacts as separate files carrying their own
-licence rather than fusing them into compiled output, and treat ADR 0008's option 3 as **blocked pending
-legal review**, not merely as a technical spike.
+## What remains open
 
-The EUPL's Article 5 compatibility clause and the fact that CEN publishes these artefacts precisely so that
-implementations can use them both suggest a permissive answer. Neither is a substitute for checking. This is
-flagged for the project owner rather than decided here.
+The EUPL is reciprocal, so **compiling the rules into C#** — deriving from them rather than running them —
+would put the generated code under EUPL inside an MIT package. That is now an argument rather than a
+blocker: [ADR 0008](0008-schematron-engine.md) prefers executing the artefacts as data precisely because
+doing so raises no derivation question at all. Should that route prove impossible and code generation become
+necessary, the question returns and deserves an answer before shipping.
 
 ## Consequences
 
-- The support matrix cannot claim Peppol validation until either the artefacts gain a licence, or the rules
-  are obtained another way, or the user fetches them.
+- Peppol validation works from a local fetch rather than from anything shipped, and the support matrix says
+  so.
 - Every folder under `specs/` carries a `PROVENANCE.md` naming the actual licence, verified at fetch time
   rather than assumed. The three assumptions this ADR corrects were all wrong.
 - `build/fetch-specs.sh` copies the upstream licence next to the artefacts it covers.
