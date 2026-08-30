@@ -28,6 +28,9 @@ public class FrCdarTests
             .From(from => from.Platform("0003", "PA-E Vendeur"))
             .About("F202500003", new DateOnly(2025, 7, 1));
 
+    /// <summary>A business status is reported by a trading party, so these tests name one.</summary>
+    private static FrCdar ToPartnerFromBuyer() => ToPartner().IssuedByBuyer("200000008", "ACHETEUR");
+
     private static string Write(LifecycleStatusMessage message) => new CdarWriter().WriteToString(message);
 
     [Fact]
@@ -48,6 +51,7 @@ public class FrCdarTests
     [InlineData("MadeAvailable", "203", "305", "48")]
     [InlineData("TakenInCharge", "204", "23", "45")]
     [InlineData("Approved", "205", "23", "1")]
+    [InlineData("Disputed", "207", "23", "46")]
     [InlineData("PaymentSent", "211", "23", "47")]
     [InlineData("Collected", "212", "23", "47")]
     public void TheVerifiedStatusesCarryTheCodesTheDgfipSamplesUse(
@@ -76,13 +80,15 @@ public class FrCdarTests
     [Fact]
     public void RefusingCarriesTheReasonWhereTheDgfipPutsIt()
     {
-        LifecycleStatusMessage message = ToPartner().Refused("TX_TVA_ERR", "Taux de TVA erroné", Moment);
+        LifecycleStatusMessage message = ToPartnerFromBuyer()
+            .Refused("TX_TVA_ERR", "Taux de TVA erroné", Moment);
 
         XElement written = XElement.Parse(Write(message));
         XElement status = written.Descendants(CdarNames.Ram + "SpecifiedDocumentStatus").ShouldHaveSingleItem();
 
         status.Element(CdarNames.Ram + "ReasonCode")!.Value.ShouldBe("TX_TVA_ERR");
         status.Element(CdarNames.Ram + "Reason")!.Value.ShouldBe("Taux de TVA erroné");
+        status.Element(CdarNames.Ram + "SequenceNumeric")!.Value.ShouldBe("1");
         status.Parent!.Name.LocalName.ShouldBe("ReferenceReferencedDocument");
     }
 
@@ -128,7 +134,7 @@ public class FrCdarTests
     [Fact]
     public void AMessageBuiltHereIsReadBackByTheGenericReader()
     {
-        LifecycleStatusMessage built = ToPartner().Approved(Moment);
+        LifecycleStatusMessage built = ToPartnerFromBuyer().Approved(Moment);
 
         var reader = new CdarReader(
             new EInvoicingOptions(),

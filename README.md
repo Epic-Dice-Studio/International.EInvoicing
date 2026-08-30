@@ -67,13 +67,13 @@ validation is never presented as a success.
 | UBL 2.1 — Invoice <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Credit Note <sub>OASIS UBL 2.1</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Ubl` |
 | UN/CEFACT CII <sub>D22B</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Cii` |
-| UN/CEFACT CDAR <sub>generic</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Cdar` |
+| UN/CEFACT CDAR <sub>generic</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Cdar` |
 
 > **UBL 2.1 — Invoice** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine.
 
 > **UN/CEFACT CII** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data on the node that contained it. Round-tripped against the 41 CII invoices of the official XRechnung test suite without losing an element.
 
-> **UN/CEFACT CDAR** — The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported.
+> **UN/CEFACT CDAR** — The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported. Validation runs any Schematron rule set published for it, the French BR-FR-CDV included.
 
 ### Profiles
 
@@ -99,15 +99,17 @@ validation is never presented as a success.
 
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
-| France — invoicing (CIUS FR, Factur-X) <sub>DSE 3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.France` |
-| France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.France` |
+| France — invoicing (CIUS FR, Factur-X) <sub>DSE 3.x</sub> | 🚧 | 🚧 | 🚧 | `International.EInvoicing.Countries.France` |
+| France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — legal identifiers (SIREN, SIRET, VAT) | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — e-reporting <sub>DSE 3.x</sub> | 🔬 | 🔬 | 🔬 | — |
 | Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
 | Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.Belgium` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
-> **France — lifecycle statuses (CDAR)** — Both profiles - to a partner and to the public portal - with a builder where naming a status fills in the codes it implies. Seven statuses carry codes read from the DGFiP sample messages; the other four follow the pattern those establish and say so.
+> **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr is registered and resolves for both syntaxes, and its rule sets load and run from the fetched artefacts. The French mandatory mentions are not yet modelled.
+
+> **France — lifecycle statuses (CDAR)** — Every status, to a trading partner and to the public portal, measured on each build against the DGFiP's own BR-FR-CDV rules and their eleven sample messages. The artefacts are fetched, not shipped: run build/fetch-specs.sh france.
 
 > **France — legal identifiers (SIREN, SIRET, VAT)** — SIREN, SIRET and VAT numbers with their check digits, including the La Poste establishments that satisfy a different rule from Luhn.
 

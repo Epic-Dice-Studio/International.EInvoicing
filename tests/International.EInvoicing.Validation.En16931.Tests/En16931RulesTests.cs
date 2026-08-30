@@ -68,6 +68,13 @@ public class En16931RulesTests
     /// The corpus, split on what each document claims: a CIUS restricts EN 16931, an extension may go beyond
     /// it. Reading the claim from the document is more honest than sorting by folder name.
     /// </summary>
+    /// <summary>
+    /// The medical-device profiling. It calls itself a CIUS, and a CIUS may only restrict EN 16931 — but it
+    /// classifies items with <c>listID="CVD"</c>, which is not in UNTDID 7143, so EN 16931 rejects it and is
+    /// right to. It is measured against the German rules, which define it, rather than against the base ones.
+    /// </summary>
+    private const string CvdProfiling = "urn:xeinkauf.de:kosit:xrechnung:cvd";
+
     private static TheoryData<string> Corpus(string pattern, bool conformantExtensions)
     {
         var data = new TheoryData<string>();
@@ -77,7 +84,10 @@ public class En16931RulesTests
             .EnumerateFiles(directory, pattern, SearchOption.AllDirectories)
             .OrderBy(p => p, StringComparer.Ordinal))
         {
-            bool isExtension = File.ReadAllText(path).Contains("#conformant#", StringComparison.Ordinal);
+            string document = File.ReadAllText(path);
+            bool isExtension = document.Contains("#conformant#", StringComparison.Ordinal)
+                || document.Contains(CvdProfiling, StringComparison.Ordinal);
+
             if (isExtension == conformantExtensions)
             {
                 data.Add(path);

@@ -43,8 +43,8 @@
           "package": "International.EInvoicing.Cdar",
           "read": "done",
           "write": "done",
-          "validate": "planned",
-          "notes": "The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported."
+          "validate": "done",
+          "notes": "The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported. Validation runs any Schematron rule set published for it, the French BR-FR-CDV included."
         }
       ]
     },
@@ -105,9 +105,10 @@
           "name": "France — invoicing (CIUS FR, Factur-X)",
           "version": "DSE 3.x",
           "package": "International.EInvoicing.Countries.France",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "in-progress",
+          "write": "in-progress",
+          "validate": "in-progress",
+          "notes": "The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr is registered and resolves for both syntaxes, and its rule sets load and run from the fetched artefacts. The French mandatory mentions are not yet modelled."
         },
         {
           "name": "France — lifecycle statuses (CDAR)",
@@ -115,8 +116,8 @@
           "package": "International.EInvoicing.Countries.France",
           "read": "done",
           "write": "done",
-          "validate": "planned",
-          "notes": "Both profiles - to a partner and to the public portal - with a builder where naming a status fills in the codes it implies. Seven statuses carry codes read from the DGFiP sample messages; the other four follow the pattern those establish and say so."
+          "validate": "done",
+          "notes": "Every status, to a trading partner and to the public portal, measured on each build against the DGFiP's own BR-FR-CDV rules and their eleven sample messages. The artefacts are fetched, not shipped: run build/fetch-specs.sh france."
         },
         {
           "name": "France — legal identifiers (SIREN, SIRET, VAT)",

@@ -200,6 +200,12 @@ internal sealed class XPathParser
             return ParseQuantified();
         }
 
+        if (Current.IsName("for") && _position + 1 < _tokens.Count
+            && _tokens[_position + 1].Kind == XPathTokenKind.Variable)
+        {
+            return ParseFor();
+        }
+
         if (Current.Is("/") || Current.Is("//"))
         {
             bool descendant = Current.Is("//");
@@ -237,7 +243,7 @@ internal sealed class XPathParser
     {
         if (Current.Kind is XPathTokenKind.Number or XPathTokenKind.String or XPathTokenKind.Variable)
         {
-            return ParsePrimary();
+            return Filtered(ParsePrimary());
         }
 
         if (Current.Is("("))
@@ -313,7 +319,10 @@ internal sealed class XPathParser
         }
 
         Expect(")");
-        return "*";
+
+        // node() matches anything, which is what the wildcard means to the evaluator; text() is the one node
+        // test that selects something other than an element, so it keeps its name.
+        return name == "text" ? "text()" : "*";
     }
 
     /// <summary>Names that look like function calls but are node tests, so a step must claim them.</summary>
@@ -332,6 +341,54 @@ internal sealed class XPathParser
         }
 
         return steps;
+    }
+
+    /// <summary>
+    /// Reads <c>for $a in e1, $b in e2 return body</c>. Several bindings are the same as nested loops, which
+    /// is how they are stored: the French totals rules bind three at once.
+    /// </summary>
+    private ForNode ParseFor()
+    {
+        _position++;
+
+        List<(string Variable, XPathNode Sequence)> bindings = [];
+
+        do
+        {
+            string variable = Current.Text;
+            _position++;
+
+            if (!Current.IsName("in"))
+            {
+                throw new XPathException($"Expected 'in' after ${variable}, found {Current}.");
+            }
+
+            _position++;
+            bindings.Add((variable, ParseExpression()));
+
+            if (!Current.Is(","))
+            {
+                break;
+            }
+
+            _position++;
+        }
+        while (Current.Kind == XPathTokenKind.Variable);
+
+        if (!Current.IsName("return"))
+        {
+            throw new XPathException($"Expected 'return', found {Current}.");
+        }
+
+        _position++;
+        XPathNode body = ParseExpression();
+
+        for (int index = bindings.Count - 1; index > 0; index--)
+        {
+            body = new ForNode(bindings[index].Variable, bindings[index].Sequence, body);
+        }
+
+        return new ForNode(bindings[0].Variable, bindings[0].Sequence, body);
     }
 
     private QuantifiedNode ParseQuantified()

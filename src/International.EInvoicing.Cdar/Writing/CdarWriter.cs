@@ -139,10 +139,63 @@ public sealed class CdarWriter
             WriteText(writer, "ProcessCondition", status.ProcessCondition);
             WriteText(writer, "Reason", status.Reason);
             WriteParty(writer, "IssuerTradeParty", status.Issuer);
+
+            foreach (DocumentStatusDetail detail in status.StatusDetails)
+            {
+                WriteStatusDetail(writer, detail);
+            }
+
             WriteExtensions(status.Extensions, writer);
             writer.WriteEndElement();
         }
 
+        writer.WriteEndElement();
+    }
+
+    private static void WriteStatusDetail(XmlWriter writer, DocumentStatusDetail detail)
+    {
+        StartRam(writer, "SpecifiedDocumentStatus");
+        WriteCode(writer, "ProcessConditionCode", detail.ProcessConditionCode);
+        WriteCode(writer, "ReasonCode", detail.ReasonCode);
+        WriteText(writer, "Reason", detail.Reason);
+        WriteCode(writer, "RequestedActionCode", detail.RequestedActionCode);
+        WriteText(writer, "RequestedAction", detail.RequestedAction);
+        WriteNumber(writer, "SequenceNumeric", detail.SequenceNumber);
+
+        foreach (DocumentStatusCharacteristic characteristic in detail.Characteristics)
+        {
+            WriteCharacteristic(writer, characteristic);
+        }
+
+        WriteExtensions(detail.Extensions, writer);
+        writer.WriteEndElement();
+    }
+
+    private static void WriteCharacteristic(XmlWriter writer, DocumentStatusCharacteristic characteristic)
+    {
+        StartRam(writer, "SpecifiedDocumentCharacteristic");
+        WriteIdentifier(writer, "ID", characteristic.Identifier);
+        WriteCode(writer, "TypeCode", characteristic.TypeCode);
+
+        // The changed flag is an IndicatorString here, not the Indicator the rest of the message uses.
+        if (characteristic.ValueChanged.IsSet)
+        {
+            StartRam(writer, "ValueChangedIndicator");
+            writer.WriteElementString(
+                CdarNames.UdtPrefix,
+                "IndicatorString",
+                CdarNames.Udt.NamespaceName,
+                characteristic.ValueChanged.Raw
+                    ?? (characteristic.ValueChanged.Value == true ? "true" : "false"));
+            writer.WriteEndElement();
+        }
+
+        WriteText(writer, "Name", characteristic.Name);
+        WriteText(writer, "Location", characteristic.Location);
+        WriteAmount(writer, "ValueAmount", characteristic.ValueAmount);
+        WriteDecimal(writer, "ValuePercent", characteristic.ValuePercent);
+        WriteText(writer, "ValueText", characteristic.ValueText);
+        WriteExtensions(characteristic.Extensions, writer);
         writer.WriteEndElement();
     }
 
@@ -226,6 +279,39 @@ public sealed class CdarWriter
 
         writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
         writer.WriteEndElement();
+    }
+
+    private static void WriteAmount(XmlWriter writer, string localName, AmountField field)
+    {
+        if (!field.IsSet)
+        {
+            return;
+        }
+
+        writer.WriteStartElement(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName);
+        if (!string.IsNullOrEmpty(field.CurrencyCode))
+        {
+            writer.WriteAttributeString("currencyID", field.CurrencyCode);
+        }
+
+        writer.WriteString(field.Raw ?? field.Value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty);
+        writer.WriteEndElement();
+    }
+
+    private static void WriteDecimal(XmlWriter writer, string localName, Field<decimal> field)
+    {
+        if (field.IsSet)
+        {
+            Ram(writer, localName, field.Raw ?? field.Value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty);
+        }
+    }
+
+    private static void WriteNumber(XmlWriter writer, string localName, Field<int> field)
+    {
+        if (field.IsSet)
+        {
+            Ram(writer, localName, field.Raw ?? field.Value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty);
+        }
     }
 
     private static void WriteDateTime(XmlWriter writer, string localName, DateTimeField field)

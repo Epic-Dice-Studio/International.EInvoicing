@@ -9,6 +9,7 @@ that fills in what each status implies so you name the status and not the codes 
 LifecycleStatusMessage refused = FrCdar
     .ToPartner(to => to.Company("100000009").Named("VENDEUR").AsSeller().ReachableAt("100000009_STATUTS"))
     .From(from => from.Platform("0003", "PA-E Vendeur"))
+    .IssuedByBuyer("200000008", "ACHETEUR")
     .About("F202500003", new DateOnly(2025, 7, 1))
     .Refused("TX_TVA_ERR", "Taux de TVA erroné");
 ```

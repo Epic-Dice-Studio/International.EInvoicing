@@ -20,6 +20,8 @@ EN16931_REF="validation-1.3.13"
 PEPPOL_REF="master"
 XRECHNUNG_SCHEMATRON_REF="master"
 XRECHNUNG_TESTSUITE_REF="master"
+PHIVE_RULES_REF="master"
+FRENCH_RULES_VERSION="1.4.0.03"
 
 log()  { printf '\033[1m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[33m!!\033[0m %s\n' "$*" >&2; }
@@ -80,6 +82,19 @@ fetch_xrechnung() {
     sync_into "$testsuite/src" "$SPECS_DIR/xrechnung/testsuite"
 }
 
+# The French rule sets are published by the DGFiP and carried by phive-rules, which declares no licence.
+# They are fetched into a git-ignored folder rather than redistributed.
+fetch_france() {
+    local src="$WORK_DIR/france"
+    clone_at https://github.com/phax/phive-rules.git "$PHIVE_RULES_REF" "$src"
+
+    local french="$src/phive-rules-france/src/test/resources/external"
+    rm -rf "$SPECS_DIR/fr-dse/rules" "$SPECS_DIR/fr-dse/samples"
+    sync_into "$french/rule-source/ctc/$FRENCH_RULES_VERSION" "$SPECS_DIR/fr-dse/rules"
+    # The DGFiP lifecycle samples: what the CDAR rules are measured against.
+    sync_into "$french/test-files/ctc/$FRENCH_RULES_VERSION" "$SPECS_DIR/fr-dse/samples"
+}
+
 fetch_manual() {
     cat >&2 <<'MANUAL'
 
@@ -106,8 +121,9 @@ main() {
         en16931)   fetch_en16931 ;;
         peppol)    fetch_peppol ;;
         xrechnung) fetch_xrechnung ;;
-        all)       fetch_en16931; fetch_peppol; fetch_xrechnung; fetch_manual ;;
-        *)         warn "unknown target '$target' (en16931 | peppol | xrechnung | all)"; exit 2 ;;
+        france)    fetch_france ;;
+        all)       fetch_en16931; fetch_peppol; fetch_xrechnung; fetch_france; fetch_manual ;;
+        *)         warn "unknown target '$target' (en16931 | peppol | xrechnung | france | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"
 }

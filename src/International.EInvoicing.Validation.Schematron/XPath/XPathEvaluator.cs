@@ -44,7 +44,9 @@ internal sealed record XPathContext(
 /// of items satisfies it. Getting that wrong makes rules pass that should fail, which is the failure mode a
 /// validator can least afford.
 /// </remarks>
-internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespaces)
+internal sealed class XPathEvaluator(
+    IReadOnlyDictionary<string, string> namespaces,
+    IReadOnlyDictionary<string, SchematronFunction>? functions = null)
 {
     public XPathValue Evaluate(XPathNode node, XPathContext context) => node switch
     {
@@ -56,6 +58,11 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
         NegateNode negate => XPathValue.Number(-(Evaluate(negate.Operand, context).AsNumber() ?? 0)),
         FunctionNode function => Call(function, context),
         QuantifiedNode quantified => Quantify(quantified, context),
+        ForNode loop => XPathValue.Nodes(
+        [
+            .. Evaluate(loop.Sequence, context).Items.SelectMany(item =>
+                Evaluate(loop.Body, context.With(loop.Variable, XPathValue.Nodes([item]))).Items),
+        ]),
         ConditionalNode conditional => Evaluate(
             Evaluate(conditional.Condition, context).AsBoolean() ? conditional.Then : conditional.Else,
             context),
@@ -213,8 +220,35 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
     {
         "=" => string.Equals(a, b, StringComparison.Ordinal),
         "!=" => !string.Equals(a, b, StringComparison.Ordinal),
-        _ => false,
+        _ => CompareMoments(op, a, b),
     };
+
+    /// <summary>
+    /// Ordering two values that are not numbers. The rule sets do this to dates — an invoicing period ends
+    /// after it starts — so two timestamps are compared chronologically and anything else is false, as an
+    /// ordering comparison on plain text is in XPath 1.0.
+    /// </summary>
+    private static bool CompareMoments(string op, string a, string b)
+    {
+        const DateTimeStyles styles = DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal;
+
+        if (!DateTimeOffset.TryParse(a, CultureInfo.InvariantCulture, styles, out DateTimeOffset first)
+            || !DateTimeOffset.TryParse(b, CultureInfo.InvariantCulture, styles, out DateTimeOffset second))
+        {
+            return false;
+        }
+
+        int order = first.CompareTo(second);
+
+        return op switch
+        {
+            "<" => order < 0,
+            "<=" => order <= 0,
+            ">" => order > 0,
+            ">=" => order >= 0,
+            _ => false,
+        };
+    }
 
     private XPathValue EvaluatePath(PathNode node, XPathContext context)
     {
@@ -278,7 +312,17 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
         }
     }
 
-    private IEnumerable<object> Axis(StepNode step, object node) => step.Axis switch
+    private IEnumerable<object> Axis(StepNode step, object node) => step switch
+    {
+        { Name: "text()" } => TextOf(node),
+        _ => OnAxis(step, node),
+    };
+
+    /// <summary>The text a node carries, as XPath's <c>text()</c> selects it.</summary>
+    private static IEnumerable<object> TextOf(object node) =>
+        node is XElement element && !element.HasElements && element.Value.Length > 0 ? [element.Value] : [];
+
+    private IEnumerable<object> OnAxis(StepNode step, object node) => step.Axis switch
     {
         StepAxis.Self => [node],
         StepAxis.Parent => Parent(node) is { } parent ? [parent] : [],
@@ -468,16 +512,34 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
         return current;
     }
 
+    /// <summary>
+    /// Functions this engine implements in place of the rule set's own definition, and why: the IBAN check
+    /// expands an account number to a 34-digit integer, which needs arbitrary precision.
+    /// </summary>
+    private static readonly HashSet<string> EngineImplemented = new(StringComparer.Ordinal) { "checkIBAN" };
+
+    /// <summary>A function's name without its prefix, except for the <c>xs:</c> casts the prefix defines.</summary>
+    private static string LocalFunctionName(string name) =>
+        name.Contains(':', StringComparison.Ordinal) && !name.StartsWith("xs:", StringComparison.Ordinal)
+            ? name[(name.IndexOf(':', StringComparison.Ordinal) + 1)..]
+            : name;
+
     private XPathValue Call(FunctionNode node, XPathContext context)
     {
         List<XPathValue> arguments = [.. node.Arguments.Select(argument => Evaluate(argument, context))];
+
+        // A function the rule set defines for itself wins: it is what the artefact means by that name. The
+        // exception is a function this engine implements deliberately — the artefact's IBAN check expands an
+        // account number to a 34-digit integer, which needs arbitrary precision this evaluator does not have.
+        if (functions?.TryGetValue(node.Name, out SchematronFunction? declared) == true
+            && !EngineImplemented.Contains(LocalFunctionName(node.Name)))
+        {
+            return CallDeclared(declared, arguments, context);
+        }
+
         XPathValue First() => arguments.Count > 0 ? arguments[0] : XPathValue.Nodes([context.Node]);
 
-        // A rule set may call a function it defines itself in XSLT. Only the one the German rules use is
-        // implemented natively; anything else is reported as unevaluable rather than quietly passing.
-        string name = node.Name.Contains(':', StringComparison.Ordinal) && !node.Name.StartsWith("xs:", StringComparison.Ordinal)
-            ? node.Name[(node.Name.IndexOf(':', StringComparison.Ordinal) + 1)..]
-            : node.Name;
+        string name = LocalFunctionName(node.Name);
 
         return name switch
         {
@@ -489,7 +551,7 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
             "empty" => XPathValue.Boolean(First().IsEmpty),
             "count" => XPathValue.Number(First().Items.Count),
             "sum" => XPathValue.Number(First().AllNumbers().Sum()),
-            "string" => XPathValue.Text(First().AsText()),
+            "string" or "xs:string" => XPathValue.Text(First().AsText()),
             "number" or "xs:decimal" or "xs:double" or "xs:integer" or "xs:float" =>
                 First().AsNumber() is { } value ? XPathValue.Number(value) : XPathValue.Empty,
             "castable-as" => XPathValue.Boolean(First().AsNumber() is not null),
@@ -510,6 +572,14 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
                 arguments[1].AsText(),
                 RegexOptions.None,
                 TimeSpan.FromSeconds(1))),
+            "replace" => XPathValue.Text(Regex.Replace(
+                arguments[0].AsText(),
+                arguments[1].AsText(),
+                // XPath writes group references as $1; .NET reads $1 the same way, but a literal $ must not
+                // be taken for one.
+                arguments[2].AsText(),
+                RegexOptions.None,
+                TimeSpan.FromSeconds(1))),
             "string-join" => XPathValue.Text(string.Join(
                 arguments.Count > 1 ? arguments[1].AsText() : string.Empty,
                 arguments[0].AllText())),
@@ -524,6 +594,8 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
             "namespace-uri" => XPathValue.Text(NameOf(FirstItem(First()))?.NamespaceName ?? string.Empty),
             "position" => XPathValue.Number(context.Position),
             "last" => XPathValue.Number(context.Size),
+            "string-to-codepoints" => XPathValue.Nodes(
+                [.. First().AsText().Select(character => (object)(decimal)character)]),
             "tokenize" => XPathValue.Nodes([.. Regex
                 .Split(arguments[0].AsText(), arguments[1].AsText(), RegexOptions.None, TimeSpan.FromSeconds(1))
                 .Cast<object>()]),
@@ -535,6 +607,32 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
     {
         IReadOnlyList<object> items = value.Items;
         return items.Count > 0 ? items[0] : string.Empty;
+    }
+
+    /// <summary>Binds the arguments, evaluates the function's own variables in order, then its body.</summary>
+    private XPathValue CallDeclared(
+        SchematronFunction function,
+        List<XPathValue> arguments,
+        XPathContext context)
+    {
+        // The rule set's own variables stay in scope: a declared function reads them, as the German IBAN
+        // check reads the pattern its rule set declares once.
+        var scope = new Dictionary<string, XPathValue>(context.Variables, StringComparer.Ordinal);
+
+        for (int index = 0; index < function.Parameters.Count; index++)
+        {
+            scope[function.Parameters[index]] = index < arguments.Count ? arguments[index] : XPathValue.Empty;
+        }
+
+        XPathContext inner = context with { Variables = scope };
+
+        foreach (SchematronVariable variable in function.Variables)
+        {
+            scope[variable.Name] = Evaluate(variable.Expression, inner);
+            inner = inner with { Variables = scope };
+        }
+
+        return Evaluate(function.Body, inner);
     }
 
     private string QualifiedNameOf(XPathValue value)

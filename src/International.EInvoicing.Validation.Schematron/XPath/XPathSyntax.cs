@@ -26,6 +26,12 @@ internal sealed record SequenceNode(IReadOnlyList<XPathNode> Items) : XPathNode;
 /// </summary>
 internal sealed record QuantifiedNode(bool Every, string Variable, XPathNode Sequence, XPathNode Test) : XPathNode;
 
+/// <summary>
+/// <c>for $v in sequence return result</c>: the result of the body for every item, concatenated. The French
+/// rules use it to compare a computed total against each line.
+/// </summary>
+internal sealed record ForNode(string Variable, XPathNode Sequence, XPathNode Body) : XPathNode;
+
 /// <summary><c>if (condition) then a else b</c>, which XPath 2.0 adds and the German rules use.</summary>
 internal sealed record ConditionalNode(XPathNode Condition, XPathNode Then, XPathNode Else) : XPathNode;
 

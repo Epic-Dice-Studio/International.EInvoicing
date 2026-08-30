@@ -59,6 +59,7 @@ public class EInvoicingTests
         string xml = Library.Write(
             FrCdar.ToPartner(to => to.Named("VENDEUR").AsSeller())
                 .From(from => from.Platform("0003", "PA-E"))
+                .IssuedByBuyer("200000008", "ACHETEUR")
                 .About("F202500003", new DateOnly(2025, 7, 1))
                 .Approved(new DateTimeOffset(2025, 7, 1, 15, 0, 0, TimeSpan.Zero)));
 
@@ -131,6 +132,7 @@ public class EInvoicingTests
     {
         string status = Library.Write(
             FrCdar.ToPartner(to => to.Named("VENDEUR").AsSeller())
+                .IssuedByBuyer("200000008", "ACHETEUR")
                 .About("F1", new DateOnly(2026, 1, 1))
                 .Approved());
 

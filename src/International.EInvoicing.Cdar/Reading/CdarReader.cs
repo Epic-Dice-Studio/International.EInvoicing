@@ -163,9 +163,59 @@ public sealed class CdarReader
                 Issuer = ReadParty(In(values, reference, CdarNames.Ram + "IssuerTradeParty"), values, owners),
             };
 
+            foreach (XElement detail in AllIn(values, reference, CdarNames.Ram + "SpecifiedDocumentStatus"))
+            {
+                status.StatusDetails.Add(ReadStatusDetail(detail, values, owners));
+            }
+
             owners[reference] = status;
             message.References.Add(status);
         }
+    }
+
+    private static DocumentStatusDetail ReadStatusDetail(
+        XElement element,
+        CdarValueReader values,
+        Dictionary<XElement, InvoiceNode> owners)
+    {
+        var detail = new DocumentStatusDetail
+        {
+            ProcessConditionCode = values.ReadCode(In(values, element, CdarNames.Ram + "ProcessConditionCode")),
+            ReasonCode = values.ReadCode(In(values, element, CdarNames.Ram + "ReasonCode")),
+            Reason = values.ReadText(In(values, element, CdarNames.Ram + "Reason")),
+            RequestedActionCode = values.ReadCode(In(values, element, CdarNames.Ram + "RequestedActionCode")),
+            RequestedAction = values.ReadText(In(values, element, CdarNames.Ram + "RequestedAction")),
+            SequenceNumber = values.ReadInteger(In(values, element, CdarNames.Ram + "SequenceNumeric")),
+        };
+
+        foreach (XElement characteristic in AllIn(values, element, CdarNames.Ram + "SpecifiedDocumentCharacteristic"))
+        {
+            detail.Characteristics.Add(ReadCharacteristic(characteristic, values, owners));
+        }
+
+        owners[element] = detail;
+        return detail;
+    }
+
+    private static DocumentStatusCharacteristic ReadCharacteristic(
+        XElement element,
+        CdarValueReader values,
+        Dictionary<XElement, InvoiceNode> owners)
+    {
+        var characteristic = new DocumentStatusCharacteristic
+        {
+            Identifier = values.ReadIdentifier(In(values, element, CdarNames.Ram + "ID")),
+            TypeCode = values.ReadCode(In(values, element, CdarNames.Ram + "TypeCode")),
+            ValueChanged = values.ReadIndicator(In(values, element, CdarNames.Ram + "ValueChangedIndicator")),
+            Name = values.ReadText(In(values, element, CdarNames.Ram + "Name")),
+            Location = values.ReadText(In(values, element, CdarNames.Ram + "Location")),
+            ValueAmount = values.ReadAmount(In(values, element, CdarNames.Ram + "ValueAmount")),
+            ValuePercent = values.ReadDecimal(In(values, element, CdarNames.Ram + "ValuePercent")),
+            ValueText = values.ReadText(In(values, element, CdarNames.Ram + "ValueText")),
+        };
+
+        owners[element] = characteristic;
+        return characteristic;
     }
 
     private static StatusParty? ReadParty(
@@ -279,7 +329,10 @@ internal sealed class CdarValueReader(DiagnosticCollector diagnostics, HashSet<X
             return IndicatorField.Unset;
         }
 
-        XElement? element = parent.Element(CdarNames.Udt + "Indicator") ?? parent;
+        // A characteristic writes its flag as an IndicatorString; everything else uses Indicator.
+        XElement? element = parent.Element(CdarNames.Udt + "Indicator")
+            ?? parent.Element(CdarNames.Udt + "IndicatorString")
+            ?? parent;
         Consume(element);
 
         return element.Value.Trim().ToUpperInvariant() switch
@@ -288,6 +341,44 @@ internal sealed class CdarValueReader(DiagnosticCollector diagnostics, HashSet<X
             "FALSE" or "0" => new IndicatorField(false, Source(element)),
             _ => new IndicatorField(null, Source(element, Report(element, "an indicator"))),
         };
+    }
+
+    public AmountField ReadAmount(XElement? element)
+    {
+        if (!Consume(element))
+        {
+            return AmountField.Unset;
+        }
+
+        string? currency = element.Attribute("currencyID")?.Value;
+
+        return decimal.TryParse(element.Value.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal amount)
+            ? new AmountField(amount, currency, Source(element))
+            : new AmountField(null, currency, Source(element, Report(element, "an amount")));
+    }
+
+    public Field<decimal> ReadDecimal(XElement? element)
+    {
+        if (!Consume(element))
+        {
+            return Field<decimal>.Unset;
+        }
+
+        return decimal.TryParse(element.Value.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value)
+            ? new Field<decimal>(value, Source(element))
+            : new Field<decimal>(null, Source(element, Report(element, "a decimal number")));
+    }
+
+    public Field<int> ReadInteger(XElement? element)
+    {
+        if (!Consume(element))
+        {
+            return Field<int>.Unset;
+        }
+
+        return int.TryParse(element.Value.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
+            ? new Field<int>(value, Source(element))
+            : new Field<int>(null, Source(element, Report(element, "a whole number")));
     }
 
     /// <summary>Reads a timestamp, which lifecycle messages express as <c>CCYYMMDDHHMMSS</c> (format 204).</summary>

@@ -38,4 +38,7 @@ public sealed class ReferencedDocumentStatus : InvoiceNode
 
     /// <summary>Who issued the document being reported on.</summary>
     public StatusParty? Issuer { get; set; }
+
+    /// <summary>The detail behind the status: reasons, requested actions, the values at issue.</summary>
+    public List<DocumentStatusDetail> StatusDetails { get; } = [];
 }

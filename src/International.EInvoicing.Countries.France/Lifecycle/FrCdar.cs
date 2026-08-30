@@ -26,6 +26,7 @@ public sealed class FrCdar
     private readonly LifecycleStatusMessage _message = new();
     private readonly Profile _profile;
     private readonly ReferencedDocumentStatus _reference = new();
+    private StatusParty? _businessIssuer;
 
     private FrCdar(Profile profile)
     {
@@ -76,17 +77,48 @@ public sealed class FrCdar
         return builder;
     }
 
-    /// <summary>Who is sending the status.</summary>
+    /// <summary>The platform sending the status.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="sender"/> is <c>null</c>.</exception>
     public FrCdar From(Action<FrPartyBuilder> sender)
     {
         ArgumentNullException.ThrowIfNull(sender);
 
-        StatusParty party = FrPartyBuilder.Build(sender);
-        _message.Sender = party;
-        _message.Issuer = party;
+        _message.Sender = FrPartyBuilder.Build(sender);
         return this;
     }
+
+    /// <summary>
+    /// The business party reporting the status — the buyer approving an invoice, the seller collecting on
+    /// one.
+    /// </summary>
+    /// <remarks>
+    /// Business statuses are reported by a party, not by a platform: a message that names the sending
+    /// platform as their issuer is rejected. Platform statuses need nothing here.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="issuer"/> is <c>null</c>.</exception>
+    public FrCdar IssuedBy(Action<FrPartyBuilder> issuer)
+    {
+        ArgumentNullException.ThrowIfNull(issuer);
+
+        _businessIssuer = FrPartyBuilder.Build(issuer);
+        return this;
+    }
+
+    /// <summary>
+    /// The buyer reports the status — taken in charge, approved, disputed, refused, payment sent.
+    /// </summary>
+    /// <param name="siren">The buyer's SIREN.</param>
+    /// <param name="name">The buyer's name.</param>
+    /// <exception cref="ArgumentException"><paramref name="siren"/> is empty.</exception>
+    public FrCdar IssuedByBuyer(string siren, string? name = null) =>
+        IssuedByCompany(siren, name, FrPartyRole.Buyer);
+
+    /// <summary>The seller reports the status — a collection, above all.</summary>
+    /// <param name="siren">The seller's SIREN.</param>
+    /// <param name="name">The seller's name.</param>
+    /// <exception cref="ArgumentException"><paramref name="siren"/> is empty.</exception>
+    public FrCdar IssuedBySeller(string siren, string? name = null) =>
+        IssuedByCompany(siren, name, FrPartyRole.Seller);
 
     /// <summary>Which invoice the status is about.</summary>
     /// <param name="invoiceNumber">The invoice's BT-1.</param>
@@ -159,29 +191,86 @@ public sealed class FrCdar
     /// <param name="reasonCode">Why, as a code from the DGFiP list.</param>
     /// <param name="reason">Why, in words.</param>
     /// <param name="at">When the status occurred.</param>
-    public LifecycleStatusMessage Disputed(string reasonCode, string reason, DateTimeOffset? at = null) =>
-        WithReason(FrLifecycleStatus.Disputed, reasonCode, reason, at);
+    /// <param name="requestedActionCode">What the sender expects in return, from <see cref="FrRequestedAction"/>.</param>
+    /// <param name="requestedAction">What the sender expects in return, in words.</param>
+    public LifecycleStatusMessage Disputed(
+        string reasonCode,
+        string reason,
+        DateTimeOffset? at = null,
+        string? requestedActionCode = null,
+        string? requestedAction = null) =>
+        WithReason(FrLifecycleStatus.Disputed, reasonCode, reason, at, requestedActionCode, requestedAction);
 
     /// <summary>210 — the recipient refuses the invoice.</summary>
     /// <param name="reasonCode">Why, as a code from the DGFiP list.</param>
     /// <param name="reason">Why, in words.</param>
     /// <param name="at">When the status occurred.</param>
-    public LifecycleStatusMessage Refused(string reasonCode, string reason, DateTimeOffset? at = null) =>
-        WithReason(FrLifecycleStatus.Refused, reasonCode, reason, at);
+    /// <param name="requestedActionCode">What the sender expects in return, from <see cref="FrRequestedAction"/>.</param>
+    /// <param name="requestedAction">What the sender expects in return, in words.</param>
+    public LifecycleStatusMessage Refused(
+        string reasonCode,
+        string reason,
+        DateTimeOffset? at = null,
+        string? requestedActionCode = null,
+        string? requestedAction = null) =>
+        WithReason(FrLifecycleStatus.Refused, reasonCode, reason, at, requestedActionCode, requestedAction);
 
     /// <summary>213 — the invoice was rejected for a technical or structural reason.</summary>
     /// <param name="reasonCode">Why, as a code from the DGFiP list.</param>
     /// <param name="reason">Why, in words.</param>
     /// <param name="at">When the status occurred.</param>
-    public LifecycleStatusMessage Rejected(string reasonCode, string reason, DateTimeOffset? at = null) =>
-        WithReason(FrLifecycleStatus.Rejected, reasonCode, reason, at);
+    /// <param name="requestedActionCode">What the sender expects in return, from <see cref="FrRequestedAction"/>.</param>
+    /// <param name="requestedAction">What the sender expects in return, in words.</param>
+    public LifecycleStatusMessage Rejected(
+        string reasonCode,
+        string reason,
+        DateTimeOffset? at = null,
+        string? requestedActionCode = null,
+        string? requestedAction = null) =>
+        WithReason(FrLifecycleStatus.Rejected, reasonCode, reason, at, requestedActionCode, requestedAction);
 
     /// <summary>211 — payment has been sent.</summary>
     public LifecycleStatusMessage PaymentSent(DateTimeOffset? at = null) =>
         With(FrLifecycleStatus.PaymentSent, at);
 
     /// <summary>212 — the invoice has been collected.</summary>
-    public LifecycleStatusMessage Collected(DateTimeOffset? at = null) => With(FrLifecycleStatus.Collected, at);
+    /// <param name="collected">How much was collected, and at which VAT rate.</param>
+    /// <param name="at">When the status occurred.</param>
+    public LifecycleStatusMessage Collected(FrCollectedAmount collected, DateTimeOffset? at = null) =>
+        Collected([collected], at);
+
+    /// <summary>212 — the invoice has been collected, at more than one VAT rate.</summary>
+    /// <param name="collected">How much was collected, once per VAT rate. At least one is required.</param>
+    /// <param name="at">When the status occurred.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="collected"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="collected"/> is empty.</exception>
+    public LifecycleStatusMessage Collected(IEnumerable<FrCollectedAmount> collected, DateTimeOffset? at = null)
+    {
+        ArgumentNullException.ThrowIfNull(collected);
+
+        DocumentStatusDetail detail = Detail();
+
+        foreach (FrCollectedAmount amount in collected)
+        {
+            detail.Characteristics.Add(new DocumentStatusCharacteristic
+            {
+                TypeCode = FrStatusValueType.CollectedAmount,
+                ValueChanged = false,
+                ValueAmount = new AmountField(amount.Amount, amount.CurrencyCode),
+                ValuePercent = amount.VatRate,
+            });
+        }
+
+        if (detail.Characteristics.Count == 0)
+        {
+            _reference.StatusDetails.Remove(detail);
+            throw new ArgumentException(
+                "A collection status must say how much was collected, at least once.",
+                nameof(collected));
+        }
+
+        return With(FrLifecycleStatus.Collected, at);
+    }
 
     /// <summary>Any status, including one carrying codes you supplied yourself.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="status"/> is <c>null</c>.</exception>
@@ -191,6 +280,7 @@ public sealed class FrCdar
 
         DateTimeOffset moment = at ?? DateTimeOffset.UtcNow;
 
+        _message.Issuer = IssuerFor(status);
         _message.TypeCode = status.AcknowledgementTypeCode;
         _message.StatusIssuedAt = moment;
         _message.IssuedAt = _message.IssuedAt.IsSet ? _message.IssuedAt : moment;
@@ -216,15 +306,67 @@ public sealed class FrCdar
         FrLifecycleStatus status,
         string reasonCode,
         string reason,
-        DateTimeOffset? at)
+        DateTimeOffset? at,
+        string? requestedActionCode,
+        string? requestedAction)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(reasonCode);
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
 
-        LifecycleStatusMessage message = With(status, at);
+        DocumentStatusDetail detail = Detail();
+        detail.ReasonCode = reasonCode;
+        detail.Reason = reason;
+        detail.RequestedActionCode = requestedActionCode is null ? CodeField.Unset : requestedActionCode;
+        detail.RequestedAction = requestedAction is null ? TextField.Unset : requestedAction;
+
         _reference.Reason = reason;
-        _reference.Extensions.Add(FrExtensions.DocumentStatus(reasonCode, reason));
-        return message;
+        return With(status, at);
+    }
+
+    private FrCdar IssuedByCompany(string siren, string? name, string role) =>
+        IssuedBy(party =>
+        {
+            party.Company(siren).InRole(role);
+
+            if (name is not null)
+            {
+                party.Named(name);
+            }
+        });
+
+    /// <summary>
+    /// A status detail, numbered as the DGFiP requires. Details are numbered from one within a reference.
+    /// </summary>
+    private DocumentStatusDetail Detail()
+    {
+        var detail = new DocumentStatusDetail { SequenceNumber = _reference.StatusDetails.Count + 1 };
+        _reference.StatusDetails.Add(detail);
+        return detail;
+    }
+
+    /// <summary>
+    /// Who the message says issued the status. A platform event is issued by the platform that sends it; a
+    /// business event is issued by a trading party, and saying otherwise is rejected.
+    /// </summary>
+    private StatusParty IssuerFor(FrLifecycleStatus status)
+    {
+        if (_businessIssuer is not null)
+        {
+            return _businessIssuer;
+        }
+
+        if (status.IsBusinessEvent)
+        {
+            throw new InvalidOperationException(
+                $"Status {status.Code} ({status.Label}) is reported by a trading party, not by a platform. "
+                + "Name that party with IssuedBy(party => party.Company(siren).AsBuyer()) — the seller for a "
+                + "collection, the buyer for everything else. Platform statuses need nothing.");
+        }
+
+        return _message.Sender
+            ?? throw new InvalidOperationException(
+                $"Status {status.Code} ({status.Label}) is reported by the sending platform. Name it with "
+                + "From(from => from.Platform(identifier, name)).");
     }
 
     /// <summary>

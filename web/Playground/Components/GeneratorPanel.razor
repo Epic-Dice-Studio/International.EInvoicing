@@ -93,6 +93,7 @@
         FrCdar builder = FrCdar
             .ToPartner(to => to.Named(_seller).AsSeller())
             .From(from => from.Platform("0003", "PA-E"))
+            .IssuedByBuyer("200000008", _buyer)
             .About(_number, DateOnly.FromDateTime(_issued));
 
         return refused
@@ -105,6 +106,7 @@
             LifecycleStatusMessage status = FrCdar
                 .ToPartner(to => to.Named("{{_seller}}").AsSeller())
                 .From(from => from.Platform("0003", "PA-E"))
+                .IssuedByBuyer("200000008", "{{_buyer}}")
                 .About("{{_number}}", new DateOnly({{_issued:yyyy, M, d}}))
                 {{(_output == "cdar-refused" ? ".Refused(\"TX_TVA_ERR\", \"Taux de TVA erroné\");" : ".Approved();")}}
 

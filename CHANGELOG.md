@@ -7,8 +7,25 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- French lifecycle statuses measured against the DGFiP's own rules: every status, to a trading partner and to
+  the public portal, and the eleven published sample messages, checked on each build. The artefacts are
+  fetched (`build/fetch-specs.sh france`), not redistributed.
+- `DocumentStatusDetail` and `DocumentStatusCharacteristic` on the CDAR model: the reason behind a status, the
+  action requested, and the values at issue, read and written rather than kept as extension data.
+- `FrCdar.IssuedByBuyer` / `IssuedBySeller`, `FrStatusReason`, `FrRequestedAction`, `FrStatusValueType`, and
+  `Collected(FrCollectedAmount)` — what the French rules require of a status, asked for in the builder.
+- The French invoice profile `urn:cen.eu:en16931:2017#conformant#urn.cpro.gouv.fr:1p0:extended-ctc-fr`.
+- Rule sets may define their own functions in XSLT; the engine runs those definitions rather than
+  reimplementing them, which is how the twenty French `custom:` functions work.
 - Repository foundations: multi-targeted build (`net8.0`, `net10.0`), central package management,
   deterministic packaging, MinVer versioning from git tags.
 - `SecureXml` and `DocumentLimits`: hardened XML reading for untrusted documents.
 - Documentation set: standards references, recipes, diagnostic catalogue, architecture decisions.
 - CI: build and test matrix, packaging, documentation gates, upstream specification monitoring.
+
+### Fixed
+- A Schematron rule context is a match pattern, not a path from the document root. Reading it as a path
+  silently matched nothing for every relative context, leaving rules such as BR-29, BR-30, BR-CL-13 and the
+  whole French lifecycle set dormant.
+- Ordering comparisons on dates (`xs:date(a) >= xs:date(b)`), the `text()` node test, and the `replace`,
+  `xs:string` and `string-to-codepoints` functions, all of which the published rule sets use.

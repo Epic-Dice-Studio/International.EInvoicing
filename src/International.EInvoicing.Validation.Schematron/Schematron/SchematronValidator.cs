@@ -26,7 +26,7 @@ public sealed class SchematronValidator
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(ruleSet);
 
-        var evaluator = new XPathEvaluator(ruleSet.Namespaces);
+        var evaluator = new XPathEvaluator(ruleSet.Namespaces, ruleSet.Functions);
         var messages = new List<ValidationMessage>();
 
         // The rule set's own variables are evaluated once, against the document, and are in scope everywhere.
@@ -181,13 +181,34 @@ public sealed class SchematronValidator
 
         try
         {
-            return evaluator.Evaluate(context, root).Items;
+            return evaluator.Evaluate(AsMatchPattern(context), root).Items;
         }
         catch (XPathException)
         {
             return [];
         }
     }
+
+    /// <summary>
+    /// A rule's context is a match pattern, not a path from the document: <c>ram:IssuerTradeParty</c> claims
+    /// every element of that name wherever it sits, and <c>a/b</c> every <c>b</c> whose parent is an
+    /// <c>a</c>. Reading a relative context as a path instead would silently match nothing — which is how the
+    /// French lifecycle rules, all of them written relative, appeared to pass without ever running.
+    /// </summary>
+    private static XPathNode AsMatchPattern(XPathNode context) => context switch
+    {
+        PathNode { Absolute: false, Start: null, Steps.Count: > 0 } path => path with
+        {
+            Absolute = true,
+            Steps = [path.Steps[0] with { DescendantOrSelf = true }, .. path.Steps.Skip(1)],
+        },
+        BinaryNode { Operator: "|" } union => union with
+        {
+            Left = AsMatchPattern(union.Left),
+            Right = AsMatchPattern(union.Right),
+        },
+        _ => context,
+    };
 
     /// <summary>The business term a rule names, so a caller can point at the field rather than the rule.</summary>
     private static string? BusinessTermIn(string identifier, string message)

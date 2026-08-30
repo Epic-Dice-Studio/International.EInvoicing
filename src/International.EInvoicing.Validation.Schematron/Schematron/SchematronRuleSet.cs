@@ -64,6 +64,10 @@ public sealed class SchematronRuleSet
     /// <summary>Variables the rule set declares once and every rule can use.</summary>
     internal IReadOnlyList<SchematronVariable> GlobalVariables { get; private set; } = [];
 
+    /// <summary>Functions the rule set defines for itself, run from the artefact rather than reimplemented.</summary>
+    internal IReadOnlyDictionary<string, SchematronFunction> Functions { get; private set; } =
+        new Dictionary<string, SchematronFunction>(StringComparer.Ordinal);
+
     /// <summary>Loads a rule set from Schematron XML.</summary>
     /// <param name="schematron">The <c>.sch</c> content, preferably the preprocessed form.</param>
     /// <param name="name">The rule set's name.</param>
@@ -105,6 +109,7 @@ public sealed class SchematronRuleSet
         return new SchematronRuleSet(name, version, namespaces, patterns)
         {
             GlobalVariables = [.. ReadVariables(root.Descendants(Schematron + "let").Where(IsGlobal))],
+            Functions = SchematronFunction.ReadAll(root, Parse),
         };
     }
 

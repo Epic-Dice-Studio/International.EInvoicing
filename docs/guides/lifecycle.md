@@ -20,6 +20,7 @@ LifecycleStatusMessage approved = FrCdar
         .AsSeller()
         .ReachableAt("100000009_STATUTS"))       // where its statuses are delivered
     .From(from => from.Platform("0003", "PA-E Vendeur"))
+    .IssuedByBuyer("200000008", "ACHETEUR")      // the party reporting the status
     .About("F202500003", new DateOnly(2025, 7, 1))
     .Approved();
 
@@ -50,6 +51,21 @@ LifecycleStatusMessage reported = FrCdar.ToPublicPortal()
     .Filed(new DateTimeOffset(2025, 7, 1, 15, 10, 0, TimeSpan.Zero));
 ```
 
+## Who reports the status
+
+A platform event — filed, received, made available, rejected — is reported by the platform that sends the
+message, and `From(...)` is enough. A business event is reported by a **trading party**: the buyer approves,
+disputes, refuses and pays; the seller collects. Naming the platform instead produces a message the DGFiP
+rules reject, so the builder asks for the party rather than guessing.
+
+```csharp
+.IssuedByBuyer("200000008", "ACHETEUR")   // 204, 205, 207, 210, 211
+.IssuedBySeller("100000009", "VENDEUR")   // 212
+```
+
+Omitting it for a business status raises an exception naming the status and the method to call. For anything
+these two do not cover, `IssuedBy(party => …)` takes the full party builder.
+
 ## Every status
 
 | Method | Code | Meaning | Needs a reason |
@@ -63,22 +79,80 @@ LifecycleStatusMessage reported = FrCdar.ToPublicPortal()
 | `Disputed(code, reason)` | 207 | En litige | yes |
 | `Refused(code, reason)` | 210 | Refusée | yes |
 | `PaymentSent()` | 211 | Paiement transmis | |
-| `Collected()` | 212 | Encaissée | |
+| `Collected(amount)` | 212 | Encaissée | amount and VAT rate |
 | `Rejected(code, reason)` | 213 | Rejetée | yes |
 
 Each takes an optional moment; without one, now is used.
+
+A collection says how much was collected, at which rate — the rules require it, once per rate:
+
+```csharp
+LifecycleStatusMessage collected = FrCdar
+    .ToPublicPortal()
+    .From(from => from.Platform("0003", "PA-E Vendeur"))
+    .IssuedBySeller("100000009", "VENDEUR")
+    .About("F202500003", new DateOnly(2025, 7, 1))
+    .Collected(new FrCollectedAmount(12000m, 20m));
+
+// Several rates:
+.Collected([new FrCollectedAmount(12000m, 20m), new FrCollectedAmount(500m, 5.5m)]);
+```
 
 ```csharp
 LifecycleStatusMessage refused = FrCdar
     .ToPartner(to => to.Company("100000009").AsSeller())
     .From(from => from.Platform("0003", "PA-E Vendeur"))
     .About("F202500003", new DateOnly(2025, 7, 1))
+    .IssuedByBuyer("200000008", "ACHETEUR")
     .ReceivedAt(new DateTimeOffset(2025, 7, 1, 16, 10, 0, TimeSpan.Zero))
-    .Refused("TX_TVA_ERR", "Taux de TVA erroné");
+    .Refused(
+        FrStatusReason.VatRateWrong,
+        "Taux de TVA erroné",
+        requestedActionCode: FrRequestedAction.CorrectiveInvoice,
+        requestedAction: "Créer une facture rectificative");
 ```
 
 The reason lands where the DGFiP puts it, inside `ram:SpecifiedDocumentStatus` on the reference — not as a
-free-text note somewhere convenient.
+free-text note somewhere convenient — numbered as the rules require.
+
+### Which reasons a status accepts
+
+Each status accepts its own list, and `FrStatusReason` carries them as named constants. To offer a choice
+rather than guess at one:
+
+```csharp
+IReadOnlyList<string> reasons = FrStatusReason.AllowedFor(FrLifecycleStatus.Refused);
+
+// The public-sector platform accepts seven more.
+IReadOnlyList<string> publicSector =
+    FrStatusReason.AllowedFor(FrLifecycleStatus.Refused, publicSector: true);
+```
+
+Nothing here refuses a code the published rules would accept: the lists are there to choose from, and the
+rules remain the authority.
+
+## Checking a message against the DGFiP rules
+
+The DGFiP artefacts are published in a repository that declares no licence, so they are fetched rather than
+shipped:
+
+```bash
+build/fetch-specs.sh france
+```
+
+Then run them like any other rule set:
+
+```csharp
+SchematronRuleSet rules = SchematronRuleSet.Load(
+    File.ReadAllText("specs/fr-dse/rules/1.4.0.03/20260804_BR-FR-CDV-Schematron-CDAR_V1.4.0.03.sch"),
+    "BR-FR-CDV (CDAR)",
+    "1.4.0.03");
+
+ValidationReport report = new SchematronValidator().Validate(xml, rules);
+```
+
+Every message this builder produces — eleven statuses, to a partner and to the public portal — is measured
+against those rules on each build.
 
 ## Which codes are verified, and which are not
 

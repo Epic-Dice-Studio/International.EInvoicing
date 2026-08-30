@@ -79,6 +79,12 @@ public sealed record FrLifecycleStatus(
         Rejected,
     ];
 
+    /// <summary>
+    /// Whether a trading party reports this status rather than a platform. Business events are issued by the
+    /// buyer or the seller, and name them in the message.
+    /// </summary>
+    public bool IsBusinessEvent => AcknowledgementTypeCode == BusinessEvent;
+
     /// <summary>Whether this status is one a sender must give a reason for.</summary>
     public bool RequiresReason => this == Disputed || this == Refused || this == Rejected;
 
