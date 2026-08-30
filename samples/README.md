@@ -16,6 +16,7 @@ It prints what it did as it goes, so you can read the output beside the code tha
 | Building, writing, reading back and validating an invoice | [`Invoices.cs`](International.EInvoicing.Samples/Chapters/Invoices.cs) | [writing](../docs/guides/writing.md), [reading](../docs/guides/reading.md) |
 | Documents that fight back — unknown profiles, unreadable values, truncated XML | [`HostileDocuments.cs`](International.EInvoicing.Samples/Chapters/HostileDocuments.cs) | [reading](../docs/guides/reading.md), [raw values](../docs/guides/raw-values.md) |
 | Adding a profile and a rule from your own code | [`Extending.cs`](International.EInvoicing.Samples/Chapters/Extending.cs) | [recipes](../docs/recipes/README.md) |
+| The same invoice, for three countries | [`CountryInvoices.cs`](International.EInvoicing.Samples/Chapters/CountryInvoices.cs) | [France](../docs/standards/country-fr.md), [Germany](../docs/standards/country-de.md), [Belgium](../docs/standards/country-be.md) |
 | Factur-X: the invoice inside a PDF | [`HybridPdf.cs`](International.EInvoicing.Samples/Chapters/HybridPdf.cs) | [Factur-X](../docs/standards/facturx.md) |
 | French lifecycle statuses | [`FrenchLifecycle.cs`](International.EInvoicing.Samples/Chapters/FrenchLifecycle.cs) | [lifecycle](../docs/guides/lifecycle.md) |
 | French e-reporting, flux 10 | [`FrenchEReporting.cs`](International.EInvoicing.Samples/Chapters/FrenchEReporting.cs) | [e-reporting](../docs/guides/e-reporting.md) |

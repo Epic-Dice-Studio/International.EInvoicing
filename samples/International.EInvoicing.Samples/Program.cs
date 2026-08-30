@@ -19,6 +19,7 @@ HostileDocuments.Run(einvoicing);
 Extending.Run();
 HybridPdf.Run(Invoices.Build(announce: false));
 
+CountryInvoices.Run(einvoicing);
 FrenchLifecycle.Run(einvoicing);
 FrenchEReporting.Run();
 NationalIdentifiers.Run();
