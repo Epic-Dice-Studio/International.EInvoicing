@@ -19,7 +19,9 @@ public static class CiiServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.AddProfiles(KnownProfiles.All.Where(profile => profile.Syntax == DocumentSyntax.Cii));
+        return builder
+            .ConfigureServices(services => services.AddCiiServices())
+            .AddProfiles(KnownProfiles.All.Where(profile => profile.Syntax == DocumentSyntax.Cii));
     }
 
     /// <summary>Registers the CII reader and writer in the container.</summary>

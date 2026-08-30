@@ -1,8 +1,10 @@
 using International.EInvoicing.Building;
+using International.EInvoicing.Countries.France;
 using International.EInvoicing.Countries.France.Lifecycle;
 using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
+using International.EInvoicing.Validation.Schematron;
 using Shouldly;
 using Xunit;
 
@@ -57,9 +59,9 @@ public class EInvoicingTests
     public void ALifecycleMessageComesBackAsOne()
     {
         string xml = Library.Write(
-            FrCdar.ToPartner(to => to.Named("VENDEUR").AsSeller())
-                .From(from => from.Platform("0003", "PA-E"))
-                .IssuedByBuyer("200000008", "ACHETEUR")
+            FrCdar.FromBuyer("200000008", "ACHETEUR")
+                .SentBy("0003", "PA-E")
+                .ToSeller("100000009", "VENDEUR")
                 .About("F202500003", new DateOnly(2025, 7, 1))
                 .Approved(new DateTimeOffset(2025, 7, 1, 15, 0, 0, TimeSpan.Zero)));
 
@@ -127,19 +129,62 @@ public class EInvoicingTests
         report.RuleSets.ShouldContain(set => !set.Ran && set.SkippedBecause!.Contains("no rule set"));
     }
 
+    /// <summary>
+    /// A document nothing is registered to check is reported as unchecked, and told how to fix that — never
+    /// presented as valid.
+    /// </summary>
     [Fact]
-    public void ValidatingSomethingThatIsNotAnEn16931SyntaxSaysSo()
+    public void ValidatingSomethingNoRuleSetCoversSaysSo()
     {
         string status = Library.Write(
-            FrCdar.ToPartner(to => to.Named("VENDEUR").AsSeller())
-                .IssuedByBuyer("200000008", "ACHETEUR")
+            FrCdar.FromBuyer("200000008", "ACHETEUR")
+                .SentBy("0003", "PA-E")
+                .ToSeller("100000009", "VENDEUR")
                 .About("F1", new DateOnly(2026, 1, 1))
                 .Approved());
 
         ValidationReport report = Library.Validate(status);
 
         report.IsComplete.ShouldBeFalse();
-        report.RuleSets.ShouldHaveSingleItem().SkippedBecause!.ShouldContain("not an EN 16931 syntax");
+        report.RuleSets.ShouldHaveSingleItem().SkippedBecause!.ShouldContain("AddRules");
+    }
+
+    /// <summary>
+    /// The rule sets are what a caller assembled, so adding one is all it takes for validation to use it.
+    /// </summary>
+    [Fact]
+    public void ARuleSetAddedWhenAssemblingIsRunWhenItApplies()
+    {
+        EInvoicing library = EInvoicing.Create(einvoicing => einvoicing
+            .AddDefaults()
+            .AddFrance()
+            .AddRulesFrom(
+                DocumentSyntax.Cdar,
+                """
+                <schema xmlns="http://purl.oclc.org/dsdl/schematron">
+                  <ns prefix="rsm" uri="urn:un:unece:uncefact:data:standard:CrossDomainAcknowledgementAndResponse:100"/>
+                  <ns prefix="ram" uri="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"/>
+                  <pattern>
+                    <rule context="rsm:ExchangedDocument">
+                      <assert id="HOUSE-1" test="ram:Name">Every status message we send carries a name.</assert>
+                    </rule>
+                  </pattern>
+                </schema>
+                """,
+                "House rules",
+                "1.0"));
+
+        string status = library.Write(
+            FrCdar.FromBuyer("200000008", "ACHETEUR")
+                .SentBy("0003", "PA-E")
+                .ToSeller("100000009", "VENDEUR")
+                .About("F1", new DateOnly(2026, 1, 1))
+                .Approved());
+
+        ValidationReport report = library.Validate(status);
+
+        report.RuleSets.ShouldHaveSingleItem().Name.ShouldBe("House rules");
+        report.Messages.ShouldHaveSingleItem().RuleIdentifier.ShouldBe("HOUSE-1");
     }
 
     [Fact]

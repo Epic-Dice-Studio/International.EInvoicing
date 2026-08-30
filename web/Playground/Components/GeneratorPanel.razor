@@ -91,9 +91,9 @@
     private Cdar.Model.LifecycleStatusMessage Status(bool refused)
     {
         FrCdar builder = FrCdar
-            .ToPartner(to => to.Named(_seller).AsSeller())
-            .From(from => from.Platform("0003", "PA-E"))
-            .IssuedByBuyer("200000008", _buyer)
+            .FromBuyer("200000008", _buyer)
+            .SentBy("0003", "PA-E")
+            .ToSeller("100000009", _seller)
             .About(_number, DateOnly.FromDateTime(_issued));
 
         return refused
@@ -104,9 +104,9 @@
     private string Snippet() => _output.StartsWith("cdar", StringComparison.Ordinal)
         ? $$"""
             LifecycleStatusMessage status = FrCdar
-                .ToPartner(to => to.Named("{{_seller}}").AsSeller())
-                .From(from => from.Platform("0003", "PA-E"))
-                .IssuedByBuyer("200000008", "{{_buyer}}")
+                .FromBuyer("200000008", "{{_buyer}}")
+                .SentBy("0003", "PA-E")
+                .ToSeller("100000009", "{{_seller}}")
                 .About("{{_number}}", new DateOnly({{_issued:yyyy, M, d}}))
                 {{(_output == "cdar-refused" ? ".Refused(\"TX_TVA_ERR\", \"Taux de TVA erroné\");" : ".Approved();")}}
 

@@ -50,11 +50,26 @@ public sealed class EInvoicing
 {
     private readonly EInvoicingOptions _options;
     private readonly IPdfAttachmentReader? _pdf;
+    private readonly IReadOnlyList<IDocumentRuleSet> _ruleSets;
 
-    private EInvoicing(EInvoicingOptions options, IProfileResolver profiles, IPdfAttachmentReader? pdf)
+    /// <summary>
+    /// Assembles the facade from its parts. Prefer <see cref="Create(Action{EInvoicingBuilder}, IPdfAttachmentReader)"/>,
+    /// or let a container do it; this exists so a container can.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">An argument other than <paramref name="pdf"/> is <c>null</c>.</exception>
+    public EInvoicing(
+        EInvoicingOptions options,
+        IProfileResolver profiles,
+        IEnumerable<IDocumentRuleSet> ruleSets,
+        IPdfAttachmentReader? pdf = null)
     {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(profiles);
+        ArgumentNullException.ThrowIfNull(ruleSets);
+
         _options = options;
         _pdf = pdf;
+        _ruleSets = [.. ruleSets];
         Profiles = profiles;
 
         Ubl = new UblInvoiceReader(options, profiles);
@@ -86,26 +101,51 @@ public sealed class EInvoicing
     /// <summary>How declared profiles are resolved, and what this instance implements.</summary>
     public IProfileResolver Profiles { get; }
 
+    /// <summary>The rule sets this instance validates against, in the order they were added.</summary>
+    public IReadOnlyList<IDocumentRuleSet> RuleSets => _ruleSets;
+
     /// <summary>
-    /// Everything this library ships: UBL, CII, Factur-X and lifecycle profiles, with balanced diagnostics.
+    /// Everything this library ships: UBL, CII, Factur-X and lifecycle profiles, the EN 16931 rules, and
+    /// balanced diagnostics.
     /// </summary>
     /// <param name="pdf">
     /// A PDF reader, if hybrid invoices should be opened. Reference
     /// <c>International.EInvoicing.FacturX.PdfSharp</c> for one; without it a PDF is reported rather than read.
     /// </param>
-    public static EInvoicing CreateDefault(IPdfAttachmentReader? pdf = null)
+    public static EInvoicing CreateDefault(IPdfAttachmentReader? pdf = null) =>
+        Create(einvoicing => einvoicing.AddDefaults(), pdf);
+
+    /// <summary>
+    /// A library instance assembled the way you want it.
+    /// </summary>
+    /// <remarks>
+    /// The same calls a container takes, without the container:
+    /// <code>
+    /// EInvoicing library = EInvoicing.Create(e => e
+    ///     .AddDefaults()
+    ///     .AddFrance()
+    ///     .AddRulesFromFile(DocumentSyntax.Ubl, "artefacts/PEPPOL-EN16931-UBL.sch", "Peppol", "3.0")
+    ///     .UseDiagnosticPreset(DiagnosticPreset.Strict));
+    /// </code>
+    /// </remarks>
+    /// <param name="configure">What to assemble.</param>
+    /// <param name="pdf">A PDF reader, if hybrid invoices should be opened.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="configure"/> is <c>null</c>.</exception>
+    public static EInvoicing Create(Action<EInvoicingBuilder> configure, IPdfAttachmentReader? pdf = null)
     {
-        var registry = new ProfileRegistry(KnownProfiles.All);
+        ArgumentNullException.ThrowIfNull(configure);
 
-        foreach (Profile profile in FacturXProfiles.All.Concat(CdarProfiles.All))
-        {
-            registry.Register(profile);
-        }
+        var builder = new EInvoicingBuilder();
+        configure(builder);
 
-        return new EInvoicing(new EInvoicingOptions(), new ProfileResolver(registry), pdf);
+        return new EInvoicing(
+            builder.BuildOptions(),
+            new ProfileResolver(builder.BuildRegistry()),
+            builder.BuildRuleSets(),
+            pdf);
     }
 
-    /// <summary>The same, with your own options — resource limits, diagnostic policy.</summary>
+    /// <summary>The same, from parts you already have.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="options"/> is <c>null</c>.</exception>
     public static EInvoicing Create(
         EInvoicingOptions options,
@@ -114,8 +154,8 @@ public sealed class EInvoicing
     {
         ArgumentNullException.ThrowIfNull(options);
 
-        IProfileResolver resolver = profiles ?? CreateDefault().Profiles;
-        return new EInvoicing(options, resolver, pdf);
+        EInvoicing defaults = CreateDefault();
+        return new EInvoicing(options, profiles ?? defaults.Profiles, defaults.RuleSets, pdf);
     }
 
     /// <summary>Reads whatever the stream holds. The stream is left open.</summary>
@@ -168,6 +208,44 @@ public sealed class EInvoicing
         };
     }
 
+    /// <summary>
+    /// Reads a document from a stream without blocking on the read. The stream is left open.
+    /// </summary>
+    /// <remarks>
+    /// Only the reading is asynchronous — parsing happens in memory once the bytes have arrived, which is
+    /// where the wait actually is when a document comes off a network or a blob store.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="document"/> is <c>null</c>.</exception>
+    public async Task<DocumentResult> ReadAsync(Stream document, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+
+        using var buffer = new MemoryStream();
+        await document.CopyToAsync(buffer, cancellationToken).ConfigureAwait(false);
+
+        return Read(buffer.ToArray());
+    }
+
+    /// <summary>Reads whatever the file holds, XML or PDF.</summary>
+    /// <exception cref="ArgumentException"><paramref name="path"/> is empty.</exception>
+    /// <exception cref="FileNotFoundException">There is no file there.</exception>
+    public DocumentResult ReadFile(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        return Read(File.ReadAllBytes(path));
+    }
+
+    /// <summary>Reads whatever the file holds, without blocking on the read.</summary>
+    /// <exception cref="ArgumentException"><paramref name="path"/> is empty.</exception>
+    /// <exception cref="FileNotFoundException">There is no file there.</exception>
+    public async Task<DocumentResult> ReadFileAsync(string path, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        byte[] content = await File.ReadAllBytesAsync(path, cancellationToken).ConfigureAwait(false);
+        return Read(content);
+    }
+
     /// <summary>What a document is, judged by its root element rather than by its file name.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="document"/> is <c>null</c>.</exception>
     public static DocumentKind Detect(string document)
@@ -216,6 +294,58 @@ public sealed class EInvoicing
             : UblWriter.WriteToString(invoice);
     }
 
+    /// <summary>
+    /// Writes an invoice in the syntax its own profile is written in.
+    /// </summary>
+    /// <remarks>
+    /// An invoice declares what it conforms to (BT-24), and a profile belongs to one syntax: an XRechnung CII
+    /// invoice is CII, a Peppol one is UBL. Naming the syntax again is a chance to name the wrong one, so
+    /// this asks the profile instead. Say it explicitly with the overload when the profile is unknown to this
+    /// instance, or when you deliberately want the other syntax.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="invoice"/> is <c>null</c>.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The invoice declares no profile, or one this instance does not know, so the syntax cannot be inferred.
+    /// </exception>
+    public string Write(EInvoice invoice)
+    {
+        ArgumentNullException.ThrowIfNull(invoice);
+
+        ProfileResolution resolution = Profiles.Resolve(invoice.SpecificationIdentifier, DocumentSyntax.Ubl);
+        ProfileResolution cii = Profiles.Resolve(invoice.SpecificationIdentifier, DocumentSyntax.Cii);
+
+        if (resolution.IsExact)
+        {
+            return Write(invoice, DocumentFormat.Ubl);
+        }
+
+        if (cii.IsExact)
+        {
+            return Write(invoice, DocumentFormat.Cii);
+        }
+
+        throw new InvalidOperationException(
+            $"The syntax cannot be inferred from '{invoice.SpecificationIdentifier}': it is not a profile this "
+            + "instance knows. Name the syntax with Write(invoice, DocumentFormat.Ubl) or register the profile "
+            + "with AddProfile(...).");
+    }
+
+    /// <summary>Writes an invoice to a stream. The stream is left open.</summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public void Write(EInvoice invoice, DocumentFormat format, Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(invoice);
+        ArgumentNullException.ThrowIfNull(destination);
+
+        if (format == DocumentFormat.Cii)
+        {
+            CiiWriter.Write(invoice, destination);
+            return;
+        }
+
+        UblWriter.Write(invoice, destination);
+    }
+
     /// <summary>Writes a lifecycle status message.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="status"/> is <c>null</c>.</exception>
     public string Write(LifecycleStatusMessage status)
@@ -225,11 +355,18 @@ public sealed class EInvoicing
     }
 
     /// <summary>
-    /// Validates a document against EN 16931, and says what it could not check.
+    /// Validates a document against every rule set registered for it, and says what it could not check.
     /// </summary>
     /// <remarks>
-    /// A profile this library implements no rules for is reported as not checked rather than passed over, so
+    /// <para>
+    /// Which rule sets those are is what you assembled: <c>AddDefaults()</c> brings EN 16931,
+    /// <c>AddXRechnungRules()</c> the German ones, <c>AddRulesFromFile(...)</c> the artefacts that may not be
+    /// redistributed. Each one decides for itself whether it governs the document in front of it.
+    /// </para>
+    /// <para>
+    /// A profile no registered rule set covers is reported as not checked rather than passed over, so
     /// <see cref="ValidationReport.IsComplete"/> tells the truth about how much was verified.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="document"/> is <c>null</c>.</exception>
     public ValidationReport Validate(string document)
@@ -237,17 +374,45 @@ public sealed class EInvoicing
         ArgumentNullException.ThrowIfNull(document);
 
         DocumentKind kind = Detect(document);
-        if (kind is not (DocumentKind.Ubl or DocumentKind.Cii))
+        DocumentSyntax? syntax = SyntaxOf(kind);
+
+        if (syntax is not { } documentSyntax)
         {
             return new ValidationReport(
                 [],
-                [new RuleSetOutcome("EN 16931", En16931Rules.ArtefactVersion, Ran: false, $"{kind} is not an EN 16931 syntax")]);
+                [new RuleSetOutcome("(none)", "—", Ran: false, $"{kind} is not a syntax this library validates")]);
         }
 
-        DocumentSyntax syntax = kind == DocumentKind.Ubl ? DocumentSyntax.Ubl : DocumentSyntax.Cii;
-        ValidationReport report = new SchematronValidator().Validate(document, En16931Rules.For(syntax));
-
         DocumentResult read = Read(document);
+        ProfileIdentifier declared = read.Profile?.Declared ?? default;
+
+        ValidationReport report = ValidationReport.Empty;
+        bool ranSomething = false;
+
+        foreach (IDocumentRuleSet ruleSet in _ruleSets)
+        {
+            if (!ruleSet.AppliesTo(documentSyntax, declared))
+            {
+                continue;
+            }
+
+            report = report.And(ruleSet.Validate(document));
+            ranSomething = true;
+        }
+
+        if (!ranSomething)
+        {
+            return report.And(new ValidationReport(
+                [],
+                [
+                    new RuleSetOutcome(
+                        declared.IsDeclared ? declared.ToString() : "(no profile declared)",
+                        "—",
+                        Ran: false,
+                        "no rule set is registered for that profile; add one with AddRules(...)"),
+                ]));
+        }
+
         if (read.Profile is not { IsExact: false } resolution)
         {
             return report;
@@ -260,9 +425,18 @@ public sealed class EInvoicing
                     resolution.Declared.ToString(),
                     "—",
                     Ran: false,
-                    "this library implements no rule set for that profile, so only EN 16931 was checked"),
+                    "this library implements no rule set for that profile, so only the general rules ran"),
             ]));
     }
+
+    /// <summary>Which syntax a detected document is written in, or <c>null</c> when it is not one.</summary>
+    private static DocumentSyntax? SyntaxOf(DocumentKind kind) => kind switch
+    {
+        DocumentKind.Ubl => DocumentSyntax.Ubl,
+        DocumentKind.Cii => DocumentSyntax.Cii,
+        DocumentKind.Cdar => DocumentSyntax.Cdar,
+        _ => null,
+    };
 
     private DocumentResult ReadHybrid(byte[] pdf)
     {

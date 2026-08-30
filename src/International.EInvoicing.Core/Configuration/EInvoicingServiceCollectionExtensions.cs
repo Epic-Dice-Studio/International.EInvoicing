@@ -18,7 +18,7 @@ public static class EInvoicingServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        var builder = new EInvoicingBuilder();
+        var builder = new EInvoicingBuilder(services);
         configure?.Invoke(builder);
 
         ProfileRegistry registry = builder.BuildRegistry();

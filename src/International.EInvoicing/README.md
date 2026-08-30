@@ -5,12 +5,17 @@ Electronic invoicing for .NET, in one package.
 ```csharp
 EInvoicing einvoicing = EInvoicing.CreateDefault();
 
-DocumentResult result = einvoicing.Read(stream);
-
-if (result.Invoice is { } invoice)
+if (einvoicing.Read(stream).TryGetInvoice(out EInvoice? invoice))
 {
     Console.WriteLine(invoice.Number.Value);
 }
+```
+
+In a container, one call wires the readers, the writers, the profiles and the rules, and makes the facade
+injectable:
+
+```csharp
+services.AddEInvoicing(einvoicing => einvoicing.AddDefaults().AddFrance());
 ```
 
 You do not say which syntax arrived — UBL, CII, a Factur-X payload or a lifecycle status message are all

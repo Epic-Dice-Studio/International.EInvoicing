@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Diagnostics;
 using International.EInvoicing.Model;
@@ -61,4 +62,66 @@ public sealed record DocumentResult
     /// <summary>The diagnostics of at least the given severity.</summary>
     public IEnumerable<Diagnostic> OfAtLeast(DiagnosticSeverity severity) =>
         Diagnostics.Where(diagnostic => diagnostic.Severity >= severity);
+
+    /// <summary>What went wrong, when something did.</summary>
+    public IEnumerable<Diagnostic> Errors => OfAtLeast(DiagnosticSeverity.Error);
+
+    /// <summary>What was worth mentioning without stopping anything.</summary>
+    public IEnumerable<Diagnostic> Warnings =>
+        Diagnostics.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Warning);
+
+    /// <summary>The invoice, when the document was one.</summary>
+    /// <example>
+    /// <code>
+    /// if (result.TryGetInvoice(out EInvoice? invoice))
+    /// {
+    ///     Console.WriteLine(invoice.Number.Value);
+    /// }
+    /// </code>
+    /// </example>
+    public bool TryGetInvoice([NotNullWhen(true)] out EInvoice? invoice)
+    {
+        invoice = Invoice;
+        return invoice is not null;
+    }
+
+    /// <summary>The lifecycle status message, when the document was one.</summary>
+    public bool TryGetLifecycleStatus([NotNullWhen(true)] out LifecycleStatusMessage? status)
+    {
+        status = LifecycleStatus;
+        return status is not null;
+    }
+
+    /// <summary>
+    /// The invoice, or an exception explaining what arrived instead.
+    /// </summary>
+    /// <remarks>
+    /// For the code path that already knows what it was handed — an endpoint that only ever receives
+    /// invoices — and would rather fail loudly than branch. Everywhere else, <see cref="TryGetInvoice"/>.
+    /// </remarks>
+    /// <exception cref="DocumentException">The document was not a readable invoice.</exception>
+    public EInvoice RequireInvoice() =>
+        Invoice ?? throw new DocumentException(
+            $"Expected an invoice; the document was read as {Kind}.",
+            Diagnostics);
+
+    /// <summary>The lifecycle status message, or an exception explaining what arrived instead.</summary>
+    /// <exception cref="DocumentException">The document was not a readable lifecycle status message.</exception>
+    public LifecycleStatusMessage RequireLifecycleStatus() =>
+        LifecycleStatus ?? throw new DocumentException(
+            $"Expected a lifecycle status message; the document was read as {Kind}.",
+            Diagnostics);
+
+    /// <summary>Takes the result apart, for a caller that wants to switch on what arrived.</summary>
+    /// <example>
+    /// <code>
+    /// var (kind, invoice, status) = einvoicing.Read(stream);
+    /// </code>
+    /// </example>
+    public void Deconstruct(out DocumentKind kind, out EInvoice? invoice, out LifecycleStatusMessage? status)
+    {
+        kind = Kind;
+        invoice = Invoice;
+        status = LifecycleStatus;
+    }
 }

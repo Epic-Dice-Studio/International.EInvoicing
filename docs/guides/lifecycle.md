@@ -4,67 +4,81 @@ What happened to an invoice after it was sent — filed, received, approved, dis
 these are the *statuts de cycle de vie* the 2026 reform makes mandatory between platforms, carried as
 UN/CEFACT CDAR messages.
 
-## Name the status, not its codes
+## Say who reports what, through whom, to whom
 
-A status is not one code but three: the status itself, the type code of the acknowledgement carrying it, and
-the referenced document's status code. Getting the other two wrong produces a message that names the right
-status and is rejected anyway — so nothing here asks you for them.
+A lifecycle message has three parties, and it is easy to fill in the wrong one:
+
+| | Who it is | Element |
+|---|---|---|
+| **Issuer** | who reports the status | `ram:IssuerTradeParty` |
+| **Sender** | the approved platform that transmits it | `ram:SenderTradeParty` |
+| **Recipient** | who it is for | `ram:RecipientTradeParty` |
+
+So the builder reads as the sentence:
 
 ```csharp
 using International.EInvoicing.Countries.France.Lifecycle;
 
 LifecycleStatusMessage approved = FrCdar
-    .ToPartner(to => to
-        .Company("100000009")                    // the partner's SIREN
-        .Named("VENDEUR")
-        .AsSeller()
-        .ReachableAt("100000009_STATUTS"))       // where its statuses are delivered
-    .From(from => from.Platform("0003", "PA-E Vendeur"))
-    .IssuedByBuyer("200000008", "ACHETEUR")      // the party reporting the status
-    .About("F202500003", new DateOnly(2025, 7, 1))
-    .Approved();
+    .FromBuyer("200000008", "ACHETEUR")                        // who reports it
+    .SentBy("0003", "PA-E Acheteur")                           // their approved platform
+    .ToSeller("100000009", "VENDEUR", "100000009_STATUTS")     // who it is for, and where it is delivered
+    .About("F202500003", new DateOnly(2025, 7, 1))             // which invoice
+    .Approved();                                               // and what happened to it
 
 string xml = EInvoicing.CreateDefault().Write(approved);
 ```
 
-## Where you are sending changes the profile
+A status is not one code but three: the status itself, the type code of the acknowledgement carrying it, and
+the referenced document's status code. Getting the other two wrong produces a message that names the right
+status and is rejected anyway — so nothing here asks you for them.
+
+## Where it goes changes the profile
 
 Sending a status to a trading partner and reporting one to the public portal are **two different profiles**,
-not two variants of one: different context, different addressing, an extra element inside the reference. They
-are therefore two entry points.
+not two variants of one: different context, different addressing, an extra element inside the reference. The
+destination you name settles it.
 
 ```csharp
-// To a partner, through approved platforms. The public portal is addressed as well, which this profile
-// expects: urn.cpro.gouv.fr:1p0:CDV:invoice
-FrCdar.ToPartner(to => to.Company("100000009").AsSeller().ReachableAt("100000009_STATUTS"))
-
-// Reported to the public portal: urn.cpro.gouv.fr:1p0:CDV:einvoicingF2
-FrCdar.ToPublicPortal()
+.ToSeller("100000009", "VENDEUR", "100000009_STATUTS")   // urn.cpro.gouv.fr:1p0:CDV:invoice
+.ToBuyer("200000008", "ACHETEUR")                        // the same profile, the other direction
+.ToPartner(partner => …)                                 // the same, described in full
+.ToPublicPortal()                                        // urn.cpro.gouv.fr:1p0:CDV:einvoicingF2
 ```
 
-Everything after that is the same.
+Sending to a partner addresses the public portal as a second recipient, which that profile expects. You do
+not add it yourself.
 
 ```csharp
-LifecycleStatusMessage reported = FrCdar.ToPublicPortal()
-    .From(from => from.Platform("0003", "PA-E Vendeur"))
+LifecycleStatusMessage reported = FrCdar
+    .FromPlatform("0003", "PA-E Vendeur")
+    .ToPublicPortal()
     .About("F202500003", new DateOnly(2025, 7, 1))
     .Filed(new DateTimeOffset(2025, 7, 1, 15, 10, 0, TimeSpan.Zero));
 ```
 
-## Who reports the status
+## Who may report which status
 
-A platform event — filed, received, made available, rejected — is reported by the platform that sends the
-message, and `From(...)` is enough. A business event is reported by a **trading party**: the buyer approves,
-disputes, refuses and pays; the seller collects. Naming the platform instead produces a message the DGFiP
-rules reject, so the builder asks for the party rather than guessing.
+This is the part that trips people up, and the builder now refuses to get it wrong.
 
-```csharp
-.IssuedByBuyer("200000008", "ACHETEUR")   // 204, 205, 207, 210, 211
-.IssuedBySeller("100000009", "VENDEUR")   // 212
+| Start from | Who that is | The statuses it may report |
+|---|---|---|
+| `FrCdar.FromPlatform(id, name)` | the platform handling the invoice | 200 filed, 201 issued, 202 received, 203 made available, 213 rejected |
+| `FrCdar.FromBuyer(siren, name)` | the customer | 204 taken in charge, 205 approved, 207 disputed, 210 refused, 211 payment sent |
+| `FrCdar.FromSeller(siren, name)` | the supplier | 212 collected |
+
+A platform reports on its own behalf, so it is both issuer and sender and needs no `SentBy`. A trading party
+does not put messages on the network itself, so it always names the platform that does.
+
+Get the direction wrong and you are told which entry point to use instead, before anything is written:
+
+```
+Status 205 Approuvée is reported by a trading party, not by a platform: start from
+FrCdar.FromSeller(siren) for a collection, FrCdar.FromBuyer(siren) for everything else.
 ```
 
-Omitting it for a business status raises an exception naming the status and the method to call. For anything
-these two do not cover, `IssuedBy(party => …)` takes the full party builder.
+For anything these three do not cover, `FrCdar.From(party => …)` and `SentBy(party => …)` take the full
+party builder.
 
 ## Every status
 
@@ -88,9 +102,9 @@ A collection says how much was collected, at which rate — the rules require it
 
 ```csharp
 LifecycleStatusMessage collected = FrCdar
+    .FromSeller("100000009", "VENDEUR")
+    .SentBy("0003", "PA-E Vendeur")
     .ToPublicPortal()
-    .From(from => from.Platform("0003", "PA-E Vendeur"))
-    .IssuedBySeller("100000009", "VENDEUR")
     .About("F202500003", new DateOnly(2025, 7, 1))
     .Collected(new FrCollectedAmount(12000m, 20m));
 
@@ -100,10 +114,10 @@ LifecycleStatusMessage collected = FrCdar
 
 ```csharp
 LifecycleStatusMessage refused = FrCdar
-    .ToPartner(to => to.Company("100000009").AsSeller())
-    .From(from => from.Platform("0003", "PA-E Vendeur"))
+    .FromBuyer("200000008", "ACHETEUR")
+    .SentBy("0003", "PA-E Acheteur")
+    .ToSeller("100000009", "VENDEUR")
     .About("F202500003", new DateOnly(2025, 7, 1))
-    .IssuedByBuyer("200000008", "ACHETEUR")
     .ReceivedAt(new DateTimeOffset(2025, 7, 1, 16, 10, 0, TimeSpan.Zero))
     .Refused(
         FrStatusReason.VatRateWrong,
@@ -172,7 +186,9 @@ FrLifecycleStatus corrected = FrLifecycleStatus.Refused.WithCodes(
     documentStatusCode: "46");
 
 LifecycleStatusMessage message = FrCdar
-    .ToPartner(to => to.Company("100000009").AsSeller())
+    .FromBuyer("200000008", "ACHETEUR")
+    .SentBy("0003", "PA-E Acheteur")
+    .ToSeller("100000009", "VENDEUR")
     .About("F202500003", new DateOnly(2025, 7, 1))
     .With(corrected);
 ```

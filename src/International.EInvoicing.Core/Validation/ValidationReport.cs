@@ -1,3 +1,5 @@
+using International.EInvoicing.Diagnostics;
+
 namespace International.EInvoicing.Validation;
 
 /// <summary>
@@ -32,6 +34,43 @@ public sealed record ValidationReport(
     /// <summary>The messages of at least the given severity.</summary>
     public IEnumerable<ValidationMessage> OfAtLeast(RuleSeverity severity) =>
         Messages.Where(message => message.Severity >= severity);
+
+    /// <summary>The rules that failed.</summary>
+    public IEnumerable<ValidationMessage> Errors => OfAtLeast(RuleSeverity.Error);
+
+    /// <summary>The rules that fired without failing the document.</summary>
+    public IEnumerable<ValidationMessage> Warnings =>
+        Messages.Where(message => message.Severity == RuleSeverity.Warning);
+
+    /// <summary>The rule sets that did not run, and why.</summary>
+    public IEnumerable<RuleSetOutcome> NotRun => RuleSets.Where(ruleSet => !ruleSet.Ran);
+
+    /// <summary>Whether a particular rule failed, by its identifier.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="ruleIdentifier"/> is <c>null</c>.</exception>
+    public bool Failed(string ruleIdentifier)
+    {
+        ArgumentNullException.ThrowIfNull(ruleIdentifier);
+
+        return Errors.Any(message =>
+            string.Equals(message.RuleIdentifier, ruleIdentifier, StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Hands the report back when the document conforms, and throws with the whole report when it does not.
+    /// </summary>
+    /// <remarks>
+    /// For a pipeline that must not let a bad document through: one call, and the exception message is the
+    /// report a person would have had to read anyway. Note that it insists on
+    /// <see cref="IsConforming"/> — a document nothing checked is not a document that passed.
+    /// </remarks>
+    /// <exception cref="DocumentException">The document broke a rule, or something did not run.</exception>
+    public ValidationReport EnsureConforming() =>
+        IsConforming
+            ? this
+            : throw new DocumentException(
+                IsValid
+                    ? $"The document was not fully checked.{Environment.NewLine}{this}"
+                    : $"The document is not valid.{Environment.NewLine}{this}");
 
     /// <summary>A report combining this one with another.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="other"/> is <c>null</c>.</exception>

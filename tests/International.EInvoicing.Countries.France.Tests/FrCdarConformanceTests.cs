@@ -123,12 +123,12 @@ public class FrCdarConformanceTests
     public void ABusinessStatusWithoutAnIssuingPartyIsRefusedWithAnExplanation()
     {
         InvalidOperationException thrown = Should.Throw<InvalidOperationException>(() => FrCdar
+            .FromPlatform("0003", "PA-E Vendeur")
             .ToPublicPortal()
-            .From(from => from.Platform("0003", "PA-E Vendeur"))
             .About("F202500003", new DateOnly(2025, 7, 1))
             .Approved(Moment));
 
-        thrown.Message.ShouldContain("IssuedBy");
+        thrown.Message.ShouldContain("FromBuyer");
         thrown.Message.ShouldContain("205");
     }
 
@@ -185,37 +185,34 @@ public class FrCdarConformanceTests
     public void ACollectionMustSayHowMuchWasCollected()
     {
         Should.Throw<ArgumentException>(() => FrCdar
+            .FromSeller("100000009", "VENDEUR")
+            .SentBy("0003", "PA-E Vendeur")
             .ToPublicPortal()
-            .From(from => from.Platform("0003", "PA-E Vendeur"))
-            .IssuedBySeller("100000009")
             .About("F202500003", new DateOnly(2025, 7, 1))
             .Collected([]));
     }
 
     private static LifecycleStatusMessage Build(FrLifecycleStatus status, string route)
     {
-        FrCdar builder = route == "partner"
-            ? FrCdar.ToPartner(to => to
-                .Company("100000009")
-                .Named("VENDEUR")
-                .AsSeller()
-                .ReachableAt("100000009_STATUTS"))
-            : FrCdar.ToPublicPortal();
+        // Who reports the status is part of the status: a platform files, a buyer approves, a seller collects.
+        FrCdar builder = status switch
+        {
+            _ when status == FrLifecycleStatus.Collected => FrCdar.FromSeller("100000009", "VENDEUR"),
+            _ when status.IsBusinessEvent => FrCdar.FromBuyer("200000008", "ACHETEUR"),
+            _ => FrCdar.FromPlatform("0003", "PA-E Vendeur"),
+        };
 
-        builder = builder
-            .From(from => from.Platform("0003", "PA-E Vendeur"))
-            .About("F202500003", new DateOnly(2025, 7, 1));
+        builder = builder.SentBy("0003", "PA-E Vendeur");
+
+        builder = route == "partner"
+            ? builder.ToSeller("100000009", "VENDEUR", "100000009_STATUTS")
+            : builder.ToPublicPortal();
+
+        builder = builder.About("F202500003", new DateOnly(2025, 7, 1));
 
         if (status == FrLifecycleStatus.Collected)
         {
-            return builder
-                .IssuedBySeller("100000009", "VENDEUR")
-                .Collected(new FrCollectedAmount(12000m, 20m), Moment);
-        }
-
-        if (status.IsBusinessEvent)
-        {
-            builder = builder.IssuedByBuyer("200000008", "ACHETEUR");
+            return builder.Collected(new FrCollectedAmount(12000m, 20m), Moment);
         }
 
         if (!status.RequiresReason)

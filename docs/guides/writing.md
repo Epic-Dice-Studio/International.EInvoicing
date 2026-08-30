@@ -16,7 +16,7 @@ EInvoice invoice = EInvoiceBuilder.Create(KnownProfiles.En16931Cii)
     .DueOn(new DateOnly(2026, 9, 29))
     .OfType("380")                       // BT-3: 380 is a commercial invoice, 381 a credit note
     .InCurrency("EUR")
-    .WithSeller(seller => seller
+    .From(seller => seller
         .Named("Epic Dice Studio")
         .WithVatIdentifier("FR12345678901")
         .WithAddress(address =>
@@ -26,7 +26,7 @@ EInvoice invoice = EInvoiceBuilder.Create(KnownProfiles.En16931Cii)
             address.PostCode = "49000";
             address.CountryCode = "FR";
         }))
-    .WithBuyer(buyer => buyer.Named("Acme").WithVatIdentifier("FR98765432109"))
+    .To(buyer => buyer.Named("Acme").WithVatIdentifier("FR98765432109"))
     .AddLine(line => line
         .WithIdentifier("1")
         .WithItem("Consulting")
@@ -41,14 +41,44 @@ EInvoicing einvoicing = EInvoicing.CreateDefault();
 
 string ubl = einvoicing.Write(invoice, DocumentFormat.Ubl);
 string cii = einvoicing.Write(invoice, DocumentFormat.Cii);
+string asDeclared = einvoicing.Write(invoice);   // the syntax the declared profile is written in
+```
+
+`From` and `To` are the seller and the buyer — an invoice has a direction, and saying it reads better than
+naming roles. `WithSeller` and `WithBuyer` say the same thing in the norm's own words; use whichever suits
+the code around it. When a name and a VAT number are all you have, there is a shorter form:
+
+```csharp
+.From("Epic Dice Studio", "FR12345678901")
+.To("Acme", "FR98765432109")
 ```
 
 Amounts inherit the document currency as they are added, so an invoice cannot end up with lines in a currency
 it never declared.
 
-## Totals are yours
+## Totals: derived if you ask, never behind your back
 
-The builder does **not** compute them.
+The `BR-CO` rules tie the totals to the lines and to the VAT breakdown, and they are where documents most
+often stop validating — almost never because the arithmetic was hard, but because a total was typed in beside
+the lines it summarises and then one of the two changed.
+
+So ask for them:
+
+```csharp
+.WithComputedVatBreakdown()   // BG-23, grouped by category and rate
+.WithComputedTotals()         // BT-106, BT-107, BT-108, BT-109, BT-110, BT-112, BT-115
+```
+
+`WithComputedVatBreakdown()` groups the lines by VAT category and rate, and applies each document-level
+allowance or charge to the entry with the same category and rate — a discount on the whole invoice reduces
+the base it was taken from, not every base. `WithComputedTotals()` then adds up the lines, the allowances and
+charges, and the VAT. A prepaid amount (BT-113) or a rounding amount (BT-114) you set yourself is kept and
+taken into account. Both round to two decimals; pass another number when your currency asks for one.
+
+Call them last, once the lines are in.
+
+They are opt-in, not automatic: computing totals behind your back would quietly replace what you meant to
+send with what this library guessed. When your rounding rules are your own, set them yourself and skip both:
 
 ```csharp
 .WithTotals(totals =>
@@ -61,9 +91,7 @@ The builder does **not** compute them.
 })
 ```
 
-This is deliberate. The `BR-CO` rules tie totals to lines and to the VAT breakdown, and inventing them would
-quietly replace what you meant to send with what this library guessed. Compute them where your rounding rules
-live, then [validate](validation.md) to confirm they hold.
+Either way, [validate](validation.md) to confirm they hold.
 
 ## A credit note
 

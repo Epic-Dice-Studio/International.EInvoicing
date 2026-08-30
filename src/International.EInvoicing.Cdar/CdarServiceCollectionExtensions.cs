@@ -14,7 +14,10 @@ public static class CdarServiceCollectionExtensions
     public static EInvoicingBuilder AddCdar(this EInvoicingBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        return builder.AddProfiles(CdarProfiles.All);
+
+        return builder
+            .ConfigureServices(services => services.AddCdarServices())
+            .AddProfiles(CdarProfiles.All);
     }
 
     /// <summary>Registers the lifecycle reader and writer in the container.</summary>

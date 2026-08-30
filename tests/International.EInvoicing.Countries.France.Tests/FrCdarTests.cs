@@ -19,24 +19,25 @@ public class FrCdarTests
 {
     private static readonly DateTimeOffset Moment = new(2025, 7, 1, 15, 10, 0, TimeSpan.Zero);
 
-    private static FrCdar ToPartner() =>
-        FrCdar.ToPartner(to => to
-                .Company("100000009")
-                .Named("VENDEUR")
-                .AsSeller()
-                .ReachableAt("100000009_STATUTS"))
-            .From(from => from.Platform("0003", "PA-E Vendeur"))
+    /// <summary>A platform event: the platform that files an invoice is the one that reports it.</summary>
+    private static FrCdar FromPlatform() =>
+        FrCdar.FromPlatform("0003", "PA-E Vendeur")
+            .ToSeller("100000009", "VENDEUR", "100000009_STATUTS")
             .About("F202500003", new DateOnly(2025, 7, 1));
 
-    /// <summary>A business status is reported by a trading party, so these tests name one.</summary>
-    private static FrCdar ToPartnerFromBuyer() => ToPartner().IssuedByBuyer("200000008", "ACHETEUR");
+    /// <summary>A business event: a trading party reports it, and its platform transmits it.</summary>
+    private static FrCdar FromBuyer() =>
+        FrCdar.FromBuyer("200000008", "ACHETEUR")
+            .SentBy("0003", "PA-E Acheteur")
+            .ToSeller("100000009", "VENDEUR", "100000009_STATUTS")
+            .About("F202500003", new DateOnly(2025, 7, 1));
 
     private static string Write(LifecycleStatusMessage message) => new CdarWriter().WriteToString(message);
 
     [Fact]
     public void NamingAStatusFillsInTheCodesItImplies()
     {
-        LifecycleStatusMessage message = ToPartner().Filed(Moment);
+        LifecycleStatusMessage message = FromPlatform().Filed(Moment);
 
         message.TypeCode.Value.ShouldBe("305");
         ReferencedDocumentStatus reference = message.References.ShouldHaveSingleItem();
@@ -80,7 +81,7 @@ public class FrCdarTests
     [Fact]
     public void RefusingCarriesTheReasonWhereTheDgfipPutsIt()
     {
-        LifecycleStatusMessage message = ToPartnerFromBuyer()
+        LifecycleStatusMessage message = FromBuyer()
             .Refused("TX_TVA_ERR", "Taux de TVA erroné", Moment);
 
         XElement written = XElement.Parse(Write(message));
@@ -95,8 +96,8 @@ public class FrCdarTests
     [Fact]
     public void AStatusNeedingAReasonWillNotBeBuiltWithout()
     {
-        Should.Throw<ArgumentException>(() => ToPartner().Refused(string.Empty, "Taux de TVA erroné"));
-        Should.Throw<ArgumentException>(() => ToPartner().Disputed("TX_TVA_ERR", string.Empty));
+        Should.Throw<ArgumentException>(() => FromPlatform().Refused(string.Empty, "Taux de TVA erroné"));
+        Should.Throw<ArgumentException>(() => FromPlatform().Disputed("TX_TVA_ERR", string.Empty));
         FrLifecycleStatus.Refused.RequiresReason.ShouldBeTrue();
         FrLifecycleStatus.Approved.RequiresReason.ShouldBeFalse();
     }
@@ -104,7 +105,7 @@ public class FrCdarTests
     [Fact]
     public void SendingToAPartnerAddressesThePublicPortalToo()
     {
-        LifecycleStatusMessage message = ToPartner().Filed(Moment);
+        LifecycleStatusMessage message = FromPlatform().Filed(Moment);
 
         message.SpecificationIdentifier.Value.ShouldBe("urn.cpro.gouv.fr:1p0:CDV:invoice");
         message.BusinessProcessType.Value.ShouldBe("REGULATED");
@@ -117,8 +118,8 @@ public class FrCdarTests
     [Fact]
     public void ReportingToThePublicPortalIsADifferentProfileNotAVariant()
     {
-        LifecycleStatusMessage message = FrCdar.ToPublicPortal()
-            .From(from => from.Platform("0003", "PA-E Vendeur"))
+        LifecycleStatusMessage message = FrCdar.FromPlatform("0003", "PA-E Vendeur")
+            .ToPublicPortal()
             .About("F202500003", new DateOnly(2025, 7, 1))
             .Filed(Moment);
 
@@ -134,7 +135,7 @@ public class FrCdarTests
     [Fact]
     public void AMessageBuiltHereIsReadBackByTheGenericReader()
     {
-        LifecycleStatusMessage built = ToPartnerFromBuyer().Approved(Moment);
+        LifecycleStatusMessage built = FromBuyer().Approved(Moment);
 
         var reader = new CdarReader(
             new EInvoicingOptions(),
@@ -151,7 +152,7 @@ public class FrCdarTests
     [Fact]
     public void AnIdentifierIsDerivedWhenTheCallerGivesNone()
     {
-        LifecycleStatusMessage message = ToPartner().Filed(Moment);
+        LifecycleStatusMessage message = FromPlatform().Filed(Moment);
 
         message.Identifier.Value.ShouldBe("F202500003_200_20250701151000#380_20250701");
     }
@@ -159,7 +160,7 @@ public class FrCdarTests
     [Fact]
     public void ACallerCanImposeItsOwnIdentifier()
     {
-        LifecycleStatusMessage message = ToPartner().WithIdentifier("ACME-1").Filed(Moment);
+        LifecycleStatusMessage message = FromPlatform().WithIdentifier("ACME-1").Filed(Moment);
 
         message.Identifier.Value.ShouldBe("ACME-1");
     }

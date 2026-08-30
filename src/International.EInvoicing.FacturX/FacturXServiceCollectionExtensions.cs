@@ -1,3 +1,4 @@
+using International.EInvoicing.Cii;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Profiles;
 
@@ -16,7 +17,7 @@ public static class FacturXServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(builder);
 
         return builder
-            .AddProfiles(KnownProfiles.All.Where(profile => profile.Syntax == DocumentSyntax.Cii))
+            .AddCii()
             .AddProfiles(FacturXProfiles.All);
     }
 }

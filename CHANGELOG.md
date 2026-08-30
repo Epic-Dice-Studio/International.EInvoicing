@@ -6,7 +6,22 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-### Added
+- **Developer experience.** One vocabulary for assembling the library, whether or not there is a container:
+  `services.AddEInvoicing(e => e.AddDefaults().AddFrance())` and `EInvoicing.Create(e => e.AddDefaults())`
+  take the same calls. Each package method now registers what it needs, so there is no second list of
+  `Add…Services()` calls to remember, and `EInvoicing` itself is injectable.
+- Rule sets are registered rather than fixed: `AddEn16931Rules()`, `AddXRechnungRules()`,
+  `AddRulesFromFile(...)` for artefacts that may not be redistributed, and `IDocumentRuleSet` for rules of
+  your own in C#. Validation runs every one that applies and names those that did not.
+- `EInvoiceBuilder.From(...)` and `.To(...)` — an invoice goes from a supplier to a customer, and now reads
+  that way — with a short form taking a name and a VAT number.
+- `WithComputedVatBreakdown()` and `WithComputedTotals()`: the VAT grouped from the lines, and BT-106 to
+  BT-115 derived from them. Opt-in, because computing totals behind a caller's back would replace what they
+  meant to send with a guess.
+- `Write(invoice)` picks the syntax the declared profile is written in, rather than asking for it twice.
+- `ReadFile`, `ReadAsync` and `ReadFileAsync`; `TryGetInvoice`, `RequireInvoice`, `Errors`, `Warnings` and
+  deconstruction on a read result; `Errors`, `Warnings`, `NotRun`, `Failed(rule)` and `EnsureConforming()`
+  on a validation report.
 - Peppol BIS Billing 3.0 validation, measured against Peppol's own unit corpus: 227 of 227 UBL cases and
   127 of 127 CII cases agree with the published expected results. The artefacts declare no licence and are
   not shipped — `build/fetch-specs.sh peppol` fetches them, and they load like any other rule set.
@@ -29,6 +44,14 @@ All notable changes to this project are documented here. The format follows
 - `SecureXml` and `DocumentLimits`: hardened XML reading for untrusted documents.
 - Documentation set: standards references, recipes, diagnostic catalogue, architecture decisions.
 - CI: build and test matrix, packaging, documentation gates, upstream specification monitoring.
+
+### Changed
+- The French lifecycle builder now reads as the sentence it is —
+  `FrCdar.FromBuyer(...).SentBy(...).ToSeller(...).About(...).Approved()`. A lifecycle message has three
+  parties and it was too easy to fill in the wrong one, so where you start fixes who reports the status,
+  the destination fixes the profile, and reporting a status from the wrong kind of party is refused with the
+  entry point to use instead. Replaces `ToPartner(...)`/`ToPublicPortal()` as entry points and the
+  `IssuedBy*` methods.
 
 ### Fixed
 - A control character in a caller's text no longer stops a document being written. XML cannot carry those

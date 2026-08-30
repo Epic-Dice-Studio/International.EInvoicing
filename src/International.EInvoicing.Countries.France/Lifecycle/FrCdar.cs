@@ -5,16 +5,20 @@ using International.EInvoicing.Values;
 namespace International.EInvoicing.Countries.France.Lifecycle;
 
 /// <summary>
-/// Builds French lifecycle status messages by naming the status, not the codes behind it.
+/// Builds French lifecycle status messages by saying who reports what to whom.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Sending a status to a trading partner and reporting one to the public portal are two different profiles,
-/// which is why they are two entry points rather than a flag. Each fills in what its profile implies.
+/// A lifecycle message has three parties and it is easy to fill in the wrong one: the <em>issuer</em> is who
+/// reports the status, the <em>sender</em> is the approved platform that transmits it, and the
+/// <em>recipient</em> is who it is for. Which of them may be what depends on the status — a platform files an
+/// invoice, a buyer approves one, a seller collects on one — and a message that gets it wrong names the right
+/// status and is rejected anyway.
 /// </para>
 /// <para>
-/// Everything a status implies — the acknowledgement type code, the document status code, the label — comes
-/// from <see cref="FrLifecycleStatus"/>. A caller names <c>Refused</c> and gets a message that is complete.
+/// So the builder reads as the sentence: <c>FromBuyer(...).SentBy(...).ToSeller(...).About(...).Approved()</c>.
+/// Starting from who is speaking fixes their role, the destination fixes the profile, and the status fixes
+/// the codes. Getting the direction wrong is refused with a message naming the entry point to use instead.
 /// </para>
 /// </remarks>
 public sealed class FrCdar
@@ -24,84 +28,16 @@ public sealed class FrCdar
     private const string RegulatedProcess = "REGULATED";
 
     private readonly LifecycleStatusMessage _message = new();
-    private readonly Profile _profile;
     private readonly ReferencedDocumentStatus _reference = new();
-    private StatusParty? _businessIssuer;
+    private readonly StatusParty _issuer;
 
-    private FrCdar(Profile profile)
+    private Profile? _profile;
+
+    private FrCdar(StatusParty issuer)
     {
-        _profile = profile;
-        _message.SpecificationIdentifier = profile.Id;
+        _issuer = issuer;
         _message.CoversMultipleDocuments = false;
-
-        if (profile == FrProfiles.LifecycleStatusToPartner)
-        {
-            _message.BusinessProcessType = RegulatedProcess;
-        }
-
         _message.References.Add(_reference);
-    }
-
-    /// <summary>
-    /// Starts a status message for a trading partner, exchanged through approved platforms. The public
-    /// portal is added as a second recipient, which this profile expects.
-    /// </summary>
-    /// <exception cref="ArgumentNullException"><paramref name="recipient"/> is <c>null</c>.</exception>
-    public static FrCdar ToPartner(Action<FrPartyBuilder> recipient)
-    {
-        ArgumentNullException.ThrowIfNull(recipient);
-
-        var builder = new FrCdar(FrProfiles.LifecycleStatusToPartner);
-        builder._message.Recipients.Add(FrPartyBuilder.Build(recipient));
-        builder._message.Recipients.Add(new StatusParty
-        {
-            GlobalIdentifier = new IdentifierField(PublicPortalIdentifier, FrPartyScheme.Platform),
-            Name = "PPF",
-            RoleCode = FrPartyRole.PublicPortal,
-        });
-
-        return builder;
-    }
-
-    /// <summary>Starts a status message reported to the public portal.</summary>
-    public static FrCdar ToPublicPortal()
-    {
-        var builder = new FrCdar(FrProfiles.LifecycleStatusToPublicPortal);
-        builder._message.Recipients.Add(new StatusParty
-        {
-            GlobalIdentifier = new IdentifierField(PublicPortalRecipient, FrPartyScheme.Platform),
-            RoleCode = FrPartyRole.PublicPortal,
-        });
-
-        builder._reference.Extensions.Add(FrExtensions.ReferenceTypeCode(builder._profile.Id.Value));
-        return builder;
-    }
-
-    /// <summary>The platform sending the status.</summary>
-    /// <exception cref="ArgumentNullException"><paramref name="sender"/> is <c>null</c>.</exception>
-    public FrCdar From(Action<FrPartyBuilder> sender)
-    {
-        ArgumentNullException.ThrowIfNull(sender);
-
-        _message.Sender = FrPartyBuilder.Build(sender);
-        return this;
-    }
-
-    /// <summary>
-    /// The business party reporting the status — the buyer approving an invoice, the seller collecting on
-    /// one.
-    /// </summary>
-    /// <remarks>
-    /// Business statuses are reported by a party, not by a platform: a message that names the sending
-    /// platform as their issuer is rejected. Platform statuses need nothing here.
-    /// </remarks>
-    /// <exception cref="ArgumentNullException"><paramref name="issuer"/> is <c>null</c>.</exception>
-    public FrCdar IssuedBy(Action<FrPartyBuilder> issuer)
-    {
-        ArgumentNullException.ThrowIfNull(issuer);
-
-        _businessIssuer = FrPartyBuilder.Build(issuer);
-        return this;
     }
 
     /// <summary>
@@ -110,15 +46,146 @@ public sealed class FrCdar
     /// <param name="siren">The buyer's SIREN.</param>
     /// <param name="name">The buyer's name.</param>
     /// <exception cref="ArgumentException"><paramref name="siren"/> is empty.</exception>
-    public FrCdar IssuedByBuyer(string siren, string? name = null) =>
-        IssuedByCompany(siren, name, FrPartyRole.Buyer);
+    public static FrCdar FromBuyer(string siren, string? name = null) =>
+        FromCompany(siren, name, FrPartyRole.Buyer);
 
     /// <summary>The seller reports the status — a collection, above all.</summary>
     /// <param name="siren">The seller's SIREN.</param>
     /// <param name="name">The seller's name.</param>
     /// <exception cref="ArgumentException"><paramref name="siren"/> is empty.</exception>
-    public FrCdar IssuedBySeller(string siren, string? name = null) =>
-        IssuedByCompany(siren, name, FrPartyRole.Seller);
+    public static FrCdar FromSeller(string siren, string? name = null) =>
+        FromCompany(siren, name, FrPartyRole.Seller);
+
+    /// <summary>
+    /// A platform reports the status — filed, received, made available, rejected.
+    /// </summary>
+    /// <remarks>
+    /// A platform reports on its own behalf, so it is both the issuer and the sender: there is no
+    /// <see cref="SentBy(string, string)"/> to add afterwards.
+    /// </remarks>
+    /// <param name="platformIdentifier">The platform's four-character identifier.</param>
+    /// <param name="name">The platform's name.</param>
+    /// <exception cref="ArgumentException"><paramref name="platformIdentifier"/> is empty.</exception>
+    public static FrCdar FromPlatform(string platformIdentifier, string? name = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(platformIdentifier);
+
+        var platform = new StatusParty
+        {
+            GlobalIdentifier = new IdentifierField(platformIdentifier, FrPartyScheme.Platform),
+            RoleCode = FrPartyRole.Platform,
+        };
+
+        if (name is not null)
+        {
+            platform.Name = name;
+        }
+
+        var builder = new FrCdar(platform);
+        builder._message.Sender = platform;
+        return builder;
+    }
+
+    /// <summary>Whoever reports the status, described in full.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="issuer"/> is <c>null</c>.</exception>
+    public static FrCdar From(Action<FrPartyBuilder> issuer)
+    {
+        ArgumentNullException.ThrowIfNull(issuer);
+
+        return new FrCdar(FrPartyBuilder.Build(issuer));
+    }
+
+    /// <summary>
+    /// The approved platform transmitting the message on the issuer's behalf.
+    /// </summary>
+    /// <remarks>
+    /// A trading party does not put messages on the network itself; its platform does. Needed for every
+    /// status a party reports, and implied when the issuer is itself a platform.
+    /// </remarks>
+    /// <param name="platformIdentifier">The platform's four-character identifier.</param>
+    /// <param name="name">The platform's name.</param>
+    /// <exception cref="ArgumentException"><paramref name="platformIdentifier"/> is empty.</exception>
+    public FrCdar SentBy(string platformIdentifier, string? name = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(platformIdentifier);
+
+        return SentBy(platform =>
+        {
+            platform.Platform(platformIdentifier);
+
+            if (name is not null)
+            {
+                platform.Named(name);
+            }
+        });
+    }
+
+    /// <summary>The platform transmitting the message, described in full.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="sender"/> is <c>null</c>.</exception>
+    public FrCdar SentBy(Action<FrPartyBuilder> sender)
+    {
+        ArgumentNullException.ThrowIfNull(sender);
+
+        _message.Sender = FrPartyBuilder.Build(sender);
+        return this;
+    }
+
+    /// <summary>
+    /// The status goes to the seller, through approved platforms.
+    /// </summary>
+    /// <param name="siren">The seller's SIREN.</param>
+    /// <param name="name">The seller's name.</param>
+    /// <param name="statusAddress">Where its statuses are delivered, its routing address.</param>
+    /// <exception cref="ArgumentException"><paramref name="siren"/> is empty.</exception>
+    public FrCdar ToSeller(string siren, string? name = null, string? statusAddress = null) =>
+        ToCompany(siren, name, statusAddress, FrPartyRole.Seller);
+
+    /// <summary>The status goes to the buyer, through approved platforms.</summary>
+    /// <param name="siren">The buyer's SIREN.</param>
+    /// <param name="name">The buyer's name.</param>
+    /// <param name="statusAddress">Where its statuses are delivered, its routing address.</param>
+    /// <exception cref="ArgumentException"><paramref name="siren"/> is empty.</exception>
+    public FrCdar ToBuyer(string siren, string? name = null, string? statusAddress = null) =>
+        ToCompany(siren, name, statusAddress, FrPartyRole.Buyer);
+
+    /// <summary>
+    /// The status goes to a trading partner, described in full. The public portal is added as a second
+    /// recipient, which this profile expects.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="recipient"/> is <c>null</c>.</exception>
+    public FrCdar ToPartner(Action<FrPartyBuilder> recipient)
+    {
+        ArgumentNullException.ThrowIfNull(recipient);
+
+        UseProfile(FrProfiles.LifecycleStatusToPartner);
+        _message.BusinessProcessType = RegulatedProcess;
+        _message.Recipients.Add(FrPartyBuilder.Build(recipient));
+        _message.Recipients.Add(new StatusParty
+        {
+            GlobalIdentifier = new IdentifierField(PublicPortalIdentifier, FrPartyScheme.Platform),
+            Name = "PPF",
+            RoleCode = FrPartyRole.PublicPortal,
+        });
+
+        return this;
+    }
+
+    /// <summary>
+    /// The status is reported to the public portal rather than sent to a partner — a different profile, not
+    /// a different destination for the same one.
+    /// </summary>
+    public FrCdar ToPublicPortal()
+    {
+        UseProfile(FrProfiles.LifecycleStatusToPublicPortal);
+        _message.Recipients.Add(new StatusParty
+        {
+            GlobalIdentifier = new IdentifierField(PublicPortalRecipient, FrPartyScheme.Platform),
+            RoleCode = FrPartyRole.PublicPortal,
+        });
+
+        _reference.Extensions.Add(FrExtensions.ReferenceTypeCode(FrProfiles.LifecycleStatusToPublicPortal.Id.Value));
+        return this;
+    }
 
     /// <summary>Which invoice the status is about.</summary>
     /// <param name="invoiceNumber">The invoice's BT-1.</param>
@@ -280,7 +347,9 @@ public sealed class FrCdar
 
         DateTimeOffset moment = at ?? DateTimeOffset.UtcNow;
 
-        _message.Issuer = IssuerFor(status);
+        EnsureConsistent(status);
+
+        _message.Issuer = _issuer;
         _message.TypeCode = status.AcknowledgementTypeCode;
         _message.StatusIssuedAt = moment;
         _message.IssuedAt = _message.IssuedAt.IsSet ? _message.IssuedAt : moment;
@@ -323,16 +392,56 @@ public sealed class FrCdar
         return With(status, at);
     }
 
-    private FrCdar IssuedByCompany(string siren, string? name, string role) =>
-        IssuedBy(party =>
+    private static FrCdar FromCompany(string siren, string? name, string role)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(siren);
+
+        var party = new StatusParty
         {
-            party.Company(siren).InRole(role);
+            GlobalIdentifier = new IdentifierField(siren, FrPartyScheme.Company),
+            RoleCode = role,
+        };
+
+        if (name is not null)
+        {
+            party.Name = name;
+        }
+
+        return new FrCdar(party);
+    }
+
+    private FrCdar ToCompany(string siren, string? name, string? statusAddress, string role)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(siren);
+
+        return ToPartner(partner =>
+        {
+            partner.Company(siren).InRole(role);
 
             if (name is not null)
             {
-                party.Named(name);
+                partner.Named(name);
+            }
+
+            if (statusAddress is not null)
+            {
+                partner.ReachableAt(statusAddress);
             }
         });
+    }
+
+    private void UseProfile(Profile profile)
+    {
+        if (_profile is not null)
+        {
+            throw new InvalidOperationException(
+                $"This message already goes to {_profile.Name}. A message has one destination: either a "
+                + "trading partner or the public portal, not both.");
+        }
+
+        _profile = profile;
+        _message.SpecificationIdentifier = profile.Id;
+    }
 
     /// <summary>
     /// A status detail, numbered as the DGFiP requires. Details are numbered from one within a reference.
@@ -348,25 +457,41 @@ public sealed class FrCdar
     /// Who the message says issued the status. A platform event is issued by the platform that sends it; a
     /// business event is issued by a trading party, and saying otherwise is rejected.
     /// </summary>
-    private StatusParty IssuerFor(FrLifecycleStatus status)
+    /// <summary>
+    /// Checks that the message says what this status needs it to say, before it is written rather than after
+    /// it is rejected.
+    /// </summary>
+    private void EnsureConsistent(FrLifecycleStatus status)
     {
-        if (_businessIssuer is not null)
-        {
-            return _businessIssuer;
-        }
-
-        if (status.IsBusinessEvent)
+        if (_profile is null)
         {
             throw new InvalidOperationException(
-                $"Status {status.Code} ({status.Label}) is reported by a trading party, not by a platform. "
-                + "Name that party with IssuedBy(party => party.Company(siren).AsBuyer()) — the seller for a "
-                + "collection, the buyer for everything else. Platform statuses need nothing.");
+                $"Status {status} has no destination. Say where it goes: ToSeller(...), ToBuyer(...), "
+                + "ToPartner(...) or ToPublicPortal().");
         }
 
-        return _message.Sender
-            ?? throw new InvalidOperationException(
-                $"Status {status.Code} ({status.Label}) is reported by the sending platform. Name it with "
-                + "From(from => from.Platform(identifier, name)).");
+        bool issuerIsPlatform = _issuer.RoleCode.Value == FrPartyRole.Platform;
+
+        if (status.IsBusinessEvent && issuerIsPlatform)
+        {
+            throw new InvalidOperationException(
+                $"Status {status} is reported by a trading party, not by a platform: start from "
+                + "FrCdar.FromSeller(siren) for a collection, FrCdar.FromBuyer(siren) for everything else.");
+        }
+
+        if (!status.IsBusinessEvent && !issuerIsPlatform)
+        {
+            throw new InvalidOperationException(
+                $"Status {status} is reported by the platform handling the invoice, not by a trading party: "
+                + "start from FrCdar.FromPlatform(identifier).");
+        }
+
+        if (_message.Sender is null)
+        {
+            throw new InvalidOperationException(
+                $"Status {status} is transmitted by an approved platform. Name it with "
+                + "SentBy(platformIdentifier, name).");
+        }
     }
 
     /// <summary>

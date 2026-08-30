@@ -7,15 +7,17 @@ that fills in what each status implies so you name the status and not the codes 
 
 ```csharp
 LifecycleStatusMessage refused = FrCdar
-    .ToPartner(to => to.Company("100000009").Named("VENDEUR").AsSeller().ReachableAt("100000009_STATUTS"))
-    .From(from => from.Platform("0003", "PA-E Vendeur"))
-    .IssuedByBuyer("200000008", "ACHETEUR")
+    .FromBuyer("200000008", "ACHETEUR")                        // who reports it
+    .SentBy("0003", "PA-E Acheteur")                           // their approved platform
+    .ToSeller("100000009", "VENDEUR", "100000009_STATUTS")     // who it is for
     .About("F202500003", new DateOnly(2025, 7, 1))
-    .Refused("TX_TVA_ERR", "Taux de TVA erroné");
+    .Refused(FrStatusReason.VatRateWrong, "Taux de TVA erroné");
 ```
 
-Sending to a partner and sending to the public portal are **different profiles**, not variants of one, so
-they are different entry points: `FrCdar.ToPartner(...)` and `FrCdar.ToPublicPortal(...)`.
+Who may report which status is settled by where you start: `FromPlatform` files and receives, `FromBuyer`
+approves and refuses, `FromSeller` collects. Getting it the wrong way round is refused with the entry point
+to use instead. Sending to a partner and reporting to the public portal are **different profiles**, not
+variants of one, and the destination you name settles it.
 
 And the **e-reporting** transmission — *flux 10* — that the reform asks for alongside invoicing: sales to
 consumers, transactions with parties abroad, and when the money arrived.

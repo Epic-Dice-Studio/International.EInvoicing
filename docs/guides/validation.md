@@ -37,6 +37,20 @@ foreach (RuleSetOutcome outcome in report.RuleSets)
 ## Reading what failed
 
 ```csharp
+report.Errors;                 // the rules that failed
+report.Warnings;               // the rules that fired without failing the document
+report.NotRun;                 // the rule sets nobody ran, and why
+report.Failed("BR-CO-10");     // did that one rule fail?
+```
+
+In a pipeline that must refuse a bad document, one call does the whole thing — and note that it insists on
+`IsConforming`, so a document nothing checked does not slip through:
+
+```csharp
+einvoicing.Validate(xml).EnsureConforming();   // throws with the report as the message
+```
+
+```csharp
 foreach (ValidationMessage message in report.OfAtLeast(RuleSeverity.Error))
 {
     Console.WriteLine($"{message.RuleIdentifier}  {message.Message}");
@@ -84,20 +98,53 @@ Peppol's artefacts are **not** embedded: the publisher grants no redistribution.
 ## Any rule set, including your own
 
 The engine takes Schematron as data, so anything published as `.sch` runs — national rules, a customer's own
-requirements, a draft you are testing.
+requirements, a draft you are testing. Register it once when you assemble the library and every validation
+takes it into account:
 
 ```csharp
-SchematronRuleSet mine = SchematronRuleSet.Load(
-    File.ReadAllText("acme-rules.sch"),
-    name: "Acme purchasing rules",
-    version: "2026-08");
+EInvoicing einvoicing = EInvoicing.Create(e => e
+    .AddDefaults()                                                    // EN 16931, both syntaxes
+    .AddXRechnungRules()                                              // only for documents declaring XRechnung
+    .AddRulesFromFile(                                                // an artefact you fetched
+        DocumentSyntax.Ubl, "artefacts/PEPPOL-EN16931-UBL.sch", "Peppol BIS Billing 3.0", "3.0")
+    .AddRulesFromFile(                                                // and one of your own
+        DocumentSyntax.Ubl, "acme-rules.sch", "Acme purchasing rules", "2026-08"));
 
-ValidationReport report = new SchematronValidator()
-    .Validate(xml, En16931Rules.For(DocumentSyntax.Ubl))
-    .And(new SchematronValidator().Validate(xml, mine));
+ValidationReport report = einvoicing.Validate(xml);
 ```
 
-Combining reports keeps both rule sets in the coverage block, so the result still says what ran.
+The same calls work in a container: `services.AddEInvoicing(e => e.AddDefaults().AddXRechnungRules())`.
+
+Each rule set decides for itself whether it governs the document in front of it. Pass `appliesTo` to narrow
+one to the profiles it was written for:
+
+```csharp
+.AddRulesFromFile(
+    DocumentSyntax.Ubl, "acme-rules.sch", "Acme purchasing rules", "2026-08",
+    appliesTo: profile => profile.Value?.Contains("acme") == true)
+```
+
+Everything that ran appears in the coverage block, and a document nothing covered is reported as unchecked
+with the call that would fix it.
+
+### Rules written in C#
+
+Not every rule is worth expressing in Schematron. Implement `IDocumentRuleSet` and register it the same way:
+
+```csharp
+public sealed class NoWeekendInvoices : IDocumentRuleSet
+{
+    public string Name => "Acme house rules";
+
+    public string Version => "1.0";
+
+    public bool AppliesTo(DocumentSyntax syntax, ProfileIdentifier specification) => true;
+
+    public ValidationReport Validate(string document) => …;
+}
+
+einvoicing = EInvoicing.Create(e => e.AddDefaults().AddRules(new NoWeekendInvoices()));
+```
 
 ## Why the artefacts are executed rather than translated
 

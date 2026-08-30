@@ -94,6 +94,42 @@ public sealed class EInvoiceBuilder
         return this;
     }
 
+    /// <summary>
+    /// BG-4 — who the invoice is from: the seller.
+    /// </summary>
+    /// <remarks>
+    /// An invoice has a direction, and saying it out loud reads better than naming roles: <c>From</c> the
+    /// supplier, <c>To</c> the customer. The same party as <see cref="WithSeller"/>.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="configure"/> is <c>null</c>.</exception>
+    public EInvoiceBuilder From(Action<PartyBuilder> configure) => WithSeller(configure);
+
+    /// <summary>BG-4 — who the invoice is from, when a name and a VAT number are all you have.</summary>
+    /// <param name="name">BT-27 — the seller's legal name.</param>
+    /// <param name="vatIdentifier">BT-31 — the seller's VAT identifier.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is empty.</exception>
+    public EInvoiceBuilder From(string name, string? vatIdentifier = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        return WithSeller(seller => Describe(seller, name, vatIdentifier));
+    }
+
+    /// <summary>BG-7 — who the invoice is to: the buyer. The same party as <see cref="WithBuyer"/>.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="configure"/> is <c>null</c>.</exception>
+    public EInvoiceBuilder To(Action<PartyBuilder> configure) => WithBuyer(configure);
+
+    /// <summary>BG-7 — who the invoice is to, when a name and a VAT number are all you have.</summary>
+    /// <param name="name">BT-44 — the buyer's legal name.</param>
+    /// <param name="vatIdentifier">BT-48 — the buyer's VAT identifier.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is empty.</exception>
+    public EInvoiceBuilder To(string name, string? vatIdentifier = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        return WithBuyer(buyer => Describe(buyer, name, vatIdentifier));
+    }
+
     /// <summary>BG-10 — the party to be paid, when it is not the seller.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="configure"/> is <c>null</c>.</exception>
     public EInvoiceBuilder WithPayee(Action<PartyBuilder> configure)
@@ -164,6 +200,16 @@ public sealed class EInvoiceBuilder
     /// a separate, explicit step.
     /// </summary>
     public EInvoice Build() => _invoice;
+
+    private static void Describe(PartyBuilder party, string name, string? vatIdentifier)
+    {
+        party.Named(name);
+
+        if (vatIdentifier is not null)
+        {
+            party.WithVatIdentifier(vatIdentifier);
+        }
+    }
 
     /// <summary>An amount in the document currency (BT-5).</summary>
     public AmountField Amount(decimal value) => new(value, _invoice.CurrencyCode.Value);

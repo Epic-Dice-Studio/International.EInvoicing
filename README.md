@@ -12,12 +12,26 @@ model, one set of extension points, one package per thing you actually need.
 ```csharp
 EInvoicing einvoicing = EInvoicing.CreateDefault();
 
-DocumentResult result = einvoicing.Read(stream);   // you do not say what it is
-
-if (result.Invoice is { } invoice)
+// Read: you do not say what arrived.
+if (einvoicing.Read(stream).TryGetInvoice(out EInvoice? received))
 {
-    Console.WriteLine(invoice.Number.Value);
+    Console.WriteLine(received.Number.Value);
 }
+
+// Write: from the supplier, to the customer, totals worked out from the lines.
+EInvoice invoice = EInvoiceBuilder.Create(KnownProfiles.En16931Ubl)
+    .WithNumber("FA-2026-001")
+    .IssuedOn(new DateOnly(2026, 9, 1))
+    .InCurrency("EUR")
+    .From("Fournisseur SARL", "FR32100000009")
+    .To("Client SA", "FR44200000008")
+    .AddLine(line => line.WithItem("Conseil").WithNetAmount(1000m).WithVat("S", 20m))
+    .WithComputedVatBreakdown()
+    .WithComputedTotals()
+    .Build();
+
+// Check: says what ran as well as what failed, and throws only if you ask it to.
+einvoicing.Validate(einvoicing.Write(invoice)).EnsureConforming();
 ```
 
 Start with [getting started](docs/guides/getting-started.md).

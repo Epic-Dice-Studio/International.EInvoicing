@@ -19,7 +19,9 @@ public static class UblServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.AddProfiles(KnownProfiles.All.Where(profile => profile.Syntax == DocumentSyntax.Ubl));
+        return builder
+            .ConfigureServices(services => services.AddUblServices())
+            .AddProfiles(KnownProfiles.All.Where(profile => profile.Syntax == DocumentSyntax.Ubl));
     }
 
     /// <summary>Registers the UBL reader and writer in the container.</summary>
