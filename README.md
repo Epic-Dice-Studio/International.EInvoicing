@@ -156,7 +156,7 @@ validation is never presented as a success.
 
 > **Belgium — Peppol BIS, KBO/BCE, structured communication** — Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and Peppol validation once the artefacts are fetched.
 
-> **Rest of the world** — See the roadmap below.
+> **Rest of the world** — Some fifty countries, catalogued in the roadmap below by what each would cost to add: a rule set and an identifier for the Peppol ones, a reader and a writer for the national formats, a different document entirely for the clearance countries.
 
 ### Transport
 
@@ -173,10 +173,15 @@ validation is never presented as a success.
 
 <!-- coverage:end -->
 
-**[The roadmap](docs/roadmap.md)** says what comes next and why. The short version: UBL credit notes and a
-Peppol package first — one is a document real integrations receive and this library mishandles, the other is
-ten countries for the cost of one. Then the European mandates with formats of their own (Romania, Hungary,
-Greece, Italy, Spain, Portugal, Poland), then the rest of the world.
+**[The roadmap](docs/roadmap.md)** says what comes next and why, and carries the full country catalogue —
+some fifty of them, grouped by what each would cost to add. The short version: two multipliers first, because
+both change what every country below costs. **EN 16931-1:2026** was published in May 2026 and the 2017 edition
+this library is built on was formally withdrawn; the revision is not backward compatible. And **Peppol PINT**
+is the specification everywhere Peppol was adopted outside Europe — the UAE, Malaysia, Singapore, Japan,
+Australia and New Zealand, probably the United Kingdom — which our Peppol package does not yet speak.
+After those: Croatia and Slovakia, whose B2B mandates are live or dated and cost a rule set each; Romania and
+Italy; a shared reporting model for Hungary and Greece built on the French flux 10 shape; then Spain and
+Poland; then, once the model question in the roadmap is answered, the clearance countries outside Europe.
 
 ---
 

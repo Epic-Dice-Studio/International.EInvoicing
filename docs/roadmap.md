@@ -99,6 +99,59 @@ satisfies EN 16931, `BR-FR-Flux2` and `EXTENDED-CTC-FR` in both syntaxes, measur
 Writing it uncovered a second defect: UBL has no element for the note subject code, carrying it as a
 `#AAB#` prefix, and this library dropped it on the way out and kept it as text on the way in.
 
+### 6. One country, one object ✅ *done, August 2026*
+
+**The problem.** Everything the library can do was reachable, and nothing said where to start. A caller who
+only ever invoices in France had to know the profile, the business process, the four documents France
+exchanges and which rule sets to register — before the first line of their own code.
+
+**Done.** `FrenchEInvoicing`, `GermanEInvoicing` and `BelgianEInvoicing` hold that knowledge. France reads
+all four of its documents through one call and says which arrived, including the *flux 10* report, which
+carries no XML namespace and was the one a caller would have missed. Germany parses the Leitweg-ID before
+writing it. Belgium checks the enterprise number and writes it in the scheme Peppol reserves for it. Each
+exposes `.Library`, so the shortcut is a shortcut and not a fence. See
+[the guide](guides/country-shortcuts.md).
+
+### 7. EN 16931-1:2026 — the standard moved under us
+
+**The problem.** CEN published **EN 16931-1:2026** in May 2026 and **formally withdrew the 2017 version**;
+the 2017 model stays compliant only for a migration period. Everything this library is built on — the
+semantic model, the two syntax bindings, the shipped validation artefacts, every CIUS on top of them — names
+the 2017 edition. The revision is a ViDA revision: new terms for the 2030 Digital Reporting Requirements,
+invoice coding, multiple orders, early-payment discounts and late-payment charges, wider handling of exempt
+supplies and special VAT schemes, an extension methodology, and updated UBL and CII bindings. It is
+**not backward compatible**.
+
+**Why it outranks every country below.** A country is one package. This is the model underneath all of
+them, and it decides what our public API has to look like — which is exactly the thing we just locked.
+Adding fields to `EInvoice` is a minor version; changing what a field means is not.
+
+**What would make it done.** The 2026 edition read and written alongside the 2017 one, chosen by the
+declared profile rather than by a global setting, with the coverage block in the validation report saying
+which edition a document was checked against. `Field<T>` already carries what a two-edition model needs —
+a document read as 2017 and written as 2026 must be honest about what it could not carry across, and that
+is the same loss report the UBL ↔ CII conversion needs.
+
+*Check: [ec.europa.eu — obtaining a copy of the standard](https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/467108971/Obtaining+a+copy+of+the+European+standard+on+eInvoicing).*
+
+### 8. `International.EInvoicing.Peppol` — the PINT half
+
+**The problem.** `PeppolProfiles` knows BIS Billing 3.0, which is a strict EN 16931 CIUS and was never meant
+to leave Europe. Everywhere Peppol has been adopted since — the UAE (PINT AE), Malaysia, Singapore, Japan,
+Australia and New Zealand, and probably the United Kingdom (PINT UK) — runs on **Peppol PINT**, a different
+specification with a common core and one jurisdiction specialisation per country. Today those countries look
+like they are covered by our Peppol package. They are not.
+
+**Why it is a multiplier and not a country.** PINT is to the rest of the world what BIS Billing is to
+Europe: one package, then a jurisdiction is a code list, an identifier and a rule set. It is the same trade
+that made `.Peppol` the first thing built, and it turns six or more of the countries below from projects
+into entries.
+
+**And it converges.** OpenPEPPOL's **BIS 4**, built on EN 16931-1:2026, is meant to merge BIS Billing 3.0
+and PINT into one global specification. Denmark has already cancelled OIOUBL 3.0 and committed to
+**NemHandel BIS 4** as its only domestic format by 2029 — the first national format to be retired in favour
+of it. Doing PINT and the 2026 model together is cheaper than doing either twice.
+
 ---
 
 ## Next — the promises, kept
@@ -117,48 +170,135 @@ Writing it uncovered a second defect: UBL has no element for the note subject co
 
 ---
 
-## Countries, in waves
+## Countries — the whole catalogue
 
-### Wave 1 — the Peppol dividend
+Every country worth integrating, grouped by **what it costs us**, because that is what decides the order.
+The three done ones are at the top so the tiers read as one list.
 
-Once `.Peppol` exists, these are a code list, a national identifier and a rule set each:
+> Dates below are the state as recorded **August 2026**. Mandate calendars move — Poland's has moved twice
+> — so treat every date as needing a check before it is quoted, and prefer the national portal to this page.
+> The primary sources worth keeping open:
+> [the Commission's eInvoicing country factsheets](https://ec.europa.eu/digital-building-blocks/sites/spaces/einvoicingCFS/pages/),
+> [OpenPEPPOL](https://docs.peppol.eu/), [xeinkauf.de](https://xeinkauf.de/xrechnung/) for Germany,
+> [impots.gouv.fr](https://www.impots.gouv.fr/specifications-externes-b2b-de-la-facturation-electronique) for
+> France, and [e-invoice.belgium.be](https://e-invoice.belgium.be/) for Belgium.
 
-**Netherlands · Norway · Sweden · Denmark · Finland · Ireland · Iceland**, then
-**Australia / New Zealand** (A-NZ BIS), **Singapore** (InvoiceNow), **Japan** (Peppol JP).
+### Tier 0 — done
 
-Ten-plus countries for roughly the cost of one. This is why Peppol is in *Now* and not here.
+| Country | What it needs | State |
+|---|---|---|
+| **France** | Extended CTC FR, Factur-X, CDAR lifecycle, flux 10 e-reporting, SIREN/SIRET | ✅ complete, `FrenchEInvoicing` |
+| **Germany** | XRechnung 3.x CIUS + Extension, Leitweg-ID, ZUGFeRD | ✅ complete, `GermanEInvoicing` |
+| **Belgium** | Peppol BIS Billing 3.0, KBO/BCE, structured communication | ✅ complete, `BelgianEInvoicing` |
 
-### Wave 2 — European mandates with formats of their own
+France's own calendar: reception for everyone and issuing for large and mid-sized companies on
+**1 September 2026**, issuing for the rest on **1 September 2027**. Belgium's B2B mandate started
+**1 January 2026**; Germany's issuing obligation starts **1 January 2027** above €800,000 turnover and
+**1 January 2028** for everyone.
 
-Each is a genuine project. Ordered by how much of what we have already applies:
+### Tier 1 — Peppol BIS Billing 3.0 countries · *a code list, an identifier and a rule set each*
 
-| Country | Format | What makes it work | What makes it hard |
+`.Peppol` already carries the profiles, the EAS/ICD list and participant parsing. What each of these adds is
+its national CIUS rules, its legal identifier and, where it exists, its national profile identifier.
+
+| Country | Profile / national CIUS | Identifier we would add | Mandate state |
 |---|---|---|---|
-| **Romania** | RO e-Factura | A CIUS of EN 16931 — our model fits | Its own rule set and upload rules |
-| **Hungary** | RTIR | Reporting, not invoicing — reuses the flux 10 shape | Real-time, per transaction |
-| **Greece** | myDATA | Same: a reporting model we already have a prototype of | Classification codes with no European equivalent |
-| **Italy** | FatturaPA / SDI | Well documented, huge installed base | **XAdES signature required** — a scope decision, see below |
-| **Spain** | Facturae + VeriFactu + TicketBAI | Facturae is close to EN 16931 | Three regimes at once, one of them regional (Basque Country) |
-| **Portugal** | SAF-T + ATCUD / QR | The invoice part is manageable | Certified series and a QR code leave the XML entirely |
-| **Poland** | KSeF | Large market | FA(2)/FA(3) is far from EN 16931; the calendar has already moved twice |
+| **Netherlands** | NLCIUS, SI-UBL 2.0 | KvK number, OIN | B2G mandatory; B2B voluntary |
+| **Norway** | EHF 3.0 (a CIUS of BIS Billing) | Organisasjonsnummer | B2G mandatory; B2B expected |
+| **Sweden** | Peppol BIS Billing | Organisationsnummer | B2G mandatory |
+| **Denmark** | OIOUBL 2.1 today, **NemHandel BIS 4** by 2029 | CVR number | B2G mandatory; BIS 4 migration announced March 2026 |
+| **Finland** | Peppol BIS, Finvoice 3.0, TEAPPSXML 3.0 | Y-tunnus | B2G mandatory; B2B receiving right since 2020 |
+| **Ireland** | Peppol BIS 3.0 | Tax Reference Number | B2B from **1 November 2028**, large corporates first |
+| **Iceland** | Peppol BIS | Kennitala | B2G mandatory |
+| **Lithuania** | Peppol BIS Billing | Company code | B2G since 2017 |
+| **Latvia** | Peppol BIS Billing | Registration number | B2G from **January 2026** |
+| **Estonia** | Peppol BIS, Estonian e-invoice standard | Registrikood | B2G mandatory; B2B expected ~2027 |
+| **Luxembourg** | Peppol BIS Billing | Matricule | B2G mandatory |
+| **Austria** | Peppol BIS **and ebInterface** — see Tier 3 | UID | B2G mandatory |
+| **Switzerland** | Peppol BIS, plus swissDIGIN / eCH-011 | UID (CHE) | B2G above CHF 5,000; B2B voluntary |
+| **Croatia** | Peppol-based, national rules | OIB | B2B **and** e-reporting from **1 January 2026** |
+| **Slovakia** | Peppol, five-corner model | IČO | B2B from **1 January 2027** |
+| **Slovenia** | e-SLOG, Peppol | Matična številka | B2G mandatory; B2B plans unconfirmed |
+| **Cyprus · Malta · Bulgaria · Greece (B2G)** | Peppol BIS | national VAT identifiers | B2G mandatory |
 
-### Wave 3 — outside Europe
+Croatia and Slovakia are the two that would come first: their B2B mandates are live or dated, and each is a
+rule set plus an identifier rather than a format.
 
-Not before 1.0. **Brazil** (NF-e), **Mexico** (CFDI), **India** (IRP/GST), **Saudi Arabia** (ZATCA),
-**Türkiye** (e-Fatura), **Malaysia** (MyInvois), **Vietnam**. Different documents, different tax models,
-usually a signature and an issuing authority in the loop.
+### Tier 2 — Peppol **PINT** jurisdictions · *blocked on the PINT package above*
 
-### The thread running through all of it: ViDA
+| Country | Specialisation | Mandate state |
+|---|---|---|
+| **Australia / New Zealand** | A-NZ PINT | B2G mandatory; B2B voluntary, strongly adopted |
+| **Singapore** | InvoiceNow (SG PINT) | phased GST-registered mandate under way |
+| **Japan** | JP PINT | qualified-invoice system since 2023 |
+| **Malaysia** | MyInvois — PINT MY alongside the national API | phased since 2024; above RM 1 m since **January 2026** |
+| **United Arab Emirates** | PINT AE, five-corner DCTCE model | pilot **July 2026**, mandatory **1 January 2027** above AED 50 m, **1 July 2027** below |
+| **United Kingdom** | PINT UK, expected | mandatory VAT e-invoicing announced for **April 2029**; roadmap due Budget 2026 |
 
-European *Digital Reporting Requirements* are converging on near-real-time reporting. The French flux 10
-model — a period, a transmission, a VAT split, payments — is the right prototype for it. Generalising it into
-a shared reporting model **before** adding Hungary and Greece saves writing it three times.
+Malaysia and the UAE also need their national submission rules, which are transport — out of scope here —
+but their *documents* are PINT, and the document is what we do.
+
+### Tier 3 — EN 16931 relatives with a format of their own · *a reader, a writer and a rule set*
+
+Our model fits; the syntax or the rules do not, quite.
+
+| Country | Format | What we already have that applies | What is genuinely new |
+|---|---|---|---|
+| **Romania** | RO e-Factura (a CIUS of EN 16931, UBL) | the model, the syntax, the engine | its own rule set; B2C mandatory since 2025, full enforcement below €500k from **July 2026** |
+| **Austria** | ebInterface 6.x | the model | a second national XML alongside Peppol |
+| **Italy** | FatturaPA, via SDI | the model maps to EN 16931 | its own XML tree, `Fattura` type codes, **and a qualified signature** — see below. Spec **v1.9.1** in force since May 2026, with rejections where earlier versions warned |
+| **Spain** | Facturae 3.2.x | close to EN 16931 | plus **VeriFactu** (software certification and invoice chaining, from **1 January 2026** for corporates, **1 July 2026** for the self-employed) and **TicketBAI** in the Basque Country — three regimes at once |
+| **Poland** | KSeF, FA(3) | little — FA(3) is far from EN 16931 | clearance model; live for large taxpayers **February 2026**, most others **April 2026**, micro **January 2027** |
+| **Serbia** | SEF, national UBL CIUS | the model and the syntax | its own rules; mandatory since 2023 |
+| **Czechia** | ISDOC, Peppol growing | the model | ISDOC is its own schema; no B2B mandate yet |
+| **Türkiye** | e-Fatura, **UBL-TR 1.2.1** since February 2026 | the syntax | its own CIUS and portal rules |
+
+### Tier 4 — reporting regimes · *the flux 10 shape, generalised*
+
+These are not invoice formats. They are **transmissions about invoices**, which is exactly the document
+French e-reporting already gave us a model for. Building a shared reporting model before writing the second
+one saves writing it three times.
+
+| Country | Regime | Shape |
+|---|---|---|
+| **Hungary** | RTIR / NAV | real time, per invoice, NAV XML — invoices themselves stay UBL, CII, Peppol or PDF |
+| **Greece** | myDATA | per document, with classification codes that have no European equivalent |
+| **Portugal** | SAF-T (PT) + **ATCUD** and QR code | periodic file, plus certified series and a QR code that leave the XML entirely |
+| **Spain** | VeriFactu / SII | invoice chaining and near-real-time ledger reporting |
+| **Romania** | SAF-T D406, e-Transport | periodic, alongside e-Factura |
+| **The EU, 2030** | ViDA Digital Reporting Requirements | the reason all of the above converge — and the reason EN 16931-1:2026 exists |
+
+### Tier 5 — clearance countries outside Europe · *a different document, not a different syntax*
+
+Each has its own model, its own tax vocabulary, a signature, and an authority in the loop that decides
+whether an invoice legally exists. None of them is an EN 16931 invoice in different clothes.
+
+| Region | Countries |
+|---|---|
+| **Latin America** | **Brazil** (NF-e for goods, NFS-e for services — both being reworked for the IBS/CBS reform), **Mexico** (CFDI 4.0, cleared by a PAC), **Chile** (DTE), **Colombia** (UBL 2.1, cleared by DIAN), **Peru**, **Argentina**, **Ecuador**, **Uruguay**, **Bolivia**, **Paraguay**, **Costa Rica**, **Panama**, **Guatemala**, **El Salvador**, **Dominican Republic** |
+| **Asia** | **India** (IRP / GST, a JSON schema — not XML), **China** (fully digitalised e-fapiao), **South Korea** (e-Tax invoice), **Vietnam**, **Indonesia**, **Philippines**, **Thailand** |
+| **Middle East & Africa** | **Saudi Arabia** (ZATCA, waves 23 and 24 through 2026, UBL with a cryptographic stamp), **Egypt** (ETA), **Israel** (allocation numbers, threshold down to NIS 5,000 in June 2026), **Kenya** (eTIMS), **Nigeria** (FIRS) |
+
+Latin America is where e-invoicing was invented and where coverage is universal; it is also where our
+canonical model fits worst. That is the open decision below, not a scheduling question.
+
+### What that means for the order
+
+1. **EN 16931-1:2026 and PINT** — both are multipliers, both change what the countries below cost, and both
+   are cheaper now than after another dozen profiles are built on the 2017 model.
+2. **Croatia and Slovakia** — live or dated B2B mandates, Tier 1 cost.
+3. **Romania and Italy** — the two European formats with the largest installed base that we do not read.
+   Italy needs the signature decision first.
+4. **A shared reporting model**, then Hungary and Greece on top of it.
+5. **Spain and Poland**, each a project in its own right.
+6. Outside Europe, only after the model question below is answered.
 
 ---
 
 ## Decisions still open
 
-**Electronic signatures.** Italy and Spain need XAdES on the document. The scope line so far has been "the
+**Electronic signatures.** Italy and Spain need XAdES on the document, and Saudi Arabia a cryptographic
+stamp. The scope line so far has been "the
 document, not the transport" — and a signature *is* part of the document, so the line does not settle it.
 Deciding costs nothing today and blocks Wave 2 tomorrow.
 

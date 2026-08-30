@@ -163,7 +163,7 @@
           "read": "researching",
           "write": "researching",
           "validate": "researching",
-          "notes": "See the roadmap below."
+          "notes": "Some fifty countries, catalogued in the roadmap below by what each would cost to add: a rule set and an identifier for the Peppol ones, a reader and a writer for the national formats, a different document entirely for the clearance countries."
         }
       ]
     },
