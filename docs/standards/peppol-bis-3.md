@@ -64,11 +64,38 @@ a window rather than an offset and a count, and functions that choose between br
 The example documents in `rules/examples` are illustrations from the guide, not conformance cases: several
 carry identifiers that fail `PEPPOL-COMMON-R040`. Measured against the unit corpus instead.
 
+## The package
+
+`International.EInvoicing.Peppol` carries the profiles for both syntaxes, the electronic address scheme
+codes, participant identifiers, and the registration that puts the fetched rules to work:
+
+```csharp
+EInvoicing einvoicing = EInvoicing.Create(library => library
+    .AddDefaults()
+    .AddPeppol()
+    .AddPeppolRulesFrom("specs/peppol/rules"));
+```
+
+That last call loads all four files Peppol publishes — its own rules **and** its copy of the EN 16931 ones —
+because both apply and loading only the first gives a false pass.
+
+An electronic address is an identifier plus the scheme it belongs to:
+
+```csharp
+PeppolParticipant buyer = PeppolParticipant.Parse("0208:0203201340");
+buyer.HasKnownScheme;          // true — a Belgian enterprise number
+buyer.ToElectronicAddress();   // ready for BT-49
+```
+
+The scheme list is the one EN 16931 checks in `BR-CL-25`, taken from the artefacts this library already
+ships rather than transcribed — a test compares the two on every build, so it cannot drift. It is versioned:
+`PeppolEndpointScheme.ArtefactVersion` says which. A scheme a national authority has started using may not be
+in it yet — France's `0238`, which lifecycle messages use for platforms, is not.
+
 ## Model mapping
 
 Peppol adds no elements: it restricts EN 16931 and constrains identifier schemes. The work is therefore in
-rules and code lists rather than in the model. `International.EInvoicing.Peppol` registers the profile, its
-rule set, and the EAS/ICD code lists.
+rules and code lists rather than in the model.
 
 Note the scope boundary: participant identifiers and endpoint addressing are modelled because they appear
 *in the document* (`BT-34`, `BT-49`). SMP lookup and AS4 transmission are not, and never will be — this

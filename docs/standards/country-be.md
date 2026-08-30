@@ -46,3 +46,14 @@ Peppol, so it lives in `.Peppol` and is *used* by `.Countries.Belgium`, never co
 - **"Peppol BIS plus national rules" is two rule sets**, like everywhere else.
 - **The structured communication is checksummed.** Emitting a syntactically plausible but invalid reference
   produces invoices that reconcile against nothing.
+
+## In code
+
+```csharp
+services.AddEInvoicing(library => library.AddDefaults().AddBelgium());
+```
+
+`AddBelgium()` is `AddPeppol()` plus the Belgian identifiers: the mandate is Peppol BIS Billing, not a
+Belgian format. Add the rules once you have fetched them —
+`AddPeppolRulesFrom("specs/peppol/rules")` — and see the
+[Peppol standards page](peppol-bis-3.md).

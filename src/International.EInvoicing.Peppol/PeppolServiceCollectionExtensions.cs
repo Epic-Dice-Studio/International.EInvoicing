@@ -1,0 +1,99 @@
+using International.EInvoicing.Cii;
+using International.EInvoicing.Configuration;
+using International.EInvoicing.Profiles;
+using International.EInvoicing.Ubl;
+using International.EInvoicing.Validation.Schematron;
+
+namespace International.EInvoicing.Peppol;
+
+/// <summary>Adds Peppol BIS Billing to a library instance.</summary>
+public static class PeppolServiceCollectionExtensions
+{
+    /// <summary>
+    /// Adds the Peppol profiles, and the two syntaxes they are written in.
+    /// </summary>
+    /// <remarks>
+    /// The rules are not here: Peppol publishes them under no licence, so they are fetched rather than
+    /// packaged. <see cref="AddPeppolRulesFrom"/> puts them to work once you have them.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
+    public static EInvoicingBuilder AddPeppol(this EInvoicingBuilder builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        return builder
+            .AddUbl()
+            .AddCii()
+            .AddProfiles(PeppolProfiles.All);
+    }
+
+    /// <summary>
+    /// Adds every Peppol rule set found in a directory.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Point it at the folder <c>build/fetch-specs.sh peppol</c> filled — <c>specs/peppol/rules</c> — or
+    /// wherever you keep your copy. It loads the four files Peppol publishes, its own rules and its copy of
+    /// the EN 16931 ones, for whichever of them are there.
+    /// </para>
+    /// <para>
+    /// Both apply to a Peppol document. Running only Peppol's own rules gives a false pass, which is why
+    /// this loads what it finds rather than asking you to name files one by one.
+    /// </para>
+    /// </remarks>
+    /// <param name="builder">The library being assembled.</param>
+    /// <param name="directory">Where the <c>.sch</c> files are.</param>
+    /// <param name="version">
+    /// The Peppol release the files came from, so a report can be reproduced later. Peppol releases
+    /// quarterly, and the version is part of the answer.
+    /// </param>
+    /// <returns>The builder, so registration can continue.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="directory"/> is empty.</exception>
+    /// <exception cref="DirectoryNotFoundException">There is no such directory.</exception>
+    /// <exception cref="FileNotFoundException">The directory holds none of the four rule sets.</exception>
+    public static EInvoicingBuilder AddPeppolRulesFrom(
+        this EInvoicingBuilder builder,
+        string directory,
+        string version = "3.0")
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory);
+
+        if (!Directory.Exists(directory))
+        {
+            throw new DirectoryNotFoundException(
+                $"No Peppol rule sets at '{directory}'. They declare no licence upstream, so this library "
+                + "does not ship them: run build/fetch-specs.sh peppol, or point this at your own copy.");
+        }
+
+        var added = 0;
+
+        foreach (string fileName in PeppolProfiles.RuleSetFileNames)
+        {
+            string path = Path.Combine(directory, fileName);
+
+            if (!File.Exists(path))
+            {
+                continue;
+            }
+
+            DocumentSyntax syntax = fileName.Contains("UBL", StringComparison.Ordinal)
+                ? DocumentSyntax.Ubl
+                : DocumentSyntax.Cii;
+
+            builder.AddRulesFromFile(syntax, path, Path.GetFileNameWithoutExtension(fileName), version);
+            added++;
+        }
+
+        if (added == 0)
+        {
+            throw new FileNotFoundException(
+                $"'{directory}' holds none of the Peppol rule sets ({string.Join(", ", PeppolProfiles.RuleSetFileNames)}). "
+                + "Run build/fetch-specs.sh peppol.",
+                Path.Combine(directory, PeppolProfiles.RuleSetFileNames[0]));
+        }
+
+        return builder;
+    }
+}

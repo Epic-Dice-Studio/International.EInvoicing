@@ -21,6 +21,7 @@
     <ProjectReference Include="../../src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
   </ItemGroup>
 

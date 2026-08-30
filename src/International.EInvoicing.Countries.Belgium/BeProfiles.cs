@@ -1,3 +1,4 @@
+using International.EInvoicing.Peppol;
 using International.EInvoicing.Profiles;
 
 namespace International.EInvoicing.Countries.Belgium;
@@ -12,10 +13,10 @@ namespace International.EInvoicing.Countries.Belgium;
 public static class BeProfiles
 {
     /// <summary>Peppol BIS Billing 3.0 in UBL, the syntax Belgium exchanges in.</summary>
-    public static Profile PeppolBillingUbl => KnownProfiles.PeppolBisBilling3Ubl;
+    public static Profile PeppolBillingUbl => PeppolProfiles.BillingUbl;
 
     /// <summary>Peppol BIS Billing 3.0 in CII.</summary>
-    public static Profile PeppolBillingCii => KnownProfiles.PeppolBisBilling3Cii;
+    public static Profile PeppolBillingCii => PeppolProfiles.BillingCii;
 
     /// <summary>Every profile Belgium uses.</summary>
     public static IReadOnlyList<Profile> All { get; } = [PeppolBillingUbl, PeppolBillingCii];

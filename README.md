@@ -103,7 +103,7 @@ validation is never presented as a success.
 | EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | ✅ | `International.EInvoicing.Validation.En16931` |
 | Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX` |
 | Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX.PdfSharp` |
-| Peppol BIS Billing <sub>3.0</sub> | 📋 | 📋 | 🚧 | `International.EInvoicing.Peppol` |
+| Peppol BIS Billing <sub>3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
 
 > **EN 16931 (core invoice model)** — The published Schematron artefacts are executed as data. Measured against the 23 official example documents and the 80 CIUS documents of the XRechnung test suite: all accepted.
@@ -112,7 +112,7 @@ validation is never presented as a success.
 
 > **Factur-X hybrid PDF** — Embeds the CII payload into a PDF you already produce, and extracts it back, with the Factur-X XMP metadata. Rendering a PDF and converting one to PDF/A-3 are out of scope: those are properties of the document you start from.
 
-> **Peppol BIS Billing** — The engine runs the published Peppol rules and agrees with every case of Peppol's own unit corpus — 227 of 227 for UBL, 127 of 127 for CII. The artefacts themselves declare no licence and are therefore not shipped: fetch them once with build/fetch-specs.sh peppol and load them like any other rule set. Reading and writing the CIUS is not done.
+> **Peppol BIS Billing** — The profiles for both syntaxes, the EN 16931 electronic address scheme list taken from the artefacts this library ships, and participant identifiers. The Peppol rules declare no licence and are therefore fetched, not packaged — one call loads all four once they are: AddPeppolRulesFrom(directory). The engine agrees with every case of Peppol's own unit corpus, 227 of 227 for UBL and 127 of 127 for CII.
 
 > **XRechnung (CIUS + Extension)** — Profiles for both syntaxes and the published rule sets, embedded. Measured against all 86 documents of the official KoSIT test suite.
 
@@ -125,7 +125,7 @@ validation is never presented as a success.
 | France — legal identifiers (SIREN, SIRET, VAT) | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — e-reporting (flux 10) <sub>PPF flux 10 v1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
-| Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.Belgium` |
+| Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Belgium` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
 > **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr is registered and resolves for both syntaxes, and its rule sets load and run from the fetched artefacts. The French mandatory mentions are not yet modelled.
@@ -138,7 +138,7 @@ validation is never presented as a success.
 
 > **Germany — XRechnung, ZUGFeRD, Leitweg-ID** — XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite.
 
-> **Belgium — Peppol BIS, KBO/BCE, structured communication** — The Peppol BIS profiles the mandate is built on, the KBO/BCE enterprise number and the structured communication. Peppol validation artefacts are not redistributable; fetch them locally.
+> **Belgium — Peppol BIS, KBO/BCE, structured communication** — Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and Peppol validation once the artefacts are fetched.
 
 > **Rest of the world** — See the roadmap below.
 

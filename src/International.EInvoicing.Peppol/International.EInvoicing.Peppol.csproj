@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Peppol</PackageId>
+    <RootNamespace>International.EInvoicing.Peppol</RootNamespace>
+    <Description>
+      Peppol BIS Billing 3.0 for International.EInvoicing: the profiles, the electronic address schemes
+      (EAS), participant identifiers, and the registration that puts the published Peppol rules to work once
+      you have fetched them. The Peppol artefacts declare no licence and are therefore not redistributed.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;peppol;bis;en16931;ubl;cii;eas;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Validation.Schematron/International.EInvoicing.Validation.Schematron.csproj" />
+  </ItemGroup>
+
+</Project>

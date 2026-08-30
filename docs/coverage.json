@@ -83,10 +83,10 @@
           "name": "Peppol BIS Billing",
           "version": "3.0",
           "package": "International.EInvoicing.Peppol",
-          "read": "planned",
-          "write": "planned",
-          "validate": "in-progress",
-          "notes": "The engine runs the published Peppol rules and agrees with every case of Peppol's own unit corpus — 227 of 227 for UBL, 127 of 127 for CII. The artefacts themselves declare no licence and are therefore not shipped: fetch them once with build/fetch-specs.sh peppol and load them like any other rule set. Reading and writing the CIUS is not done."
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "The profiles for both syntaxes, the EN 16931 electronic address scheme list taken from the artefacts this library ships, and participant identifiers. The Peppol rules declare no licence and are therefore fetched, not packaged — one call loads all four once they are: AddPeppolRulesFrom(directory). The engine agrees with every case of Peppol's own unit corpus, 227 of 227 for UBL and 127 of 127 for CII."
         },
         {
           "name": "XRechnung (CIUS + Extension)",
@@ -153,8 +153,8 @@
           "package": "International.EInvoicing.Countries.Belgium",
           "read": "done",
           "write": "done",
-          "validate": "planned",
-          "notes": "The Peppol BIS profiles the mandate is built on, the KBO/BCE enterprise number and the structured communication. Peppol validation artefacts are not redistributable; fetch them locally."
+          "validate": "done",
+          "notes": "Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and Peppol validation once the artefacts are fetched."
         },
         {
           "name": "Rest of the world",

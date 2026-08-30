@@ -1,4 +1,5 @@
 using International.EInvoicing.Countries.Germany;
+using International.EInvoicing.Peppol;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
 using International.EInvoicing.Validation.Schematron;
@@ -51,23 +52,25 @@ internal static class NationalRuleSets
     /// <summary>And what a caller fetches for themselves.</summary>
     private static void Fetched()
     {
-        string? peppol = Find(Path.Combine("specs", "peppol", "rules", "PEPPOL-EN16931-UBL.sch"));
+        string? peppol = Find(Path.Combine("specs", "peppol", "rules"));
         string? french = Find(Path.Combine("specs", "fr-dse", "rules"), "*CDAR*.sch");
 
         if (peppol is null && french is null)
         {
             Report.Say("No fetched artefacts here. `build/fetch-specs.sh peppol france` brings them, and then:");
-            Report.Note(".AddRulesFromFile(DocumentSyntax.Ubl, \"PEPPOL-EN16931-UBL.sch\", \"Peppol BIS Billing\", \"3.0\")");
+            Report.Note(".AddPeppolRulesFrom(\"specs/peppol/rules\")");
+            Report.Note(".AddRulesFromFile(DocumentSyntax.Cdar, \"…BR-FR-CDV…sch\", \"BR-FR-CDV\", \"1.4.0.03\")");
             return;
         }
 
         EInvoicing einvoicing = EInvoicing.Create(library =>
         {
-            library.AddDefaults();
+            library.AddDefaults().AddPeppol();
 
             if (peppol is not null)
             {
-                library.AddRulesFromFile(DocumentSyntax.Ubl, peppol, "Peppol BIS Billing 3.0", "3.0");
+                // Four files in one call: Peppol's own rules and its copy of the EN 16931 ones. Both apply.
+                library.AddPeppolRulesFrom(peppol, "3.0.20");
             }
 
             if (french is not null)
@@ -84,7 +87,7 @@ internal static class NationalRuleSets
         Report.Say("Fetched once, they are ordinary rule sets. Nothing in the library had to change to take them.");
     }
 
-    /// <summary>Looks for an artefact from the repository root, wherever the sample was started from.</summary>
+    /// <summary>Looks for an artefact or a folder from the repository root, wherever the sample was started from.</summary>
     private static string? Find(string relativePath, string? pattern = null)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
@@ -103,7 +106,7 @@ internal static class NationalRuleSets
 
         if (pattern is null)
         {
-            return File.Exists(candidate) ? candidate : null;
+            return File.Exists(candidate) || Directory.Exists(candidate) ? candidate : null;
         }
 
         return Directory.Exists(candidate)
