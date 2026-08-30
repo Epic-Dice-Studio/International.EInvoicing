@@ -31,6 +31,9 @@ All notable changes to this project are documented here. The format follows
 - CI: build and test matrix, packaging, documentation gates, upstream specification monitoring.
 
 ### Fixed
+- A control character in a caller's text no longer stops a document being written. XML cannot carry those
+  characters at all, so they are dropped and everything else — accents, symbols, emoji — is written as it
+  was. Found by reading what the neighbouring libraries have had to answer; see `docs/prior-art.md`.
 - A Schematron rule context is a match pattern, not a path from the document root. Reading it as a path
   silently matched nothing for every relative context, leaving rules such as BR-29, BR-30, BR-CL-13 and the
   whole French lifecycle set dormant.

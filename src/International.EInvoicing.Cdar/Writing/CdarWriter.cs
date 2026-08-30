@@ -5,6 +5,8 @@ using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
+using International.EInvoicing.Xml;
+
 namespace International.EInvoicing.Cdar.Writing;
 
 /// <summary>
@@ -119,8 +121,7 @@ public sealed class CdarWriter
             writer.WriteElementString(
                 CdarNames.UdtPrefix,
                 "Indicator",
-                CdarNames.Udt.NamespaceName,
-                message.CoversMultipleDocuments.Raw ?? (message.CoversMultipleDocuments.Value == true ? "true" : "false"));
+                CdarNames.Udt.NamespaceName, XmlCharacters.Sanitize(message.CoversMultipleDocuments.Raw ?? (message.CoversMultipleDocuments.Value == true ? "true" : "false")));
             writer.WriteEndElement();
         }
 
@@ -184,9 +185,8 @@ public sealed class CdarWriter
             writer.WriteElementString(
                 CdarNames.UdtPrefix,
                 "IndicatorString",
-                CdarNames.Udt.NamespaceName,
-                characteristic.ValueChanged.Raw
-                    ?? (characteristic.ValueChanged.Value == true ? "true" : "false"));
+                CdarNames.Udt.NamespaceName, XmlCharacters.Sanitize(characteristic.ValueChanged.Raw
+                    ?? (characteristic.ValueChanged.Value == true ? "true" : "false")));
             writer.WriteEndElement();
         }
 
@@ -237,7 +237,7 @@ public sealed class CdarWriter
         writer.WriteStartElement(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName);
 
     private static void Ram(XmlWriter writer, string localName, string value) =>
-        writer.WriteElementString(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName, value);
+        writer.WriteElementString(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName, XmlCharacters.Sanitize(value));
 
     private static void WriteText(XmlWriter writer, string localName, TextField field)
     {
@@ -257,10 +257,10 @@ public sealed class CdarWriter
         writer.WriteStartElement(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName);
         if (!string.IsNullOrEmpty(field.ListId))
         {
-            writer.WriteAttributeString("listID", field.ListId);
+            writer.WriteAttributeString("listID", XmlCharacters.Sanitize(field.ListId));
         }
 
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -274,10 +274,10 @@ public sealed class CdarWriter
         writer.WriteStartElement(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName);
         if (!string.IsNullOrEmpty(field.SchemeId))
         {
-            writer.WriteAttributeString("schemeID", field.SchemeId);
+            writer.WriteAttributeString("schemeID", XmlCharacters.Sanitize(field.SchemeId));
         }
 
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -291,10 +291,10 @@ public sealed class CdarWriter
         writer.WriteStartElement(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName);
         if (!string.IsNullOrEmpty(field.CurrencyCode))
         {
-            writer.WriteAttributeString("currencyID", field.CurrencyCode);
+            writer.WriteAttributeString("currencyID", XmlCharacters.Sanitize(field.CurrencyCode));
         }
 
-        writer.WriteString(field.Raw ?? field.Value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -323,9 +323,9 @@ public sealed class CdarWriter
 
         StartRam(writer, localName);
         writer.WriteStartElement(CdarNames.UdtPrefix, "DateTimeString", CdarNames.Udt.NamespaceName);
-        writer.WriteAttributeString("format", field.FormatCode ?? DateTimeField.FormatCcyyMmDdHhMmSs);
-        writer.WriteString(
-            field.Raw ?? field.Value?.UtcDateTime.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture) ?? string.Empty);
+        writer.WriteAttributeString("format", XmlCharacters.Sanitize(field.FormatCode ?? DateTimeField.FormatCcyyMmDdHhMmSs));
+        writer.WriteString(XmlCharacters.Sanitize(
+            field.Raw ?? field.Value?.UtcDateTime.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture) ?? string.Empty));
         writer.WriteEndElement();
         writer.WriteEndElement();
     }
@@ -340,9 +340,9 @@ public sealed class CdarWriter
 
         StartRam(writer, localName);
         writer.WriteStartElement(CdarNames.QdtPrefix, "DateTimeString", CdarNames.Qdt.NamespaceName);
-        writer.WriteAttributeString("format", field.FormatCode ?? DateField.FormatCcyyMmDd);
-        writer.WriteString(
-            field.Raw ?? field.Value?.ToString("yyyyMMdd", CultureInfo.InvariantCulture) ?? string.Empty);
+        writer.WriteAttributeString("format", XmlCharacters.Sanitize(field.FormatCode ?? DateField.FormatCcyyMmDd));
+        writer.WriteString(XmlCharacters.Sanitize(
+            field.Raw ?? field.Value?.ToString("yyyyMMdd", CultureInfo.InvariantCulture) ?? string.Empty));
         writer.WriteEndElement();
         writer.WriteEndElement();
     }

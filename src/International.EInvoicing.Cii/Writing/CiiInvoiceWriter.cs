@@ -4,6 +4,8 @@ using System.Xml;
 using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
+using International.EInvoicing.Xml;
+
 namespace International.EInvoicing.Cii.Writing;
 
 /// <summary>
@@ -466,7 +468,7 @@ public sealed class CiiInvoiceWriter
             writer.WriteStartElement(CiiNames.RamPrefix, "AttachmentBinaryObject", CiiNames.Ram.NamespaceName);
             WriteAttributeIfSet(writer, "mimeCode", document.Attachment.MimeCode);
             WriteAttributeIfSet(writer, "filename", document.Attachment.Filename);
-            writer.WriteString(document.Attachment.Raw ?? Convert.ToBase64String(bytes));
+            writer.WriteString(XmlCharacters.Sanitize(document.Attachment.Raw ?? Convert.ToBase64String(bytes)));
             writer.WriteEndElement();
         }
 
@@ -541,8 +543,8 @@ public sealed class CiiInvoiceWriter
 
         StartRam(writer, "SpecifiedTaxRegistration");
         writer.WriteStartElement(CiiNames.RamPrefix, "ID", CiiNames.Ram.NamespaceName);
-        writer.WriteAttributeString("schemeID", identifier.SchemeId ?? scheme);
-        writer.WriteString(identifier.Raw ?? identifier.Value ?? string.Empty);
+        writer.WriteAttributeString("schemeID", XmlCharacters.Sanitize(identifier.SchemeId ?? scheme));
+        writer.WriteString(XmlCharacters.Sanitize(identifier.Raw ?? identifier.Value ?? string.Empty));
         writer.WriteEndElement();
         writer.WriteEndElement();
     }
@@ -632,7 +634,7 @@ public sealed class CiiInvoiceWriter
         writer.WriteStartElement(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName);
 
     private static void Ram(XmlWriter writer, string localName, string value) =>
-        writer.WriteElementString(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName, value);
+        writer.WriteElementString(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName, XmlCharacters.Sanitize(value));
 
     private static void WriteText(XmlWriter writer, string localName, TextField field)
     {
@@ -643,7 +645,7 @@ public sealed class CiiInvoiceWriter
 
         writer.WriteStartElement(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName);
         WriteAttributeIfSet(writer, "languageID", field.LanguageId);
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -657,7 +659,7 @@ public sealed class CiiInvoiceWriter
         writer.WriteStartElement(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName);
         WriteAttributeIfSet(writer, "listID", field.ListId);
         WriteAttributeIfSet(writer, "listVersionID", field.ListVersionId);
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -670,7 +672,7 @@ public sealed class CiiInvoiceWriter
 
         writer.WriteStartElement(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName);
         WriteAttributeIfSet(writer, "schemeID", field.SchemeId);
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -683,7 +685,7 @@ public sealed class CiiInvoiceWriter
 
         writer.WriteStartElement(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName);
         WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode);
-        writer.WriteString(field.Raw ?? Format(field.Value));
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
         writer.WriteEndElement();
     }
 
@@ -696,7 +698,7 @@ public sealed class CiiInvoiceWriter
 
         writer.WriteStartElement(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName);
         WriteAttributeIfSet(writer, "unitCode", field.UnitCode);
-        writer.WriteString(field.Raw ?? Format(field.Value));
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
         writer.WriteEndElement();
     }
 
@@ -714,8 +716,7 @@ public sealed class CiiInvoiceWriter
         writer.WriteElementString(
             CiiNames.UdtPrefix,
             "Indicator",
-            CiiNames.Udt.NamespaceName,
-            value ? "true" : "false");
+            CiiNames.Udt.NamespaceName, XmlCharacters.Sanitize(value ? "true" : "false"));
         writer.WriteEndElement();
     }
 
@@ -737,8 +738,8 @@ public sealed class CiiInvoiceWriter
 
         StartRam(writer, localName);
         writer.WriteStartElement(prefix, "DateTimeString", namespaceName ?? CiiNames.Udt.NamespaceName);
-        writer.WriteAttributeString("format", field.FormatCode ?? DateField.FormatCcyyMmDd);
-        writer.WriteString(field.Raw ?? field.Value?.ToString("yyyyMMdd", CultureInfo.InvariantCulture) ?? string.Empty);
+        writer.WriteAttributeString("format", XmlCharacters.Sanitize(field.FormatCode ?? DateField.FormatCcyyMmDd));
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value?.ToString("yyyyMMdd", CultureInfo.InvariantCulture) ?? string.Empty));
         writer.WriteEndElement();
         writer.WriteEndElement();
     }

@@ -5,6 +5,8 @@ using International.EInvoicing.Countries.France.EReporting.Model;
 using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
+using International.EInvoicing.Xml;
+
 namespace International.EInvoicing.Countries.France.EReporting.Writing;
 
 /// <summary>
@@ -81,7 +83,7 @@ public sealed class FrEReportWriter
         if (document.IssuedAt.IsSet)
         {
             writer.WriteStartElement("IssueDateTime");
-            writer.WriteElementString("DateTimeString", Moment(document.IssuedAt));
+            writer.WriteElementString("DateTimeString", XmlCharacters.Sanitize(Moment(document.IssuedAt)));
             writer.WriteEndElement();
         }
 
@@ -270,7 +272,7 @@ public sealed class FrEReportWriter
         writer.WriteStartElement("AllowanceCharge");
         writer.WriteAttributeString(
             "ChargeIndicator",
-            allowance.IsCharge.Raw ?? (allowance.IsCharge.Value == true ? "true" : "false"));
+            XmlCharacters.Sanitize(allowance.IsCharge.Raw ?? (allowance.IsCharge.Value == true ? "true" : "false")));
 
         Amount(writer, "Amount", allowance.Amount, currencyAttribute: null);
 
@@ -301,10 +303,10 @@ public sealed class FrEReportWriter
 
             if (!string.IsNullOrEmpty(line.BilledQuantity.UnitCode))
             {
-                writer.WriteAttributeString("UnitCode", line.BilledQuantity.UnitCode);
+                writer.WriteAttributeString("UnitCode", XmlCharacters.Sanitize(line.BilledQuantity.UnitCode));
             }
 
-            writer.WriteString(line.BilledQuantity.Raw ?? Decimal(line.BilledQuantity.Value));
+            writer.WriteString(XmlCharacters.Sanitize(line.BilledQuantity.Raw ?? Decimal(line.BilledQuantity.Value)));
             writer.WriteEndElement();
         }
 
@@ -367,10 +369,9 @@ public sealed class FrEReportWriter
         if (summary.TransactionCount.IsSet)
         {
             writer.WriteElementString(
-                "TransactionsCount",
-                summary.TransactionCount.Raw
+                "TransactionsCount", XmlCharacters.Sanitize(summary.TransactionCount.Raw
                     ?? summary.TransactionCount.Value?.ToString(CultureInfo.InvariantCulture)
-                    ?? string.Empty);
+                    ?? string.Empty));
         }
 
         foreach (FrTransactionTaxSubtotal subtotal in summary.TaxSubtotals)
@@ -448,7 +449,7 @@ public sealed class FrEReportWriter
     {
         if (field.IsSet)
         {
-            writer.WriteElementString(element, field.Raw ?? field.Value ?? string.Empty);
+            writer.WriteElementString(element, XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         }
     }
 
@@ -456,7 +457,7 @@ public sealed class FrEReportWriter
     {
         if (field.IsSet)
         {
-            writer.WriteElementString(element, field.Raw ?? field.Value ?? string.Empty);
+            writer.WriteElementString(element, XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         }
     }
 
@@ -478,7 +479,7 @@ public sealed class FrEReportWriter
             writer.WriteAttributeString(schemeAttribute, field.SchemeId);
         }
 
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -496,7 +497,7 @@ public sealed class FrEReportWriter
             writer.WriteAttributeString(currencyAttribute, field.CurrencyCode);
         }
 
-        writer.WriteString(field.Raw ?? Decimal(field.Value));
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Decimal(field.Value)));
         writer.WriteEndElement();
     }
 
@@ -504,7 +505,7 @@ public sealed class FrEReportWriter
     {
         if (field.IsSet)
         {
-            writer.WriteElementString(element, field.Raw ?? Decimal(field.Value));
+            writer.WriteElementString(element, XmlCharacters.Sanitize(field.Raw ?? Decimal(field.Value)));
         }
     }
 
@@ -514,7 +515,8 @@ public sealed class FrEReportWriter
         {
             writer.WriteElementString(
                 element,
-                field.Raw ?? field.Value?.ToString("yyyyMMdd", CultureInfo.InvariantCulture) ?? string.Empty);
+                XmlCharacters.Sanitize(
+                    field.Raw ?? field.Value?.ToString("yyyyMMdd", CultureInfo.InvariantCulture) ?? string.Empty));
         }
     }
 

@@ -4,6 +4,8 @@ using System.Xml;
 using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
+using International.EInvoicing.Xml;
+
 namespace International.EInvoicing.Ubl.Writing;
 
 /// <summary>
@@ -169,7 +171,7 @@ public sealed class UblInvoiceWriter
                 writer.WriteStartElement(UblNames.CbcPrefix, "EmbeddedDocumentBinaryObject", UblNames.Cbc.NamespaceName);
                 WriteAttributeIfSet(writer, "mimeCode", document.Attachment.MimeCode);
                 WriteAttributeIfSet(writer, "filename", document.Attachment.Filename);
-                writer.WriteString(document.Attachment.Raw ?? Convert.ToBase64String(bytes));
+                writer.WriteString(XmlCharacters.Sanitize(document.Attachment.Raw ?? Convert.ToBase64String(bytes)));
                 writer.WriteEndElement();
             }
 
@@ -598,7 +600,7 @@ public sealed class UblInvoiceWriter
         writer.WriteStartElement(UblNames.CacPrefix, localName, UblNames.Cac.NamespaceName);
 
     private static void Cbc(XmlWriter writer, string localName, string value) =>
-        writer.WriteElementString(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName, value);
+        writer.WriteElementString(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName, XmlCharacters.Sanitize(value));
 
     private static void WriteText(XmlWriter writer, string localName, TextField field)
     {
@@ -609,7 +611,7 @@ public sealed class UblInvoiceWriter
 
         writer.WriteStartElement(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName);
         WriteAttributeIfSet(writer, "languageID", field.LanguageId);
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -624,7 +626,7 @@ public sealed class UblInvoiceWriter
         WriteAttributeIfSet(writer, "listID", field.ListId);
         WriteAttributeIfSet(writer, "listVersionID", field.ListVersionId);
         WriteAttributeIfSet(writer, "listAgencyID", field.ListAgencyId);
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -639,7 +641,7 @@ public sealed class UblInvoiceWriter
         WriteAttributeIfSet(writer, "schemeID", field.SchemeId);
         WriteAttributeIfSet(writer, "schemeAgencyID", field.SchemeAgencyId);
         WriteAttributeIfSet(writer, "schemeVersionID", field.SchemeVersionId);
-        writer.WriteString(field.Raw ?? field.Value ?? string.Empty);
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
         writer.WriteEndElement();
     }
 
@@ -652,7 +654,7 @@ public sealed class UblInvoiceWriter
 
         writer.WriteStartElement(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName);
         WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode);
-        writer.WriteString(field.Raw ?? Format(field.Value));
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
         writer.WriteEndElement();
     }
 
@@ -666,7 +668,7 @@ public sealed class UblInvoiceWriter
         writer.WriteStartElement(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName);
         WriteAttributeIfSet(writer, "unitCode", field.UnitCode);
         WriteAttributeIfSet(writer, "unitCodeListVersionID", field.UnitCodeListVersion);
-        writer.WriteString(field.Raw ?? Format(field.Value));
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
         writer.WriteEndElement();
     }
 
