@@ -1,3 +1,5 @@
+using System.Collections.Frozen;
+
 namespace International.EInvoicing.Peppol;
 
 /// <summary>
@@ -63,7 +65,7 @@ public static class PeppolEndpointScheme
         "9957", "9959", "AN", "AQ", "AS", "AU", "EM",
     ];
 
-    private static readonly HashSet<string> Known = new(Codes, StringComparer.Ordinal);
+    private static readonly FrozenSet<string> Known = Codes.ToFrozenSet(StringComparer.Ordinal);
 
     /// <summary>The version of the EN 16931 artefacts this list was taken from.</summary>
     public const string ArtefactVersion = "1.3.13";

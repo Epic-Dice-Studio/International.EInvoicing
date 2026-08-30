@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using International.EInvoicing.Validation.Schematron.XPath;
 using International.EInvoicing.Xml;
@@ -17,8 +18,11 @@ namespace International.EInvoicing.Validation.Schematron;
     "Performance",
     "CA1822:Mark members as static",
     Justification = "An instance API so a caller can replace this validator through the registry.")]
-public sealed class SchematronValidator
+public sealed partial class SchematronValidator
 {
+    [GeneratedRegex(@"\bB[TG]-\d+(-\d+)?\b")]
+    private static partial Regex BusinessTerm();
+
     /// <summary>Validates <paramref name="document"/> against <paramref name="ruleSet"/>.</summary>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
     public ValidationReport Validate(XDocument document, SchematronRuleSet ruleSet)
@@ -215,11 +219,7 @@ public sealed class SchematronValidator
     {
         foreach (string source in (string[])[identifier, message])
         {
-            System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(
-                source,
-                @"\bB[TG]-\d+(-\d+)?\b",
-                System.Text.RegularExpressions.RegexOptions.None,
-                TimeSpan.FromSeconds(1));
+            Match match = BusinessTerm().Match(source);
 
             if (match.Success)
             {

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -656,7 +657,7 @@ internal sealed class XPathEvaluator(
     /// </summary>
     private static string Translate(string value, string from, string to)
     {
-        var result = new System.Text.StringBuilder(value.Length);
+        var result = new StringBuilder(value.Length);
 
         foreach (char character in value)
         {
@@ -753,7 +754,7 @@ internal sealed class XPathEvaluator(
             ? decimal.MaxValue
             : start + Math.Round(arguments[2].AsNumber() ?? 0, MidpointRounding.AwayFromZero);
 
-        var result = new System.Text.StringBuilder(text.Length);
+        var result = new StringBuilder(text.Length);
 
         for (int index = 0; index < text.Length; index++)
         {

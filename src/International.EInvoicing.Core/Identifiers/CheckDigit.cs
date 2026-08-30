@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace International.EInvoicing.Identifiers;
 
 /// <summary>
@@ -114,7 +116,7 @@ public static class CheckDigit
 
         // The payload is followed by two zeroes, then the check is 98 minus what remains.
         remainder = remainder * 100 % 97;
-        return (98 - remainder).ToString("D2", System.Globalization.CultureInfo.InvariantCulture);
+        return (98 - remainder).ToString("D2", CultureInfo.InvariantCulture);
     }
 
     /// <summary>

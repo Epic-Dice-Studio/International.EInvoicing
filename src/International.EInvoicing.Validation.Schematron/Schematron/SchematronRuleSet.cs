@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using International.EInvoicing.Validation;
 using International.EInvoicing.Validation.Schematron.XPath;
@@ -32,8 +33,11 @@ internal sealed record SchematronPattern(string? Identifier, IReadOnlyList<Schem
 /// Parsed from the published artefact rather than generated from it, so replacing the file replaces the
 /// rules. The preprocessed form is what to load: its abstract patterns are already resolved.
 /// </remarks>
-public sealed class SchematronRuleSet
+public sealed partial class SchematronRuleSet
 {
+    [GeneratedRegex(@"^\[([^\]]{1,40})\]")]
+    private static partial Regex LeadingCode();
+
     private static readonly XNamespace Schematron = "http://purl.oclc.org/dsdl/schematron";
 
     private SchematronRuleSet(
@@ -204,11 +208,7 @@ public sealed class SchematronRuleSet
     /// </summary>
     private static string? CodeIn(string message)
     {
-        System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(
-            message.TrimStart(),
-            @"^\[([^\]]{1,40})\]",
-            System.Text.RegularExpressions.RegexOptions.None,
-            TimeSpan.FromSeconds(1));
+        Match match = LeadingCode().Match(message.TrimStart());
 
         return match.Success ? match.Groups[1].Value : null;
     }

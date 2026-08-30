@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace International.EInvoicing.Diagnostics;
 
 /// <summary>
@@ -42,7 +44,7 @@ public sealed class DocumentException : Exception
             return message;
         }
 
-        var text = new System.Text.StringBuilder(message);
+        var text = new StringBuilder(message);
 
         foreach (Diagnostic diagnostic in diagnostics.Where(d => d.Severity >= DiagnosticSeverity.Warning).Take(5))
         {

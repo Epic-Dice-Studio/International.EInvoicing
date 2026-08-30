@@ -149,6 +149,26 @@ public class FrCdarTests
         read.StatusIssuedAt.Value.ShouldBe(Moment);
     }
 
+    /// <summary>
+    /// A message with no moment takes it from the clock, which a test can fix — and the identifier it
+    /// derives depends on it.
+    /// </summary>
+    [Fact]
+    public void TheClockCanBeFixed()
+    {
+        var clock = new FakeClock(new DateTimeOffset(2026, 3, 4, 9, 30, 0, TimeSpan.Zero));
+
+        LifecycleStatusMessage message = FromPlatform().UsingClock(clock).Filed();
+
+        message.StatusIssuedAt.Value.ShouldBe(clock.GetUtcNow());
+        message.Identifier.Value!.ShouldContain("20260304093000");
+    }
+
+    private sealed class FakeClock(DateTimeOffset now) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => now;
+    }
+
     [Fact]
     public void AnIdentifierIsDerivedWhenTheCallerGivesNone()
     {

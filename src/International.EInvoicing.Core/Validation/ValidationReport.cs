@@ -1,3 +1,4 @@
+using System.Text;
 using International.EInvoicing.Diagnostics;
 
 namespace International.EInvoicing.Validation;
@@ -83,7 +84,7 @@ public sealed record ValidationReport(
     /// <summary>A summary a person can read, saying what ran as well as what failed.</summary>
     public override string ToString()
     {
-        var text = new System.Text.StringBuilder();
+        var text = new StringBuilder();
         text.Append(IsConforming ? "Conforming" : IsValid ? "Valid but incomplete" : "Not valid")
             .Append(" — ")
             .Append(Messages.Count)

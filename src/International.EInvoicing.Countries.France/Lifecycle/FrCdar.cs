@@ -1,3 +1,4 @@
+using System.Globalization;
 using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Values;
@@ -32,6 +33,7 @@ public sealed class FrCdar
     private readonly StatusParty _issuer;
 
     private Profile? _profile;
+    private TimeProvider _clock = TimeProvider.System;
 
     private FrCdar(StatusParty issuer)
     {
@@ -184,6 +186,22 @@ public sealed class FrCdar
         });
 
         _reference.Extensions.Add(FrExtensions.ReferenceTypeCode(FrProfiles.LifecycleStatusToPublicPortal.Id.Value));
+        return this;
+    }
+
+    /// <summary>
+    /// Where "now" comes from, when a status is reported without a moment.
+    /// </summary>
+    /// <remarks>
+    /// A message carries three timestamps and derives its identifier from one of them, so a test that cannot
+    /// fix the clock cannot assert what it built. Pass a <see cref="TimeProvider"/> and it can.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="clock"/> is <c>null</c>.</exception>
+    public FrCdar UsingClock(TimeProvider clock)
+    {
+        ArgumentNullException.ThrowIfNull(clock);
+
+        _clock = clock;
         return this;
     }
 
@@ -356,7 +374,7 @@ public sealed class FrCdar
     {
         ArgumentNullException.ThrowIfNull(status);
 
-        DateTimeOffset moment = at ?? DateTimeOffset.UtcNow;
+        DateTimeOffset moment = at ?? _clock.GetUtcNow();
 
         EnsureConsistent(status);
 
@@ -513,8 +531,8 @@ public sealed class FrCdar
     {
         string invoice = _reference.DocumentIdentifier.Value ?? "UNKNOWN";
         string type = _reference.DocumentTypeCode.Value ?? "380";
-        string issued = _reference.DocumentIssueDate.Value?.ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture)
-            ?? moment.UtcDateTime.ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+        string issued = _reference.DocumentIssueDate.Value?.ToString("yyyyMMdd", CultureInfo.InvariantCulture)
+            ?? moment.UtcDateTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
 
         return $"{invoice}_{status.Code}_{moment.UtcDateTime:yyyyMMddHHmmss}#{type}_{issued}";
     }

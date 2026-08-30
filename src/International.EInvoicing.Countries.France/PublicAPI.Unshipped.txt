@@ -97,6 +97,7 @@ International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.For(s
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.From(string! platformIdentifier, string! name) -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.Named(string! name) -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.Replacing() -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
+International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.UsingClock(System.TimeProvider! clock) -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.WithIdentifier(string! identifier) -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
 International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder
 International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder.Build() -> International.EInvoicing.Countries.France.EReporting.Model.FrEReport!
@@ -436,6 +437,7 @@ International.EInvoicing.Countries.France.Lifecycle.FrCdar.ToBuyer(string! siren
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.ToPartner(System.Action<International.EInvoicing.Countries.France.Lifecycle.FrPartyBuilder!>! recipient) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.ToPublicPortal() -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.ToSeller(string! siren, string? name = null, string? statusAddress = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.UsingClock(System.TimeProvider! clock) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.With(International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus! status, System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.WithIdentifier(string! identifier) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount

@@ -1,3 +1,4 @@
+using System.Globalization;
 using International.EInvoicing.Countries.France.EReporting.Model;
 using International.EInvoicing.Countries.France.Lifecycle;
 using International.EInvoicing.Values;
@@ -18,6 +19,8 @@ public sealed class FrEReporting
     private const string CompanyScheme = "0002";
 
     private readonly FrEReport _report = new();
+
+    private TimeProvider _clock = TimeProvider.System;
 
     private FrEReporting() =>
         _report.Document.TypeCode = FrEReportCodes.InitialTransmission;
@@ -93,6 +96,16 @@ public sealed class FrEReporting
         return this;
     }
 
+    /// <summary>Where "now" comes from, when a transmission is built without a moment.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="clock"/> is <c>null</c>.</exception>
+    public FrEReporting UsingClock(TimeProvider clock)
+    {
+        ArgumentNullException.ThrowIfNull(clock);
+
+        _clock = clock;
+        return this;
+    }
+
     /// <summary>This transmission replaces an earlier one for the same period.</summary>
     public FrEReporting Replacing()
     {
@@ -118,13 +131,13 @@ public sealed class FrEReporting
 
         if (!_report.Document.IssuedAt.IsSet)
         {
-            _report.Document.IssuedAt = DateTimeOffset.UtcNow;
+            _report.Document.IssuedAt = _clock.GetUtcNow();
         }
 
         if (!_report.Document.Identifier.IsSet)
         {
             _report.Document.Identifier = string.Create(
-                System.Globalization.CultureInfo.InvariantCulture,
+                CultureInfo.InvariantCulture,
                 $"{_report.Document.Issuer.Identifier.Value}-{from:yyyyMMdd}-{_report.Document.TypeCode.Value}");
         }
 
