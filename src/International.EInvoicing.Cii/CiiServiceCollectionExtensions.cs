@@ -1,6 +1,8 @@
 using International.EInvoicing.Cii.Reading;
 using International.EInvoicing.Cii.Writing;
 using International.EInvoicing.Configuration;
+using International.EInvoicing.Documents;
+using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -30,8 +32,16 @@ public static class CiiServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.TryAddSingleton<CiiInvoiceReader>();
-        services.TryAddSingleton<CiiInvoiceWriter>();
+        // Registered by interface first, so a reader or writer of your own sits alongside these and the
+        // facade prefers whichever was registered last. The concrete types resolve to the same instances.
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentReader<EInvoice>, CiiInvoiceReader>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentWriter<EInvoice>, CiiInvoiceWriter>());
+
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentReader<EInvoice>>().OfType<CiiInvoiceReader>().First());
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentWriter<EInvoice>>().OfType<CiiInvoiceWriter>().First());
+
         return services;
     }
 }

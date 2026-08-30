@@ -57,6 +57,9 @@ All notable changes to this project are documented here. The format follows
   `IssuedBy*` methods.
 
 ### Fixed
+- `XmlReaderSettings.Async` was set on every reader this library created while nothing ever called
+  `ReadAsync`, which selects the asynchronous-capable path inside `XmlReader` and pays for a capability
+  never used.
 - The note subject code (BT-21) was lost in UBL, which has no element for it: the code goes inside the note
   as `#AAB#…`, and the writer dropped it while the reader kept the prefix as part of the text. Three of the
   French mandatory mentions are identified by nothing else.

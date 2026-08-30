@@ -1,6 +1,7 @@
 using System.Xml.Linq;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Documents;
 using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Values;
@@ -15,7 +16,7 @@ namespace International.EInvoicing.Ubl.Reading;
 /// Reading never throws on the document: a value that cannot be typed keeps its raw text, an element outside
 /// EN 16931 is kept verbatim as extension data, and everything the reader had to give up is reported.
 /// </remarks>
-public sealed class UblInvoiceReader
+public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
 {
     private readonly EInvoicingOptions _options;
     private readonly IProfileResolver _profiles;
@@ -31,8 +32,8 @@ public sealed class UblInvoiceReader
         _profiles = profiles;
     }
 
-    /// <summary>The syntax this reader understands.</summary>
-    public static DocumentSyntax Syntax => DocumentSyntax.Ubl;
+    /// <inheritdoc />
+    public DocumentSyntax Syntax => DocumentSyntax.Ubl;
 
     /// <summary>Reads an invoice from a stream. The stream is left open.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <c>null</c>.</exception>
@@ -69,6 +70,17 @@ public sealed class UblInvoiceReader
 
         using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(xml));
         return Read(stream);
+    }
+
+    /// <inheritdoc />
+    public async Task<ParseResult<EInvoice>> ReadAsync(Stream stream, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+
+        byte[] content = await DocumentStreams.ReadAllAsync(stream, cancellationToken).ConfigureAwait(false);
+
+        using var buffered = new MemoryStream(content, writable: false);
+        return Read(buffered);
     }
 
     private EInvoice ReadInvoice(XElement root, DiagnosticCollector diagnostics)

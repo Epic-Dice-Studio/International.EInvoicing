@@ -1,4 +1,5 @@
 using International.EInvoicing.Cii.Writing;
+using International.EInvoicing.Documents;
 using International.EInvoicing.FacturX.Pdf;
 using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
@@ -15,12 +16,12 @@ namespace International.EInvoicing.FacturX;
 /// </remarks>
 public sealed class FacturXWriter
 {
-    private readonly CiiInvoiceWriter _cii;
+    private readonly IDocumentWriter<EInvoice> _cii;
     private readonly IPdfAttachmentWriter? _pdf;
 
     /// <summary>Creates a writer. Without <paramref name="pdf"/> only the CII payload can be produced.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="cii"/> is <c>null</c>.</exception>
-    public FacturXWriter(CiiInvoiceWriter cii, IPdfAttachmentWriter? pdf = null)
+    public FacturXWriter(IDocumentWriter<EInvoice> cii, IPdfAttachmentWriter? pdf = null)
     {
         ArgumentNullException.ThrowIfNull(cii);
 

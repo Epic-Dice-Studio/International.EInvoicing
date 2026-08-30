@@ -1,6 +1,7 @@
 using International.EInvoicing.Cdar;
 using International.EInvoicing.Cii;
 using International.EInvoicing.Configuration;
+using International.EInvoicing.Documents;
 using International.EInvoicing.FacturX;
 using International.EInvoicing.FacturX.Pdf;
 using International.EInvoicing.Profiles;
@@ -48,10 +49,20 @@ public static class EInvoicingBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.ConfigureServices(services => services.TryAddSingleton(provider => new EInvoicing(
-            provider.GetRequiredService<Configuration.EInvoicingOptions>(),
-            provider.GetRequiredService<IProfileResolver>(),
-            provider.GetServices<IDocumentRuleSet>(),
-            provider.GetService<IPdfAttachmentReader>())));
+        return builder.ConfigureServices(services =>
+        {
+            services.TryAddSingleton(provider => new DocumentHandlers(
+                provider.GetServices<IDocumentReader<Model.EInvoice>>(),
+                provider.GetServices<IDocumentWriter<Model.EInvoice>>(),
+                provider.GetServices<IDocumentReader<Cdar.Model.LifecycleStatusMessage>>(),
+                provider.GetServices<IDocumentWriter<Cdar.Model.LifecycleStatusMessage>>()));
+
+            services.TryAddSingleton(provider => new EInvoicing(
+                provider.GetRequiredService<Configuration.EInvoicingOptions>(),
+                provider.GetRequiredService<IProfileResolver>(),
+                provider.GetServices<IDocumentRuleSet>(),
+                provider.GetRequiredService<DocumentHandlers>(),
+                provider.GetService<IPdfAttachmentReader>()));
+        });
     }
 }

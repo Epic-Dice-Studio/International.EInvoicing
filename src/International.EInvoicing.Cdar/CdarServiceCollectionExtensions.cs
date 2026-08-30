@@ -1,6 +1,8 @@
+using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Cdar.Reading;
 using International.EInvoicing.Cdar.Writing;
 using International.EInvoicing.Configuration;
+using International.EInvoicing.Documents;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -26,8 +28,16 @@ public static class CdarServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.TryAddSingleton<CdarReader>();
-        services.TryAddSingleton<CdarWriter>();
+        // Registered by interface first, so a reader or writer of your own sits alongside these and the
+        // facade prefers whichever was registered last. The concrete types resolve to the same instances.
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentReader<LifecycleStatusMessage>, CdarReader>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentWriter<LifecycleStatusMessage>, CdarWriter>());
+
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentReader<LifecycleStatusMessage>>().OfType<CdarReader>().First());
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentWriter<LifecycleStatusMessage>>().OfType<CdarWriter>().First());
+
         return services;
     }
 }

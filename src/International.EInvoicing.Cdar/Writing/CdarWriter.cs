@@ -2,9 +2,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Xml;
 using International.EInvoicing.Cdar.Model;
+using International.EInvoicing.Documents;
 using International.EInvoicing.Model;
+using International.EInvoicing.Profiles;
 using International.EInvoicing.Values;
-
 using International.EInvoicing.Xml;
 
 namespace International.EInvoicing.Cdar.Writing;
@@ -21,14 +22,17 @@ namespace International.EInvoicing.Cdar.Writing;
     "Performance",
     "CA1822:Mark members as static",
     Justification = "An instance API so a caller can replace this writer through the registry.")]
-public sealed class CdarWriter
+public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
 {
-    /// <summary>Writes <paramref name="message"/> to <paramref name="stream"/>. The stream is left open.</summary>
+    /// <inheritdoc />
+    public DocumentSyntax Syntax => DocumentSyntax.Cdar;
+
+    /// <summary>Writes <paramref name="document"/> to <paramref name="destination"/>. The stream is left open.</summary>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
-    public void Write(LifecycleStatusMessage message, Stream stream)
+    public void Write(LifecycleStatusMessage document, Stream destination)
     {
-        ArgumentNullException.ThrowIfNull(message);
-        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(destination);
 
         var settings = new XmlWriterSettings
         {
@@ -38,19 +42,28 @@ public sealed class CdarWriter
             CloseOutput = false,
         };
 
-        using XmlWriter writer = XmlWriter.Create(stream, settings);
-        Write(message, writer);
+        using XmlWriter writer = XmlWriter.Create(destination, settings);
+        Write(document, writer);
     }
 
-    /// <summary>Writes <paramref name="message"/> and returns it as XML text.</summary>
-    /// <exception cref="ArgumentNullException"><paramref name="message"/> is <c>null</c>.</exception>
-    public string WriteToString(LifecycleStatusMessage message)
+    /// <summary>Writes <paramref name="document"/> and returns it as XML text.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="document"/> is <c>null</c>.</exception>
+    public string WriteToString(LifecycleStatusMessage document)
     {
-        ArgumentNullException.ThrowIfNull(message);
+        ArgumentNullException.ThrowIfNull(document);
 
-        using var stream = new MemoryStream();
-        Write(message, stream);
-        return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+        using var buffer = new MemoryStream();
+        Write(document, buffer);
+        return System.Text.Encoding.UTF8.GetString(buffer.ToArray());
+    }
+
+    /// <inheritdoc />
+    public Task WriteAsync(LifecycleStatusMessage document, Stream destination, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(destination);
+
+        return DocumentStreams.WriteAllAsync(WriteToString(document), destination, cancellationToken);
     }
 
     private static void Write(LifecycleStatusMessage message, XmlWriter writer)

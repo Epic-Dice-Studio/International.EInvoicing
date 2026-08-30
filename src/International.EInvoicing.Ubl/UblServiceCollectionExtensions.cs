@@ -1,4 +1,6 @@
 using International.EInvoicing.Configuration;
+using International.EInvoicing.Documents;
+using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Ubl.Reading;
 using International.EInvoicing.Ubl.Writing;
@@ -30,8 +32,16 @@ public static class UblServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.TryAddSingleton<UblInvoiceReader>();
-        services.TryAddSingleton<UblInvoiceWriter>();
+        // Registered by interface first, so a reader or writer of your own sits alongside these and the
+        // facade prefers whichever was registered last. The concrete types resolve to the same instances.
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentReader<EInvoice>, UblInvoiceReader>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentWriter<EInvoice>, UblInvoiceWriter>());
+
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentReader<EInvoice>>().OfType<UblInvoiceReader>().First());
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentWriter<EInvoice>>().OfType<UblInvoiceWriter>().First());
+
         return services;
     }
 }

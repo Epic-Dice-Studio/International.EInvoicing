@@ -8,6 +8,7 @@ using International.EInvoicing.Cii.Reading;
 using International.EInvoicing.Cii.Writing;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Documents;
 using International.EInvoicing.FacturX;
 using International.EInvoicing.FacturX.Pdf;
 using International.EInvoicing.Model;
@@ -56,47 +57,84 @@ public sealed class EInvoicing
     /// Assembles the facade from its parts. Prefer <see cref="Create(Action{EInvoicingBuilder}, IPdfAttachmentReader)"/>,
     /// or let a container do it; this exists so a container can.
     /// </summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public EInvoicing(
+        EInvoicingOptions options,
+        IProfileResolver profiles,
+        IEnumerable<IDocumentRuleSet> ruleSets)
+        : this(options, profiles, ruleSets, null)
+    {
+    }
+
+    /// <summary>The same, able to open hybrid PDFs.</summary>
     /// <exception cref="ArgumentNullException">An argument other than <paramref name="pdf"/> is <c>null</c>.</exception>
     public EInvoicing(
         EInvoicingOptions options,
         IProfileResolver profiles,
         IEnumerable<IDocumentRuleSet> ruleSets,
+        IPdfAttachmentReader? pdf)
+        : this(options, profiles, ruleSets, DocumentHandlers.CreateDefault(options, profiles), pdf)
+    {
+    }
+
+    /// <summary>
+    /// Assembles the facade over the readers and writers you name — the ones a container registered, which
+    /// is how your own take the place of the built-in ones.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">An argument other than <paramref name="pdf"/> is <c>null</c>.</exception>
+    public EInvoicing(
+        EInvoicingOptions options,
+        IProfileResolver profiles,
+        IEnumerable<IDocumentRuleSet> ruleSets,
+        DocumentHandlers handlers,
         IPdfAttachmentReader? pdf = null)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(profiles);
         ArgumentNullException.ThrowIfNull(ruleSets);
+        ArgumentNullException.ThrowIfNull(handlers);
 
         _options = options;
         _pdf = pdf;
         _ruleSets = [.. ruleSets];
         Profiles = profiles;
-
-        Ubl = new UblInvoiceReader(options, profiles);
-        Cii = new CiiInvoiceReader(options, profiles);
-        Lifecycle = new CdarReader(options, profiles);
-        UblWriter = new UblInvoiceWriter();
-        CiiWriter = new CiiInvoiceWriter();
-        LifecycleWriter = new CdarWriter();
+        Handlers = handlers;
     }
 
+    /// <summary>Which reader and writer this instance uses for each syntax.</summary>
+    public DocumentHandlers Handlers { get; }
+
     /// <summary>The UBL reader, for a caller that already knows what it holds.</summary>
-    public UblInvoiceReader Ubl { get; }
+    /// <exception cref="InvalidOperationException">Nothing is registered to read UBL.</exception>
+    public IDocumentReader<EInvoice> Ubl => Required(Handlers.InvoiceReaderFor(DocumentSyntax.Ubl), "read UBL");
 
     /// <summary>The CII reader.</summary>
-    public CiiInvoiceReader Cii { get; }
+    /// <exception cref="InvalidOperationException">Nothing is registered to read CII.</exception>
+    public IDocumentReader<EInvoice> Cii => Required(Handlers.InvoiceReaderFor(DocumentSyntax.Cii), "read CII");
 
     /// <summary>The lifecycle message reader.</summary>
-    public CdarReader Lifecycle { get; }
+    /// <exception cref="InvalidOperationException">Nothing is registered to read lifecycle messages.</exception>
+    public IDocumentReader<LifecycleStatusMessage> Lifecycle =>
+        Required(Handlers.LifecycleReader(), "read lifecycle messages");
 
     /// <summary>The UBL writer.</summary>
-    public UblInvoiceWriter UblWriter { get; }
+    /// <exception cref="InvalidOperationException">Nothing is registered to write UBL.</exception>
+    public IDocumentWriter<EInvoice> UblWriter => Required(Handlers.InvoiceWriterFor(DocumentSyntax.Ubl), "write UBL");
 
     /// <summary>The CII writer.</summary>
-    public CiiInvoiceWriter CiiWriter { get; }
+    /// <exception cref="InvalidOperationException">Nothing is registered to write CII.</exception>
+    public IDocumentWriter<EInvoice> CiiWriter => Required(Handlers.InvoiceWriterFor(DocumentSyntax.Cii), "write CII");
 
     /// <summary>The lifecycle message writer.</summary>
-    public CdarWriter LifecycleWriter { get; }
+    /// <exception cref="InvalidOperationException">Nothing is registered to write lifecycle messages.</exception>
+    public IDocumentWriter<LifecycleStatusMessage> LifecycleWriter =>
+        Required(Handlers.LifecycleWriter(), "write lifecycle messages");
+
+    private static THandler Required<THandler>(THandler? handler, string what)
+        where THandler : class =>
+        handler ?? throw new InvalidOperationException(
+            $"Nothing registered can {what}. Add the package that does — AddUbl(), AddCii(), AddCdar() — or "
+            + "register your own.");
 
     /// <summary>How declared profiles are resolved, and what this instance implements.</summary>
     public IProfileResolver Profiles { get; }
@@ -363,6 +401,25 @@ public sealed class EInvoicing
         }
 
         UblWriter.Write(invoice, destination);
+    }
+
+    /// <summary>
+    /// Writes an invoice to a stream without blocking while it is sent. The stream is left open.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    /// <exception cref="OperationCanceledException">The token was cancelled while the document was sent.</exception>
+    public Task WriteAsync(
+        EInvoice invoice,
+        DocumentFormat format,
+        Stream destination,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(invoice);
+        ArgumentNullException.ThrowIfNull(destination);
+
+        IDocumentWriter<EInvoice> writer = format == DocumentFormat.Cii ? CiiWriter : UblWriter;
+
+        return writer.WriteAsync(invoice, destination, cancellationToken);
     }
 
     /// <summary>Writes a lifecycle status message.</summary>

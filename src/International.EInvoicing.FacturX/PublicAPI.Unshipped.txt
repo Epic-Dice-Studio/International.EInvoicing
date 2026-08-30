@@ -2,11 +2,11 @@ const International.EInvoicing.FacturX.Pdf.FacturXAttachment.FacturXFileName = "
 International.EInvoicing.FacturX.FacturXDiagnostics
 International.EInvoicing.FacturX.FacturXProfiles
 International.EInvoicing.FacturX.FacturXReader
-International.EInvoicing.FacturX.FacturXReader.FacturXReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Cii.Reading.CiiInvoiceReader! cii, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf = null) -> void
+International.EInvoicing.FacturX.FacturXReader.FacturXReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>! cii, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf = null) -> void
 International.EInvoicing.FacturX.FacturXReader.Read(System.IO.Stream! content) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
 International.EInvoicing.FacturX.FacturXServiceCollectionExtensions
 International.EInvoicing.FacturX.FacturXWriter
-International.EInvoicing.FacturX.FacturXWriter.FacturXWriter(International.EInvoicing.Cii.Writing.CiiInvoiceWriter! cii, International.EInvoicing.FacturX.Pdf.IPdfAttachmentWriter? pdf = null) -> void
+International.EInvoicing.FacturX.FacturXWriter.FacturXWriter(International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.EInvoice!>! cii, International.EInvoicing.FacturX.Pdf.IPdfAttachmentWriter? pdf = null) -> void
 International.EInvoicing.FacturX.FacturXWriter.Write(International.EInvoicing.Model.EInvoice! invoice, System.IO.Stream! humanReadablePdf, System.IO.Stream! destination) -> void
 International.EInvoicing.FacturX.FacturXWriter.WritePayload(International.EInvoicing.Model.EInvoice! invoice) -> International.EInvoicing.FacturX.Pdf.FacturXAttachment!
 International.EInvoicing.FacturX.Pdf.FacturXAttachment

@@ -22,3 +22,5 @@
   href: 0010-no-pdf-rendering.md
 - name: 0011 — Track the public API in files that are reviewed
   href: 0011-public-api-tracking.md
+- name: 0012 — Asynchronous at the boundary, synchronous at the parse
+  href: 0012-async-at-the-boundary.md

@@ -1,15 +1,18 @@
 International.EInvoicing.Ubl.Reading.UblInvoiceReader
 International.EInvoicing.Ubl.Reading.UblInvoiceReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
 International.EInvoicing.Ubl.Reading.UblInvoiceReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Ubl.Reading.UblInvoiceReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!>!
+International.EInvoicing.Ubl.Reading.UblInvoiceReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Ubl.Reading.UblInvoiceReader.UblInvoiceReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
 International.EInvoicing.Ubl.UblDiagnostics
 International.EInvoicing.Ubl.UblNames
 International.EInvoicing.Ubl.UblServiceCollectionExtensions
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter
+International.EInvoicing.Ubl.Writing.UblInvoiceWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.UblInvoiceWriter() -> void
-International.EInvoicing.Ubl.Writing.UblInvoiceWriter.Write(International.EInvoicing.Model.EInvoice! invoice, System.IO.Stream! stream) -> void
-International.EInvoicing.Ubl.Writing.UblInvoiceWriter.WriteToString(International.EInvoicing.Model.EInvoice! invoice) -> string!
-static International.EInvoicing.Ubl.Reading.UblInvoiceReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Ubl.Writing.UblInvoiceWriter.Write(International.EInvoicing.Model.EInvoice! document, System.IO.Stream! destination) -> void
+International.EInvoicing.Ubl.Writing.UblInvoiceWriter.WriteAsync(International.EInvoicing.Model.EInvoice! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.Ubl.Writing.UblInvoiceWriter.WriteToString(International.EInvoicing.Model.EInvoice! document) -> string!
 static International.EInvoicing.Ubl.UblDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Ubl.UblDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Ubl.UblNames.Cac.get -> System.Xml.Linq.XNamespace!

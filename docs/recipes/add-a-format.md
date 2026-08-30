@@ -16,8 +16,8 @@ reader, a writer, and a mapper to and from the canonical model.
 
 ```
 Model/          native types, faithful to the schema, every data property a Field<T>
-Reading/        <Syntax>DocumentReader   : IDocumentReader
-Writing/        <Syntax>DocumentWriter   : IDocumentWriter
+Reading/        <Syntax>InvoiceReader    : IDocumentReader<EInvoice>
+Writing/        <Syntax>InvoiceWriter    : IDocumentWriter<EInvoice>
 Mapping/        <Syntax>InvoiceMapper    : IInvoiceMapper<TNative>
 <Syntax>ServiceCollectionExtensions.cs   Add<Syntax>() registration
 ```
@@ -26,6 +26,10 @@ Mapping/        <Syntax>InvoiceMapper    : IInvoiceMapper<TNative>
 
 - Read and write with `XmlReader`/`XmlWriter`, obtained through `SecureXml`. No reflection, no
   `XmlSerializer`.
+- `ReadAsync` and `WriteAsync` come from `DocumentStreams`: the transfer is awaited, the parse is not. Do not
+  write a second, asynchronous copy of the mapping — see [ADR 0012](../adr/0012-async-at-the-boundary.md).
+- Register both by interface and by concrete type, so a caller can inject either and substitute yours:
+  `services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentReader<EInvoice>, MyReader>())`.
 - Respect the schema's element order on write — it is normative.
 - Bind elements by namespace URI and local name, never by prefix.
 - Preserve every attribute the schema allows on a value into the matching `Field<T>` type.

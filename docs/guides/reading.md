@@ -153,6 +153,20 @@ Or construct one yourself, which is what you do when you have replaced part of t
 var reader = new UblInvoiceReader(options, profileResolver);
 ```
 
+## Without blocking
+
+Every reader has an asynchronous twin, and so does every writer:
+
+```csharp
+DocumentResult result = await einvoicing.ReadAsync(request.Body, cancellationToken);
+await einvoicing.UblWriter.WriteAsync(invoice, response.Body, cancellationToken);
+```
+
+The awaiting is the **transfer** — receiving the bytes, sending them back. The parsing in between is work,
+not waiting, so it stays synchronous: an `Async` suffix here never means "made to look like it waits". See
+[ADR 0012](../adr/0012-async-at-the-boundary.md) for why, including why asynchronous *parsing* was
+considered and rejected.
+
 ## Next
 
 - [Writing a document](writing.md)

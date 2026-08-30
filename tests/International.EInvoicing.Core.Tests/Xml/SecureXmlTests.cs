@@ -72,15 +72,22 @@ public class SecureXmlTests
         Should.Throw<XmlException>(() => ReadToEnd(reader));
     }
 
+    /// <summary>
+    /// The limit is enforced; when it bites is the reader's business. A synchronous reader reads ahead as it
+    /// is constructed, so the refusal can come from either call — what matters is that the document is never
+    /// read to the end.
+    /// </summary>
     [Fact]
     public void CreateReader_EnforcesTheDocumentSizeLimit()
     {
         var limits = new DocumentLimits { MaxDocumentCharacters = 64 };
         string oversized = $"<invoice>{new string('x', 500)}</invoice>";
 
-        using var reader = SecureXml.CreateReader(oversized, limits);
-
-        Should.Throw<XmlException>(() => ReadToEnd(reader));
+        Should.Throw<XmlException>(() =>
+        {
+            using XmlReader reader = SecureXml.CreateReader(oversized, limits);
+            ReadToEnd(reader);
+        });
     }
 
     [Fact]

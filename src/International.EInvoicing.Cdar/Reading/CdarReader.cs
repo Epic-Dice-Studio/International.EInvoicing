@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Documents;
 using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Values;
@@ -20,7 +21,7 @@ namespace International.EInvoicing.Cdar.Reading;
 /// codes without changing its shape, so a profiling this library does not know still parses: the codes come
 /// back uninterpreted, and the downgrade is reported rather than hidden.
 /// </remarks>
-public sealed class CdarReader
+public sealed class CdarReader : IDocumentReader<LifecycleStatusMessage>
 {
     private readonly EInvoicingOptions _options;
     private readonly IProfileResolver _profiles;
@@ -36,8 +37,8 @@ public sealed class CdarReader
         _profiles = profiles;
     }
 
-    /// <summary>The syntax this reader understands.</summary>
-    public static DocumentSyntax Syntax => DocumentSyntax.Cdar;
+    /// <inheritdoc />
+    public DocumentSyntax Syntax => DocumentSyntax.Cdar;
 
     /// <summary>Reads a lifecycle message from a stream. The stream is left open.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <c>null</c>.</exception>
@@ -74,6 +75,17 @@ public sealed class CdarReader
 
         using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(xml));
         return Read(stream);
+    }
+
+    /// <inheritdoc />
+    public async Task<ParseResult<LifecycleStatusMessage>> ReadAsync(Stream stream, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+
+        byte[] content = await DocumentStreams.ReadAllAsync(stream, cancellationToken).ConfigureAwait(false);
+
+        using var buffered = new MemoryStream(content, writable: false);
+        return Read(buffered);
     }
 
     private LifecycleStatusMessage ReadMessage(XElement root, DiagnosticCollector diagnostics)

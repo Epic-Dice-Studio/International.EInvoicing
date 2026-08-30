@@ -1,6 +1,7 @@
 using International.EInvoicing.Cii.Reading;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Documents;
 using International.EInvoicing.FacturX.Pdf;
 using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
@@ -19,7 +20,7 @@ public sealed class FacturXReader
     private static readonly byte[] PdfSignature = "%PDF-"u8.ToArray();
 
     private readonly EInvoicingOptions _options;
-    private readonly CiiInvoiceReader _cii;
+    private readonly IDocumentReader<EInvoice> _cii;
     private readonly IPdfAttachmentReader? _pdf;
 
     /// <summary>
@@ -27,7 +28,7 @@ public sealed class FacturXReader
     /// than thrown when a PDF arrives.
     /// </summary>
     /// <exception cref="ArgumentNullException">An argument other than <paramref name="pdf"/> is <c>null</c>.</exception>
-    public FacturXReader(EInvoicingOptions options, CiiInvoiceReader cii, IPdfAttachmentReader? pdf = null)
+    public FacturXReader(EInvoicingOptions options, IDocumentReader<EInvoice> cii, IPdfAttachmentReader? pdf = null)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(cii);

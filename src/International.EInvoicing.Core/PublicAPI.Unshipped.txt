@@ -178,6 +178,17 @@ International.EInvoicing.Diagnostics.SourceLocation.Position.get -> int
 International.EInvoicing.Diagnostics.SourceLocation.Position.init -> void
 International.EInvoicing.Diagnostics.SourceLocation.SourceLocation() -> void
 International.EInvoicing.Diagnostics.SourceLocation.SourceLocation(string? Path, int Line, int Position) -> void
+International.EInvoicing.Documents.DocumentStreams
+International.EInvoicing.Documents.IDocumentReader<TDocument>
+International.EInvoicing.Documents.IDocumentReader<TDocument>.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<TDocument!>!
+International.EInvoicing.Documents.IDocumentReader<TDocument>.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<TDocument!>!
+International.EInvoicing.Documents.IDocumentReader<TDocument>.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<TDocument!>!>!
+International.EInvoicing.Documents.IDocumentReader<TDocument>.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Documents.IDocumentWriter<TDocument>
+International.EInvoicing.Documents.IDocumentWriter<TDocument>.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Documents.IDocumentWriter<TDocument>.Write(TDocument document, System.IO.Stream! destination) -> void
+International.EInvoicing.Documents.IDocumentWriter<TDocument>.WriteAsync(TDocument document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.Documents.IDocumentWriter<TDocument>.WriteToString(TDocument document) -> string!
 International.EInvoicing.Identifiers.CheckDigit
 International.EInvoicing.Model.AdditionalDocument
 International.EInvoicing.Model.AdditionalDocument.AdditionalDocument() -> void
@@ -947,6 +958,9 @@ static International.EInvoicing.Diagnostics.ParseResult.Success<T>(T! value) -> 
 static International.EInvoicing.Diagnostics.SourceLocation.None.get -> International.EInvoicing.Diagnostics.SourceLocation
 static International.EInvoicing.Diagnostics.SourceLocation.operator !=(International.EInvoicing.Diagnostics.SourceLocation left, International.EInvoicing.Diagnostics.SourceLocation right) -> bool
 static International.EInvoicing.Diagnostics.SourceLocation.operator ==(International.EInvoicing.Diagnostics.SourceLocation left, International.EInvoicing.Diagnostics.SourceLocation right) -> bool
+static International.EInvoicing.Documents.DocumentStreams.ReadAll(System.IO.Stream! stream) -> byte[]!
+static International.EInvoicing.Documents.DocumentStreams.ReadAllAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<byte[]!>!
+static International.EInvoicing.Documents.DocumentStreams.WriteAllAsync(string! content, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 static International.EInvoicing.Identifiers.CheckDigit.Compact(string! value) -> string!
 static International.EInvoicing.Identifiers.CheckDigit.IsIban(string? value) -> bool
 static International.EInvoicing.Identifiers.CheckDigit.Iso7064Mod97(System.ReadOnlySpan<char> payload) -> string?

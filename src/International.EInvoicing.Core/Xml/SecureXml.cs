@@ -30,8 +30,9 @@ public static class SecureXml
             IgnoreComments = false,
             IgnoreProcessingInstructions = false,
             ValidationType = ValidationType.None,
+            // Not Async: nothing here calls XmlReader.ReadAsync. Parsing is work, not waiting, and the
+            // asynchronous boundary is the transfer — see docs/adr/0012-async-at-the-boundary.md.
             CloseInput = false,
-            Async = true,
         };
     }
 

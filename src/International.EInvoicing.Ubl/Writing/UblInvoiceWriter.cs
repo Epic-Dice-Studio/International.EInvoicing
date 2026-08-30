@@ -1,9 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Xml;
+using International.EInvoicing.Documents;
 using International.EInvoicing.Model;
+using International.EInvoicing.Profiles;
 using International.EInvoicing.Values;
-
 using International.EInvoicing.Xml;
 
 namespace International.EInvoicing.Ubl.Writing;
@@ -26,14 +27,17 @@ namespace International.EInvoicing.Ubl.Writing;
     "Performance",
     "CA1822:Mark members as static",
     Justification = "An instance API so a caller can replace this writer through the registry.")]
-public sealed class UblInvoiceWriter
+public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 {
-    /// <summary>Writes <paramref name="invoice"/> to <paramref name="stream"/>. The stream is left open.</summary>
+    /// <inheritdoc />
+    public DocumentSyntax Syntax => DocumentSyntax.Ubl;
+
+    /// <summary>Writes <paramref name="document"/> to <paramref name="destination"/>. The stream is left open.</summary>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
-    public void Write(EInvoice invoice, Stream stream)
+    public void Write(EInvoice document, Stream destination)
     {
-        ArgumentNullException.ThrowIfNull(invoice);
-        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(destination);
 
         var settings = new XmlWriterSettings
         {
@@ -43,19 +47,28 @@ public sealed class UblInvoiceWriter
             CloseOutput = false,
         };
 
-        using XmlWriter writer = XmlWriter.Create(stream, settings);
-        Write(invoice, writer);
+        using XmlWriter writer = XmlWriter.Create(destination, settings);
+        Write(document, writer);
     }
 
-    /// <summary>Writes <paramref name="invoice"/> and returns it as XML text.</summary>
-    /// <exception cref="ArgumentNullException"><paramref name="invoice"/> is <c>null</c>.</exception>
-    public string WriteToString(EInvoice invoice)
+    /// <summary>Writes <paramref name="document"/> and returns it as XML text.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="document"/> is <c>null</c>.</exception>
+    public string WriteToString(EInvoice document)
     {
-        ArgumentNullException.ThrowIfNull(invoice);
+        ArgumentNullException.ThrowIfNull(document);
 
-        using var stream = new MemoryStream();
-        Write(invoice, stream);
-        return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+        using var buffer = new MemoryStream();
+        Write(document, buffer);
+        return System.Text.Encoding.UTF8.GetString(buffer.ToArray());
+    }
+
+    /// <inheritdoc />
+    public Task WriteAsync(EInvoice document, Stream destination, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(destination);
+
+        return DocumentStreams.WriteAllAsync(WriteToString(document), destination, cancellationToken);
     }
 
     private static void Write(EInvoice invoice, XmlWriter writer)
