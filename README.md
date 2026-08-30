@@ -155,11 +155,10 @@ validation is never presented as a success.
 
 <!-- coverage:end -->
 
-Roadmap after 1.0: French e-reporting, then Italy (FatturaPA/SDI), Spain (Facturae, VeriFactu, TicketBAI),
-Portugal (SAF-T, ATCUD), Poland (KSeF), Romania (RO e-Factura), Hungary (RTIR), Greece (myDATA), the
-Peppol-based Nordics and Netherlands, Switzerland, the United Kingdom — then Brazil (NF-e), Mexico (CFDI),
-India (IRP), Saudi Arabia (ZATCA), Türkiye, Singapore (InvoiceNow), Australia/New Zealand, Japan, Malaysia
-(MyInvois), Vietnam.
+**[The roadmap](docs/roadmap.md)** says what comes next and why. The short version: UBL credit notes and a
+Peppol package first — one is a document real integrations receive and this library mishandles, the other is
+ten countries for the cost of one. Then the European mandates with formats of their own (Romania, Hungary,
+Greece, Italy, Spain, Portugal, Poland), then the rest of the world.
 
 ---
 

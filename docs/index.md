@@ -15,6 +15,7 @@ Generate, read and validate electronic invoices in .NET — for every country, w
 | [Diagnostics](diagnostics/README.md) | What each `EIV` code means and how to act on it |
 | [Recipes](recipes/README.md) | Add a format, a country, a profile, a rule |
 | [Decisions](adr/README.md) | Why the library is shaped the way it is |
+| [Roadmap](roadmap.md) | What comes next, and why it is next |
 
 ## The three promises
 
