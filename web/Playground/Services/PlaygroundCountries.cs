@@ -1,6 +1,8 @@
 using International.EInvoicing.Building;
 using International.EInvoicing.Countries.Belgium;
 using International.EInvoicing.Countries.Belgium.Identifiers;
+using International.EInvoicing.Countries.Croatia;
+using International.EInvoicing.Countries.Croatia.Identifiers;
 using International.EInvoicing.Countries.Denmark;
 using International.EInvoicing.Countries.Denmark.Identifiers;
 using International.EInvoicing.Countries.France;
@@ -54,6 +56,7 @@ public static class PlaygroundCountries
         Sweden(),
         Denmark(),
         Iceland(),
+        Croatia(),
     ];
 
     /// <summary>The country with that code, or the neutral entry.</summary>
@@ -278,6 +281,54 @@ public static class PlaygroundCountries
         Trap = "IS-R-002 and IS-R-004 are fatal: both parties need a legal entity identifier carrying "
             + "scheme 0196, the kennitala.",
     };
+
+    private static PlaygroundCountry Croatia() => new()
+    {
+        Code = "HR",
+        Name = "Croatia",
+        Currency = "EUR",
+        Facade = "CroatianEInvoicing",
+        Profiles =
+        [
+            new("Peppol BIS Billing 3.0 (UBL)", HrProfiles.PeppolBillingUbl),
+            new("Peppol BIS Billing 3.0 (CII)", HrProfiles.PeppolBillingCii),
+        ],
+        SellerIdentifier = "69435151530",
+        BuyerIdentifier = ValidOib(12_345_678_90L),
+        Prepare = builder => builder.ForPeppol(),
+        Describe = (party, oib, name) => CroatianEInvoicing.Create().Describe(party, oib, name),
+        CreationSnippet = "CroatianEInvoicing hrvatska = CroatianEInvoicing.Create();",
+        DescribeSnippet = (oib, name) => $"seller => hrvatska.Describe(seller, \"{oib}\", \"{name}\")",
+        RuleSets =
+        [
+            En16931,
+            PeppolRules,
+            new PlaygroundRuleSet(
+                "HR-FISK 2.0",
+                Embedded: false,
+                "Croatia publishes its CIUS identifier and Schematron where this repository cannot read "
+                    + "them, so neither is asserted here."),
+        ],
+        Trap = "Fiskalizacija 2.0 has been live since 1 January 2026 and wants three things per invoice. "
+            + "This is one of them: the OIB of both parties. The other two — an advanced electronic seal, "
+            + "and a fiscalisation report from each party — are a signature and a transport, neither of "
+            + "which this library does.",
+    };
+
+    /// <summary>An OIB whose eleventh digit closes ISO/IEC 7064 MOD 11,10 over the first ten.</summary>
+    private static string ValidOib(long tenDigits)
+    {
+        string body = tenDigits.ToString("D10", System.Globalization.CultureInfo.InvariantCulture);
+        int remainder = 10;
+
+        foreach (char digit in body)
+        {
+            remainder = (remainder + (digit - '0')) % 10;
+            remainder = (remainder == 0 ? 10 : remainder) * 2 % 11;
+        }
+
+        return body + ((11 - remainder) % 10).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    }
 
     /// <summary>The first number in the range that satisfies the country's own check.</summary>
     private static string Valid(Func<string, bool> isValid, long from, long to)

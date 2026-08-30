@@ -211,6 +211,7 @@ The three done ones are at the top so the tiers read as one list.
 | **Denmark** | Peppol BIS Billing, CVR, the payment means `DK-R-005` allows | ✅ complete, `DanishEInvoicing` |
 | **Netherlands** | Peppol BIS Billing, the KvK/OIN scheme `NL-R-003` demands | ✅ complete, `DutchEInvoicing` — NLCIUS still open, below |
 | **Iceland** | Peppol BIS Billing, kennitala in the scheme `IS-R-002` demands | ✅ complete, `IcelandicEInvoicing` |
+| **Croatia** | Peppol BIS Billing, OIB on both parties | 🚧 the invoice, `CroatianEInvoicing` — the seal and the fiscalisation reporting are not ours to do |
 
 France's own calendar: reception for everyone and issuing for large and mid-sized companies on
 **1 September 2026**, issuing for the rest on **1 September 2027**. Belgium's B2B mandate started
@@ -232,7 +233,6 @@ its national CIUS rules, its legal identifier and, where it exists, its national
 | **Luxembourg** | Peppol BIS Billing | Matricule | B2G mandatory |
 | **Austria** | Peppol BIS **and ebInterface** — see Tier 3 | UID | B2G mandatory |
 | **Switzerland** | Peppol BIS, plus swissDIGIN / eCH-011 | UID (CHE) | B2G above CHF 5,000; B2B voluntary |
-| **Croatia** | Peppol-based, national rules | OIB | B2B **and** e-reporting from **1 January 2026** |
 | **Slovakia** | Peppol, five-corner model | IČO | B2B from **1 January 2027** |
 | **Slovenia** | e-SLOG, Peppol | Matična številka | B2G mandatory; B2B plans unconfirmed |
 | **Cyprus · Malta · Bulgaria · Greece (B2G)** | Peppol BIS | national VAT identifiers | B2G mandatory |
@@ -248,8 +248,25 @@ because its published specification identifier is in no artefact this repository
 identifier in BT-24 makes every document written with it wrong. One confirmed fact closes it. Denmark's
 **OIOUBL 2.1** is a syntax of its own, and a separate project.
 
-Of what has not been started, **Croatia and Slovakia** come first: their B2B mandates are live or dated, and
-each is a rule set plus an identifier rather than a format.
+**Croatia turned out not to belong in this tier at all**, and finding out is worth recording. From the
+outside it looked like the cheapest kind of country — Peppol, EN 16931, a national CIUS. In fact
+*Fiskalizacija 2.0* requires three things per invoice, and two of them are not documents: an **advanced
+electronic seal** produced with a certificate the invoicing system holds, and **two fiscalisation reports**,
+one from each party, to the tax administration. This library signs nothing and performs no network I/O, so
+what it can do is the third thing — a valid invoice carrying both OIBs — which
+[`CroatianEInvoicing`](standards/country-hr.md) now does. The rest belongs to the caller, and the signature
+question it raises is the same one Italy and Spain raise, still open below.
+
+**Slovakia** is the genuine Tier 1 remainder: Peppol BIS Billing 3.0 with a Slovak CIUS from
+**1 January 2027**, plus an SK tax data document sent to the financial administration within fifteen minutes
+— again transport, not document.
+
+Which leaves a pattern worth naming. **Three countries in a row are blocked on the same thing**: NLCIUS,
+HR-FISK 2.0 and the Slovak CIUS all publish a specification identifier that is in no artefact this repository
+can read, and this library will not guess one — a wrong value in BT-24 makes every document written with it
+wrong. That is not effort, it is a fact each needs. Until then each country's package covers the Peppol layer
+underneath its CIUS, which is most of the work, and registering the CIUS from your own code wins over
+anything built in.
 
 ### Tier 2 — Peppol **PINT** jurisdictions · *blocked on the PINT package above*
 

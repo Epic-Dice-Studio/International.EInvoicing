@@ -202,6 +202,15 @@
           "notes": "Peppol BIS Billing, and the kennitala with its modulo 11 check, written where IS-R-002 and IS-R-004 look for it."
         },
         {
+          "name": "Croatia — Peppol BIS, OIB",
+          "version": "BIS 3.0",
+          "package": "International.EInvoicing.Countries.Croatia",
+          "read": "done",
+          "write": "done",
+          "validate": "in-progress",
+          "notes": "The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10. The HR-FISK 2.0 CIUS is not carried — its identifier is published nowhere this repository can read — and neither is the advanced electronic seal or the fiscalisation reporting, which are a signature and a transport."
+        },
+        {
           "name": "Rest of the world",
           "version": "—",
           "package": "—",

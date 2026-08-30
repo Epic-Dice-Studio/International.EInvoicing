@@ -27,6 +27,9 @@ jobs:
       - run: dotnet test -c Release --no-build -p:TestAllTargetFrameworks=true
       - run: dotnet pack -c Release --no-build -o artifacts
 
+      - name: What was packed
+        run: ls -1 artifacts/*.nupkg | sed 's|artifacts/||'
+
       # Trusted publishing rather than a stored API key: nuget.org keys now expire after 30 days, so a
       # secret would need replacing every month. This exchanges the workflow's OIDC token for a key that
       # lives about an hour. Configure the matching policy on nuget.org - see CONTRIBUTING.md.

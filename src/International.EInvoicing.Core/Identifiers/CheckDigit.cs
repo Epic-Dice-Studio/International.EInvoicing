@@ -96,6 +96,40 @@ public static class CheckDigit
     }
 
     /// <summary>
+    /// Whether the digits satisfy ISO/IEC 7064 MOD 11,10 — the scheme behind the Croatian OIB.
+    /// </summary>
+    /// <remarks>
+    /// It is a running calculation rather than a weighted sum: each digit folds into the remainder, and the
+    /// check digit is what closes it. A step that lands on 10 leaves no valid check digit, so such a number
+    /// does not exist.
+    /// </remarks>
+    /// <param name="digits">Digits only, check digit included.</param>
+    public static bool SatisfiesIso7064Mod11To10(ReadOnlySpan<char> digits)
+    {
+        if (digits.Length < 2)
+        {
+            return false;
+        }
+
+        int remainder = 10;
+
+        for (int index = 0; index < digits.Length - 1; index++)
+        {
+            if (!char.IsAsciiDigit(digits[index]))
+            {
+                return false;
+            }
+
+            remainder = (remainder + (digits[index] - '0')) % 10;
+            remainder = (remainder == 0 ? 10 : remainder) * 2 % 11;
+        }
+
+        int check = (11 - remainder) % 10;
+
+        return char.IsAsciiDigit(digits[^1]) && check == digits[^1] - '0';
+    }
+
+    /// <summary>
     /// Whether the digits satisfy the GS1 check digit — the one on a GLN, a GTIN or an SSCC.
     /// </summary>
     /// <remarks>Weights alternate 3 and 1 from the digit before the check digit leftwards.</remarks>

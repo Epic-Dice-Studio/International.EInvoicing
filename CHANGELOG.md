@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Croatia**, whose mandate has been live since 1 January 2026. `CroatianEInvoicing` writes the OIB of both
+  parties — which EN 16931 never asks for and Croatia always does — checked against ISO/IEC 7064 MOD 11,10
+  before it is written, with the scheme on the electronic address rather than on the registration identifier,
+  where `BR-CL-11` refuses an EAS code. It deliberately stops there: the advanced electronic seal and the two
+  fiscalisation reports are a signature and a transport, and HR-FISK 2.0's own identifier is published
+  nowhere this repository can read. The roadmap now says so — Croatia had been listed as a cheap Tier 1
+  country, and it is not one.
+- `CheckDigit.SatisfiesIso7064Mod11To10`, checked against the worked example the Croatian tax administration
+  publishes rather than only against itself.
 - **The playground is now a country-first tool rather than a demonstration of one invoice.** Choose a
   country and everything after it follows: the profiles it exchanges, the currency, the identifier schemes,
   the business process, the rules that apply — and the one thing about that country that surprises people.

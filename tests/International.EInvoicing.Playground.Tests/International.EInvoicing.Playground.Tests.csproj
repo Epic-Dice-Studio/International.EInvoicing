@@ -24,6 +24,7 @@
     <ProjectReference Include="../../src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Countries.Croatia/International.EInvoicing.Countries.Croatia.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Netherlands/International.EInvoicing.Countries.Netherlands.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Norway/International.EInvoicing.Countries.Norway.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Sweden/International.EInvoicing.Countries.Sweden.csproj" />

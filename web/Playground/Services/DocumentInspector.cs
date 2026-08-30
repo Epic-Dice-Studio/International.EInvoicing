@@ -1,4 +1,5 @@
 using International.EInvoicing.Countries.Belgium;
+using International.EInvoicing.Countries.Croatia;
 using International.EInvoicing.Countries.Denmark;
 using International.EInvoicing.Countries.France;
 using International.EInvoicing.Countries.Germany;
@@ -41,7 +42,8 @@ public sealed class DocumentInspector
         .AddNorway()
         .AddSweden()
         .AddDenmark()
-        .AddIceland());
+        .AddIceland()
+        .AddCroatia());
 
     /// <summary>The library this page is running, for the panels that want to ask it what it knows.</summary>
     public EInvoicing Library => _library;

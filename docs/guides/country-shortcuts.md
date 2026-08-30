@@ -17,6 +17,7 @@ Three types hold that knowledge for you:
 | `DanishEInvoicing` | `International.EInvoicing.Countries.Denmark` |
 | `DutchEInvoicing` | `International.EInvoicing.Countries.Netherlands` |
 | `IcelandicEInvoicing` | `International.EInvoicing.Countries.Iceland` |
+| `CroatianEInvoicing` | `International.EInvoicing.Countries.Croatia` |
 
 None of them is a wall. Each exposes `.Library`, the fully assembled `EInvoicing` underneath, so anything the
 shortcut does not cover is one property away.
@@ -220,6 +221,30 @@ NLCIUS is deliberately absent from the Dutch package: its published specificatio
 artefact this repository holds, and guessing one is how a library starts rejecting valid documents. Register
 it yourself and it wins.
 
+## Croatia, and what a shortcut cannot do
+
+Croatia's *Fiskalizacija 2.0* mandate has been live for domestic B2B since 1 January 2026, and it is the
+first country here where the shortcut covers only part of what the country asks for. Three things happen per
+invoice, and only one of them is a document:
+
+```csharp
+CroatianEInvoicing hrvatska = CroatianEInvoicing.Create();
+
+hrvatska.Invoice()
+    .From(seller => hrvatska.Describe(seller, "69435151530", "Dobavljač d.o.o."))
+    .To(buyer => hrvatska.Describe(buyer, "12345678903", "Kupac d.o.o."));
+```
+
+`Describe` checks the OIB against ISO/IEC 7064 MOD 11,10, derives the VAT number, and writes the number where
+both the legal registration and the electronic address are read from — the mandate requires the OIB of
+**both** parties, which EN 16931 never asks for.
+
+The other two things are the **advanced electronic seal** every invoice must carry and the **fiscalisation
+reports** each party sends to the tax administration. This library signs nothing and performs no network
+I/O, so both belong to you. **HR-FISK 2.0**, Croatia's own CIUS, is absent for the same reason as NLCIUS: its
+published identifier is in no artefact this repository can read. See
+[the Croatian page](../standards/country-hr.md).
+
 ## Wiring one into a container
 
 `Create(configure)` takes the same builder the general library takes, so anything you would have registered
@@ -233,6 +258,6 @@ builder.Services.AddSingleton(provider =>
 
 ## Somewhere else?
 
-Only these eight countries have a shortcut today. Every other country is reachable through the general
+Only these nine countries have a shortcut today. Every other country is reachable through the general
 library — a profile, a rule set fetched from its publisher, and the identifiers it needs. What is planned,
 country by country and in what order, is in the [roadmap](../roadmap.md).

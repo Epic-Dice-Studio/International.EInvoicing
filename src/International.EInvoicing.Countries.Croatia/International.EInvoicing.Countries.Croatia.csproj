@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Croatia</PackageId>
+    <Description>
+      What Croatian electronic invoicing adds on top of the norms: the OIB both parties must carry under the
+      Fiskalizacija 2.0 mandate, and the Peppol BIS profile it is exchanged in.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;croatia;hrvatska;fiskalizacija;peppol;oib;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>
