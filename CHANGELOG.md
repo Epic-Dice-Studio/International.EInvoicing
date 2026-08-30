@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Norway, Sweden and Denmark.** Three more country packages, each with the shortcut object its neighbours
+  have: `NorwegianEInvoicing` declaring EHF 3.0, `SwedishEInvoicing` and `DanishEInvoicing` declaring Peppol
+  BIS Billing, each in its own currency and with the business process the network requires. Their national
+  validation rules need nothing extra fetched — they travel inside the Peppol rule set.
+- Their legal identifiers come with them: the Norwegian organisasjonsnummer (modulo 11), the Swedish
+  organisationsnummer (Luhn) and the Danish CVR number, each written in the scheme Peppol reserves for it and
+  checked before it is written. The checks are not trusted on their own — a test hands every number the
+  library accepts, and a set it refuses, to Peppol's own rule for that scheme and fails on any disagreement.
+- `DkPaymentMeans`, because `DK-R-005` refuses payment means code 30 — plain credit transfer, perfectly valid
+  EN 16931 — between two Danish parties. The allowed codes are read out of the rule itself.
+- `CheckDigit.SatisfiesMod11` and `CheckDigit.SatisfiesGs1`, the two schemes the Nordic and GS1 identifiers
+  are built on.
 - **The edition of EN 16931 a document declares is now something the library names.** CEN published
   EN 16931-1:2026 in May 2026 and withdrew the 2017 edition this library implements. `En16931Edition` reads
   the edition out of the specification identifier, and a document declaring one we do not implement is

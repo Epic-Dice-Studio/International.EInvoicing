@@ -15,6 +15,9 @@ format is a matter of following the page rather than rediscovering the norm.
 | [country-fr.md](country-fr.md) | France: reform, CIUS, CDAR profiling, identifiers. |
 | [country-de.md](country-de.md) | Germany: mandate, accepted formats, Leitweg-ID. |
 | [country-be.md](country-be.md) | Belgium: mandate, Peppol rules, national identifiers. |
+| [country-no.md](country-no.md) | Norway: EHF 3.0, the organisation number, the rules inside Peppol. |
+| [country-se.md](country-se.md) | Sweden: Peppol BIS, the organisation number, Bankgiro and Plusgiro. |
+| [country-dk.md](country-dk.md) | Denmark: NemHandel, the CVR number, the payment means Denmark refuses. |
 
 Before a standard is declared done, its page should also record what [prior art](../prior-art.md) revealed:
 mature implementations have already met the documents that break new ones.

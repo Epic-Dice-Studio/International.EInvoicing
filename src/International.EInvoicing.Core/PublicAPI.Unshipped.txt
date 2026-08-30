@@ -977,7 +977,9 @@ static International.EInvoicing.Identifiers.CheckDigit.Compact(string! value) ->
 static International.EInvoicing.Identifiers.CheckDigit.IsIban(string? value) -> bool
 static International.EInvoicing.Identifiers.CheckDigit.Iso7064Mod97(System.ReadOnlySpan<char> payload) -> string?
 static International.EInvoicing.Identifiers.CheckDigit.Modulo97(System.ReadOnlySpan<char> digits) -> int?
+static International.EInvoicing.Identifiers.CheckDigit.SatisfiesGs1(System.ReadOnlySpan<char> digits) -> bool
 static International.EInvoicing.Identifiers.CheckDigit.SatisfiesLuhn(System.ReadOnlySpan<char> digits) -> bool
+static International.EInvoicing.Identifiers.CheckDigit.SatisfiesMod11(System.ReadOnlySpan<char> digits, System.ReadOnlySpan<int> weights) -> bool
 static International.EInvoicing.Model.ExtensionElement.operator !=(International.EInvoicing.Model.ExtensionElement? left, International.EInvoicing.Model.ExtensionElement? right) -> bool
 static International.EInvoicing.Model.ExtensionElement.operator ==(International.EInvoicing.Model.ExtensionElement? left, International.EInvoicing.Model.ExtensionElement? right) -> bool
 static International.EInvoicing.Model.InvoiceTypeCodes.IsCreditNote(string? typeCode) -> bool

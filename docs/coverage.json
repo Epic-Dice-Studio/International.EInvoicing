@@ -157,6 +157,33 @@
           "notes": "Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and Peppol validation once the artefacts are fetched."
         },
         {
+          "name": "Norway — EHF 3.0, organisasjonsnummer",
+          "version": "EHF 3.0",
+          "package": "International.EInvoicing.Countries.Norway",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "EHF 3.0, the national CIUS of Peppol BIS, and the organisation number whose modulo 11 check is measured against the rule Peppol publishes for scheme 0192. The Norwegian rules travel inside the Peppol rule set."
+        },
+        {
+          "name": "Sweden — Peppol BIS, organisationsnummer",
+          "version": "BIS 3.0",
+          "package": "International.EInvoicing.Countries.Sweden",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "Peppol BIS Billing, and the organisation number whose Luhn check is measured against the rule Peppol publishes for scheme 0007. The Swedish rules travel inside the Peppol rule set."
+        },
+        {
+          "name": "Denmark — Peppol BIS, CVR, allowed payment means",
+          "version": "BIS 3.0",
+          "package": "International.EInvoicing.Countries.Denmark",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "Peppol BIS Billing over NemHandel, the CVR number in the schemes Peppol reserves for it, and the payment means codes DK-R-005 allows — code 30 is valid EN 16931 and refused in Denmark. OIOUBL and NemHandel BIS 4 are not carried; see the roadmap."
+        },
+        {
           "name": "Rest of the world",
           "version": "—",
           "package": "—",

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Norway</PackageId>
+    <Description>
+      What Norwegian electronic invoicing adds on top of the norms: EHF 3.0, the national CIUS of Peppol BIS
+      Billing, and the organisation number with its modulo 11 check.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;norway;norge;ehf;peppol;organisasjonsnummer;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

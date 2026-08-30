@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Denmark</PackageId>
+    <Description>
+      What Danish electronic invoicing adds on top of the norms: the Peppol BIS profile NemHandel carries,
+      and the CVR, SE and P numbers in the schemes Peppol reserves for them.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;denmark;danmark;nemhandel;peppol;cvr;oioubl;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

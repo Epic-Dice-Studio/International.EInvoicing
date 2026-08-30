@@ -52,6 +52,78 @@ public static class CheckDigit
     }
 
     /// <summary>
+    /// Whether the digits satisfy a weighted modulo 11 check, the last digit being the check digit.
+    /// </summary>
+    /// <remarks>
+    /// The Nordic organisation numbers are built this way, each with its own weights, applied from the right.
+    /// A remainder of 1 leaves no valid check digit, so such a number is rejected rather than rounded.
+    /// </remarks>
+    /// <param name="digits">Digits only, check digit included.</param>
+    /// <param name="weights">
+    /// One weight per digit before the check digit, in the order the digits are written — which is the order
+    /// the registers publish them in.
+    /// </param>
+    public static bool SatisfiesMod11(ReadOnlySpan<char> digits, ReadOnlySpan<int> weights)
+    {
+        if (digits.Length != weights.Length + 1)
+        {
+            return false;
+        }
+
+        int sum = 0;
+
+        for (int index = 0; index < weights.Length; index++)
+        {
+            char digit = digits[index];
+
+            if (!char.IsAsciiDigit(digit))
+            {
+                return false;
+            }
+
+            sum += (digit - '0') * weights[index];
+        }
+
+        if (!char.IsAsciiDigit(digits[^1]))
+        {
+            return false;
+        }
+
+        int remainder = sum % 11;
+        int check = remainder == 0 ? 0 : 11 - remainder;
+
+        return check != 10 && check == digits[^1] - '0';
+    }
+
+    /// <summary>
+    /// Whether the digits satisfy the GS1 check digit — the one on a GLN, a GTIN or an SSCC.
+    /// </summary>
+    /// <remarks>Weights alternate 3 and 1 from the digit before the check digit leftwards.</remarks>
+    /// <param name="digits">Digits only, check digit included.</param>
+    public static bool SatisfiesGs1(ReadOnlySpan<char> digits)
+    {
+        if (digits.Length < 2)
+        {
+            return false;
+        }
+
+        int sum = 0;
+
+        for (int index = digits.Length - 2; index >= 0; index--)
+        {
+            if (!char.IsAsciiDigit(digits[index]))
+            {
+                return false;
+            }
+
+            int weight = (digits.Length - index) % 2 == 0 ? 3 : 1;
+            sum += (digits[index] - '0') * weight;
+        }
+
+        return char.IsAsciiDigit(digits[^1]) && (10 - (sum % 10)) % 10 == digits[^1] - '0';
+    }
+
+    /// <summary>
     /// The remainder of a decimal string modulo 97, computed digit by digit so arbitrarily long identifiers
     /// work without overflowing.
     /// </summary>

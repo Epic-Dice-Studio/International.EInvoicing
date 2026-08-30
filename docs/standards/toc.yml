@@ -6,10 +6,16 @@
   href: cii-d22b.md
 - name: Belgium
   href: country-be.md
+- name: Denmark
+  href: country-dk.md
 - name: Germany
   href: country-de.md
 - name: France
   href: country-fr.md
+- name: Norway
+  href: country-no.md
+- name: Sweden
+  href: country-se.md
 - name: EN 16931 — the European semantic model
   href: en16931.md
 - name: Factur-X / ZUGFeRD — hybrid PDF/A-3 invoices

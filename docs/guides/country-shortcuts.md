@@ -12,6 +12,9 @@ Three types hold that knowledge for you:
 | `FrenchEInvoicing` | `International.EInvoicing.Countries.France` |
 | `GermanEInvoicing` | `International.EInvoicing.Countries.Germany` |
 | `BelgianEInvoicing` | `International.EInvoicing.Countries.Belgium` |
+| `NorwegianEInvoicing` | `International.EInvoicing.Countries.Norway` |
+| `SwedishEInvoicing` | `International.EInvoicing.Countries.Sweden` |
+| `DanishEInvoicing` | `International.EInvoicing.Countries.Denmark` |
 
 None of them is a wall. Each exposes `.Library`, the fully assembled `EInvoicing` underneath, so anything the
 shortcut does not cover is one property away.
@@ -150,6 +153,42 @@ BelgianEInvoicing belgium = BelgianEInvoicing.Create(library => library
     .AddPeppolRulesFrom("specs/peppol/rules"));           // ./build/fetch-specs.sh puts them there
 ```
 
+## Norway, Sweden and Denmark
+
+The three Nordic shortcuts are the same shape as the Belgian one, because their situation is the same one:
+Peppol BIS Billing, with national rules that travel **inside** the Peppol rule set rather than in a separate
+artefact to fetch. What each adds is its own legal identifier, and Denmark adds one trap worth knowing about.
+
+```csharp
+NorwegianEInvoicing norge = NorwegianEInvoicing.Create();
+
+EInvoice invoice = norge.Invoice()                       // EHF 3.0, UBL, NOK, Peppol's business process
+    .WithNumber("2026-0001")
+    .IssuedOn(new DateOnly(2026, 9, 1))
+    .WithBuyerReference("REF-2026-0001")                 // BT-10: Peppol requires it, EN 16931 does not
+    .From(seller => norge.Describe(seller, "915 442 552", "Leverandør AS"))
+    .To(buyer => buyer.Named("Kunde AS"))
+    .AddLine(line => line.WithItem("Rådgivning").WithNetAmount(3000m).WithVat("S", 25m))
+    .WithComputedVatBreakdown()
+    .WithComputedTotals()
+    .Build();
+```
+
+`SwedishEInvoicing` and `DanishEInvoicing` read the same way, in SEK and DKK. `Describe` checks the legal
+identifier — organisasjonsnummer modulo 11, organisationsnummer by Luhn, CVR by shape — and writes it in the
+scheme Peppol reserves for it. Those checks are not trusted on their own: a test hands every number the
+library accepts, and a set it refuses, to **Peppol's own rule** for that scheme and fails on disagreement.
+
+Norway declares **EHF 3.0**, the Norwegian CIUS of Peppol BIS; Sweden and Denmark declare Peppol BIS itself,
+which is what they exchange.
+
+**The Danish trap.** Payment means code `30` — plain credit transfer — is valid EN 16931 and is refused
+between two Danish parties by `DK-R-005`, a fatal rule:
+
+```csharp
+invoice.Payment!.MeansTypeCode = DkPaymentMeans.SepaCreditTransfer;   // 58; DkPaymentMeans.All has the rest
+```
+
 ## Wiring one into a container
 
 `Create(configure)` takes the same builder the general library takes, so anything you would have registered
@@ -163,6 +202,6 @@ builder.Services.AddSingleton(provider =>
 
 ## Somewhere else?
 
-Only these three countries have a shortcut today. Every other country is reachable through the general
+Only these six countries have a shortcut today. Every other country is reachable through the general
 library — a profile, a rule set fetched from its publisher, and the identifiers it needs. What is planned,
 country by country and in what order, is in the [roadmap](../roadmap.md).

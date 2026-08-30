@@ -206,6 +206,9 @@ The three done ones are at the top so the tiers read as one list.
 | **France** | Extended CTC FR, Factur-X, CDAR lifecycle, flux 10 e-reporting, SIREN/SIRET | ✅ complete, `FrenchEInvoicing` |
 | **Germany** | XRechnung 3.x CIUS + Extension, Leitweg-ID, ZUGFeRD | ✅ complete, `GermanEInvoicing` |
 | **Belgium** | Peppol BIS Billing 3.0, KBO/BCE, structured communication | ✅ complete, `BelgianEInvoicing` |
+| **Norway** | EHF 3.0, organisasjonsnummer (mod 11), national rules inside Peppol | ✅ complete, `NorwegianEInvoicing` |
+| **Sweden** | Peppol BIS Billing, organisationsnummer (Luhn), national rules inside Peppol | ✅ complete, `SwedishEInvoicing` |
+| **Denmark** | Peppol BIS Billing, CVR, the payment means `DK-R-005` allows | ✅ complete, `DanishEInvoicing` |
 
 France's own calendar: reception for everyone and issuing for large and mid-sized companies on
 **1 September 2026**, issuing for the rest on **1 September 2027**. Belgium's B2B mandate started
@@ -220,9 +223,6 @@ its national CIUS rules, its legal identifier and, where it exists, its national
 | Country | Profile / national CIUS | Identifier we would add | Mandate state |
 |---|---|---|---|
 | **Netherlands** | NLCIUS, SI-UBL 2.0 | KvK number, OIN | B2G mandatory; B2B voluntary |
-| **Norway** | EHF 3.0 (a CIUS of BIS Billing) | Organisasjonsnummer | B2G mandatory; B2B expected |
-| **Sweden** | Peppol BIS Billing | Organisationsnummer | B2G mandatory |
-| **Denmark** | OIOUBL 2.1 today, **NemHandel BIS 4** by 2029 | CVR number | B2G mandatory; BIS 4 migration announced March 2026 |
 | **Finland** | Peppol BIS, Finvoice 3.0, TEAPPSXML 3.0 | Y-tunnus | B2G mandatory; B2B receiving right since 2020 |
 | **Ireland** | Peppol BIS 3.0 | Tax Reference Number | B2B from **1 November 2028**, large corporates first |
 | **Iceland** | Peppol BIS | Kennitala | B2G mandatory |
@@ -237,8 +237,15 @@ its national CIUS rules, its legal identifier and, where it exists, its national
 | **Slovenia** | e-SLOG, Peppol | Matična številka | B2G mandatory; B2B plans unconfirmed |
 | **Cyprus · Malta · Bulgaria · Greece (B2G)** | Peppol BIS | national VAT identifiers | B2G mandatory |
 
-Croatia and Slovakia are the two that would come first: their B2B mandates are live or dated, and each is a
-rule set plus an identifier rather than a format.
+Norway, Sweden and Denmark are done — see Tier 0. They were first because their national rules are already
+inside the Peppol rule set this library loads, and Peppol publishes the identifier checks, so each could be
+built and **measured** without waiting on a specification we do not hold. That is the template for the rest
+of the tier.
+
+Of what remains, Croatia and Slovakia come first: their B2B mandates are live or dated, and each is a rule
+set plus an identifier rather than a format. The Netherlands is cheap in every respect except one — the
+published NLCIUS specification identifier is not in any artefact this repository carries, and inventing it is
+how a library ends up rejecting valid documents. It needs one confirmed fact, not a project.
 
 ### Tier 2 — Peppol **PINT** jurisdictions · *blocked on the PINT package above*
 

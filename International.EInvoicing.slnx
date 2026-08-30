@@ -6,6 +6,9 @@
     <Project Path="src/International.EInvoicing.Cdar/International.EInvoicing.Cdar.csproj" />
     <Project Path="src/International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
     <Project Path="src/International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+    <Project Path="src/International.EInvoicing.Countries.Norway/International.EInvoicing.Countries.Norway.csproj" />
+    <Project Path="src/International.EInvoicing.Countries.Sweden/International.EInvoicing.Countries.Sweden.csproj" />
+    <Project Path="src/International.EInvoicing.Countries.Denmark/International.EInvoicing.Countries.Denmark.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
     <Project Path="src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
@@ -25,6 +28,9 @@
     <Project Path="tests/International.EInvoicing.Cdar.Tests/International.EInvoicing.Cdar.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Cii.Tests/International.EInvoicing.Cii.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Core.Tests/International.EInvoicing.Core.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Countries.Norway.Tests/International.EInvoicing.Countries.Norway.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Countries.Sweden.Tests/International.EInvoicing.Countries.Sweden.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Countries.Denmark.Tests/International.EInvoicing.Countries.Denmark.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Belgium.Tests/International.EInvoicing.Countries.Belgium.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.France.Tests/International.EInvoicing.Countries.France.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Germany.Tests/International.EInvoicing.Countries.Germany.Tests.csproj" />

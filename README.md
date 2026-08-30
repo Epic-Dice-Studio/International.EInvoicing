@@ -142,6 +142,9 @@ validation is never presented as a success.
 | France — e-reporting (flux 10) <sub>PPF flux 10 v1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
 | Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Belgium` |
+| Norway — EHF 3.0, organisasjonsnummer <sub>EHF 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Norway` |
+| Sweden — Peppol BIS, organisationsnummer <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Sweden` |
+| Denmark — Peppol BIS, CVR, allowed payment means <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Denmark` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
 > **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build.
@@ -155,6 +158,12 @@ validation is never presented as a success.
 > **Germany — XRechnung, ZUGFeRD, Leitweg-ID** — XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite.
 
 > **Belgium — Peppol BIS, KBO/BCE, structured communication** — Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and Peppol validation once the artefacts are fetched.
+
+> **Norway — EHF 3.0, organisasjonsnummer** — EHF 3.0, the national CIUS of Peppol BIS, and the organisation number whose modulo 11 check is measured against the rule Peppol publishes for scheme 0192. The Norwegian rules travel inside the Peppol rule set.
+
+> **Sweden — Peppol BIS, organisationsnummer** — Peppol BIS Billing, and the organisation number whose Luhn check is measured against the rule Peppol publishes for scheme 0007. The Swedish rules travel inside the Peppol rule set.
+
+> **Denmark — Peppol BIS, CVR, allowed payment means** — Peppol BIS Billing over NemHandel, the CVR number in the schemes Peppol reserves for it, and the payment means codes DK-R-005 allows — code 30 is valid EN 16931 and refused in Denmark. OIOUBL and NemHandel BIS 4 are not carried; see the roadmap.
 
 > **Rest of the world** — Some fifty countries, catalogued in the roadmap below by what each would cost to add: a rule set and an identifier for the Peppol ones, a reader and a writer for the national formats, a different document entirely for the clearance countries.
 

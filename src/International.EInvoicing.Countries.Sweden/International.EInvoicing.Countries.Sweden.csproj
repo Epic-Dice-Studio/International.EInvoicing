@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Sweden</PackageId>
+    <Description>
+      What Swedish electronic invoicing adds on top of the norms: the Peppol BIS profile Sweden exchanges,
+      the organisation number with its Luhn check, and the Bankgiro and Plusgiro payment identifiers.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;sweden;sverige;peppol;organisationsnummer;bankgiro;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>
