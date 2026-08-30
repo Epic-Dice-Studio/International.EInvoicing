@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
     <ProjectReference Include="../International.EInvoicing.Cdar/International.EInvoicing.Cdar.csproj" />
   </ItemGroup>
 

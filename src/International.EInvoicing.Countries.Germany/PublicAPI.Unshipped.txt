@@ -1,4 +1,20 @@
 International.EInvoicing.Countries.Germany.DeProfiles
+International.EInvoicing.Countries.Germany.GermanEInvoicing
+International.EInvoicing.Countries.Germany.GermanEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.CreditNote(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.InvoiceToPublicBody(string! leitwegId) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.InvoiceToPublicBody(string! leitwegId, International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Germany.GermanEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
 International.EInvoicing.Countries.Germany.GermanyServiceCollectionExtensions
 International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId
 International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.CheckDigits.get -> string!
@@ -15,6 +31,11 @@ static International.EInvoicing.Countries.Germany.DeProfiles.XRechnungCii.get ->
 static International.EInvoicing.Countries.Germany.DeProfiles.XRechnungExtensionCii.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Countries.Germany.DeProfiles.XRechnungExtensionUbl.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Countries.Germany.DeProfiles.XRechnungUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Germany.GermanEInvoicing.Create() -> International.EInvoicing.Countries.Germany.GermanEInvoicing!
+static International.EInvoicing.Countries.Germany.GermanEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Germany.GermanEInvoicing!
+static International.EInvoicing.Countries.Germany.GermanEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Germany.GermanEInvoicing!
+static International.EInvoicing.Countries.Germany.GermanEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Germany.GermanEInvoicing!
+static International.EInvoicing.Countries.Germany.GermanEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Germany.GermanEInvoicing!
 static International.EInvoicing.Countries.Germany.GermanyServiceCollectionExtensions.AddGermany(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.Create(string! coarseAddress, string! fineAddress = "") -> International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId
 static International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.IsValid(string? value) -> bool

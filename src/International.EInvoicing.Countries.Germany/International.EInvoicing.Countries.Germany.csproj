@@ -11,7 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
   </ItemGroup>
 
 </Project>
