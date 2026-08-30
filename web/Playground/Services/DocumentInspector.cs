@@ -1,19 +1,15 @@
-using System.Xml.Linq;
-using International.EInvoicing.Cdar;
-using International.EInvoicing.Cdar.Model;
-using International.EInvoicing.Cdar.Reading;
-using International.EInvoicing.Cii;
-using International.EInvoicing.Cii.Reading;
-using International.EInvoicing.Configuration;
+using International.EInvoicing.Countries.Belgium;
+using International.EInvoicing.Countries.Denmark;
 using International.EInvoicing.Countries.France;
-using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Countries.Germany;
+using International.EInvoicing.Countries.Iceland;
+using International.EInvoicing.Countries.Netherlands;
+using International.EInvoicing.Countries.Norway;
+using International.EInvoicing.Countries.Sweden;
 using International.EInvoicing.Model;
-using International.EInvoicing.Profiles;
-using International.EInvoicing.Ubl;
-using International.EInvoicing.Ubl.Reading;
 using International.EInvoicing.Validation;
 using International.EInvoicing.Validation.En16931;
-using International.EInvoicing.Validation.Schematron;
+using International.EInvoicing.Validation.XRechnung;
 
 namespace International.EInvoicing.Playground.Services;
 
@@ -21,156 +17,131 @@ namespace International.EInvoicing.Playground.Services;
 /// Reads and validates whatever the visitor drops in, entirely in their browser.
 /// </summary>
 /// <remarks>
+/// <para>
+/// This is the library's own facade, assembled the way a real integration would assemble it: every syntax,
+/// every country package, and the rule sets that may be redistributed. The site does not reimplement the
+/// detection or the validation — it calls <c>Read</c> and <c>Validate</c>, which is the whole point of
+/// showing it.
+/// </para>
+/// <para>
 /// The format is detected rather than asked for, because a person holding an invoice usually does not know
 /// whether it is UBL or CII, and should not have to.
+/// </para>
 /// </remarks>
 public sealed class DocumentInspector
 {
-    private readonly EInvoicingOptions _options = new();
-    private readonly IProfileResolver _profiles;
-    private readonly SchematronValidator _validator = new();
+    private readonly EInvoicing _library = EInvoicing.Create(library => library
+        .AddDefaults()
+        .AddEn16931Rules()
+        .AddXRechnungRules()
+        .AddFrance()
+        .AddGermany()
+        .AddBelgium()
+        .AddNetherlands()
+        .AddNorway()
+        .AddSweden()
+        .AddDenmark()
+        .AddIceland());
 
-    /// <summary>Creates an inspector knowing every profile this library implements.</summary>
-    public DocumentInspector()
-    {
-        var registry = new ProfileRegistry(KnownProfiles.All);
+    /// <summary>The library this page is running, for the panels that want to ask it what it knows.</summary>
+    public EInvoicing Library => _library;
 
-        foreach (Profile profile in FrProfiles.All.Concat(CdarProfiles.All))
-        {
-            registry.Register(profile);
-        }
-
-        _profiles = new ProfileResolver(registry);
-    }
-
-    /// <summary>What a document looks like, judged by its root element rather than its file name.</summary>
-    public static DocumentKind Detect(string content)
+    /// <summary>What a document looks like, judged by its content rather than its file name.</summary>
+    public DocumentKind Detect(string content)
     {
         if (content.TrimStart().StartsWith("%PDF-", StringComparison.Ordinal))
         {
             return DocumentKind.Pdf;
         }
 
-        try
+        if (FrenchEInvoicing.Over(_library).Read(content) is { Kind: FrenchDocumentKind.EReport })
         {
-            XName root = XDocument.Parse(content).Root?.Name ?? XName.Get("none");
-
-            if (root.Namespace == CdarNames.Rsm)
-            {
-                return DocumentKind.Cdar;
-            }
-
-            if (root.Namespace == CiiNames.Rsm)
-            {
-                return DocumentKind.Cii;
-            }
-
-            return root.Namespace == UblNames.Invoice || root.Namespace == UblNames.CreditNote
-                ? DocumentKind.Ubl
-                : DocumentKind.Unknown;
+            return DocumentKind.EReport;
         }
-        catch (System.Xml.XmlException)
+
+        return _library.Read(content).Kind switch
         {
-            return DocumentKind.Unknown;
-        }
+            International.EInvoicing.DocumentKind.Ubl or International.EInvoicing.DocumentKind.UblCreditNote =>
+                DocumentKind.Ubl,
+            International.EInvoicing.DocumentKind.Cii => DocumentKind.Cii,
+            International.EInvoicing.DocumentKind.Cdar => DocumentKind.Cdar,
+            _ => DocumentKind.Unknown,
+        };
     }
 
-    /// <summary>Reads a document and, when it is an invoice, validates it against EN 16931.</summary>
+    /// <summary>Reads a document and validates it against every rule set registered for its profile.</summary>
     public InspectionResult Inspect(string content)
     {
         ArgumentNullException.ThrowIfNull(content);
 
-        return Detect(content) switch
+        if (content.TrimStart().StartsWith("%PDF-", StringComparison.Ordinal))
         {
-            DocumentKind.Ubl => InspectInvoice(content, DocumentKind.Ubl),
-            DocumentKind.Cii => InspectInvoice(content, DocumentKind.Cii),
-            DocumentKind.Cdar => InspectStatus(content),
-            DocumentKind.Pdf => new InspectionResult
+            return new InspectionResult
             {
                 Kind = DocumentKind.Pdf,
                 Failure = "This is a PDF. Reading the invoice inside one needs a PDF reader, which the "
                     + "browser build leaves out — paste the XML instead.",
-            },
-            _ => new InspectionResult
-            {
-                Kind = DocumentKind.Unknown,
-                Failure = "This does not look like UBL, CII or a lifecycle message. Check the root element "
-                    + "and its namespace.",
-            },
-        };
-    }
+            };
+        }
 
-    private InspectionResult InspectInvoice(string content, DocumentKind kind)
-    {
-        ParseResult<EInvoice> result = kind == DocumentKind.Ubl
-            ? new UblInvoiceReader(_options, _profiles).Read(content)
-            : new CiiInvoiceReader(_options, _profiles).Read(content);
+        FrenchDocument french = FrenchEInvoicing.Over(_library).Read(content);
 
-        if (result.Value is not { } invoice)
+        if (french.Kind == FrenchDocumentKind.EReport)
         {
             return new InspectionResult
             {
-                Kind = kind,
-                Diagnostics = result.Diagnostics,
-                Failure = "Nothing could be read from this document.",
+                Kind = DocumentKind.EReport,
+                EReport = french.EReport,
+                Diagnostics = french.Diagnostics,
             };
         }
+
+        DocumentResult result = _library.Read(content);
+
+        if (!result.IsUsable)
+        {
+            return new InspectionResult
+            {
+                Kind = DocumentKind.Unknown,
+                Diagnostics = result.Diagnostics,
+                Failure = "This does not look like UBL, CII, a lifecycle message or a flux 10 report. Check "
+                    + "the root element and its namespace.",
+            };
+        }
+
+        DocumentKind kind = result.Kind switch
+        {
+            International.EInvoicing.DocumentKind.Cii => DocumentKind.Cii,
+            International.EInvoicing.DocumentKind.Cdar => DocumentKind.Cdar,
+            _ => DocumentKind.Ubl,
+        };
 
         return new InspectionResult
         {
             Kind = kind,
-            Invoice = invoice,
+            Invoice = result.Invoice,
+            Status = result.LifecycleStatus,
             Diagnostics = result.Diagnostics,
-            Validation = Validate(content, kind, invoice),
+            Validation = result.Invoice is null ? null : Validate(content),
         };
     }
 
     /// <summary>
-    /// Validates, and says what could not be validated. A profile the library does not implement means the
-    /// document was measured against EN 16931 only, which the report must not hide.
+    /// Validates against everything registered, and says what did not run. A profile with no rule set means
+    /// the document was measured against less than it claims to be, which the report must not hide.
     /// </summary>
-    private ValidationReport Validate(string content, DocumentKind kind, EInvoice invoice)
+    private ValidationReport Validate(string content)
     {
-        DocumentSyntax syntax = kind == DocumentKind.Ubl ? DocumentSyntax.Ubl : DocumentSyntax.Cii;
-
-        ValidationReport report;
         try
         {
-            report = _validator.Validate(content, En16931Rules.For(syntax));
+            return _library.Validate(content);
         }
-        catch (Exception exception) when (exception is International.EInvoicing.Validation.Schematron.XPath.XPathException or System.Xml.XmlException)
+        catch (Exception exception)
+            when (exception is Validation.Schematron.XPath.XPathException or System.Xml.XmlException)
         {
             return new ValidationReport(
                 [],
-                [new RuleSetOutcome("EN 16931", En16931Rules.ArtefactVersion, Ran: false, exception.Message)]);
+                [new RuleSetOutcome("the registered rule sets", "—", Ran: false, exception.Message)]);
         }
-
-        if (invoice.Profile is not { IsExact: false } resolution)
-        {
-            return report;
-        }
-
-        return report.And(new ValidationReport(
-            [],
-            [
-                new RuleSetOutcome(
-                    resolution.Declared.ToString(),
-                    "—",
-                    Ran: false,
-                    "this library implements no rules for that profile, so only EN 16931 was checked"),
-            ]));
-    }
-
-    private InspectionResult InspectStatus(string content)
-    {
-        ParseResult<LifecycleStatusMessage> result = new CdarReader(_options, _profiles).Read(content);
-
-        return new InspectionResult
-        {
-            Kind = DocumentKind.Cdar,
-            Status = result.Value,
-            Diagnostics = result.Diagnostics,
-            Failure = result.Value is null ? "Nothing could be read from this document." : null,
-        };
     }
 }

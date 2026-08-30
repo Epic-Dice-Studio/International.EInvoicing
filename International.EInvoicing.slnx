@@ -35,6 +35,7 @@
     <Project Path="tests/International.EInvoicing.Countries.Denmark.Tests/International.EInvoicing.Countries.Denmark.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Netherlands.Tests/International.EInvoicing.Countries.Netherlands.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Iceland.Tests/International.EInvoicing.Countries.Iceland.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Playground.Tests/International.EInvoicing.Playground.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Belgium.Tests/International.EInvoicing.Countries.Belgium.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.France.Tests/International.EInvoicing.Countries.France.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Germany.Tests/International.EInvoicing.Countries.Germany.Tests.csproj" />

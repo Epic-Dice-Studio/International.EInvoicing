@@ -6,7 +6,8 @@
 <header class="hero">
     <h1>International.EInvoicing</h1>
     <p class="lead">
-        Read, check and build electronic invoices — UBL, CII, Factur-X and French lifecycle statuses.
+        Build, read and check electronic invoices for eight countries — UBL, CII, Factur-X, XRechnung,
+        Peppol BIS, EHF, French lifecycle statuses and e-reporting.
     </p>
     <p class="privacy">
         Everything below runs in your browser. <strong>No invoice you open here reaches a server.</strong>
@@ -45,9 +46,9 @@
     [
         ("validate", "Check a document"),
         ("explore", "Look inside one"),
-        ("build", "Build one"),
+        ("build", "Build one for a country"),
         ("coverage", "What is supported"),
     ];
 
-    private string _tab = "validate";
+    private string _tab = "build";
 }

@@ -17,6 +17,9 @@ public sealed record InspectionResult
     /// <summary>The lifecycle message, when the document was one.</summary>
     public LifecycleStatusMessage? Status { get; init; }
 
+    /// <summary>The e-reporting transmission, when the document was one.</summary>
+    public Countries.France.EReporting.Model.FrEReport? EReport { get; init; }
+
     /// <summary>What reading it reported: unknown profiles, unreadable values, unmapped elements.</summary>
     public IReadOnlyList<Diagnostic> Diagnostics { get; init; } = [];
 
@@ -27,5 +30,5 @@ public sealed record InspectionResult
     public string? Failure { get; init; }
 
     /// <summary>Whether something usable came out.</summary>
-    public bool IsUsable => Invoice is not null || Status is not null;
+    public bool IsUsable => Invoice is not null || Status is not null || EReport is not null;
 }

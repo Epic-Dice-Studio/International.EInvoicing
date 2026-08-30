@@ -86,4 +86,42 @@ public static class Samples
             "<cbc:CustomizationID>urn:cen.eu:en16931:2017</cbc:CustomizationID>",
             "<cbc:CustomizationID>urn:acme:profile:2p0</cbc:CustomizationID>",
             StringComparison.Ordinal);
+
+    /// <summary>An invoice written against the 2026 edition of EN 16931, which this library does not carry.</summary>
+    public static string NewerEditionInvoice =>
+        MinimalUblInvoice.Replace(
+            "urn:cen.eu:en16931:2017",
+            "urn:cen.eu:en16931:2026",
+            StringComparison.Ordinal);
+
+    /// <summary>An invoice with a total that disagrees with its own lines, which BR-CO-13 catches.</summary>
+    public static string InconsistentTotalsInvoice =>
+        MinimalUblInvoice.Replace(
+            "<cbc:PayableAmount currencyID=\"EUR\">540.00</cbc:PayableAmount>",
+            "<cbc:PayableAmount currencyID=\"EUR\">1540.00</cbc:PayableAmount>",
+            StringComparison.Ordinal);
+
+    /// <summary>An XML document that stops halfway, to show that a reader reports rather than throws.</summary>
+    public static string TruncatedInvoice => MinimalUblInvoice[..(MinimalUblInvoice.Length / 2)];
+
+    /// <summary>What the menu offers, in the order it offers it.</summary>
+    public static IReadOnlyList<(string Key, string Label)> Catalogue { get; } =
+    [
+        ("minimal", "a valid EN 16931 invoice (UBL)"),
+        ("unknown", "an invoice with a profile nobody knows"),
+        ("edition", "an invoice claiming EN 16931-1:2026"),
+        ("totals", "an invoice whose totals disagree with its lines"),
+        ("truncated", "an XML document that stops halfway"),
+    ];
+
+    /// <summary>The sample behind a menu key, or <c>null</c> when the key is not one.</summary>
+    public static string? Get(string? key) => key switch
+    {
+        "minimal" => MinimalUblInvoice,
+        "unknown" => UnknownProfileInvoice,
+        "edition" => NewerEditionInvoice,
+        "totals" => InconsistentTotalsInvoice,
+        "truncated" => TruncatedInvoice,
+        _ => null,
+    };
 }

@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The playground is now a country-first tool rather than a demonstration of one invoice.** Choose a
+  country and everything after it follows: the profiles it exchanges, the currency, the identifier schemes,
+  the business process, the rules that apply — and the one thing about that country that surprises people.
+  It builds invoices, credit notes, French lifecycle statuses and flux 10 e-reporting transmissions, shows
+  the C# that would produce each, validates what it produced, and says which rule sets are in the build and
+  which are fetched. Reading and validating now go through the library's own facade rather than a
+  reimplementation, so the site shows the API it documents.
+- The published site links to it: the playground is the first entry in the navigation and on the front page.
+- `International.EInvoicing.Playground.Tests` compiles the country descriptions the site runs on and puts
+  every country and profile combination in front of the rules on every commit. It found three the site would
+  have offered with a defect: an invoice with no seller VAT identifier fails BR-S-02 and BR-CO-26, and a
+  German one with no seller contact fails BR-DE-2.
 - **The Netherlands and Iceland**, each for one fatal national rule that rejects an otherwise perfect
   invoice: `NL-R-003` and `NL-R-005` require a KvK or OIN scheme on both parties' legal entity identifiers,
   and `IS-R-002` and `IS-R-004` require scheme 0196 on the kennitala. `DutchEInvoicing` and

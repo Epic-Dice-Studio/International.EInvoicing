@@ -1,17 +1,46 @@
-@using International.EInvoicing.Cdar
-@using International.EInvoicing.Countries.France
-@using International.EInvoicing.FacturX
+@using International.EInvoicing.Playground.Services
 @using International.EInvoicing.Profiles
+@using International.EInvoicing.Validation.Schematron
 @using International.EInvoicing.Validation.En16931
+@using International.EInvoicing.Validation.XRechnung
+@inject DocumentInspector Inspector
 
 <section class="panel">
     <h2>What is supported</h2>
     <p class="muted small">
-        Read from the library running in this page, not from a document someone kept up to date. If a profile
-        appears here, this build implements it.
+        Read from the library running in this page — the same registry the reader consults — not from a
+        document someone kept up to date. If a profile appears here, this build implements it.
     </p>
 
-    <h3>Profiles this build knows</h3>
+    <h3>Countries with a package of their own</h3>
+    <table>
+        <thead>
+            <tr><th>Country</th><th>Shortcut</th><th>Profiles</th><th>Currency</th><th>Rules that apply</th></tr>
+        </thead>
+        <tbody>
+            @foreach (PlaygroundCountry country in PlaygroundCountries.All.Where(c => c.Facade is not null))
+            {
+                <tr>
+                    <td><strong>@country.Name</strong></td>
+                    <td class="code">@country.Facade</td>
+                    <td>@string.Join(", ", country.Profiles.Select(p => p.Label))</td>
+                    <td>@country.Currency</td>
+                    <td>
+                        @foreach (PlaygroundRuleSet ruleSet in country.RuleSets)
+                        {
+                            <span class="ranset-inline">@(ruleSet.Embedded ? "✔" : "⚠") @ruleSet.Name</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p class="muted small">
+        ✔ carried by this build · ⚠ published under a licence that forbids redistribution, so the library
+        fetches it instead — <code>build/fetch-specs.sh</code> in the repository.
+    </p>
+
+    <h3>Every profile this build knows</h3>
     <table>
         <thead>
             <tr><th>Profile</th><th>Syntax</th><th>Validation</th><th class="code">Identifier</th></tr>
@@ -34,32 +63,48 @@
         <thead><tr><th>Rule set</th><th>Version</th><th>Assertions</th></tr></thead>
         <tbody>
             <tr>
-                <td>EN 16931 (UBL)</td>
+                <td>EN 16931-1:2017 (UBL)</td>
                 <td>@En16931Rules.ArtefactVersion</td>
                 <td>@En16931Rules.For(DocumentSyntax.Ubl).AssertionCount</td>
             </tr>
             <tr>
-                <td>EN 16931 (CII)</td>
+                <td>EN 16931-1:2017 (CII)</td>
                 <td>@En16931Rules.ArtefactVersion</td>
                 <td>@En16931Rules.For(DocumentSyntax.Cii).AssertionCount</td>
+            </tr>
+            <tr>
+                <td>XRechnung (UBL)</td>
+                <td>@XRechnungRules.ArtefactVersion</td>
+                <td>@XRechnungRules.For(DocumentSyntax.Ubl).AssertionCount</td>
+            </tr>
+            <tr>
+                <td>XRechnung (CII)</td>
+                <td>@XRechnungRules.ArtefactVersion</td>
+                <td>@XRechnungRules.For(DocumentSyntax.Cii).AssertionCount</td>
             </tr>
         </tbody>
     </table>
 
+    <h3>The edition of the standard</h3>
+    <p class="small">
+        This build implements <strong>@En16931Edition.Implemented</strong>. CEN published
+        <strong>@En16931Edition.Revised</strong> in May 2026 and withdrew the 2017 edition, which stays
+        compliant only while everyone migrates. A document declaring the newer edition still parses here, and
+        is reported as <code>EIV1044</code> rather than passing quietly — try it from the sample menu under
+        <em>Check a document</em>.
+    </p>
+
     <h3>Not here</h3>
     <p class="small muted">
         Sending documents anywhere — Peppol, approved platforms, Chorus Pro — is permanently out of scope, and
-        so is rendering a PDF. Peppol validation artefacts are not redistributable, so they are not embedded.
-        The repository's support matrix says the same, in more detail.
+        so is rendering a PDF. Artefacts published under no redistribution licence, Peppol's and the DGFiP's,
+        are fetched rather than embedded, so the rules that need them do not run in this page.
     </p>
 </section>
 
 @code {
-    private static IEnumerable<Profile> AllProfiles() =>
-        KnownProfiles.All
-            .Concat(FacturXProfiles.All)
-            .Concat(CdarProfiles.All)
-            .Concat(FrProfiles.All)
+    private IEnumerable<Profile> AllProfiles() =>
+        Inspector.Library.KnownProfiles
             .DistinctBy(profile => (profile.Id.Value, profile.Syntax.Name))
             .OrderBy(profile => profile.Syntax.Name, StringComparer.Ordinal)
             .ThenBy(profile => profile.Name, StringComparer.Ordinal);

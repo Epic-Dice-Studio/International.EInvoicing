@@ -6,14 +6,24 @@
 <section class="panel">
     <h2>Check a document</h2>
     <p class="muted small">
-        Paste a UBL or CII invoice, or a French lifecycle status message. The format is detected for you.
+        Paste anything this library reads — a UBL or CII invoice, a credit note, a French lifecycle status,
+        or a <em>flux 10</em> e-reporting transmission. The format is detected for you, and every rule set
+        registered for what arrives is run.
     </p>
 
     <textarea @bind="_input" @bind:event="oninput" placeholder="Paste XML here…" spellcheck="false"></textarea>
 
     <div class="row">
         <button class="action" disabled="@(string.IsNullOrWhiteSpace(_input))" @onclick="Check">Check it</button>
-        <button class="link" @onclick="LoadSample">Load a sample invoice</button>
+        <label class="inline">Or start from
+            <select value="@_sample" @onchange="LoadSample">
+                <option value="">a sample…</option>
+                @foreach ((string key, string label) in Samples.Catalogue)
+                {
+                    <option value="@key">@label</option>
+                }
+            </select>
+        </label>
         @if (_result is not null)
         {
             <span class="muted small">Detected: @Describe(_result.Kind)</span>
@@ -70,9 +80,24 @@
                 </table>
             }
         }
+        else if (result.EReport is { } transmission)
+        {
+            <div class="verdict ok">
+                <strong>An e-reporting transmission</strong>
+                <span>
+                    @transmission.Transactions?.Summaries.Count summarised day(s),
+                    @transmission.Transactions?.Invoices.Count reported invoice(s).
+                    Flux 10 carries no XML namespace: nothing but its root element says what it is.
+                </span>
+            </div>
+        }
         else
         {
-            <div class="verdict ok"><strong>Read</strong><span>Lifecycle messages carry no rule set here yet.</span></div>
+            <div class="verdict ok">
+                <strong>Read</strong>
+                <span>A lifecycle status. The French rules that judge it are fetched, not shipped, so
+                    nothing ran against it here.</span>
+            </div>
         }
 
         @if (result.Diagnostics.Count > 0)
@@ -104,14 +129,20 @@
 
 @code {
     private string _input = string.Empty;
+    private string _sample = string.Empty;
     private InspectionResult? _result;
 
     private void Check() => _result = Inspector.Inspect(_input);
 
-    private void LoadSample()
+    private void LoadSample(ChangeEventArgs args)
     {
-        _input = Samples.MinimalUblInvoice;
-        _result = null;
+        _sample = args.Value?.ToString() ?? string.Empty;
+
+        if (Samples.Get(_sample) is { } sample)
+        {
+            _input = sample;
+            _result = Inspector.Inspect(_input);
+        }
     }
 
     private static string Verdict(ValidationReport report) =>
@@ -127,6 +158,7 @@
         DocumentKind.Ubl => "UBL 2.1",
         DocumentKind.Cii => "UN/CEFACT CII",
         DocumentKind.Cdar => "lifecycle status message",
+        DocumentKind.EReport => "e-reporting transmission (flux 10)",
         DocumentKind.Pdf => "a PDF",
         _ => "not recognised",
     };

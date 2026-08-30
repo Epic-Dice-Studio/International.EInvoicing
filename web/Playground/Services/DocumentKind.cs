@@ -15,6 +15,9 @@ public enum DocumentKind
     /// <summary>A lifecycle status message.</summary>
     Cdar,
 
+    /// <summary>A French e-reporting transmission — flux 10, which carries no XML namespace at all.</summary>
+    EReport,
+
     /// <summary>A PDF, which may or may not carry an invoice inside it.</summary>
     Pdf,
 }

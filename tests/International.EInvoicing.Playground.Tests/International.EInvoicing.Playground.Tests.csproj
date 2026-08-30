@@ -1,28 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Cleared: the solution multi-targets, a browser app does not. -->
-    <TargetFrameworks></TargetFrameworks>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(TestAllTargetFrameworks)' == 'true'">net8.0;net10.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-    <!--
-      The libraries keep a low dependency floor so consumers are not forced to upgrade. The browser app is
-      free to resolve higher, which central transitive pinning would otherwise forbid.
-    -->
-    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+    <InvariantGlobalization>false</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="coverlet.collector" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../../src/International.EInvoicing/International.EInvoicing.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
-    <ProjectReference Include="../../src/International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
@@ -32,6 +29,16 @@
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Sweden/International.EInvoicing.Countries.Sweden.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Denmark/International.EInvoicing.Countries.Denmark.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Iceland/International.EInvoicing.Countries.Iceland.csproj" />
+  </ItemGroup>
+
+  <!--
+    The playground is a Blazor WebAssembly app and cannot be referenced from a test project, but the part
+    worth testing is plain C#: the country descriptions that drive every menu on the site. They are compiled
+    in here so a country that stops producing a valid invoice fails the build rather than the demo.
+  -->
+  <ItemGroup>
+    <Compile Include="../../web/Playground/Services/PlaygroundCountry.cs" />
+    <Compile Include="../../web/Playground/Services/PlaygroundCountries.cs" />
   </ItemGroup>
 
 </Project>

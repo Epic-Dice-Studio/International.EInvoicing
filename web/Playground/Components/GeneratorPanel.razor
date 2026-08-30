@@ -1,133 +1,378 @@
 @using International.EInvoicing.Building
-@using International.EInvoicing.Cii.Writing
+@using International.EInvoicing.Cdar.Model
+@using International.EInvoicing.Countries.France
+@using International.EInvoicing.Countries.France.EReporting
 @using International.EInvoicing.Countries.France.Lifecycle
+@using International.EInvoicing.Countries.France.EReporting.Model
 @using International.EInvoicing.Model
+@using International.EInvoicing.Playground.Services
 @using International.EInvoicing.Profiles
-@using International.EInvoicing.Ubl.Writing
-@using International.EInvoicing.Cdar.Writing
+@using International.EInvoicing.Validation
+@using International.EInvoicing.Validation.XRechnung
 
 <section class="panel">
     <h2>Build a document</h2>
     <p class="muted small">
-        Fill this in, and see both what comes out and the code that would produce it.
+        Choose where you are invoicing. Everything after that — the profile, the business process, the
+        identifier schemes, the rules — follows from it, which is exactly what the country packages do.
     </p>
 
+    <div class="row">
+        <label>Country
+            <select value="@_countryCode" @onchange="ChangeCountry">
+                @foreach (PlaygroundCountry country in PlaygroundCountries.All)
+                {
+                    <option value="@country.Code">@country.Name</option>
+                }
+            </select>
+        </label>
+
+        <label>Profile
+            <select value="@_profileIndex" @onchange="ChangeProfile">
+                @for (int index = 0; index < Country.Profiles.Count; index++)
+                {
+                    <option value="@index">@Country.Profiles[index].Label</option>
+                }
+            </select>
+        </label>
+
+        <label>Document
+            <select @bind="_document">
+                <option value="invoice">Invoice</option>
+                <option value="creditnote">Credit note</option>
+                @if (Country.Code == "FR")
+                {
+                    <option value="status-approved">Lifecycle status — approved</option>
+                    <option value="status-refused">Lifecycle status — refused</option>
+                    <option value="ereport">E-reporting transmission (flux 10)</option>
+                }
+            </select>
+        </label>
+    </div>
+
+    @if (Country.Facade is { } facade)
+    {
+        <p class="muted small">
+            One type holds all of it: <code>@facade</code>, in
+            <code>International.EInvoicing.Countries.@FacadeNamespace()</code>.
+        </p>
+    }
+
+    @if (Country.Trap is { } trap)
+    {
+        <p class="trap"><strong>Worth knowing.</strong> @trap</p>
+    }
+</section>
+
+<section class="panel">
     <div class="fields">
         <label>Invoice number <input @bind="_number" @bind:event="oninput" /></label>
         <label>Issue date <input type="date" @bind="_issued" /></label>
         <label>Currency <input @bind="_currency" @bind:event="oninput" maxlength="3" /></label>
         <label>Seller <input @bind="_seller" @bind:event="oninput" /></label>
+        <label>Seller identifier <input @bind="_sellerId" @bind:event="oninput" /></label>
         <label>Buyer <input @bind="_buyer" @bind:event="oninput" /></label>
+        <label>Buyer identifier <input @bind="_buyerId" @bind:event="oninput" /></label>
         <label>Item <input @bind="_item" @bind:event="oninput" /></label>
         <label>Net amount <input type="number" step="0.01" @bind="_amount" /></label>
         <label>VAT rate <input type="number" step="0.1" @bind="_vatRate" /></label>
     </div>
-
-    <div class="row">
-        <label>Write as
-            <select @bind="_output">
-                <option value="ubl">UBL 2.1</option>
-                <option value="cii">UN/CEFACT CII</option>
-                <option value="cdar-refused">A lifecycle status: refused</option>
-                <option value="cdar-approved">A lifecycle status: approved</option>
-            </select>
-        </label>
-    </div>
 </section>
 
-<section class="panel">
-    <h3>The document</h3>
-    <pre class="snippet">@Write()</pre>
+@if (Error is { } error)
+{
+    <section class="panel">
+        <div class="verdict bad">
+            <strong>That is refused before it is written</strong>
+            <span>@error</span>
+        </div>
+        <p class="muted small">
+            Which is the point: an identifier the receiving side would reject fails here, in your own code,
+            with the reason attached.
+        </p>
+    </section>
+}
+else
+{
+    <section class="panel">
+        <h3>The document</h3>
+        <pre class="snippet">@Output</pre>
 
-    <h3>The code that produces it</h3>
-    <pre class="snippet">@Snippet()</pre>
-</section>
+        @if (Verdict is { } report)
+        {
+            <h3>And what the rules say about it</h3>
+            <div class="verdict @(report.IsConforming ? "ok" : report.IsValid ? "partial" : "bad")">
+                <strong>@(report.IsConforming ? "Conforming" : report.IsValid ? "No rule broken, not fully checked" : "Does not conform")</strong>
+                <span>
+                    @foreach (RuleSetOutcome outcome in report.RuleSets)
+                    {
+                        <span class="ranset-inline">@(outcome.Ran ? "✔" : "⚠") @outcome.Name</span>
+                    }
+                </span>
+            </div>
+
+            @foreach (ValidationMessage message in report.OfAtLeast(RuleSeverity.Error).Take(6))
+            {
+                <div class="ranset"><span class="mark">✕</span><span class="code">@message.RuleIdentifier</span> <span>@message.Message</span></div>
+            }
+        }
+
+        <h3>Which rule sets apply here</h3>
+        @foreach (PlaygroundRuleSet ruleSet in Country.RuleSets)
+        {
+            <div class="ranset">
+                <span class="mark">@(ruleSet.Embedded ? "✔" : "⚠")</span>
+                <span><strong>@ruleSet.Name</strong></span>
+                @if (!ruleSet.Embedded)
+                {
+                    <span class="why">— not in this build. @ruleSet.Note</span>
+                }
+            </div>
+        }
+    </section>
+
+    <section class="panel">
+        <h3>The code that produces it</h3>
+        <pre class="snippet">@Snippet</pre>
+    </section>
+}
 
 @code {
-    private string _number = "FA-2026-001";
-    private DateTime _issued = new(2026, 8, 30);
-    private string _currency = "EUR";
-    private string _seller = "Epic Dice Studio";
-    private string _buyer = "Acme";
-    private string _item = "Consulting";
-    private decimal _amount = 450m;
-    private decimal _vatRate = 20m;
-    private string _output = "ubl";
+    private string _countryCode = "FR";
+    private int _profileIndex;
+    private string _document = "invoice";
 
-    private EInvoice Build() =>
-        EInvoiceBuilder.Create(KnownProfiles.En16931Cii)
+    private string _number = "FA-2026-001";
+    private DateTime _issued = new(2026, 9, 1);
+    private string _currency = "EUR";
+    private string _seller = "Fournisseur SARL";
+    private string _sellerId = string.Empty;
+    private string _buyer = "Client SA";
+    private string _buyerId = string.Empty;
+    private string _item = "Conseil";
+    private decimal _amount = 1000m;
+    private decimal _vatRate = 20m;
+
+    private string _output = string.Empty;
+    private string _snippet = string.Empty;
+    private string? _error;
+    private ValidationReport? _verdict;
+
+    private PlaygroundCountry Country => PlaygroundCountries.ByCode(_countryCode);
+
+    private Profile Profile => Country.Profiles[Math.Min(_profileIndex, Country.Profiles.Count - 1)].Profile;
+
+    private string Output { get { Refresh(); return _output; } }
+
+    private string Snippet => _snippet;
+
+    private string? Error => _error;
+
+    private ValidationReport? Verdict => _verdict;
+
+    protected override void OnInitialized() => ApplyCountry();
+
+    private void ChangeCountry(ChangeEventArgs args)
+    {
+        _countryCode = args.Value?.ToString() ?? "--";
+        _profileIndex = 0;
+        ApplyCountry();
+    }
+
+    private void ChangeProfile(ChangeEventArgs args) =>
+        _profileIndex = int.TryParse(args.Value?.ToString(), out int index) ? index : 0;
+
+    /// <summary>A country change resets what the country decides, and leaves what the user wrote alone.</summary>
+    private void ApplyCountry()
+    {
+        _currency = Country.Currency;
+        _sellerId = Country.SellerIdentifier;
+        _buyerId = Country.BuyerIdentifier;
+        _document = _document.StartsWith("status", StringComparison.Ordinal) || _document == "ereport"
+            ? Country.Code == "FR" ? _document : "invoice"
+            : _document;
+    }
+
+    private void Refresh()
+    {
+        _error = null;
+        _verdict = null;
+
+        try
+        {
+            switch (_document)
+            {
+                case "status-approved":
+                case "status-refused":
+                    LifecycleStatusMessage status = Status(refused: _document == "status-refused");
+                    _output = FrenchEInvoicing.Create().Write(status);
+                    _snippet = StatusSnippet(refused: _document == "status-refused");
+                    return;
+
+                case "ereport":
+                    FrEReport report = Report();
+                    _output = FrenchEInvoicing.Create().Write(report);
+                    _snippet = ReportSnippet();
+                    return;
+
+                default:
+                    EInvoice invoice = Build();
+                    _output = Library.Write(invoice, Profile.Syntax == DocumentSyntax.Cii ? DocumentFormat.Cii : DocumentFormat.Ubl);
+                    _snippet = InvoiceSnippet();
+                    _verdict = Library.Validate(_output);
+                    return;
+            }
+        }
+        catch (Exception exception) when (exception is FormatException or ArgumentException)
+        {
+            _error = exception.Message;
+            _output = string.Empty;
+            _snippet = string.Empty;
+        }
+    }
+
+    private static EInvoicing Library { get; } = EInvoicing.Create(library => library
+        .AddDefaults()
+        .AddXRechnungRules());
+
+    private EInvoice Build()
+    {
+        EInvoiceBuilder builder = Country
+            .Prepare(EInvoiceBuilder.Create(Profile))
             .WithNumber(_number)
             .IssuedOn(DateOnly.FromDateTime(_issued))
-            .OfType("380")
+            .DueOn(DateOnly.FromDateTime(_issued).AddDays(30))
+            .OfType(_document == "creditnote" ? InvoiceTypeCodes.CreditNote : "380")
             .InCurrency(_currency)
-            .WithSeller(seller => seller.Named(_seller))
-            .WithBuyer(buyer => buyer.Named(_buyer))
+            .WithBuyerReference(_number)
+            .From(seller => WithVat(Country.Describe(seller, _sellerId, _seller), Country.SellerVat)
+                .WithAddress(address => Fill(address, "1 Main Street", "Somewhere", "00000")))
+            .To(buyer => WithVat(Country.Describe(buyer, _buyerId, _buyer), Country.BuyerVat)
+                .WithAddress(address => Fill(address, "2 Other Street", "Elsewhere", "11111")))
             .AddLine(line => line
                 .WithIdentifier("1")
                 .WithItem(_item)
+                .WithQuantity(1m, "C62")
+                .WithNetPrice(_amount)
                 .WithNetAmount(_amount)
                 .WithVat("S", _vatRate))
-            .AddVatBreakdown("S", _vatRate, _amount, Vat())
-            .WithTotals(totals =>
+            .Extend(invoice => invoice.Payment = new PaymentInstructions
             {
-                totals.LineTotalAmount = new Values.AmountField(_amount, _currency);
-                totals.TaxExclusiveAmount = new Values.AmountField(_amount, _currency);
-                totals.TaxAmount = new Values.AmountField(Vat(), _currency);
-                totals.TaxInclusiveAmount = new Values.AmountField(_amount + Vat(), _currency);
-                totals.DuePayableAmount = new Values.AmountField(_amount + Vat(), _currency);
-            })
-            .Build();
+                MeansTypeCode = Country.Code == "DK" ? "58" : "30",
+                CreditTransfers = { new CreditTransfer { AccountIdentifier = "FR7630001007941234567890185" } },
+            });
 
-    private decimal Vat() => Math.Round(_amount * _vatRate / 100m, 2, MidpointRounding.AwayFromZero);
+        return builder.WithComputedVatBreakdown().WithComputedTotals().Build();
+    }
 
-    private string Write() => _output switch
+    /// <summary>
+    /// BR-S-02 refuses a standard-rated invoice whose seller cannot be identified for VAT. Countries whose
+    /// own <c>Describe</c> derives the VAT number from the legal identifier have already set it.
+    /// </summary>
+    private static PartyBuilder WithVat(PartyBuilder party, string vat) =>
+        string.IsNullOrEmpty(vat) ? party : party.WithVatIdentifier(vat);
+
+    private void Fill(PostalAddress address, string line, string city, string postCode)
     {
-        "cii" => new CiiInvoiceWriter().WriteToString(Build()),
-        "cdar-refused" => new CdarWriter().WriteToString(Status(refused: true)),
-        "cdar-approved" => new CdarWriter().WriteToString(Status(refused: false)),
-        _ => new UblInvoiceWriter().WriteToString(Build()),
-    };
+        address.Line1 = line;
+        address.City = city;
+        address.PostCode = postCode;
+        address.CountryCode = Country.Code == "--" ? "FR" : Country.Code;
+    }
 
-    private Cdar.Model.LifecycleStatusMessage Status(bool refused)
+    private LifecycleStatusMessage Status(bool refused)
     {
-        FrCdar builder = FrCdar
-            .FromBuyer("200000008", _buyer)
+        FrCdar builder = FrenchEInvoicing.Create()
+            .StatusFromBuyer("200000008", _buyer)
             .SentBy("0003", "PA-E")
             .ToSeller("100000009", _seller)
             .About(_number, DateOnly.FromDateTime(_issued));
 
-        return refused
-            ? builder.Refused("TX_TVA_ERR", "Taux de TVA erroné")
-            : builder.Approved();
+        return refused ? builder.Refused("TX_TVA_ERR", "Taux de TVA erroné") : builder.Approved();
     }
 
-    private string Snippet() => _output.StartsWith("cdar", StringComparison.Ordinal)
-        ? $$"""
-            LifecycleStatusMessage status = FrCdar
-                .FromBuyer("200000008", "{{_buyer}}")
-                .SentBy("0003", "PA-E")
-                .ToSeller("100000009", "{{_seller}}")
-                .About("{{_number}}", new DateOnly({{_issued:yyyy, M, d}}))
-                {{(_output == "cdar-refused" ? ".Refused(\"TX_TVA_ERR\", \"Taux de TVA erroné\");" : ".Approved();")}}
+    private FrEReport Report()
+    {
+        DateOnly from = new(DateOnly.FromDateTime(_issued).Year, DateOnly.FromDateTime(_issued).Month, 1);
 
-            string xml = new CdarWriter().WriteToString(status);
-            """
-        : $$"""
-            EInvoice invoice = EInvoiceBuilder.Create(KnownProfiles.En16931Cii)
-                .WithNumber("{{_number}}")
-                .IssuedOn(new DateOnly({{_issued:yyyy, M, d}}))
-                .OfType("380")
-                .InCurrency("{{_currency}}")
-                .WithSeller(seller => seller.Named("{{_seller}}"))
-                .WithBuyer(buyer => buyer.Named("{{_buyer}}"))
-                .AddLine(line => line
-                    .WithIdentifier("1")
-                    .WithItem("{{_item}}")
-                    .WithNetAmount({{_amount}}m)
-                    .WithVat("S", {{_vatRate}}m))
-                .AddVatBreakdown("S", {{_vatRate}}m, {{_amount}}m, {{Vat()}}m)
-                .Build();
+        return FrenchEInvoicing.Create()
+            .ReportTransactions(from, from.AddMonths(1).AddDays(-1))
+            .From("0003", "PA-E Vendeur")
+            .For("100000009", _seller)
+            .Day(
+                DateOnly.FromDateTime(_issued),
+                FrEReportCodes.RetailTransactions,
+                day => day.At(_vatRate, _amount, Math.Round(_amount * _vatRate / 100m, 2, MidpointRounding.AwayFromZero)))
+            .Build();
+    }
 
-            string xml = new {{(_output == "cii" ? "CiiInvoiceWriter" : "UblInvoiceWriter")}}().WriteToString(invoice);
-            """;
+    private string FacadeNamespace() => Country.Code switch
+    {
+        "FR" => "France",
+        "DE" => "Germany",
+        "BE" => "Belgium",
+        "NL" => "Netherlands",
+        "NO" => "Norway",
+        "SE" => "Sweden",
+        "DK" => "Denmark",
+        "IS" => "Iceland",
+        _ => "…",
+    };
+
+    private string InvoiceSnippet() => $$"""
+        {{Country.CreationSnippet}}
+
+        EInvoice invoice = EInvoiceBuilder.Create({{ProfileExpression()}})
+            .WithNumber("{{_number}}")
+            .IssuedOn(new DateOnly({{_issued:yyyy, M, d}}))
+            .InCurrency("{{_currency}}")
+            .WithBuyerReference("{{_number}}")
+            .From({{Country.DescribeSnippet(_sellerId, _seller)}})
+            .To(buyer => buyer.Named("{{_buyer}}"))
+            .AddLine(line => line
+                .WithItem("{{_item}}")
+                .WithNetAmount({{_amount}}m)
+                .WithVat("S", {{_vatRate}}m))
+            .WithComputedVatBreakdown()          // the VAT, grouped by rate
+            .WithComputedTotals()                // BT-106 … BT-115, from the lines
+            .Build();
+
+        string xml = library.Write(invoice);
+        """;
+
+    private string ProfileExpression() => Country.Code switch
+    {
+        "FR" => Profile.Syntax == DocumentSyntax.Cii ? "FrProfiles.ExtendedCtcFrCii" : "FrProfiles.ExtendedCtcFrUbl",
+        "DE" => Profile.Syntax == DocumentSyntax.Cii ? "DeProfiles.XRechnungCii" : "DeProfiles.XRechnungUbl",
+        "NO" => Profile.Syntax == DocumentSyntax.Cii ? "NoProfiles.Ehf3Cii" : "NoProfiles.Ehf3Ubl",
+        "--" => Profile.Syntax == DocumentSyntax.Cii ? "KnownProfiles.En16931Cii" : "KnownProfiles.En16931Ubl",
+        _ => Profile.Syntax == DocumentSyntax.Cii ? "PeppolProfiles.BillingCii" : "PeppolProfiles.BillingUbl",
+    };
+
+    private string StatusSnippet(bool refused) => $$"""
+        FrenchEInvoicing france = FrenchEInvoicing.Create();
+
+        LifecycleStatusMessage status = france
+            .StatusFromBuyer("200000008", "{{_buyer}}")     // who reports it
+            .SentBy("0003", "PA-E")                        // whose platform transmits it
+            .ToSeller("100000009", "{{_seller}}")
+            .About("{{_number}}", new DateOnly({{_issued:yyyy, M, d}}))
+            {{(refused ? ".Refused(\"TX_TVA_ERR\", \"Taux de TVA erroné\");" : ".Approved();")}}
+
+        string xml = france.Write(status);
+        """;
+
+    private string ReportSnippet() => $$"""
+        FrenchEInvoicing france = FrenchEInvoicing.Create();
+
+        FrEReport report = france
+            .ReportTransactions(new DateOnly({{_issued:yyyy, M}}, 1), new DateOnly({{_issued:yyyy, M}}, 30))
+            .From("0003", "PA-E Vendeur")
+            .For("100000009", "{{_seller}}")
+            .Day(new DateOnly({{_issued:yyyy, M, d}}), FrEReportCodes.RetailTransactions,
+                day => day.At({{_vatRate}}m, {{_amount}}m, {{Math.Round(_amount * _vatRate / 100m, 2, MidpointRounding.AwayFromZero)}}m))
+            .Build();
+
+        string xml = france.Write(report);
+        """;
 }

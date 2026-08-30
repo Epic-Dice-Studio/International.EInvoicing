@@ -6,10 +6,19 @@ Generate, read and validate electronic invoices in .NET — for every country, w
 > support matrix in the [repository README](https://github.com/Epic-Dice-Studio/International.EInvoicing)
 > is the honest state of things.
 
+## Try it without installing anything
+
+**[Open the playground →](https://epic-dice-studio.github.io/International.EInvoicing/demo/)**
+
+Pick a country, build an invoice, check one you already have, and look inside any field — all of it running
+in your browser. No document you open there reaches a server, because there is no server: the library is
+compiled to WebAssembly and runs on your machine.
+
 ## Start here
 
 | | |
 |---|---|
+| [Playground](https://epic-dice-studio.github.io/International.EInvoicing/demo/) | The library itself, running in your browser |
 | [Guides](guides/README.md) | How to do a specific thing, with code |
 | [Standards](standards/README.md) | One page per norm: sources, mappings, pitfalls |
 | [Diagnostics](diagnostics/README.md) | What each `EIV` code means and how to act on it |
