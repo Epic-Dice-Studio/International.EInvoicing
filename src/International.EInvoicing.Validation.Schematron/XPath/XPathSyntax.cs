@@ -42,12 +42,19 @@ internal sealed record PathNode(XPathNode? Start, IReadOnlyList<StepNode> Steps,
 /// One step of a path. A step is a node test, or a function call — XPath 2.0 allows
 /// <c>ram:RateApplicablePercent/xs:decimal(.)</c>, and the CII rules rely on it.
 /// </summary>
+/// <remarks>
+/// <c>FiltersSequence</c> says whether the predicates filter the incoming sequence as a whole rather than
+/// each node's own step result. That is the difference between <c>$digits[$i]</c>, which picks one item out
+/// of a sequence, and <c>a/b[1]</c>, which picks the first <c>b</c> of every <c>a</c>. Both appear in the
+/// published rules.
+/// </remarks>
 internal sealed record StepNode(
     StepAxis Axis,
     string? Name,
     XPathNode? Expression,
     IReadOnlyList<XPathNode> Predicates,
-    bool DescendantOrSelf = false);
+    bool DescendantOrSelf = false,
+    bool FiltersSequence = false);
 
 internal enum StepAxis
 {

@@ -31,6 +31,9 @@
   <rule context="$Document_level_charges">
     <assert test="$UBL-SR-31" flag="fatal" id="UBL-SR-31">[UBL-SR-31]-Document level charge reason shall occur maximum once</assert>
   </rule>
+  <rule context="$PartyTaxScheme">
+    <assert test="$UBL-SR-53" flag="fatal" id="UBL-SR-53">[UBL-SR-53]- CompanyID (VAT Identifier) must be stated when providing the PartyTaxScheme/TaxScheme/ID.</assert>
+  </rule>
   <rule context="$Invoice">
     <assert test="$UBL-CR-001" flag="warning" id="UBL-CR-001">[UBL-CR-001]-A UBL invoice should not include extensions</assert>
     <assert test="$UBL-CR-002" flag="warning" id="UBL-CR-002">[UBL-CR-002]-A UBL invoice should not include the UBLVersionID or it should be 2.1</assert>
@@ -600,18 +603,18 @@
     <assert test="$UBL-CR-569" flag="warning" id="UBL-CR-569">[UBL-CR-569]-A UBL invoice should not include the InvoiceLine Item BrandName</assert>
     <assert test="$UBL-CR-570" flag="warning" id="UBL-CR-570">[UBL-CR-570]-A UBL invoice should not include the InvoiceLine Item ModelName</assert>
     <assert test="$UBL-CR-571" flag="warning" id="UBL-CR-571">[UBL-CR-571]-A UBL invoice should not include the InvoiceLine Item BuyersItemIdentification ExtendedID</assert>
-    <assert test="$UBL-CR-572" flag="warning" id="UBL-CR-572">[UBL-CR-572]-A UBL invoice should not include the InvoiceLine Item BuyersItemIdentification BarecodeSymbologyID</assert>
+    <assert test="$UBL-CR-572" flag="warning" id="UBL-CR-572">[UBL-CR-572]-A UBL invoice should not include the InvoiceLine Item BuyersItemIdentification BarcodeSymbologyID</assert>
     <assert test="$UBL-CR-573" flag="warning" id="UBL-CR-573">[UBL-CR-573]-A UBL invoice should not include the InvoiceLine Item BuyersItemIdentification PhysicalAttribute</assert>
     <assert test="$UBL-CR-574" flag="warning" id="UBL-CR-574">[UBL-CR-574]-A UBL invoice should not include the InvoiceLine Item BuyersItemIdentification MeasurementDimension</assert>
     <assert test="$UBL-CR-575" flag="warning" id="UBL-CR-575">[UBL-CR-575]-A UBL invoice should not include the InvoiceLine Item BuyersItemIdentification IssuerParty</assert>
     <assert test="$UBL-CR-576" flag="warning" id="UBL-CR-576">[UBL-CR-576]-A UBL invoice should not include the InvoiceLine Item SellersItemIdentification ExtendedID</assert>
-    <assert test="$UBL-CR-577" flag="warning" id="UBL-CR-577">[UBL-CR-577]-A UBL invoice should not include the InvoiceLine Item SellersItemIdentification BarecodeSymbologyID</assert>
+    <assert test="$UBL-CR-577" flag="warning" id="UBL-CR-577">[UBL-CR-577]-A UBL invoice should not include the InvoiceLine Item SellersItemIdentification BarcodeSymbologyID</assert>
     <assert test="$UBL-CR-578" flag="warning" id="UBL-CR-578">[UBL-CR-578]-A UBL invoice should not include the InvoiceLine Item SellersItemIdentification PhysicalAttribute</assert>
     <assert test="$UBL-CR-579" flag="warning" id="UBL-CR-579">[UBL-CR-579]-A UBL invoice should not include the InvoiceLine Item SellersItemIdentification MeasurementDimension</assert>
     <assert test="$UBL-CR-580" flag="warning" id="UBL-CR-580">[UBL-CR-580]-A UBL invoice should not include the InvoiceLine Item SellersItemIdentification IssuerParty</assert>
     <assert test="$UBL-CR-581" flag="warning" id="UBL-CR-581">[UBL-CR-581]-A UBL invoice should not include the InvoiceLine Item ManufacturersItemIdentification</assert>
     <assert test="$UBL-CR-582" flag="warning" id="UBL-CR-582">[UBL-CR-582]-A UBL invoice should not include the InvoiceLine Item StandardItemIdentification ExtendedID</assert>
-    <assert test="$UBL-CR-583" flag="warning" id="UBL-CR-583">[UBL-CR-583]-A UBL invoice should not include the InvoiceLine Item StandardItemIdentification BarecodeSymbologyID</assert>
+    <assert test="$UBL-CR-583" flag="warning" id="UBL-CR-583">[UBL-CR-583]-A UBL invoice should not include the InvoiceLine Item StandardItemIdentification BarcodeSymbologyID</assert>
     <assert test="$UBL-CR-584" flag="warning" id="UBL-CR-584">[UBL-CR-584]-A UBL invoice should not include the InvoiceLine Item StandardItemIdentification PhysicalAttribute</assert>
     <assert test="$UBL-CR-585" flag="warning" id="UBL-CR-585">[UBL-CR-585]-A UBL invoice should not include the InvoiceLine Item StandardItemIdentification MeasurementDimension</assert>
     <assert test="$UBL-CR-586" flag="warning" id="UBL-CR-586">[UBL-CR-586]-A UBL invoice should not include the InvoiceLine Item StandardItemIdentification IssuerParty</assert>
@@ -659,7 +662,6 @@
     <assert test="$UBL-CR-628" flag="warning" id="UBL-CR-628">[UBL-CR-628]-A UBL invoice should not include the InvoiceLine Item Price OrderableUnitFactorRate</assert>
     <assert test="$UBL-CR-629" flag="warning" id="UBL-CR-629">[UBL-CR-629]-A UBL invoice should not include the InvoiceLine Item Price ValidityPeriod</assert>
     <assert test="$UBL-CR-630" flag="warning" id="UBL-CR-630">[UBL-CR-630]-A UBL invoice should not include the InvoiceLine Item Price PriceList</assert>
-    <assert test="$UBL-CR-631" flag="warning" id="UBL-CR-631">[UBL-CR-631]-A UBL invoice should not include the InvoiceLine Item Price OrderableUnitFactorRate</assert>
     <assert test="$UBL-CR-632" flag="warning" id="UBL-CR-632">[UBL-CR-632]-A UBL invoice should not include the InvoiceLine Item Price AllowanceCharge ID</assert>
     <assert test="$UBL-CR-633" flag="warning" id="UBL-CR-633">[UBL-CR-633]-A UBL invoice should not include the InvoiceLine Item Price AllowanceCharge AllowanceChargeReasonCode</assert>
     <assert test="$UBL-CR-634" flag="warning" id="UBL-CR-634">[UBL-CR-634]-A UBL invoice should not include the InvoiceLine Item Price AllowanceCharge AllowanceChargeReason</assert>
@@ -758,6 +760,9 @@
     <assert test="$UBL-SR-46" flag="fatal" id="UBL-SR-46">[UBL-SR-46]-Payment means text shall occur maximum once</assert>
     <assert test="$UBL-SR-47" flag="fatal" id="UBL-SR-47">[UBL-SR-47]-When there are more than one payment means code, they shall be equal</assert>
     <assert test="$UBL-SR-49" flag="fatal" id="UBL-SR-49">[UBL-SR-49]-Value tax point date shall occur maximum once</assert>
+    <assert test="$UBL-SR-54" flag="fatal" id="UBL-SR-54">[UBL-SR-54]-An Invoice shall contain maximum one Payment Card account (BG-18).</assert>
+    <assert test="$UBL-SR-55" flag="fatal" id="UBL-SR-55">[UBL-SR-55]-An Invoice shall contain maximum one Payment Mandate (BG-19).</assert>    
+    <assert test="$UBL-SR-56" flag="fatal" id="UBL-SR-56">[UBL-SR-56]-An Invoice shall contain maximum one Originator document reference identifier (BT-17).</assert>
   </rule>
   <rule context="$Invoice_line">
     <assert test="$UBL-SR-34" flag="fatal" id="UBL-SR-34">[UBL-SR-34]-Invoice line note shall occur maximum once</assert>

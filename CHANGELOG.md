@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **EN 16931 artefacts updated to 1.3.16** (April 2026), from 1.3.13 (October 2024) — two years of published
+  corrections, including BR-CO-25 on credit notes, BR-CL-01's invoice and credit-note type codes, missing CII
+  checks on BT-81 to BT-83, BT-86, BT-123 and BT-128, and the allowance and charge fixes below. The EAS code
+  list moved with them: six schemes added (0154, 0158, 0240, 0242, 0244, 0245, 0246, 0248) and 9901 removed.
+- Running the new artefacts found a defect in the XPath engine: **a step's predicate was applied to the whole
+  flattened result instead of to each node the step started from**. `a/b[1]` means the first `b` of *each*
+  `a`; ours meant the first `b` in the document. BR-CO-11 and BR-CO-12 sum `ActualAmount[1]` across every
+  document-level allowance, so an invoice with two of them was rejected for arithmetic it had got right.
+  Fixed, with the sequence-filtering case (`$digits[$i]`, `tokenize(...)[7]`) kept distinct, since the two
+  wear the same brackets and mean different things.
 - **One country, one object.** `FrenchEInvoicing`, `GermanEInvoicing` and `BelgianEInvoicing` hold what
   their country expects, so a caller who invoices in one place does not have to learn which profile, which
   business process and which rule sets that place wants. France reads all four of its documents through one

@@ -12,10 +12,10 @@ namespace International.EInvoicing.Validation.Schematron.Tests;
 public class EN16931ConformanceTests
 {
     private static readonly SchematronRuleSet UblRules =
-        SchematronRuleSet.Load(File.ReadAllText(Artefacts.UblRules), "EN 16931 (UBL)", "1.3.13");
+        SchematronRuleSet.Load(File.ReadAllText(Artefacts.UblRules), "EN 16931 (UBL)", "1.3.16");
 
     private static readonly SchematronRuleSet CiiRules =
-        SchematronRuleSet.Load(File.ReadAllText(Artefacts.CiiRules), "EN 16931 (CII)", "1.3.13");
+        SchematronRuleSet.Load(File.ReadAllText(Artefacts.CiiRules), "EN 16931 (CII)", "1.3.16");
 
     public static TheoryData<string> UblExamples => Examples("ubl");
 
@@ -84,7 +84,7 @@ public class EN16931ConformanceTests
 
         RuleSetOutcome outcome = report.RuleSets.ShouldHaveSingleItem();
         outcome.Name.ShouldBe("EN 16931 (UBL)");
-        outcome.Version.ShouldBe("1.3.13");
+        outcome.Version.ShouldBe("1.3.16");
         outcome.Ran.ShouldBeTrue();
         report.IsComplete.ShouldBeTrue();
     }

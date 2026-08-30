@@ -3,8 +3,8 @@
 | | |
 |---|---|
 | **Source** | <https://github.com/ConnectingEurope/eInvoicing-EN16931> |
-| **Version** | `validation-1.3.13` |
-| **Retrieved** | 2026-08-29 |
+| **Version** | `validation-1.3.16` |
+| **Retrieved** | 2026-08-30 |
 | **Licence** | European Union Public Licence v1.2 — see `LICENSE.upstream.txt` |
 | **Redistributable** | verbatim, yes. Derived works are another matter — see `docs/adr/0009-artefact-licensing.md` |
 

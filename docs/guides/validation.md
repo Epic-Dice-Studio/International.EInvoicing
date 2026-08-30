@@ -28,7 +28,7 @@ first as the second is the most expensive thing a validator can do, so the repor
 foreach (RuleSetOutcome outcome in report.RuleSets)
 {
     Console.WriteLine(outcome);
-    // EN 16931 (UBL) 1.3.13  ran
+    // EN 16931 (UBL) 1.3.16  ran
     // urn:acme:profile:2p0 —  skipped — this library implements no rule set for that profile,
     //                         so only EN 16931 was checked
 }
@@ -66,7 +66,7 @@ failures blocks legitimate invoices.
 
 ## What runs today
 
-`International.EInvoicing.Validation.En16931` carries the published EN 16931 artefacts, version 1.3.13, for
+`International.EInvoicing.Validation.En16931` carries the published EN 16931 artefacts, version 1.3.16, for
 both UBL and CII. They are embedded, so validation works offline and ships with the version it was tested
 against.
 

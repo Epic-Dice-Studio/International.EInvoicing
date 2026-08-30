@@ -28,7 +28,7 @@ public class En16931RulesTests
     {
         En16931Rules.For(DocumentSyntax.Ubl).AssertionCount.ShouldBeGreaterThan(900);
         En16931Rules.For(DocumentSyntax.Cii).AssertionCount.ShouldBeGreaterThan(700);
-        En16931Rules.ArtefactVersion.ShouldBe("1.3.13");
+        En16931Rules.ArtefactVersion.ShouldBe("1.3.16");
     }
 
     [Fact]

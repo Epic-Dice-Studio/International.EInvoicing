@@ -15,7 +15,7 @@ namespace International.EInvoicing.Validation.En16931;
 public static class En16931Rules
 {
     /// <summary>The version of the published artefacts this package carries.</summary>
-    public const string ArtefactVersion = "1.3.13";
+    public const string ArtefactVersion = "1.3.16";
 
     private static readonly ConcurrentDictionary<string, SchematronRuleSet> Loaded = new(StringComparer.Ordinal);
 

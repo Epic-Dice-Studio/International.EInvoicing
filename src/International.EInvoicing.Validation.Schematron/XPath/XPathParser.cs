@@ -318,7 +318,7 @@ internal sealed class XPathParser
 
         return new PathNode(
             expression,
-            [new StepNode(StepAxis.Self, null, null, ReadPredicates())],
+            [new StepNode(StepAxis.Self, null, null, ReadPredicates(), FiltersSequence: true)],
             Absolute: false);
     }
 

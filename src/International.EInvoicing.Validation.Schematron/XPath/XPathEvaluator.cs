@@ -295,20 +295,31 @@ internal sealed class XPathEvaluator(
         return XPathValue.Nodes(current);
     }
 
-    private IReadOnlyList<object> ApplyStep(StepNode step, IReadOnlyList<object> nodes, XPathContext context)
+    /// <summary>
+    /// One step of a path, for every node the previous step produced.
+    /// </summary>
+    /// <remarks>
+    /// A predicate belongs to the node the step was taken from, not to the whole result: <c>a/b[1]</c> is the
+    /// first <c>b</c> of <em>each</em> <c>a</c>, not the first <c>b</c> in the document. EN 16931 leans on
+    /// that in BR-CO-11 and BR-CO-12, which sum <c>ActualAmount[1]</c> across every document-level allowance.
+    /// </remarks>
+    private List<object> ApplyStep(StepNode step, IReadOnlyList<object> nodes, XPathContext context)
     {
         var results = new List<object>();
 
         foreach (object node in nodes)
         {
-            IEnumerable<object> candidates = step.DescendantOrSelf
-                ? SelectFrom(step, DescendantsAndSelf(node), context)
-                : SelectFrom(step, [node], context);
+            IEnumerable<object> origins = step.DescendantOrSelf ? DescendantsAndSelf(node) : [node];
 
-            results.AddRange(candidates);
+            foreach (object origin in origins)
+            {
+                IReadOnlyList<object> selected = [.. SelectFrom(step, [origin], context)];
+
+                results.AddRange(step.FiltersSequence ? selected : Filter(step.Predicates, selected, context));
+            }
         }
 
-        return Filter(step.Predicates, results, context);
+        return step.FiltersSequence ? [.. Filter(step.Predicates, results, context)] : results;
     }
 
     private IEnumerable<object> SelectFrom(StepNode step, IEnumerable<object> nodes, XPathContext context)

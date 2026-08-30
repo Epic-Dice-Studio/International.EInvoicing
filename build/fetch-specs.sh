@@ -16,7 +16,7 @@ SPECS_DIR="$REPO_ROOT/specs"
 WORK_DIR="$(mktemp -d)"
 trap 'rm -rf "$WORK_DIR"' EXIT
 
-EN16931_REF="validation-1.3.13"
+EN16931_REF="validation-1.3.16"
 PEPPOL_REF="master"
 XRECHNUNG_SCHEMATRON_REF="master"
 XRECHNUNG_TESTSUITE_REF="master"
