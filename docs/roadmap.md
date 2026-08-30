@@ -59,15 +59,21 @@ build. `AddPeppolRulesFrom(directory)` loads all four rule sets Peppol publishes
 its copy of the EN 16931 ones, because both apply. Belgium is built on the package, and its validation entry
 no longer says *planned*.
 
-### 3. Cross-checking against an external validator
+### 3. Cross-checking what we write
 
 **The problem.** The engine agrees with every published corpus we can find — 23/23 EN 16931 examples, 86/86
 XRechnung documents, 354/354 Peppol unit cases. All of that compares us against expected *results*. Nothing
 compares us against another *engine*, so a rule both we and the corpus authors read the same wrong way would
 go unnoticed.
 
-**Done when** a nightly workflow runs the KoSIT validator over everything the samples and tests generate and
-fails on disagreement, with the disagreements — not just the failures — reported.
+**Half done.** Every country package now measures what this library *writes* against the rules of the country
+it is for: XRechnung against the German rules, Peppol against Peppol's own, France against the DGFiP's, each
+in both syntaxes and against EN 16931 underneath. That found two real gaps on the first run — the Peppol
+business process, which EN 16931 does not require and the network does, and an invalid Belgian enterprise
+number our own checker would have caught.
+
+**Still to do:** the external comparison. Running the KoSIT validator alongside our engine and failing on
+disagreement is the part no corpus can replace, and it needs a Java toolchain in CI.
 
 ### 4. Locking the public API ✅ *done, August 2026*
 

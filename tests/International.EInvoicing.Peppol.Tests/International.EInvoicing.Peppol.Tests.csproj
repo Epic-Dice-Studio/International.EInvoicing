@@ -20,6 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="../../src/International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Validation.Schematron/International.EInvoicing.Validation.Schematron.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
   </ItemGroup>
 
 </Project>

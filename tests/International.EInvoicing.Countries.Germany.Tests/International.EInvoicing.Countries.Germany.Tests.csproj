@@ -19,6 +19,10 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
   </ItemGroup>
 
 </Project>
