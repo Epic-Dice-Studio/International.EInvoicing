@@ -35,6 +35,20 @@ API that changes and a sample that no longer builds are the same event.
 read, and prints what it does about them. What a library does when the input is wrong is worth more than what
 it does when the input is right.
 
+## It also proves the library trims
+
+The serialisation here is hand-written and reflection-free, so a trimmed or ahead-of-time-compiled
+application should be able to use it. That claim is checked rather than asserted — CI publishes this sample
+trimmed and self-contained on every push, and runs it:
+
+```bash
+dotnet publish samples/International.EInvoicing.Samples -c Release -f net10.0 \
+  -r linux-x64 --self-contained -p:PublishTrimmed=true -o artifacts/trimmed
+./artifacts/trimmed/International.EInvoicing.Samples
+```
+
+Every chapter runs, Schematron validation and PDF handling included.
+
 ## The last chapter needs a fetch
 
 Peppol and the DGFiP publish their Schematron under no licence, so this repository does not carry it. Without

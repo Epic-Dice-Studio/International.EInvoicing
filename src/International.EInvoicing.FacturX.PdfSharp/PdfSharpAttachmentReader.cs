@@ -24,7 +24,10 @@ public sealed class PdfSharpAttachmentReader : IPdfAttachmentReader
         PdfDocument document;
         try
         {
+            // Disposed by the using below; CA2000 cannot follow ownership out of a try block.
+#pragma warning disable CA2000
             document = PdfReader.Open(pdf, PdfDocumentOpenMode.Import);
+#pragma warning restore CA2000
         }
         catch (PdfReaderException)
         {

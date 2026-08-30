@@ -3,6 +3,9 @@
   <!-- Packaging rules applied to every shipping library (src/**). -->
 
   <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+    <!-- The serialisation is hand-written and reflection-free (ADR 0004), so the library should be usable
+         from a trimmed or ahead-of-time-compiled application. This turns on the analyzers that keep it so. -->
+    <IsAotCompatible>true</IsAotCompatible>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>

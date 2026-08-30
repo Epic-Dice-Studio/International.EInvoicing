@@ -69,6 +69,45 @@ dotnet_diagnostic.CA3075.severity = error
 dotnet_diagnostic.CA5372.severity = error
 dotnet_diagnostic.CA5369.severity = error
 
+# ── Analyzer severities ────────────────────────────────────────────────────────────────────────────────
+# The build runs every analyzer .NET ships (AnalysisLevel = latest-all) and treats warnings as errors, so
+# each rule turned down below is a decision with a reason, not a rule nobody looked at.
+
+# A document model is a tree you compose freely: List<T> is what a caller needs to add a line, and hiding it
+# behind IList<T> would buy nothing here. Recorded as a deliberate shape.
+dotnet_diagnostic.CA1002.severity = none
+
+# The Field<T> family has implicit conversions so ordinary code reads like ordinary code. The named
+# alternates this rule wants exist for languages without operator overloading; this library targets C#.
+dotnet_diagnostic.CA2225.severity = none
+
+# Arguments are validated with ArgumentNullException.ThrowIfNull throughout; the analyzer does not recognise
+# it through every shape, and a params array is not worth a guard.
+dotnet_diagnostic.CA1062.severity = none
+
+# Aimed at applications. Every public type here is public because someone outside is meant to use it.
+dotnet_diagnostic.CA1515.severity = none
+
+# Types instantiated by the container or by a test, which the analyzer cannot see.
+dotnet_diagnostic.CA1812.severity = none
+
+# An attachment (BT-125) is bytes. Wrapping them in a collection type would say less, not more.
+dotnet_diagnostic.CA1819.severity = none
+
+# EInvoicing sharing a name with its namespace, and Profile with a type in System.*, are both the right
+# names for what they are.
+dotnet_diagnostic.CA1724.severity = none
+
+# BT-34 and BT-49 carry an electronic address as a string because the norms define them as strings, and a
+# Uri would refuse values those norms allow.
+dotnet_diagnostic.CA1054.severity = none
+dotnet_diagnostic.CA1056.severity = none
+
+# The library is not localised: its messages quote rule identifiers and business terms, which do not
+# translate. Diagnostic text belongs to the norms, not to us.
+dotnet_diagnostic.CA1303.severity = none
+
+
 [tests/**/*.cs]
 # Tests may skip XML docs.
 dotnet_diagnostic.CS1591.severity = none
@@ -76,3 +115,8 @@ dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.CA1707.severity = none
 # Test classes are instantiated by the runner, not by us.
 dotnet_diagnostic.CA1515.severity = none
+
+
+[{tests,samples,web}/**/*.cs]
+# No synchronization context to return to in a test or a console app, so ConfigureAwait says nothing.
+dotnet_diagnostic.CA2007.severity = none

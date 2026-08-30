@@ -101,7 +101,7 @@ internal readonly struct XPathValue
         decimal number => Format(number),
         bool value => value ? "true" : "false",
         string text => text,
-        _ => item?.ToString() ?? string.Empty,
+        _ => item.ToString() ?? string.Empty,
     };
 
     public static string Format(decimal number) =>

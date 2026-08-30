@@ -579,7 +579,10 @@ internal sealed class XPathEvaluator(
             "xs:date" or "xs:dateTime" => XPathValue.Text(First().AsText()),
             "normalize-space" => XPathValue.Text(NormalizeSpace(First().AsText())),
             "upper-case" => XPathValue.Text(First().AsText().ToUpperInvariant()),
+            // CA1308 asks for upper-casing; this is XPath's lower-case() function, which lower-cases.
+#pragma warning disable CA1308
             "lower-case" => XPathValue.Text(First().AsText().ToLowerInvariant()),
+#pragma warning restore CA1308
             "string-length" => XPathValue.Number(First().AsText().Length),
             "concat" => XPathValue.Text(string.Concat(arguments.Select(a => a.AsText()))),
             "contains" => XPathValue.Boolean(arguments[0].AsText().Contains(arguments[1].AsText(), StringComparison.Ordinal)),

@@ -31,7 +31,8 @@ Tests run on `net10.0` locally. CI additionally installs the .NET 8 runtime and 
   `dotnet format analyzers <project> --diagnostics RS0016 --severity warn` writes the new entries into that
   package's `PublicAPI.Unshipped.txt`, and the diff is what a reviewer looks at. See
   [ADR 0011](docs/adr/0011-public-api-tracking.md).
-- If you added a dependency, add an ADR under `docs/adr/` explaining why.
+- If you added a dependency, add an ADR under `docs/adr/` explaining why — and check it does not break
+  trimming: CI publishes the sample with `PublishTrimmed=true` and runs it.
 - If you changed the public API, check that `samples/International.EInvoicing.Samples` still shows it well.
   It is part of the solution, so CI already refuses a sample that stopped compiling — but a sample that
   compiles and no longer demonstrates the feature is just as stale.

@@ -46,6 +46,15 @@ jobs:
           --logger "trx;LogFileName=test-results.trx"
           --collect:"XPlat Code Coverage"
 
+      # A library that claims to be trim-safe and is never trimmed stops being trim-safe quietly. Publishing
+      # the sample and running it exercises every feature through a trimmed, self-contained binary.
+      - name: Publish the sample trimmed, and run it
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          dotnet publish samples/International.EInvoicing.Samples -c Release -f net10.0 \
+            -r linux-x64 --self-contained -p:PublishTrimmed=true -o artifacts/trimmed
+          ./artifacts/trimmed/International.EInvoicing.Samples
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
