@@ -73,6 +73,8 @@ public sealed class UblInvoiceReader
 
     private EInvoice ReadInvoice(XElement root, DiagnosticCollector diagnostics)
     {
+        // A credit note is the same document under another root, with three elements renamed.
+        UblDocumentShape shape = UblDocumentShape.Of(root);
         var mapped = new HashSet<XElement>();
         var owners = new Dictionary<XElement, InvoiceNode>();
         var values = new UblValueReader(diagnostics, mapped);
@@ -84,7 +86,7 @@ public sealed class UblInvoiceReader
         invoice.Number = values.ReadIdentifier(Take(root, UblNames.Cbc + "ID", mapped));
         invoice.IssueDate = values.ReadDate(Take(root, UblNames.Cbc + "IssueDate", mapped), "BT-2");
         invoice.DueDate = values.ReadDate(Take(root, UblNames.Cbc + "DueDate", mapped), "BT-9");
-        invoice.TypeCode = values.ReadCode(Take(root, UblNames.Cbc + "InvoiceTypeCode", mapped));
+        invoice.TypeCode = values.ReadCode(Take(root, shape.TypeCode, mapped));
         invoice.TaxPointDate = values.ReadDate(Take(root, UblNames.Cbc + "TaxPointDate", mapped), "BT-7");
         invoice.CurrencyCode = values.ReadCode(Take(root, UblNames.Cbc + "DocumentCurrencyCode", mapped));
         invoice.TaxAccountingCurrencyCode = values.ReadCode(Take(root, UblNames.Cbc + "TaxCurrencyCode", mapped));
@@ -143,9 +145,9 @@ public sealed class UblInvoiceReader
         ReadTaxTotal(Take(root, UblNames.Cac + "TaxTotal", mapped), invoice, values);
         ReadTotals(Take(root, UblNames.Cac + "LegalMonetaryTotal", mapped), invoice.Totals, values);
 
-        foreach (XElement line in TakeAll(root, UblNames.Cac + "InvoiceLine", mapped))
+        foreach (XElement line in TakeAll(root, shape.Line, mapped))
         {
-            InvoiceLine mappedLine = ReadLine(line, values, owners);
+            InvoiceLine mappedLine = ReadLine(shape, line, values, owners);
             owners[line] = mappedLine;
             invoice.Lines.Add(mappedLine);
         }
@@ -419,6 +421,7 @@ public sealed class UblInvoiceReader
     }
 
     private static InvoiceLine ReadLine(
+        UblDocumentShape shape,
         XElement element,
         UblValueReader values,
         Dictionary<XElement, InvoiceNode> owners)
@@ -427,7 +430,7 @@ public sealed class UblInvoiceReader
         {
             Identifier = values.ReadIdentifier(element.Element(UblNames.Cbc + "ID")),
             Note = values.ReadText(element.Element(UblNames.Cbc + "Note")),
-            Quantity = values.ReadQuantity(element.Element(UblNames.Cbc + "InvoicedQuantity"), "BT-129"),
+            Quantity = values.ReadQuantity(element.Element(shape.Quantity), "BT-129"),
             NetAmount = values.ReadAmount(element.Element(UblNames.Cbc + "LineExtensionAmount"), "BT-131"),
             BuyerAccountingReference = values.ReadText(element.Element(UblNames.Cbc + "AccountingCost")),
             OrderLineReference = values.ReadIdentifier(

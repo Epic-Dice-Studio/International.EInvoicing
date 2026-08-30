@@ -12,8 +12,11 @@ public enum DocumentKind
     /// <summary>Nothing this library recognises.</summary>
     Unknown,
 
-    /// <summary>An invoice or credit note in OASIS UBL 2.1.</summary>
+    /// <summary>An invoice in OASIS UBL 2.1.</summary>
     Ubl,
+
+    /// <summary>A credit note in OASIS UBL 2.1, which has its own root element.</summary>
+    UblCreditNote,
 
     /// <summary>An invoice in UN/CEFACT CII — the payload of Factur-X and ZUGFeRD.</summary>
     Cii,
@@ -55,9 +58,15 @@ public sealed record DocumentResult
     /// <summary>Whether anything reported means the result cannot be trusted for compliance.</summary>
     public bool HasErrors => Diagnostics.Any(diagnostic => diagnostic.Severity >= DiagnosticSeverity.Error);
 
-    /// <summary>Whether the document is a credit note rather than an invoice, read from BT-3.</summary>
+    /// <summary>
+    /// Whether the document is a credit note rather than an invoice.
+    /// </summary>
+    /// <remarks>
+    /// In UBL the root element says so outright; in CII it is the type code (BT-3) that does. Both are
+    /// consulted, so a credit note is recognised whichever syntax it arrived in.
+    /// </remarks>
     public bool IsCreditNote =>
-        Invoice?.TypeCode.Value is "381" or "83" or "261" or "262" or "296" or "308" or "396";
+        Kind == DocumentKind.UblCreditNote || InvoiceTypeCodes.IsCreditNote(Invoice?.TypeCode.Value);
 
     /// <summary>The diagnostics of at least the given severity.</summary>
     public IEnumerable<Diagnostic> OfAtLeast(DiagnosticSeverity severity) =>

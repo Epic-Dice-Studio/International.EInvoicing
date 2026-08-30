@@ -24,9 +24,10 @@
           "name": "UBL 2.1 — Credit Note",
           "version": "OASIS UBL 2.1",
           "package": "International.EInvoicing.Ubl",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "In UBL a credit note is not an invoice with a different code: it has its own root element and renames three things inside it. Read, written and round-tripped against the official EN 16931 credit note, and the type code (BT-3) decides which root a document built in code is written under."
         },
         {
           "name": "UN/CEFACT CII",

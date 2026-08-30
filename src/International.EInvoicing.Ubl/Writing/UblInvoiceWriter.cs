@@ -60,12 +60,15 @@ public sealed class UblInvoiceWriter
 
     private static void Write(EInvoice invoice, XmlWriter writer)
     {
+        // A credit note is not an invoice with a different code in UBL: it is its own root element.
+        UblDocumentShape shape = UblDocumentShape.For(invoice);
+
         writer.WriteStartDocument();
-        writer.WriteStartElement("Invoice", UblNames.Invoice.NamespaceName);
+        writer.WriteStartElement(shape.Root.LocalName, shape.Root.NamespaceName);
         writer.WriteAttributeString("xmlns", UblNames.CacPrefix, null, UblNames.Cac.NamespaceName);
         writer.WriteAttributeString("xmlns", UblNames.CbcPrefix, null, UblNames.Cbc.NamespaceName);
 
-        WriteDocumentLevel(invoice, writer);
+        WriteDocumentLevel(invoice, shape, writer);
         WriteReferences(invoice, writer);
         WriteParties(invoice, writer);
         WriteDeliveryAndPayment(invoice, writer);
@@ -80,7 +83,7 @@ public sealed class UblInvoiceWriter
 
         foreach (InvoiceLine line in invoice.Lines)
         {
-            WriteLine(line, writer);
+            WriteLine(line, shape, writer);
         }
 
         WriteExtensions(invoice.Extensions, writer);
@@ -89,7 +92,7 @@ public sealed class UblInvoiceWriter
         writer.WriteEndDocument();
     }
 
-    private static void WriteDocumentLevel(EInvoice invoice, XmlWriter writer)
+    private static void WriteDocumentLevel(EInvoice invoice, UblDocumentShape shape, XmlWriter writer)
     {
         if (invoice.SpecificationIdentifier.IsDeclared)
         {
@@ -100,7 +103,7 @@ public sealed class UblInvoiceWriter
         WriteIdentifier(writer, "ID", invoice.Number);
         WriteDate(writer, "IssueDate", invoice.IssueDate);
         WriteDate(writer, "DueDate", invoice.DueDate);
-        WriteCode(writer, "InvoiceTypeCode", invoice.TypeCode);
+        WriteCode(writer, shape.TypeCode.LocalName, invoice.TypeCode);
 
         foreach (InvoiceNote note in invoice.Notes)
         {
@@ -455,12 +458,12 @@ public sealed class UblInvoiceWriter
         writer.WriteEndElement();
     }
 
-    private static void WriteLine(InvoiceLine line, XmlWriter writer)
+    private static void WriteLine(InvoiceLine line, UblDocumentShape shape, XmlWriter writer)
     {
-        StartCac(writer, "InvoiceLine");
+        StartCac(writer, shape.Line.LocalName);
         WriteIdentifier(writer, "ID", line.Identifier);
         WriteText(writer, "Note", line.Note);
-        WriteQuantity(writer, "InvoicedQuantity", line.Quantity);
+        WriteQuantity(writer, shape.Quantity.LocalName, line.Quantity);
         WriteAmount(writer, "LineExtensionAmount", line.NetAmount);
         WriteText(writer, "AccountingCost", line.BuyerAccountingReference);
         WritePeriod(writer, "InvoicePeriod", line.Period);

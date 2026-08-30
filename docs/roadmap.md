@@ -22,7 +22,7 @@ Four questions, in this order:
 
 ## Now — correctness and the multipliers
 
-### 1. UBL credit notes
+### 1. UBL credit notes ✅ *done, August 2026*
 
 **The problem.** A credit note in UBL has its own root element and its own line elements —
 `CreditNote`, `cac:CreditNoteLine`, `cbc:CreditedQuantity` — and this library reads it as an invoice. Nothing
@@ -37,9 +37,11 @@ number=AV-2026-001  type=(none)  lines=0
 
 CII is unaffected: there, a credit note is the same document with type code 381.
 
-**Done when** the reader and writer handle both roots, the official UBL credit-note corpus round-trips
-without loss, `DocumentKind` tells the two apart, and `IsCreditNote` is read from the document rather than
-guessed from a type code.
+**Done.** The reader and writer take their four differing element names from `UblDocumentShape`, chosen from
+the root when reading and from BT-3 when writing; `DocumentKind.UblCreditNote` tells the two apart before a
+document is read; `IsCreditNote` consults the root in UBL and the type code in CII. Measured against the
+official EN 16931 credit note: read with its lines, nothing left unmapped, round-tripped, and still accepted
+by EN 16931 after being written back.
 
 ### 2. `International.EInvoicing.Peppol`
 

@@ -204,6 +204,7 @@ public sealed class EInvoicing
         return Detect(text) switch
         {
             DocumentKind.Ubl => FromInvoice(DocumentKind.Ubl, Ubl.Read(text)),
+            DocumentKind.UblCreditNote => FromInvoice(DocumentKind.UblCreditNote, Ubl.Read(text)),
             DocumentKind.Cii => FromInvoice(DocumentKind.Cii, Cii.Read(text)),
             DocumentKind.Cdar => FromStatus(Lifecycle.Read(text)),
             _ => new DocumentResult
@@ -284,9 +285,12 @@ public sealed class EInvoicing
             return DocumentKind.Cii;
         }
 
-        return root.Namespace == UblNames.Invoice || root.Namespace == UblNames.CreditNote
-            ? DocumentKind.Ubl
-            : DocumentKind.Unknown;
+        if (root.Namespace == UblNames.CreditNote)
+        {
+            return DocumentKind.UblCreditNote;
+        }
+
+        return root.Namespace == UblNames.Invoice ? DocumentKind.Ubl : DocumentKind.Unknown;
     }
 
     /// <summary>Writes an invoice in the syntax you name.</summary>
@@ -438,7 +442,7 @@ public sealed class EInvoicing
     /// <summary>Which syntax a detected document is written in, or <c>null</c> when it is not one.</summary>
     private static DocumentSyntax? SyntaxOf(DocumentKind kind) => kind switch
     {
-        DocumentKind.Ubl => DocumentSyntax.Ubl,
+        DocumentKind.Ubl or DocumentKind.UblCreditNote => DocumentSyntax.Ubl,
         DocumentKind.Cii => DocumentSyntax.Cii,
         DocumentKind.Cdar => DocumentSyntax.Cdar,
         _ => null,

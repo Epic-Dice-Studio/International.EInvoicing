@@ -194,7 +194,39 @@ public class IntegrationExperienceTests
             .Message.ShouldContain("ToSeller");
     }
 
+    /// <summary>
+    /// A credit note is a document any real integration receives, and in UBL it is not an invoice with a
+    /// different code — it has its own root element.
+    /// </summary>
+    [Fact]
+    public void ACreditNoteIsRecognisedAsOneAndStillValidates()
+    {
+        EInvoicing library = EInvoicing.CreateDefault();
+        string creditNote = File.ReadAllText(Path.Combine(
+            RepositoryRoot(), "specs", "en16931", "ubl", "examples", "ubl-tc434-creditnote1.xml"));
+
+        DocumentResult result = library.Read(creditNote);
+
+        result.Kind.ShouldBe(DocumentKind.UblCreditNote);
+        result.IsCreditNote.ShouldBeTrue();
+        result.RequireInvoice().Lines.ShouldNotBeEmpty();
+
+        // And what we write back is still a document EN 16931 accepts.
+        library.Validate(library.Write(result.RequireInvoice())).IsValid.ShouldBeTrue();
+    }
+
     /// <summary>A report a pipeline can act on in one call, rather than five properties to remember.</summary>
+    private static string RepositoryRoot()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null && !Directory.Exists(Path.Combine(directory.FullName, ".git")))
+        {
+            directory = directory.Parent;
+        }
+
+        return directory?.FullName ?? throw new InvalidOperationException("Repository root not found.");
+    }
+
     [Fact]
     public void AReportCanBeInsistedUpon()
     {
