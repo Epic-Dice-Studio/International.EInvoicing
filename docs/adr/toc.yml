@@ -16,3 +16,7 @@
   href: 0007-target-frameworks.md
 - name: 0008 — How to execute Schematron rules
   href: 0008-schematron-engine.md
+- name: 0009 — Licensing of the normative artefacts we redistribute
+  href: 0009-artefact-licensing.md
+- name: 0010 — Hybrid invoices attach to an existing PDF; we never render one
+  href: 0010-no-pdf-rendering.md

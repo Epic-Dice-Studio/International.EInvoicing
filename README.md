@@ -9,6 +9,19 @@
 UBL, UN/CEFACT CII, Factur-X / ZUGFeRD, XRechnung, Peppol BIS, French CDAR lifecycle messages — one canonical
 model, one set of extension points, one package per thing you actually need.
 
+```csharp
+EInvoicing einvoicing = EInvoicing.CreateDefault();
+
+DocumentResult result = einvoicing.Read(stream);   // you do not say what it is
+
+if (result.Invoice is { } invoice)
+{
+    Console.WriteLine(invoice.Number.Value);
+}
+```
+
+Start with [getting started](docs/guides/getting-started.md).
+
 ---
 
 ## Why another e-invoicing library

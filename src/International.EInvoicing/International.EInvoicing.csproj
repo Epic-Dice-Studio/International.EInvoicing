@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing</PackageId>
+    <RootNamespace>International.EInvoicing</RootNamespace>
+    <Description>
+      Electronic invoicing for .NET, in one package: hand it a stream and get back an invoice, a credit note
+      or a lifecycle status, whatever syntax it arrived in. Includes UBL 2.1, UN/CEFACT CII, Factur-X,
+      lifecycle messages and EN 16931 validation.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;en16931;ubl;cii;factur-x;zugferd;xrechnung;peppol;cdar;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Cdar/International.EInvoicing.Cdar.csproj" />
+    <ProjectReference Include="../International.EInvoicing.FacturX/International.EInvoicing.FacturX.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -12,6 +12,7 @@
     <Project Path="src/International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
     <Project Path="src/International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
     <Project Path="src/International.EInvoicing.Validation.Schematron/International.EInvoicing.Validation.Schematron.csproj" />
+    <Project Path="src/International.EInvoicing/International.EInvoicing.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/International.EInvoicing.Cdar.Tests/International.EInvoicing.Cdar.Tests.csproj" />
@@ -19,6 +20,7 @@
     <Project Path="tests/International.EInvoicing.Core.Tests/International.EInvoicing.Core.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.France.Tests/International.EInvoicing.Countries.France.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.FacturX.Tests/International.EInvoicing.FacturX.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Tests/International.EInvoicing.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Ubl.Tests/International.EInvoicing.Ubl.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Validation.En16931.Tests/International.EInvoicing.Validation.En16931.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Validation.Schematron.Tests/International.EInvoicing.Validation.Schematron.Tests.csproj" />

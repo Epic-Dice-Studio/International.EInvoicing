@@ -4,3 +4,19 @@
   href: EIV1042.md
 - name: EIV1043 — UnsupportedProfile
   href: EIV1043.md
+- name: EIV2001 — InvalidValue
+  href: EIV2001.md
+- name: EIV2002 — UnsupportedDateFormat
+  href: EIV2002.md
+- name: EIV2020 — UnmappedElement
+  href: EIV2020.md
+- name: EIV4001 — MissingPayload
+  href: EIV4001.md
+- name: EIV4002 — PayloadTooLarge
+  href: EIV4002.md
+- name: EIV4010 — ProfileIsNotAnEn16931Invoice
+  href: EIV4010.md
+- name: EIV5001 — MalformedXml
+  href: EIV5001.md
+- name: EIV5010 — UnrecognisedDocument
+  href: EIV5010.md
