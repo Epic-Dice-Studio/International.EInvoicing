@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Xml;
 using System.Xml.Linq;
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
 namespace International.EInvoicing.Ubl.Reading;
@@ -27,6 +28,21 @@ internal sealed class UblValueReader(DiagnosticCollector diagnostics, HashSet<XE
 
         mapped.Add(element);
         return true;
+    }
+
+    /// <summary>
+    /// A note whose subject code UBL folded into the text, kept apart without losing where it came from.
+    /// </summary>
+    public InvoiceNote ReadNote(XElement element)
+    {
+        Consume(element);
+        (string? subjectCode, string text) = UblNoteSubject.Split(element.Value);
+
+        return new InvoiceNote
+        {
+            SubjectCode = subjectCode is null ? CodeField.Unset : new CodeField(subjectCode, null, null, null, Source(element)),
+            Text = new TextField(text, Attribute(element, "languageID"), Source(element)),
+        };
     }
 
     public TextField ReadText(XElement? element) =>

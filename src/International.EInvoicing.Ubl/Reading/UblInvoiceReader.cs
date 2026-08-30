@@ -95,7 +95,8 @@ public sealed class UblInvoiceReader
 
         foreach (XElement note in TakeAll(root, UblNames.Cbc + "Note", mapped))
         {
-            invoice.Notes.Add(new InvoiceNote { Text = values.ReadText(note) });
+            // "#AAB#…" is BT-21 and BT-22 in one element, which is how UBL carries a coded note.
+            invoice.Notes.Add(values.ReadNote(note));
         }
 
         invoice.Period = ReadPeriod(Take(root, UblNames.Cac + "InvoicePeriod", mapped), values);

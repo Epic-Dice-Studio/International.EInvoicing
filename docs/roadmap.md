@@ -80,14 +80,18 @@ public member fails the build until it is recorded. The analyzer's own rules fou
 overlapping optional parameters — `SecureXml.CreateReader`, `FrCdar.Collected`, `EInvoicing.Create` — each
 now spelled out. See [ADR 0011](adr/0011-public-api-tracking.md).
 
-### 5. Finishing France
+### 5. Finishing France ✅ *done, August 2026*
 
 The lifecycle and e-reporting are complete and measured. The invoice is not: the profile is registered and
 the two thousand French assertions run, but nothing helps a caller *satisfy* them — the SIREN of both
 parties, the VAT payment option, the delivery address, public-procurement references.
 
-**Done when** a French invoice can be built from the country package the way a lifecycle message can, and the
-result passes `EXTENDED-CTC-FR` and `BR-FR-Flux2` on every build.
+**Done.** `ForFrance()` adds the invoicing case and the three mandatory mentions; `FromFrenchSeller` and
+`ToFrenchBuyer` identify both parties by a SIREN checked before it is written. An invoice built that way
+satisfies EN 16931, `BR-FR-Flux2` and `EXTENDED-CTC-FR` in both syntaxes, measured on every build.
+
+Writing it uncovered a second defect: UBL has no element for the note subject code, carrying it as a
+`#AAB#` prefix, and this library dropped it on the way out and kept it as text on the way in.
 
 ---
 

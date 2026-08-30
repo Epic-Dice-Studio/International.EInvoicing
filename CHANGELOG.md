@@ -57,6 +57,9 @@ All notable changes to this project are documented here. The format follows
   `IssuedBy*` methods.
 
 ### Fixed
+- The note subject code (BT-21) was lost in UBL, which has no element for it: the code goes inside the note
+  as `#AAB#…`, and the writer dropped it while the reader kept the prefix as part of the text. Three of the
+  French mandatory mentions are identified by nothing else.
 - UBL party names were mapped to the wrong business terms: the writer put BT-27, the legal name, into both
   `cac:PartyName/cbc:Name` (BT-28, the trading name) and `cac:PartyLegalEntity/cbc:RegistrationName`, and the
   reader then left the second unmapped — so a document round-tripped through this library gained two elements

@@ -120,7 +120,7 @@ validation is never presented as a success.
 
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
-| France — invoicing (CIUS FR, Factur-X) <sub>DSE 3.x</sub> | 🚧 | 🚧 | 🚧 | `International.EInvoicing.Countries.France` |
+| France — invoicing (CIUS FR, Factur-X) <sub>DSE 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — legal identifiers (SIREN, SIRET, VAT) | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — e-reporting (flux 10) <sub>PPF flux 10 v1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
@@ -128,7 +128,7 @@ validation is never presented as a success.
 | Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Belgium` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
-> **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr is registered and resolves for both syntaxes, and its rule sets load and run from the fetched artefacts. The French mandatory mentions are not yet modelled.
+> **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build.
 
 > **France — lifecycle statuses (CDAR)** — Every status, to a trading partner and to the public portal, measured on each build against the DGFiP's own BR-FR-CDV rules and their eleven sample messages. The artefacts are fetched, not shipped: run build/fetch-specs.sh france.
 

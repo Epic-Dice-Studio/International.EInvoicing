@@ -106,10 +106,10 @@
           "name": "France — invoicing (CIUS FR, Factur-X)",
           "version": "DSE 3.x",
           "package": "International.EInvoicing.Countries.France",
-          "read": "in-progress",
-          "write": "in-progress",
-          "validate": "in-progress",
-          "notes": "The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr is registered and resolves for both syntaxes, and its rule sets load and run from the fetched artefacts. The French mandatory mentions are not yet modelled."
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build."
         },
         {
           "name": "France — lifecycle statuses (CDAR)",

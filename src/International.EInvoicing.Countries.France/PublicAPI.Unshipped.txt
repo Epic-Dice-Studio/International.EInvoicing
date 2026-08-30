@@ -8,6 +8,21 @@ const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.Servic
 const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.Siren = "0002" -> string!
 const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.Siret = "0009" -> string!
 const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.VatNumber = "9957" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.DepositInvoice = "B2" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.DepositInvoiceWithReporting = "S2" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.Invoice = "B1" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.InvoiceWithReporting = "S1" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedDepositInvoice = "M2" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedInvoice = "M1" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedSelfBilledInvoice = "M4" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.SelfBilledInvoice = "B4" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.SelfBilledInvoiceWithReporting = "S4" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.EarlyPaymentDiscountCode = "AAB" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.LatePaymentPenalties = "Pénalités de retard exigibles le jour suivant la date de règlement figurant sur la facture, au taux d'intérêt légal majoré, sans qu'un rappel soit nécessaire." -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.LatePaymentPenaltiesCode = "PMD" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.NoEarlyPaymentDiscount = "Escompte pour paiement anticipé : néant." -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.RecoveryCosts = "Indemnité forfaitaire pour frais de recouvrement en cas de retard de paiement : 40 €." -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.RecoveryCostsCode = "PMT" -> string!
 const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.Buyer = "BY" -> string!
 const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.Platform = "WK" -> string!
 const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.PublicPortal = "DFH" -> string!
@@ -395,6 +410,9 @@ International.EInvoicing.Countries.France.Identifiers.FrVatNumber.IsSet.get -> b
 International.EInvoicing.Countries.France.Identifiers.FrVatNumber.Siren.get -> International.EInvoicing.Countries.France.Identifiers.FrSiren
 International.EInvoicing.Countries.France.Identifiers.FrVatNumber.ToField() -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Countries.France.Identifiers.FrVatNumber.Value.get -> string!
+International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess
+International.EInvoicing.Countries.France.Invoicing.FrInvoiceBuilderExtensions
+International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention
 International.EInvoicing.Countries.France.Lifecycle.FrCdar
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.About(string! invoiceNumber, System.DateOnly invoiceIssueDate, string! invoiceTypeCode = "380", string? issuerIdentifier = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.Approved(System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
@@ -504,6 +522,13 @@ static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.operato
 static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.operator ==(International.EInvoicing.Countries.France.Identifiers.FrVatNumber left, International.EInvoicing.Countries.France.Identifiers.FrVatNumber right) -> bool
 static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.Parse(string! value) -> International.EInvoicing.Countries.France.Identifiers.FrVatNumber
 static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.TryParse(string? value, out International.EInvoicing.Countries.France.Identifiers.FrVatNumber number) -> bool
+static International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.IsKnown(string? code) -> bool
+static International.EInvoicing.Countries.France.Invoicing.FrInvoiceBuilderExtensions.ForFrance(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! businessProcess = "B1") -> International.EInvoicing.Building.EInvoiceBuilder!
+static International.EInvoicing.Countries.France.Invoicing.FrInvoiceBuilderExtensions.FromFrenchSeller(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! name, string! siren, string! vatIdentifier, System.Action<International.EInvoicing.Building.PartyBuilder!>? configure = null) -> International.EInvoicing.Building.EInvoiceBuilder!
+static International.EInvoicing.Countries.France.Invoicing.FrInvoiceBuilderExtensions.InFrenchProcess(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! businessProcess) -> International.EInvoicing.Building.EInvoiceBuilder!
+static International.EInvoicing.Countries.France.Invoicing.FrInvoiceBuilderExtensions.ToFrenchBuyer(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! name, string! siren, string? vatIdentifier = null, System.Action<International.EInvoicing.Building.PartyBuilder!>? configure = null) -> International.EInvoicing.Building.EInvoiceBuilder!
+static International.EInvoicing.Countries.France.Invoicing.FrInvoiceBuilderExtensions.WithFrenchMention(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! subjectCode, string! text) -> International.EInvoicing.Building.EInvoiceBuilder!
 static International.EInvoicing.Countries.France.Lifecycle.FrCdar.From(System.Action<International.EInvoicing.Countries.France.Lifecycle.FrPartyBuilder!>! issuer) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 static International.EInvoicing.Countries.France.Lifecycle.FrCdar.FromBuyer(string! siren, string? name = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 static International.EInvoicing.Countries.France.Lifecycle.FrCdar.FromPlatform(string! platformIdentifier, string? name = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!

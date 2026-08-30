@@ -19,7 +19,7 @@ of transactions and payment data.
 | Capability | Package | Status |
 |---|---|---|
 | Invoice syntaxes (UBL, CII, Factur-X) | `.Ubl`, `.Cii`, `.FacturX` | implemented |
-| French invoice profile (EXTENDED CTC FR) | `.Countries.France` | registered; rules run from the fetched artefacts |
+| French invoice profile (EXTENDED CTC FR) | `.Countries.France` | implemented, measured against the DGFiP rules |
 | CDAR lifecycle statuses, French profiling | `.Countries.France` | implemented, measured against the DGFiP rules |
 | SIREN / SIRET / VAT identifiers | `.Countries.France` | implemented |
 | E-reporting (flux 10) | `.Countries.France` | implemented, measured against the DGFiP rules |
@@ -68,6 +68,47 @@ precision, code-list membership. The engine **runs those definitions** rather th
 revision by the DGFiP takes effect by replacing the file.
 
 When the artefacts are absent, the tests that need them skip and say so; nothing silently passes.
+
+## Building a French invoice
+
+Two things France requires that EN 16931 does not, and one call adds both:
+
+```csharp
+EInvoice invoice = EInvoiceBuilder
+    .Create(FrProfiles.ExtendedCtcFrUbl)
+    .WithNumber("FA-2026-001")
+    .IssuedOn(new DateOnly(2026, 9, 1))
+    .InCurrency("EUR")
+    .ForFrance()                                              // the invoicing case, and the three mentions
+    .FromFrenchSeller("Fournisseur SARL", "732829320", "FR32732829320")
+    .ToFrenchBuyer("Client SA", "552081317", "FR89552081317")
+    .AddLine(line => line.WithItem("Conseil").WithQuantity(3m, "HUR").WithNetPrice(150m)
+        .WithNetAmount(450m).WithVat("S", 20m))
+    .WithComputedVatBreakdown()
+    .WithComputedTotals()
+    .Build();
+```
+
+**The invoicing case** (BT-23, *cadre de facturation*) comes from a closed list — `B1` an ordinary invoice,
+`B2` a deposit, `B4` a self-billed one, and so on. `ForFrance("B2")` names another;
+`FrBusinessProcess` carries them, and anything outside the list is refused with the list.
+
+**The three mentions** (BT-21/BT-22) are required on every invoice, whatever else it gets right: the
+recovery indemnity (`PMT`), the late-payment penalties (`PMD`), and the early-payment discount or its
+absence (`AAB`). `ForFrance()` writes the customary wording; where your terms differ, say so:
+
+```csharp
+.WithFrenchMention(FrInvoiceMention.EarlyPaymentDiscountCode, "Escompte de 2 % sous 10 jours.")
+```
+
+Calling it again with the same code replaces the mention rather than adding a second one. The suggested
+wordings are a starting point, not legal advice.
+
+**Both parties are identified by SIREN**, and `FromFrenchSeller` / `ToFrenchBuyer` check the digit before
+writing it — a typo caught here is cheaper than an invoice delivered to the wrong company.
+
+An invoice built this way satisfies EN 16931, `BR-FR-Flux2` and `EXTENDED-CTC-FR`, in **both** syntaxes.
+That is measured on every build rather than claimed.
 
 ## The French invoice profile
 
