@@ -26,6 +26,9 @@ internal sealed record SequenceNode(IReadOnlyList<XPathNode> Items) : XPathNode;
 /// </summary>
 internal sealed record QuantifiedNode(bool Every, string Variable, XPathNode Sequence, XPathNode Test) : XPathNode;
 
+/// <summary><c>if (condition) then a else b</c>, which XPath 2.0 adds and the German rules use.</summary>
+internal sealed record ConditionalNode(XPathNode Condition, XPathNode Then, XPathNode Else) : XPathNode;
+
 /// <summary>A path: an optional root, then steps. <c>Absolute</c> means it starts from the document.</summary>
 internal sealed record PathNode(XPathNode? Start, IReadOnlyList<StepNode> Steps, bool Absolute) : XPathNode;
 
@@ -51,6 +54,15 @@ internal enum StepAxis
     /// <summary>Every ancestor. The artefacts use it to exclude a rule inside a particular subtree.</summary>
     Ancestor,
 
-    /// <summary>Every node before this one in document order.</summary>
+    /// <summary>Every node before this one in document order, excluding its ancestors.</summary>
     Preceding,
+
+    /// <summary>The siblings before this node.</summary>
+    PrecedingSibling,
+
+    /// <summary>The siblings after it.</summary>
+    FollowingSibling,
+
+    /// <summary>Every node after this one in document order, excluding its descendants.</summary>
+    Following,
 }

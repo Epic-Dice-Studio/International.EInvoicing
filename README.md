@@ -83,7 +83,7 @@ validation is never presented as a success.
 | Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX` |
 | Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX.PdfSharp` |
 | Peppol BIS Billing <sub>3.0</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Peppol` |
-| XRechnung (CIUS + Extension) <sub>3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Germany` |
+| XRechnung (CIUS + Extension) <sub>3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
 
 > **EN 16931 (core invoice model)** — The published Schematron artefacts are executed as data. Measured against the 23 official example documents and the 80 CIUS documents of the XRechnung test suite: all accepted.
 
@@ -93,6 +93,8 @@ validation is never presented as a success.
 
 > **Peppol BIS Billing** — Validation artefacts are not redistributable (no licence declared upstream): run build/fetch-specs.sh peppol to obtain them locally. See ADR 0009.
 
+> **XRechnung (CIUS + Extension)** — Profiles for both syntaxes and the published rule sets, embedded. Measured against all 86 documents of the official KoSIT test suite.
+
 ### Countries
 
 | | Read | Write | Validate | Package |
@@ -101,7 +103,7 @@ validation is never presented as a success.
 | France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.France` |
 | France — legal identifiers (SIREN, SIRET, VAT) | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — e-reporting <sub>DSE 3.x</sub> | 🔬 | 🔬 | 🔬 | — |
-| Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.Germany` |
+| Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
 | Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.Belgium` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
@@ -111,7 +113,7 @@ validation is never presented as a success.
 
 > **France — e-reporting** — Deferred past 1.0; specification still moving.
 
-> **Germany — XRechnung, ZUGFeRD, Leitweg-ID** — XRechnung profiles registered for both syntaxes, and the Leitweg-ID with its ISO 7064 check digit, tested against the published example and the official test suite. XRechnung rule sets are not embedded yet.
+> **Germany — XRechnung, ZUGFeRD, Leitweg-ID** — XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite.
 
 > **Belgium — Peppol BIS, KBO/BCE, structured communication** — The Peppol BIS profiles the mandate is built on, the KBO/BCE enterprise number and the structured communication. Peppol validation artefacts are not redistributable; fetch them locally.
 

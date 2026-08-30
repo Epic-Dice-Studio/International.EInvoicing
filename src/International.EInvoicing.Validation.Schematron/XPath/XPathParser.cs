@@ -27,7 +27,40 @@ internal sealed class XPathParser
 
     private XPathToken Current => _tokens[_position];
 
-    private XPathNode ParseExpression() => ParseOr();
+    private XPathNode ParseExpression()
+    {
+        // A conditional binds looser than anything else, so it is recognised before the operator ladder.
+        if (Current.IsName("if") && _position + 1 < _tokens.Count && _tokens[_position + 1].Is("("))
+        {
+            return ParseConditional();
+        }
+
+        return ParseOr();
+    }
+
+    private ConditionalNode ParseConditional()
+    {
+        _position++;
+        Expect("(");
+        XPathNode condition = ParseExpression();
+        Expect(")");
+
+        if (!Current.IsName("then"))
+        {
+            throw new XPathException($"Expected 'then', found {Current}.");
+        }
+
+        _position++;
+        XPathNode whenTrue = ParseExpression();
+
+        if (!Current.IsName("else"))
+        {
+            throw new XPathException($"Expected 'else', found {Current}.");
+        }
+
+        _position++;
+        return new ConditionalNode(condition, whenTrue, ParseExpression());
+    }
 
     private XPathNode ParseOr()
     {
@@ -222,11 +255,14 @@ internal sealed class XPathParser
                 }
 
                 Expect(")");
-                return new SequenceNode(items);
+                inner = new SequenceNode(items);
+            }
+            else
+            {
+                Expect(")");
             }
 
-            Expect(")");
-            return inner;
+            return Filtered(inner);
         }
 
         if (Current.Kind == XPathTokenKind.Name
@@ -236,10 +272,48 @@ internal sealed class XPathParser
         {
             string name = Current.Text;
             _position++;
-            return ParseFunctionCall(name);
+            return Filtered(ParseFunctionCall(name));
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// A predicate may follow a parenthesised expression or a function call — the German rules filter a
+    /// sequence that way, as in <c>(ram:PersonName, ram:DepartmentName)[normalize-space(.)]</c>.
+    /// </summary>
+    private XPathNode Filtered(XPathNode expression)
+    {
+        if (!Current.Is("["))
+        {
+            return expression;
+        }
+
+        return new PathNode(
+            expression,
+            [new StepNode(StepAxis.Self, null, null, ReadPredicates())],
+            Absolute: false);
+    }
+
+    /// <summary>
+    /// A node test is written like a call — <c>node()</c>, <c>text()</c> — so its parentheses are consumed
+    /// here. <c>node()</c> matches anything, which is what the wildcard means to the evaluator.
+    /// </summary>
+    private string ConsumeNodeTest(string name)
+    {
+        if (!IsNodeTest(name) || !Current.Is("("))
+        {
+            return name;
+        }
+
+        _position++;
+        while (!Current.Is(")") && Current.Kind != XPathTokenKind.End)
+        {
+            _position++;
+        }
+
+        Expect(")");
+        return "*";
     }
 
     /// <summary>Names that look like function calls but are node tests, so a step must claim them.</summary>
@@ -339,13 +413,22 @@ internal sealed class XPathParser
                     "parent" => StepAxis.Parent,
                     "descendant" or "descendant-or-self" => StepAxis.Descendant,
                     "ancestor" or "ancestor-or-self" => StepAxis.Ancestor,
-                    "preceding" or "preceding-sibling" => StepAxis.Preceding,
+                    "preceding" => StepAxis.Preceding,
+                    "preceding-sibling" => StepAxis.PrecedingSibling,
+                    "following" => StepAxis.Following,
+                    "following-sibling" => StepAxis.FollowingSibling,
                     _ => throw new XPathException($"Axis '{name}' is not supported."),
                 };
 
                 _position++;
                 name = Current.Is("*") ? "*" : Current.Text;
                 _position++;
+
+                name = ConsumeNodeTest(name);
+            }
+            else if (IsNodeTest(name) && Current.Is("("))
+            {
+                name = ConsumeNodeTest(name);
             }
             else if (Current.Is("("))
             {

@@ -117,6 +117,50 @@ public static class CheckDigit
         return (98 - remainder).ToString("D2", System.Globalization.CultureInfo.InvariantCulture);
     }
 
+    /// <summary>
+    /// Whether the value is a structurally valid IBAN: the first four characters moved to the end, letters
+    /// read as their position plus nine, leaves a remainder of one modulo 97.
+    /// </summary>
+    /// <remarks>
+    /// This checks the number, not that the account exists. Published rule sets call out to it, which is why
+    /// it lives beside the primitives rather than in a country package.
+    /// </remarks>
+    public static bool IsIban(string? value)
+    {
+        if (value is null)
+        {
+            return false;
+        }
+
+        string compact = Compact(value).ToUpperInvariant();
+
+        if (compact.Length is < 5 or > 34 || !char.IsAsciiLetter(compact[0]) || !char.IsAsciiLetter(compact[1]))
+        {
+            return false;
+        }
+
+        string rearranged = compact[4..] + compact[..4];
+        int remainder = 0;
+
+        foreach (char character in rearranged)
+        {
+            if (char.IsAsciiDigit(character))
+            {
+                remainder = ((remainder * 10) + (character - '0')) % 97;
+                continue;
+            }
+
+            if (!char.IsAsciiLetter(character))
+            {
+                return false;
+            }
+
+            remainder = ((remainder * 100) + (character - 'A' + 10)) % 97;
+        }
+
+        return remainder == 1;
+    }
+
     /// <summary>Keeps only the digits and letters, so a formatted identifier can be checked as written.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
     public static string Compact(string value)

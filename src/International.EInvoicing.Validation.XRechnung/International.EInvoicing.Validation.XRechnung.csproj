@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Validation.XRechnung</PackageId>
+    <Description>
+      The XRechnung validation artefacts, ready to run: the German CIUS rules for UBL and CII, embedded so
+      validation works offline and ships with the version it was tested against.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;xrechnung;germany;validation;schematron;ubl;cii;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Validation.Schematron/International.EInvoicing.Validation.Schematron.csproj" />
+  </ItemGroup>
+
+  <!-- Redistributed under their own licence, Apache-2.0, which travels with them. -->
+  <ItemGroup>
+    <EmbeddedResource Include="../../specs/xrechnung/schematron/src/validation/schematron/ubl/XRechnung-UBL-validation.sch"
+                      LogicalName="XRechnung-UBL.sch" />
+    <EmbeddedResource Include="../../specs/xrechnung/schematron/src/validation/schematron/cii/XRechnung-CII-validation.sch"
+                      LogicalName="XRechnung-CII.sch" />
+    <EmbeddedResource Include="../../specs/xrechnung/schematron/src/validation/schematron/common.sch"
+                      LogicalName="XRechnung-common.sch" />
+    <None Include="../../specs/xrechnung/LICENSE.upstream.txt" Pack="true" PackagePath="XRECHNUNG-LICENSE.txt" />
+  </ItemGroup>
+
+</Project>

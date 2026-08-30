@@ -4,10 +4,26 @@ using System.Xml.Linq;
 
 namespace International.EInvoicing.Validation.Schematron.XPath;
 
-/// <summary>Where an expression is being evaluated: the context node, and any variables in scope.</summary>
-internal sealed record XPathContext(object Node, XDocument Document, IReadOnlyDictionary<string, XPathValue> Variables)
+/// <summary>
+/// Where an expression is being evaluated: the context node, its place in the sequence being filtered, and
+/// any variables in scope.
+/// </summary>
+/// <remarks>
+/// Position and size exist because <c>position()</c> and <c>last()</c> do. A predicate such as
+/// <c>tokenize(...)[last()]</c> means the last item, and an engine that answers 1 to <c>last()</c> silently
+/// returns the first — a rule that then passes on the wrong data.
+/// </remarks>
+internal sealed record XPathContext(
+    object Node,
+    XDocument Document,
+    IReadOnlyDictionary<string, XPathValue> Variables,
+    int Position = 1,
+    int Size = 1)
 {
     public XPathContext With(object node) => this with { Node = node };
+
+    public XPathContext At(object node, int position, int size) =>
+        this with { Node = node, Position = position, Size = size };
 
     public XPathContext With(string variable, XPathValue value)
     {
@@ -40,6 +56,9 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
         NegateNode negate => XPathValue.Number(-(Evaluate(negate.Operand, context).AsNumber() ?? 0)),
         FunctionNode function => Call(function, context),
         QuantifiedNode quantified => Quantify(quantified, context),
+        ConditionalNode conditional => Evaluate(
+            Evaluate(conditional.Condition, context).AsBoolean() ? conditional.Then : conditional.Else,
+            context),
         BinaryNode binary => Binary(binary, context),
         PathNode path => EvaluatePath(path, context),
         _ => throw new XPathException($"Cannot evaluate {node.GetType().Name}."),
@@ -269,6 +288,9 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
         StepAxis.Descendant => Descendants(node).Where(child => NameMatches(step.Name, NameOf(child))),
         StepAxis.Ancestor => Ancestors(node).Where(ancestor => NameMatches(step.Name, NameOf(ancestor))),
         StepAxis.Preceding => Preceding(node).Where(other => NameMatches(step.Name, NameOf(other))),
+        StepAxis.PrecedingSibling => Siblings(node, before: true).Where(other => NameMatches(step.Name, NameOf(other))),
+        StepAxis.FollowingSibling => Siblings(node, before: false).Where(other => NameMatches(step.Name, NameOf(other))),
+        StepAxis.Following => Following(node).Where(other => NameMatches(step.Name, NameOf(other))),
         _ => Children(node).Where(child => NameMatches(step.Name, NameOf(child))),
     };
 
@@ -322,6 +344,49 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
             }
 
             if (!ancestors.Contains(other))
+            {
+                yield return other;
+            }
+        }
+    }
+
+    private static IEnumerable<object> Siblings(object node, bool before)
+    {
+        if (node is not XElement element)
+        {
+            yield break;
+        }
+
+        IEnumerable<XElement> siblings = before
+            ? element.ElementsBeforeSelf()
+            : element.ElementsAfterSelf();
+
+        foreach (XElement sibling in siblings)
+        {
+            yield return sibling;
+        }
+    }
+
+    /// <summary>Everything after this node in document order, excluding what it contains.</summary>
+    private static IEnumerable<object> Following(object node)
+    {
+        if (node is not XElement element)
+        {
+            yield break;
+        }
+
+        var descendants = new HashSet<object>(element.Descendants());
+        bool passed = false;
+
+        foreach (XElement other in element.Document?.Descendants() ?? [])
+        {
+            if (ReferenceEquals(other, element))
+            {
+                passed = true;
+                continue;
+            }
+
+            if (passed && !descendants.Contains(other))
             {
                 yield return other;
             }
@@ -385,7 +450,7 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
             var kept = new List<object>();
             for (int index = 0; index < current.Count; index++)
             {
-                XPathValue result = Evaluate(predicate, context.With(current[index]));
+                XPathValue result = Evaluate(predicate, context.At(current[index], index + 1, current.Count));
 
                 bool keep = result.AsNumber() is { } position && result.Items is [decimal]
                     ? position == index + 1
@@ -408,7 +473,13 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
         List<XPathValue> arguments = [.. node.Arguments.Select(argument => Evaluate(argument, context))];
         XPathValue First() => arguments.Count > 0 ? arguments[0] : XPathValue.Nodes([context.Node]);
 
-        return node.Name switch
+        // A rule set may call a function it defines itself in XSLT. Only the one the German rules use is
+        // implemented natively; anything else is reported as unevaluable rather than quietly passing.
+        string name = node.Name.Contains(':', StringComparison.Ordinal) && !node.Name.StartsWith("xs:", StringComparison.Ordinal)
+            ? node.Name[(node.Name.IndexOf(':', StringComparison.Ordinal) + 1)..]
+            : node.Name;
+
+        return name switch
         {
             "not" => XPathValue.Boolean(!First().AsBoolean()),
             "true" => XPathValue.Boolean(true),
@@ -443,6 +514,7 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
                 arguments.Count > 1 ? arguments[1].AsText() : string.Empty,
                 arguments[0].AllText())),
             "distinct-values" => XPathValue.Nodes([.. First().AllText().Distinct(StringComparer.Ordinal).Cast<object>()]),
+            "checkIBAN" => XPathValue.Boolean(International.EInvoicing.Identifiers.CheckDigit.IsIban(First().AsText())),
             "abs" => XPathValue.Number(Math.Abs(First().AsNumber() ?? 0)),
             "round" => XPathValue.Number(Math.Round(First().AsNumber() ?? 0, MidpointRounding.AwayFromZero)),
             "floor" => XPathValue.Number(Math.Floor(First().AsNumber() ?? 0)),
@@ -450,8 +522,8 @@ internal sealed class XPathEvaluator(IReadOnlyDictionary<string, string> namespa
             "name" => XPathValue.Text(QualifiedNameOf(First())),
             "local-name" => XPathValue.Text(NameOf(FirstItem(First()))?.LocalName ?? string.Empty),
             "namespace-uri" => XPathValue.Text(NameOf(FirstItem(First()))?.NamespaceName ?? string.Empty),
-            "position" => XPathValue.Number(1),
-            "last" => XPathValue.Number(1),
+            "position" => XPathValue.Number(context.Position),
+            "last" => XPathValue.Number(context.Size),
             "tokenize" => XPathValue.Nodes([.. Regex
                 .Split(arguments[0].AsText(), arguments[1].AsText(), RegexOptions.None, TimeSpan.FromSeconds(1))
                 .Cast<object>()]),

@@ -13,8 +13,14 @@ internal sealed record SchematronAssertion(
     RuleSeverity Severity,
     bool IsReport);
 
-/// <summary>A rule: a context expression, and the assertions that apply to nodes matching it.</summary>
-internal sealed record SchematronRule(XPathNode Context, IReadOnlyList<SchematronAssertion> Assertions);
+/// <summary>A named expression a rule set defines once and reuses, Schematron's <c>let</c>.</summary>
+internal sealed record SchematronVariable(string Name, XPathNode Expression);
+
+/// <summary>A rule: a context expression, its own variables, and the assertions that apply to it.</summary>
+internal sealed record SchematronRule(
+    XPathNode Context,
+    IReadOnlyList<SchematronVariable> Variables,
+    IReadOnlyList<SchematronAssertion> Assertions);
 
 /// <summary>A pattern: an ordered group of rules. Within a pattern, the first matching rule claims a node.</summary>
 internal sealed record SchematronPattern(string? Identifier, IReadOnlyList<SchematronRule> Rules);
@@ -55,13 +61,24 @@ public sealed class SchematronRuleSet
 
     internal IReadOnlyList<SchematronPattern> Patterns { get; }
 
+    /// <summary>Variables the rule set declares once and every rule can use.</summary>
+    internal IReadOnlyList<SchematronVariable> GlobalVariables { get; private set; } = [];
+
     /// <summary>Loads a rule set from Schematron XML.</summary>
     /// <param name="schematron">The <c>.sch</c> content, preferably the preprocessed form.</param>
     /// <param name="name">The rule set's name.</param>
     /// <param name="version">Its version.</param>
+    /// <param name="include">
+    /// Resolves an <c>include</c> by href. Rule sets published in parts — the German ones keep their global
+    /// variables in a separate file — need this; the EN 16931 preprocessed artefacts do not.
+    /// </param>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
     /// <exception cref="XPathException">An expression in the rule set could not be read.</exception>
-    public static SchematronRuleSet Load(string schematron, string name, string version)
+    public static SchematronRuleSet Load(
+        string schematron,
+        string name,
+        string version,
+        Func<string, string?>? include = null)
     {
         ArgumentNullException.ThrowIfNull(schematron);
         ArgumentNullException.ThrowIfNull(name);
@@ -69,6 +86,8 @@ public sealed class SchematronRuleSet
 
         using var reader = SecureXml.CreateReader(schematron, DocumentLimits.Unlimited);
         XElement root = XElement.Load(reader);
+
+        Resolve(root, include);
 
         Dictionary<string, string> namespaces = root
             .Descendants(Schematron + "ns")
@@ -83,7 +102,47 @@ public sealed class SchematronRuleSet
             .. root.Descendants(Schematron + "pattern").Select(ReadPattern),
         ];
 
-        return new SchematronRuleSet(name, version, namespaces, patterns);
+        return new SchematronRuleSet(name, version, namespaces, patterns)
+        {
+            GlobalVariables = [.. ReadVariables(root.Descendants(Schematron + "let").Where(IsGlobal))],
+        };
+    }
+
+    /// <summary>Replaces every include with what it points at, so the rule set is whole before it is read.</summary>
+    private static void Resolve(XElement root, Func<string, string?>? include)
+    {
+        foreach (XElement element in root.Descendants(Schematron + "include").ToList())
+        {
+            string? href = element.Attribute("href")?.Value;
+            string? content = href is null ? null : include?.Invoke(href);
+
+            if (content is null)
+            {
+                element.Remove();
+                continue;
+            }
+
+            using var reader = SecureXml.CreateReader(content, DocumentLimits.Unlimited);
+            element.ReplaceWith(XElement.Load(reader));
+        }
+    }
+
+    /// <summary>A variable outside any rule belongs to the whole rule set.</summary>
+    private static bool IsGlobal(XElement let) =>
+        let.Ancestors(Schematron + "rule").Any() is false;
+
+    private static IEnumerable<SchematronVariable> ReadVariables(IEnumerable<XElement> lets)
+    {
+        foreach (XElement let in lets)
+        {
+            string? name = let.Attribute("name")?.Value;
+            string? value = let.Attribute("value")?.Value;
+
+            if (name is not null && value is not null)
+            {
+                yield return new SchematronVariable(name, Parse(value));
+            }
+        }
     }
 
     private static SchematronPattern ReadPattern(XElement pattern) =>
@@ -105,7 +164,10 @@ public sealed class SchematronRuleSet
                 .Select(child => ReadAssertion(child, child.Name == Schematron + "report")),
         ];
 
-        return new SchematronRule(Parse(context), assertions);
+        return new SchematronRule(
+            Parse(context),
+            [.. ReadVariables(rule.Elements(Schematron + "let"))],
+            assertions);
     }
 
     private static SchematronAssertion ReadAssertion(XElement assertion, bool isReport)

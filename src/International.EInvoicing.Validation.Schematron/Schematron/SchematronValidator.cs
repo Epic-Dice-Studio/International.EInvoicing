@@ -29,9 +29,15 @@ public sealed class SchematronValidator
         var evaluator = new XPathEvaluator(ruleSet.Namespaces);
         var messages = new List<ValidationMessage>();
 
+        // The rule set's own variables are evaluated once, against the document, and are in scope everywhere.
+        IReadOnlyDictionary<string, XPathValue> globals = Evaluate(
+            ruleSet.GlobalVariables,
+            new XPathContext(document, document, new Dictionary<string, XPathValue>(StringComparer.Ordinal)),
+            evaluator);
+
         foreach (SchematronPattern pattern in ruleSet.Patterns)
         {
-            RunPattern(pattern, document, evaluator, ruleSet.Name, messages);
+            RunPattern(pattern, document, evaluator, ruleSet.Name, globals, messages);
         }
 
         return new ValidationReport(
@@ -59,18 +65,51 @@ public sealed class SchematronValidator
         return Validate(XDocument.Load(reader, LoadOptions.SetLineInfo), ruleSet);
     }
 
+    /// <summary>Evaluates variables in order, each one able to use those declared before it.</summary>
+    private static IReadOnlyDictionary<string, XPathValue> Evaluate(
+        IReadOnlyList<SchematronVariable> variables,
+        XPathContext context,
+        XPathEvaluator evaluator)
+    {
+        if (variables.Count == 0)
+        {
+            return context.Variables;
+        }
+
+        var values = new Dictionary<string, XPathValue>(context.Variables, StringComparer.Ordinal);
+
+        foreach (SchematronVariable variable in variables)
+        {
+            try
+            {
+                values[variable.Name] = evaluator.Evaluate(
+                    variable.Expression,
+                    context with { Variables = values });
+            }
+            catch (XPathException)
+            {
+                // A variable that cannot be evaluated leaves the rules using it unevaluable, which they
+                // report for themselves. Failing the whole rule set here would hide that.
+                values[variable.Name] = XPathValue.Empty;
+            }
+        }
+
+        return values;
+    }
+
     private static void RunPattern(
         SchematronPattern pattern,
         XDocument document,
         XPathEvaluator evaluator,
         string ruleSetName,
+        IReadOnlyDictionary<string, XPathValue> globals,
         List<ValidationMessage> messages)
     {
         var claimed = new HashSet<object>();
 
         foreach (SchematronRule rule in pattern.Rules)
         {
-            IReadOnlyList<object> nodes = Select(rule.Context, document, evaluator);
+            IReadOnlyList<object> nodes = Select(rule.Context, document, evaluator, globals);
 
             foreach (object node in nodes)
             {
@@ -79,7 +118,7 @@ public sealed class SchematronValidator
                     continue;
                 }
 
-                RunRule(rule, node, document, evaluator, ruleSetName, messages);
+                RunRule(rule, node, document, evaluator, ruleSetName, globals, messages);
             }
         }
     }
@@ -90,9 +129,11 @@ public sealed class SchematronValidator
         XDocument document,
         XPathEvaluator evaluator,
         string ruleSetName,
+        IReadOnlyDictionary<string, XPathValue> globals,
         List<ValidationMessage> messages)
     {
-        var context = new XPathContext(node, document, new Dictionary<string, XPathValue>(StringComparer.Ordinal));
+        var context = new XPathContext(node, document, globals);
+        context = context with { Variables = Evaluate(rule.Variables, context, evaluator) };
 
         foreach (SchematronAssertion assertion in rule.Assertions)
         {
@@ -130,9 +171,13 @@ public sealed class SchematronValidator
         }
     }
 
-    private static IReadOnlyList<object> Select(XPathNode context, XDocument document, XPathEvaluator evaluator)
+    private static IReadOnlyList<object> Select(
+        XPathNode context,
+        XDocument document,
+        XPathEvaluator evaluator,
+        IReadOnlyDictionary<string, XPathValue> globals)
     {
-        var root = new XPathContext(document, document, new Dictionary<string, XPathValue>(StringComparer.Ordinal));
+        var root = new XPathContext(document, document, globals);
 
         try
         {

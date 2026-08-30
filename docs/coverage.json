@@ -91,9 +91,10 @@
           "name": "XRechnung (CIUS + Extension)",
           "version": "3.x",
           "package": "International.EInvoicing.Countries.Germany",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "Profiles for both syntaxes and the published rule sets, embedded. Measured against all 86 documents of the official KoSIT test suite."
         }
       ]
     },
@@ -141,8 +142,8 @@
           "package": "International.EInvoicing.Countries.Germany",
           "read": "done",
           "write": "done",
-          "validate": "planned",
-          "notes": "XRechnung profiles registered for both syntaxes, and the Leitweg-ID with its ISO 7064 check digit, tested against the published example and the official test suite. XRechnung rule sets are not embedded yet."
+          "validate": "done",
+          "notes": "XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite."
         },
         {
           "name": "Belgium — Peppol BIS, KBO/BCE, structured communication",

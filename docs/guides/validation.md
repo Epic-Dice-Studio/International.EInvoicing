@@ -64,6 +64,20 @@ SchematronRuleSet rules = En16931Rules.For(DocumentSyntax.Ubl);
 ValidationReport report = new SchematronValidator().Validate(xml, rules);
 ```
 
+`International.EInvoicing.Validation.XRechnung` carries the German rules, version 3.0, likewise for both
+syntaxes. XRechnung *restricts* EN 16931 rather than replacing it, so run both and combine the reports —
+running only the German rules leaves the base ones unchecked, and the report would say so.
+
+```csharp
+var validator = new SchematronValidator();
+
+ValidationReport report = validator
+    .Validate(xml, En16931Rules.For(DocumentSyntax.Ubl))
+    .And(validator.Validate(xml, XRechnungRules.For(DocumentSyntax.Ubl)));
+
+report.IsComplete;   // true: both rule sets ran
+```
+
 Peppol's artefacts are **not** embedded: the publisher grants no redistribution. Run
 `build/fetch-specs.sh peppol` to obtain them, then load them like any other rule set.
 
@@ -101,8 +115,8 @@ worse than one that fails loudly.
 
 ## What it is measured against
 
-All 23 documents EN 16931 publishes as correct, and all 80 CIUS documents of the official XRechnung test
-suite. Those tests run on every commit.
+All 23 documents EN 16931 publishes as correct, all 80 CIUS documents of the official XRechnung test suite
+against the EN 16931 rules, and all 86 of them against the German rules. Those tests run on every commit.
 
 ## Validation is not reading
 
