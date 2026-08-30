@@ -1,0 +1,53 @@
+@page "/"
+@using International.EInvoicing.Playground.Components
+
+<PageTitle>International.EInvoicing — playground</PageTitle>
+
+<header class="hero">
+    <h1>International.EInvoicing</h1>
+    <p class="lead">
+        Read, check and build electronic invoices — UBL, CII, Factur-X and French lifecycle statuses.
+    </p>
+    <p class="privacy">
+        Everything below runs in your browser. <strong>No invoice you open here reaches a server.</strong>
+    </p>
+</header>
+
+<nav class="tabs">
+    @foreach ((string key, string label) in Tabs)
+    {
+        <button type="button" class="@(_tab == key ? "tab active" : "tab")" @onclick="() => _tab = key">
+            @label
+        </button>
+    }
+</nav>
+
+<main>
+    @switch (_tab)
+    {
+        case "validate":
+            <ValidatorPanel />
+            break;
+        case "explore":
+            <ExplorerPanel />
+            break;
+        case "build":
+            <GeneratorPanel />
+            break;
+        default:
+            <CoveragePanel />
+            break;
+    }
+</main>
+
+@code {
+    private static readonly (string Key, string Label)[] Tabs =
+    [
+        ("validate", "Check a document"),
+        ("explore", "Look inside one"),
+        ("build", "Build one"),
+        ("coverage", "What is supported"),
+    ];
+
+    private string _tab = "validate";
+}

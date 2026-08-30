@@ -23,4 +23,8 @@
     <Project Path="tests/International.EInvoicing.Validation.En16931.Tests/International.EInvoicing.Validation.En16931.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Validation.Schematron.Tests/International.EInvoicing.Validation.Schematron.Tests.csproj" />
   </Folder>
+  <Folder Name="/web/" />
+  <Folder Name="/web/Playground/">
+    <Project Path="web/Playground/International.EInvoicing.Playground.csproj" />
+  </Folder>
 </Solution>

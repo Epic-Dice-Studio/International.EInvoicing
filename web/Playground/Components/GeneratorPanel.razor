@@ -1,0 +1,131 @@
+@using International.EInvoicing.Building
+@using International.EInvoicing.Cii.Writing
+@using International.EInvoicing.Countries.France.Lifecycle
+@using International.EInvoicing.Model
+@using International.EInvoicing.Profiles
+@using International.EInvoicing.Ubl.Writing
+@using International.EInvoicing.Cdar.Writing
+
+<section class="panel">
+    <h2>Build a document</h2>
+    <p class="muted small">
+        Fill this in, and see both what comes out and the code that would produce it.
+    </p>
+
+    <div class="fields">
+        <label>Invoice number <input @bind="_number" @bind:event="oninput" /></label>
+        <label>Issue date <input type="date" @bind="_issued" /></label>
+        <label>Currency <input @bind="_currency" @bind:event="oninput" maxlength="3" /></label>
+        <label>Seller <input @bind="_seller" @bind:event="oninput" /></label>
+        <label>Buyer <input @bind="_buyer" @bind:event="oninput" /></label>
+        <label>Item <input @bind="_item" @bind:event="oninput" /></label>
+        <label>Net amount <input type="number" step="0.01" @bind="_amount" /></label>
+        <label>VAT rate <input type="number" step="0.1" @bind="_vatRate" /></label>
+    </div>
+
+    <div class="row">
+        <label>Write as
+            <select @bind="_output">
+                <option value="ubl">UBL 2.1</option>
+                <option value="cii">UN/CEFACT CII</option>
+                <option value="cdar-refused">A lifecycle status: refused</option>
+                <option value="cdar-approved">A lifecycle status: approved</option>
+            </select>
+        </label>
+    </div>
+</section>
+
+<section class="panel">
+    <h3>The document</h3>
+    <pre class="snippet">@Write()</pre>
+
+    <h3>The code that produces it</h3>
+    <pre class="snippet">@Snippet()</pre>
+</section>
+
+@code {
+    private string _number = "FA-2026-001";
+    private DateTime _issued = new(2026, 8, 30);
+    private string _currency = "EUR";
+    private string _seller = "Epic Dice Studio";
+    private string _buyer = "Acme";
+    private string _item = "Consulting";
+    private decimal _amount = 450m;
+    private decimal _vatRate = 20m;
+    private string _output = "ubl";
+
+    private EInvoice Build() =>
+        EInvoiceBuilder.Create(KnownProfiles.En16931Cii)
+            .WithNumber(_number)
+            .IssuedOn(DateOnly.FromDateTime(_issued))
+            .OfType("380")
+            .InCurrency(_currency)
+            .WithSeller(seller => seller.Named(_seller))
+            .WithBuyer(buyer => buyer.Named(_buyer))
+            .AddLine(line => line
+                .WithIdentifier("1")
+                .WithItem(_item)
+                .WithNetAmount(_amount)
+                .WithVat("S", _vatRate))
+            .AddVatBreakdown("S", _vatRate, _amount, Vat())
+            .WithTotals(totals =>
+            {
+                totals.LineTotalAmount = new Values.AmountField(_amount, _currency);
+                totals.TaxExclusiveAmount = new Values.AmountField(_amount, _currency);
+                totals.TaxAmount = new Values.AmountField(Vat(), _currency);
+                totals.TaxInclusiveAmount = new Values.AmountField(_amount + Vat(), _currency);
+                totals.DuePayableAmount = new Values.AmountField(_amount + Vat(), _currency);
+            })
+            .Build();
+
+    private decimal Vat() => Math.Round(_amount * _vatRate / 100m, 2, MidpointRounding.AwayFromZero);
+
+    private string Write() => _output switch
+    {
+        "cii" => new CiiInvoiceWriter().WriteToString(Build()),
+        "cdar-refused" => new CdarWriter().WriteToString(Status(refused: true)),
+        "cdar-approved" => new CdarWriter().WriteToString(Status(refused: false)),
+        _ => new UblInvoiceWriter().WriteToString(Build()),
+    };
+
+    private Cdar.Model.LifecycleStatusMessage Status(bool refused)
+    {
+        FrCdar builder = FrCdar
+            .ToPartner(to => to.Named(_seller).AsSeller())
+            .From(from => from.Platform("0003", "PA-E"))
+            .About(_number, DateOnly.FromDateTime(_issued));
+
+        return refused
+            ? builder.Refused("TX_TVA_ERR", "Taux de TVA erroné")
+            : builder.Approved();
+    }
+
+    private string Snippet() => _output.StartsWith("cdar", StringComparison.Ordinal)
+        ? $$"""
+            LifecycleStatusMessage status = FrCdar
+                .ToPartner(to => to.Named("{{_seller}}").AsSeller())
+                .From(from => from.Platform("0003", "PA-E"))
+                .About("{{_number}}", new DateOnly({{_issued:yyyy, M, d}}))
+                {{(_output == "cdar-refused" ? ".Refused(\"TX_TVA_ERR\", \"Taux de TVA erroné\");" : ".Approved();")}}
+
+            string xml = new CdarWriter().WriteToString(status);
+            """
+        : $$"""
+            EInvoice invoice = EInvoiceBuilder.Create(KnownProfiles.En16931Cii)
+                .WithNumber("{{_number}}")
+                .IssuedOn(new DateOnly({{_issued:yyyy, M, d}}))
+                .OfType("380")
+                .InCurrency("{{_currency}}")
+                .WithSeller(seller => seller.Named("{{_seller}}"))
+                .WithBuyer(buyer => buyer.Named("{{_buyer}}"))
+                .AddLine(line => line
+                    .WithIdentifier("1")
+                    .WithItem("{{_item}}")
+                    .WithNetAmount({{_amount}}m)
+                    .WithVat("S", {{_vatRate}}m))
+                .AddVatBreakdown("S", {{_vatRate}}m, {{_amount}}m, {{Vat()}}m)
+                .Build();
+
+            string xml = new {{(_output == "cii" ? "CiiInvoiceWriter" : "UblInvoiceWriter")}}().WriteToString(invoice);
+            """;
+}

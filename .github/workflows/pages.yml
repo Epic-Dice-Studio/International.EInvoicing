@@ -29,8 +29,17 @@ jobs:
       - name: Build documentation site
         run: docfx docs/docfx.json
 
-      # The Blazor playground is added in a later phase; when it exists it is published
-      # into _site/demo so that documentation and demo share one origin.
+      - name: Build the playground
+        run: dotnet publish web/Playground -c Release -o playground
+
+      # One origin for both: the docs at /docs, the playground at /demo.
+      - name: Assemble the site
+        run: |
+          mkdir -p docs/_site/demo
+          cp -r playground/wwwroot/. docs/_site/demo/
+          # The site is served from a sub-path, which the app has to know about.
+          sed -i 's|<base href="/" />|<base href="/International.EInvoicing/demo/" />|' docs/_site/demo/index.html
+          touch docs/_site/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
         with:

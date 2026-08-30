@@ -1,0 +1,66 @@
+@using International.EInvoicing.Cdar
+@using International.EInvoicing.Countries.France
+@using International.EInvoicing.FacturX
+@using International.EInvoicing.Profiles
+@using International.EInvoicing.Validation.En16931
+
+<section class="panel">
+    <h2>What is supported</h2>
+    <p class="muted small">
+        Read from the library running in this page, not from a document someone kept up to date. If a profile
+        appears here, this build implements it.
+    </p>
+
+    <h3>Profiles this build knows</h3>
+    <table>
+        <thead>
+            <tr><th>Profile</th><th>Syntax</th><th>Validation</th><th class="code">Identifier</th></tr>
+        </thead>
+        <tbody>
+            @foreach (Profile profile in AllProfiles())
+            {
+                <tr>
+                    <td>@profile.Name</td>
+                    <td>@profile.Syntax</td>
+                    <td>@(En16931Rules.Covers(profile.Syntax) ? "EN 16931 rules run" : "no rule set")</td>
+                    <td class="code muted small">@profile.Id.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Rule sets embedded in this build</h3>
+    <table>
+        <thead><tr><th>Rule set</th><th>Version</th><th>Assertions</th></tr></thead>
+        <tbody>
+            <tr>
+                <td>EN 16931 (UBL)</td>
+                <td>@En16931Rules.ArtefactVersion</td>
+                <td>@En16931Rules.For(DocumentSyntax.Ubl).AssertionCount</td>
+            </tr>
+            <tr>
+                <td>EN 16931 (CII)</td>
+                <td>@En16931Rules.ArtefactVersion</td>
+                <td>@En16931Rules.For(DocumentSyntax.Cii).AssertionCount</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Not here</h3>
+    <p class="small muted">
+        Sending documents anywhere — Peppol, approved platforms, Chorus Pro — is permanently out of scope, and
+        so is rendering a PDF. Peppol validation artefacts are not redistributable, so they are not embedded.
+        The repository's support matrix says the same, in more detail.
+    </p>
+</section>
+
+@code {
+    private static IEnumerable<Profile> AllProfiles() =>
+        KnownProfiles.All
+            .Concat(FacturXProfiles.All)
+            .Concat(CdarProfiles.All)
+            .Concat(FrProfiles.All)
+            .DistinctBy(profile => (profile.Id.Value, profile.Syntax.Name))
+            .OrderBy(profile => profile.Syntax.Name, StringComparer.Ordinal)
+            .ThenBy(profile => profile.Name, StringComparer.Ordinal);
+}

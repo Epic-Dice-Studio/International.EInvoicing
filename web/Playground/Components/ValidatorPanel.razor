@@ -1,0 +1,133 @@
+@using International.EInvoicing.Diagnostics
+@using International.EInvoicing.Playground.Services
+@using International.EInvoicing.Validation
+@inject DocumentInspector Inspector
+
+<section class="panel">
+    <h2>Check a document</h2>
+    <p class="muted small">
+        Paste a UBL or CII invoice, or a French lifecycle status message. The format is detected for you.
+    </p>
+
+    <textarea @bind="_input" @bind:event="oninput" placeholder="Paste XML here…" spellcheck="false"></textarea>
+
+    <div class="row">
+        <button class="action" disabled="@(string.IsNullOrWhiteSpace(_input))" @onclick="Check">Check it</button>
+        <button class="link" @onclick="LoadSample">Load a sample invoice</button>
+        @if (_result is not null)
+        {
+            <span class="muted small">Detected: @Describe(_result.Kind)</span>
+        }
+    </div>
+</section>
+
+@if (_result is { } result)
+{
+    <section class="panel">
+        @if (result.Failure is { } failure)
+        {
+            <div class="verdict bad"><strong>Nothing to check</strong><span>@failure</span></div>
+        }
+        else if (result.Validation is { } report)
+        {
+            <div class="verdict @Verdict(report)">
+                <strong>@VerdictText(report)</strong>
+                <span>@report.Messages.Count(m => m.Severity == RuleSeverity.Error) error(s),
+                    @report.Messages.Count(m => m.Severity == RuleSeverity.Warning) warning(s)</span>
+            </div>
+
+            <h3>What was checked</h3>
+            @foreach (RuleSetOutcome outcome in report.RuleSets)
+            {
+                <div class="ranset">
+                    <span class="mark">@(outcome.Ran ? "✔" : "⚠")</span>
+                    <span><strong>@outcome.Name</strong> @outcome.Version</span>
+                    @if (!outcome.Ran)
+                    {
+                        <span class="why">— @outcome.SkippedBecause</span>
+                    }
+                </div>
+            }
+
+            @if (report.Messages.Count > 0)
+            {
+                <h3>Rules that fired</h3>
+                <table>
+                    <thead>
+                        <tr><th class="code">Rule</th><th>Severity</th><th>Message</th><th>Where</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ValidationMessage message in report.OfAtLeast(RuleSeverity.Warning))
+                        {
+                            <tr>
+                                <td class="code">@message.RuleIdentifier</td>
+                                <td class="sev @message.Severity">@message.Severity</td>
+                                <td>@message.Message</td>
+                                <td class="code muted small">@message.Location</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+        else
+        {
+            <div class="verdict ok"><strong>Read</strong><span>Lifecycle messages carry no rule set here yet.</span></div>
+        }
+
+        @if (result.Diagnostics.Count > 0)
+        {
+            <h3>What reading it reported</h3>
+            <table>
+                <thead>
+                    <tr><th class="code">Code</th><th>Severity</th><th>What happened</th><th>Instead</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (Diagnostic diagnostic in result.Diagnostics.Take(40))
+                    {
+                        <tr>
+                            <td class="code">@diagnostic.Code</td>
+                            <td class="sev @diagnostic.Severity">@diagnostic.Severity</td>
+                            <td>@diagnostic.Message</td>
+                            <td class="muted small">@diagnostic.AppliedFallback</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (result.Diagnostics.Count > 40)
+            {
+                <p class="muted small">…and @(result.Diagnostics.Count - 40) more.</p>
+            }
+        }
+    </section>
+}
+
+@code {
+    private string _input = string.Empty;
+    private InspectionResult? _result;
+
+    private void Check() => _result = Inspector.Inspect(_input);
+
+    private void LoadSample()
+    {
+        _input = Samples.MinimalUblInvoice;
+        _result = null;
+    }
+
+    private static string Verdict(ValidationReport report) =>
+        report.IsConforming ? "ok" : report.IsValid ? "partial" : "bad";
+
+    private static string VerdictText(ValidationReport report) =>
+        report.IsConforming ? "Conforming"
+            : report.IsValid ? "No rule broken, but not fully checked"
+            : "Does not conform";
+
+    private static string Describe(DocumentKind kind) => kind switch
+    {
+        DocumentKind.Ubl => "UBL 2.1",
+        DocumentKind.Cii => "UN/CEFACT CII",
+        DocumentKind.Cdar => "lifecycle status message",
+        DocumentKind.Pdf => "a PDF",
+        _ => "not recognised",
+    };
+}

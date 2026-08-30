@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <!-- Cleared: the solution multi-targets, a browser app does not. -->
+    <TargetFrameworks></TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <!--
+      The libraries keep a low dependency floor so consumers are not forced to upgrade. The browser app is
+      free to resolve higher, which central transitive pinning would otherwise forbid.
+    -->
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Cdar/International.EInvoicing.Cdar.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.FacturX/International.EInvoicing.FacturX.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
+  </ItemGroup>
+
+</Project>

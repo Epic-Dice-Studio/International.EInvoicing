@@ -1,0 +1,130 @@
+@using International.EInvoicing.Playground.Services
+@using International.EInvoicing.Values
+@inject DocumentInspector Inspector
+
+<section class="panel">
+    <h2>Look inside a document</h2>
+    <p class="muted small">
+        Every field keeps the text it came from and the attributes around it. That is what this shows:
+        the typed value, and the raw one underneath it.
+    </p>
+
+    <textarea @bind="_input" @bind:event="oninput" placeholder="Paste XML here…" spellcheck="false"></textarea>
+
+    <div class="row">
+        <button class="action" disabled="@(string.IsNullOrWhiteSpace(_input))" @onclick="Open">Open it</button>
+        <button class="link" @onclick="@(() => Load(Samples.MinimalUblInvoice))">A plain invoice</button>
+        <button class="link" @onclick="@(() => Load(Samples.UnknownProfileInvoice))">One with an unknown profile</button>
+    </div>
+</section>
+
+@if (_root is { } root)
+{
+    <section class="panel">
+        <h2>@root.Name</h2>
+        <table>
+            <thead>
+                <tr><th>Field</th><th>Value</th><th>Raw</th><th>Where</th></tr>
+            </thead>
+            <tbody>
+                @foreach (NodeRow node in Flatten(root))
+                {
+                    @if (node.Fields.Count > 0)
+                    {
+                        <tr>
+                            <td colspan="4" class="muted small">
+                                <span class="depth" style="padding-left:@(node.Depth * 14)px"></span><strong>@node.Name</strong>
+                            </td>
+                        </tr>
+                    }
+
+                    @foreach (FieldRow field in node.Fields)
+                    {
+                        <tr>
+                            <td>
+                                <span class="depth" style="padding-left:@(field.Depth * 14)px"></span>@field.Name
+                            </td>
+                            <td>
+                                @(field.Field.UntypedValue?.ToString() ?? "—")
+                                @foreach (string note in Attributes(field.Field))
+                                {
+                                    <span class="attr">@note</span>
+                                }
+                            </td>
+                            <td class="raw">@(field.Field.Raw ?? "—")</td>
+                            <td class="muted small">@(field.Field.Location.IsKnown ? field.Field.Location.ToString() : "built in code")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </section>
+}
+else if (_failure is { } failure)
+{
+    <section class="panel"><div class="verdict bad"><strong>Nothing to show</strong><span>@failure</span></div></section>
+}
+
+@code {
+    private string _input = string.Empty;
+    private NodeRow? _root;
+    private string? _failure;
+
+    private void Open()
+    {
+        InspectionResult result = Inspector.Inspect(_input);
+        _failure = result.Failure;
+
+        object? document = (object?)result.Invoice ?? result.Status;
+        _root = document is null ? null : FieldWalker.Walk(document, document.GetType().Name);
+    }
+
+    private void Load(string sample)
+    {
+        _input = sample;
+        _root = null;
+        _failure = null;
+    }
+
+    private static IEnumerable<NodeRow> Flatten(NodeRow node)
+    {
+        yield return node;
+
+        foreach (NodeRow child in node.Children)
+        {
+            foreach (NodeRow descendant in Flatten(child))
+            {
+                yield return descendant;
+            }
+        }
+    }
+
+    /// <summary>The attributes a field carried, which are data rather than decoration.</summary>
+    private static IEnumerable<string> Attributes(IField field)
+    {
+        switch (field)
+        {
+            case AmountField { CurrencyCode: { Length: > 0 } currency }:
+                yield return currency;
+                break;
+            case QuantityField { UnitCode: { Length: > 0 } unit }:
+                yield return unit;
+                break;
+            case DateField { FormatCode: { Length: > 0 } format }:
+                yield return "format " + format;
+                break;
+            case DateTimeField { FormatCode: { Length: > 0 } format }:
+                yield return "format " + format;
+                break;
+            case IdentifierField { SchemeId: { Length: > 0 } scheme }:
+                yield return "scheme " + scheme;
+                break;
+            case CodeField { ListId: { Length: > 0 } list }:
+                yield return "list " + list;
+                break;
+            case TextField { LanguageId: { Length: > 0 } language }:
+                yield return language;
+                break;
+        }
+    }
+}

@@ -132,6 +132,12 @@ browser via WebAssembly and easy to audit.
 
 ---
 
+## Try it without installing anything
+
+The [playground](https://epic-dice-studio.github.io/International.EInvoicing/demo/) reads, checks and builds
+documents entirely in your browser — the library is compiled to WebAssembly, so **no invoice you open there
+reaches a server**.
+
 ## Documentation
 
 | | |
