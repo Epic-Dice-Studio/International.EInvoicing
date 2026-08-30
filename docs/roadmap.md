@@ -150,23 +150,35 @@ report for a document carried from one to the other — the same loss report the
 
 *Check: [ec.europa.eu — obtaining a copy of the standard](https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/467108971/Obtaining+a+copy+of+the+European+standard+on+eInvoicing).*
 
-### 8. `International.EInvoicing.Peppol` — the PINT half
+### 8. `International.EInvoicing.Peppol` — the PINT half 🚧 *the profiles done, August 2026*
 
-**The problem.** `PeppolProfiles` knows BIS Billing 3.0, which is a strict EN 16931 CIUS and was never meant
-to leave Europe. Everywhere Peppol has been adopted since — the UAE (PINT AE), Malaysia, Singapore, Japan,
-Australia and New Zealand, and probably the United Kingdom (PINT UK) — runs on **Peppol PINT**, a different
-specification with a common core and one jurisdiction specialisation per country. Today those countries look
-like they are covered by our Peppol package. They are not.
+**The problem.** `PeppolProfiles` knew BIS Billing 3.0, which is a strict EN 16931 CIUS and was never meant
+to leave Europe. Everywhere Peppol has been adopted since — the UAE, Malaysia, Singapore, Japan, Australia
+and New Zealand, Oman, and probably the United Kingdom — runs on **Peppol PINT**, a different specification
+with a common core and one jurisdiction specialisation each. Those countries looked covered by our Peppol
+package. They were not.
 
-**Why it is a multiplier and not a country.** PINT is to the rest of the world what BIS Billing is to
-Europe: one package, then a jurisdiction is a code list, an identifier and a rule set. It is the same trade
-that made `.Peppol` the first thing built, and it turns six or more of the countries below from projects
-into entries.
+**Done.** `PeppolPintProfiles` carries all of them — the common core and the EU, UAE (billing and
+self-billing), A-NZ, Japanese, Malaysian, Omani and Singaporean specialisations. Not one identifier is
+transcribed from prose: each is read out of the published rule artefact for its jurisdiction, which
+`build/fetch-specs.sh pint` puts on disk, and a test fails the build if one stops appearing there.
 
-**And it converges.** OpenPEPPOL's **BIS 4**, built on EN 16931-1:2026, is meant to merge BIS Billing 3.0
-and PINT into one global specification. Denmark has already cancelled OIOUBL 3.0 and committed to
-**NemHandel BIS 4** as its only domestic format by 2029 — the first national format to be retired in favour
-of it. Doing PINT and the 2026 model together is cheaper than doing either twice.
+Doing it surfaced the trap that would have caught every caller: **the PINT business process is a different
+string**. BIS Billing numbers its processes (`urn:fdc:peppol.eu:2017:poacc:billing:01:1.0`) and PINT does not
+(`urn:peppol:bis:billing`). An invoice carrying the wrong one is wrong in a way that looks right, so
+`ForPeppolPint()` exists beside `ForPeppol()` rather than a flag on one method.
+
+**Still to do: the rules cannot run.** OpenPEPPOL publishes PINT's artefacts as **pre-compiled XSLT**, not as
+source Schematron, and this library's engine executes Schematron — deliberately, since that is what lets
+validation run in a browser ([ADR 0008](adr/0008-schematron-engine.md)). So a PINT document is read and
+mapped today with its jurisdiction rules reported as *not run*. Closing it needs the source Schematron if
+OpenPEPPOL publishes it, or an XSLT processor for the non-browser build. Translating the compiled rules by
+hand is the one option this project should refuse: a rule set nobody can compare against its publisher's is
+worse than no rule set. See [the PINT page](standards/peppol-pint.md).
+
+**And it converges.** OpenPEPPOL's **BIS 4**, built on EN 16931-1:2026, is meant to merge BIS Billing 3.0 and
+PINT into one global specification. Denmark has already cancelled OIOUBL 3.0 and committed to **NemHandel
+BIS 4** as its only domestic format by 2029 — the first national format retired in its favour.
 
 ---
 
@@ -268,7 +280,7 @@ wrong. That is not effort, it is a fact each needs. Until then each country's pa
 underneath its CIUS, which is most of the work, and registering the CIUS from your own code wins over
 anything built in.
 
-### Tier 2 — Peppol **PINT** jurisdictions · *blocked on the PINT package above*
+### Tier 2 — Peppol **PINT** jurisdictions · *the profiles exist now; each needs its identifiers and rules*
 
 | Country | Specialisation | Mandate state |
 |---|---|---|
@@ -278,9 +290,12 @@ anything built in.
 | **Malaysia** | MyInvois — PINT MY alongside the national API | phased since 2024; above RM 1 m since **January 2026** |
 | **United Arab Emirates** | PINT AE, five-corner DCTCE model | pilot **July 2026**, mandatory **1 January 2027** above AED 50 m, **1 July 2027** below |
 | **United Kingdom** | PINT UK, expected | mandatory VAT e-invoicing announced for **April 2029**; roadmap due Budget 2026 |
+| **Oman** | PINT OM | artefacts published; mandate rolling out |
 
 Malaysia and the UAE also need their national submission rules, which are transport — out of scope here —
-but their *documents* are PINT, and the document is what we do.
+but their *documents* are PINT, and the document is what we do. Each of these is now a country package of the
+same shape as the Nordic ones: a profile that already exists, a legal identifier, and the jurisdiction rules
+once they can be run.
 
 ### Tier 3 — EN 16931 relatives with a format of their own · *a reader, a writer and a rule set*
 

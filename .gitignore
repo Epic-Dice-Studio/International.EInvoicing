@@ -68,6 +68,7 @@ specs/peppol/rules/
 specs/peppol/examples/
 specs/peppol/unit-UBL-PEPPOL/
 specs/peppol/unit-CII-PEPPOL/
+specs/peppol/pint/
 
 # French rule sets: published by the DGFiP, carried by a repository that declares no licence
 specs/fr-dse/rules/

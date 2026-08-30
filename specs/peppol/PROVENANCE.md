@@ -23,3 +23,19 @@ naming how many times a rule should fire, which is what the engine is measured a
 Peppol adopts the EN 16931 artefacts and adds its own rules on top: a document must satisfy both rule sets.
 The version of EN 16931 artefacts adopted by a given Peppol release is stated in the Peppol release notes —
 record it here when fetching, because a mismatch produces false validation failures.
+
+## Peppol PINT
+
+| | |
+|---|---|
+| **Source** | <https://github.com/phax/phive-rules> (`phive-rules-peppol-pint`), which carries what OpenPEPPOL publishes |
+| **Fetched by** | `build/fetch-specs.sh pint` |
+| **Redistributable** | **No.** Same position as the BIS rules above: OpenPEPPOL declares no licence permitting it. |
+
+PINT is what every Peppol jurisdiction outside Europe runs on. What is fetched here is **pre-compiled XSLT**,
+not source Schematron — OpenPEPPOL publishes it that way, and this library's engine executes Schematron. So
+these artefacts are not a rule set that runs; they are the source the jurisdiction identifiers in
+`PeppolPintProfiles` are checked against, which `PeppolPintProfilesTests` does on every build once they are
+present.
+
+Running them needs an XSLT processor. That is an open item — see `docs/roadmap.md`.

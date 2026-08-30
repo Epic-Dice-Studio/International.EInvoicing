@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Peppol PINT.** The package knew BIS Billing 3.0 and nothing else, so every jurisdiction that adopted
+  Peppol outside Europe — the UAE, Malaysia, Singapore, Japan, Australia and New Zealand, Oman — *looked*
+  covered and was not. `PeppolPintProfiles` now carries the common core and every published specialisation,
+  each identifier read out of the artefact for its jurisdiction rather than transcribed, with a test that
+  fails the build if one stops appearing there.
+- `PeppolBusinessProcess.PintBilling` and `ForPeppolPint()`, because the two families disagree about BT-23:
+  BIS Billing numbers its processes and PINT does not, so an invoice carrying the other family's identifier
+  is wrong in a way that looks right.
+- `build/fetch-specs.sh pint` fetches the PINT artefacts. They do not yet *run*: OpenPEPPOL publishes them as
+  pre-compiled XSLT and this library's engine executes Schematron, so a PINT document is read and mapped with
+  its jurisdiction rules reported as not run rather than silently skipped.
 - **Croatia**, whose mandate has been live since 1 January 2026. `CroatianEInvoicing` writes the OIB of both
   parties — which EN 16931 never asks for and Croatia always does — checked against ISO/IEC 7064 MOD 11,10
   before it is written, with the scheme on the electronic address rather than on the registration identifier,

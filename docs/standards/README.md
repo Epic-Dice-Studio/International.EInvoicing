@@ -20,6 +20,7 @@ format is a matter of following the page rather than rediscovering the norm.
 | [country-dk.md](country-dk.md) | Denmark: NemHandel, the CVR number, the payment means Denmark refuses. |
 | [country-nl.md](country-nl.md) | Netherlands: Peppol BIS, the KvK/OIN scheme its rules demand, why NLCIUS is absent. |
 | [country-is.md](country-is.md) | Iceland: Peppol BIS, the kennitala, the scheme its rules look in. |
+| [peppol-pint.md](peppol-pint.md) | Peppol PINT: the half of Peppol outside Europe, its identifiers, and why its rules do not run yet. |
 | [country-hr.md](country-hr.md) | Croatia: Fiskalizacija 2.0, the OIB, and the two thirds of the mandate a document library cannot do. |
 
 Before a standard is declared done, its page should also record what [prior art](../prior-art.md) revealed:

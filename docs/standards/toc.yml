@@ -28,6 +28,8 @@
   href: facturx.md
 - name: Peppol BIS Billing 3.0
   href: peppol-bis-3.md
+- name: Peppol PINT
+  href: peppol-pint.md
 - name: UBL 2.1 — OASIS Universal Business Language
   href: ubl-2.1.md
 - name: XRechnung

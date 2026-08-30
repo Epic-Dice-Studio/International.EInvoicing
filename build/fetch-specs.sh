@@ -107,6 +107,19 @@ fetch_france() {
     sync_into "$french/test-files/ctc/$FRENCH_RULES_VERSION" "$SPECS_DIR/fr-dse/samples"
 }
 
+# Peppol PINT: the specification every Peppol jurisdiction outside Europe runs on. OpenPEPPOL publishes it
+# under no redistribution licence, and phive-rules carries the artefacts as pre-compiled XSLT — which this
+# library's engine cannot execute, so what is fetched here is what lets the identifiers be checked against
+# their source, not a rule set that will run. See docs/standards/peppol-pint.md.
+fetch_pint() {
+    local src="$WORK_DIR/pint"
+    clone_at https://github.com/phax/phive-rules.git "$PHIVE_RULES_REF" "$src"
+
+    local pint="$src/phive-rules-peppol-pint/src/main/resources/external/schematron"
+    rm -rf "$SPECS_DIR/peppol/pint"
+    sync_into "$pint" "$SPECS_DIR/peppol/pint"
+}
+
 fetch_manual() {
     cat >&2 <<'MANUAL'
 
@@ -131,11 +144,12 @@ main() {
     local target="${1:-all}"
     case "$target" in
         en16931)   fetch_en16931 ;;
+        pint)      fetch_pint ;;
         peppol)    fetch_peppol ;;
         xrechnung) fetch_xrechnung ;;
         france)    fetch_france ;;
-        all)       fetch_en16931; fetch_peppol; fetch_xrechnung; fetch_france; fetch_manual ;;
-        *)         warn "unknown target '$target' (en16931 | peppol | xrechnung | france | all)"; exit 2 ;;
+        all)       fetch_en16931; fetch_peppol; fetch_pint; fetch_xrechnung; fetch_france; fetch_manual ;;
+        *)         warn "unknown target '$target' (en16931 | peppol | pint | xrechnung | france | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"
 }

@@ -1,4 +1,6 @@
 const International.EInvoicing.Peppol.PeppolBusinessProcess.Billing = "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0" -> string!
+const International.EInvoicing.Peppol.PeppolBusinessProcess.PintBilling = "urn:peppol:bis:billing" -> string!
+const International.EInvoicing.Peppol.PeppolBusinessProcess.PintSelfBilling = "urn:peppol:bis:selfbilling" -> string!
 const International.EInvoicing.Peppol.PeppolEndpointScheme.ArtefactVersion = "1.3.16" -> string!
 const International.EInvoicing.Peppol.PeppolEndpointScheme.BelgianEnterprise = "0208" -> string!
 const International.EInvoicing.Peppol.PeppolEndpointScheme.DanishOrganisation = "0184" -> string!
@@ -24,6 +26,7 @@ International.EInvoicing.Peppol.PeppolParticipant.Scheme.get -> string!
 International.EInvoicing.Peppol.PeppolParticipant.ToElectronicAddress() -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Peppol.PeppolParticipant.ToQualifiedString() -> string!
 International.EInvoicing.Peppol.PeppolParticipant.Value.get -> string!
+International.EInvoicing.Peppol.PeppolPintProfiles
 International.EInvoicing.Peppol.PeppolProfiles
 International.EInvoicing.Peppol.PeppolServiceCollectionExtensions
 override International.EInvoicing.Peppol.PeppolParticipant.GetHashCode() -> int
@@ -33,12 +36,25 @@ static International.EInvoicing.Peppol.PeppolEndpointScheme.All.get -> System.Co
 static International.EInvoicing.Peppol.PeppolEndpointScheme.IsKnown(string? code) -> bool
 static International.EInvoicing.Peppol.PeppolEndpointScheme.Require(string! code) -> string!
 static International.EInvoicing.Peppol.PeppolInvoiceBuilderExtensions.ForPeppol(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! businessProcess = "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0") -> International.EInvoicing.Building.EInvoiceBuilder!
+static International.EInvoicing.Peppol.PeppolInvoiceBuilderExtensions.ForPeppolPint(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! businessProcess = "urn:peppol:bis:billing") -> International.EInvoicing.Building.EInvoiceBuilder!
 static International.EInvoicing.Peppol.PeppolParticipant.Create(string! scheme, string! value) -> International.EInvoicing.Peppol.PeppolParticipant
 static International.EInvoicing.Peppol.PeppolParticipant.IsValid(string? value) -> bool
 static International.EInvoicing.Peppol.PeppolParticipant.operator !=(International.EInvoicing.Peppol.PeppolParticipant left, International.EInvoicing.Peppol.PeppolParticipant right) -> bool
 static International.EInvoicing.Peppol.PeppolParticipant.operator ==(International.EInvoicing.Peppol.PeppolParticipant left, International.EInvoicing.Peppol.PeppolParticipant right) -> bool
 static International.EInvoicing.Peppol.PeppolParticipant.Parse(string! value) -> International.EInvoicing.Peppol.PeppolParticipant
 static International.EInvoicing.Peppol.PeppolParticipant.TryParse(string? value, out International.EInvoicing.Peppol.PeppolParticipant participant) -> bool
+static International.EInvoicing.Peppol.PeppolPintProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Peppol.PeppolPintProfiles.ArtefactFolders.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+static International.EInvoicing.Peppol.PeppolPintProfiles.Billing.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingAe.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingAuNz.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingEu.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingJp.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingMy.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingOm.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingSg.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.ForJurisdiction(string? countryCode) -> International.EInvoicing.Profiles.Profile?
+static International.EInvoicing.Peppol.PeppolPintProfiles.SelfBillingAe.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Peppol.PeppolProfiles.BillingCii.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolProfiles.BillingUbl.get -> International.EInvoicing.Profiles.Profile!
