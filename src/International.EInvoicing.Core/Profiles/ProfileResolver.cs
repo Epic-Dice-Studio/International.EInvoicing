@@ -40,6 +40,16 @@ public sealed class ProfileResolver : IProfileResolver
         }
 
         Profile? fallback = NearestSupportedAncestor(declared, syntax) ?? FallbackProfile(syntax);
+
+        if (En16931Edition.Of(declared) is { IsImplemented: false } edition)
+        {
+            return new ProfileResolution(
+                fallback,
+                declared,
+                ProfileResolutionOutcome.FellBackFromUnsupported,
+                [ReportEdition(declared, edition, Describe(fallback, syntax))]);
+        }
+
         bool isPublishedStandard = KnownProfiles.Find(declared, syntax) is not null;
 
         return new ProfileResolution(
@@ -50,6 +60,23 @@ public sealed class ProfileResolver : IProfileResolver
                 : ProfileResolutionOutcome.FellBackFromUnknown,
             [ReportDowngrade(declared, isPublishedStandard, Describe(fallback, syntax))]);
     }
+
+    /// <summary>
+    /// A document written against another edition of the standard. It is an EN 16931 invoice, so say so:
+    /// naming it "unknown" would send the reader looking for a profile registration they cannot make.
+    /// </summary>
+    private static Diagnostic ReportEdition(
+        ProfileIdentifier declared,
+        En16931Edition edition,
+        string fallbackDescription) =>
+        Diagnostic.Create(DiagnosticCodes.UnsupportedEdition, declared.Value) with
+        {
+            BusinessTerm = "BT-24",
+            Expected = En16931Edition.Implemented.ToString(),
+            Found = edition.ToString(),
+            AppliedFallback = fallbackDescription
+                + "; terms this edition does not have are kept in extension data",
+        };
 
     private static Diagnostic ReportDowngrade(
         ProfileIdentifier declared,

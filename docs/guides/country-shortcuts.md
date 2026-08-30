@@ -104,7 +104,7 @@ EInvoice invoice = germany.InvoiceToPublicBody("04011000-1234512345-06")   // Le
     .WithComputedTotals()
     .Build();
 
-ValidationReport report = germany.Validate(germany.Write(invoice));   // EN 16931 (UBL), XRechnung (UBL)
+ValidationReport report = germany.Validate(germany.Write(invoice));   // EN 16931-1:2017 (UBL), XRechnung (UBL)
 ```
 
 `InvoiceToPublicBody` parses the Leitweg-ID and checks its check digits before writing it, so a routing

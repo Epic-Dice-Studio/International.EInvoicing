@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The edition of EN 16931 a document declares is now something the library names.** CEN published
+  EN 16931-1:2026 in May 2026 and withdrew the 2017 edition this library implements. `En16931Edition` reads
+  the edition out of the specification identifier, and a document declaring one we do not implement is
+  reported as `EIV1044 UnsupportedEdition` — an EN 16931 invoice of an edition we do not carry — rather than
+  as an unknown profile. It still parses, everything the two editions share is read normally, the rest is
+  kept in extension data, and the validation report names the edition its rules are for. See
+  [ADR 0013](docs/adr/0013-en16931-editions.md).
 - **EN 16931 artefacts updated to 1.3.16** (April 2026), from 1.3.13 (October 2024) — two years of published
   corrections, including BR-CO-25 on credit notes, BR-CL-01's invoice and credit-note type codes, missing CII
   checks on BT-81 to BT-83, BT-86, BT-123 and BT-128, and the allowance and charge fixes below. The EAS code

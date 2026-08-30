@@ -17,6 +17,16 @@ public static class En16931Rules
     /// <summary>The version of the published artefacts this package carries.</summary>
     public const string ArtefactVersion = "1.3.16";
 
+    /// <summary>
+    /// The edition of the standard these artefacts encode.
+    /// </summary>
+    /// <remarks>
+    /// The artefacts are published against one edition at a time. CEN published EN 16931-1:2026 in May 2026;
+    /// no validation artefacts for it exist yet, so a document declaring that edition is validated against
+    /// these rules and the report says so rather than claiming a clean pass.
+    /// </remarks>
+    public static En16931Edition Edition => En16931Edition.Original;
+
     private static readonly ConcurrentDictionary<string, SchematronRuleSet> Loaded = new(StringComparer.Ordinal);
 
     /// <summary>The rule set for a syntax.</summary>
@@ -25,12 +35,12 @@ public static class En16931Rules
     {
         if (syntax == DocumentSyntax.Ubl)
         {
-            return Load("EN16931-UBL.sch", "EN 16931 (UBL)");
+            return Load("EN16931-UBL.sch", $"{Edition} (UBL)");
         }
 
         if (syntax == DocumentSyntax.Cii)
         {
-            return Load("EN16931-CII.sch", "EN 16931 (CII)");
+            return Load("EN16931-CII.sch", $"{Edition} (CII)");
         }
 
         throw new NotSupportedException(

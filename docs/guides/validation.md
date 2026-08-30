@@ -28,7 +28,7 @@ first as the second is the most expensive thing a validator can do, so the repor
 foreach (RuleSetOutcome outcome in report.RuleSets)
 {
     Console.WriteLine(outcome);
-    // EN 16931 (UBL) 1.3.16  ran
+    // EN 16931-1:2017 (UBL) 1.3.16  ran
     // urn:acme:profile:2p0 —  skipped — this library implements no rule set for that profile,
     //                         so only EN 16931 was checked
 }
@@ -69,6 +69,12 @@ failures blocks legitimate invoices.
 `International.EInvoicing.Validation.En16931` carries the published EN 16931 artefacts, version 1.3.16, for
 both UBL and CII. They are embedded, so validation works offline and ships with the version it was tested
 against.
+
+They encode **EN 16931-1:2017**, and the rule set says so in its name. That matters now: CEN published
+EN 16931-1:2026 in May 2026 and withdrew the 2017 edition, so both will be in circulation for years. A
+document declaring the newer edition still parses and is checked against the 2017 rules, and it is reported
+as [EIV1044](../diagnostics/EIV1044.md) rather than passing quietly — `En16931Edition` is where the library
+says which edition it implements. See [ADR 0013](../adr/0013-en16931-editions.md).
 
 ```csharp
 using International.EInvoicing.Validation.En16931;

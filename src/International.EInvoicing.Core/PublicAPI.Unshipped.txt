@@ -524,6 +524,15 @@ International.EInvoicing.Profiles.DocumentSyntax.Equals(International.EInvoicing
 International.EInvoicing.Profiles.DocumentSyntax.IsKnown.get -> bool
 International.EInvoicing.Profiles.DocumentSyntax.Name.get -> string!
 International.EInvoicing.Profiles.DocumentSyntax.Name.init -> void
+International.EInvoicing.Profiles.En16931Edition
+International.EInvoicing.Profiles.En16931Edition.Deconstruct(out int Year) -> void
+International.EInvoicing.Profiles.En16931Edition.En16931Edition() -> void
+International.EInvoicing.Profiles.En16931Edition.En16931Edition(int Year) -> void
+International.EInvoicing.Profiles.En16931Edition.Equals(International.EInvoicing.Profiles.En16931Edition other) -> bool
+International.EInvoicing.Profiles.En16931Edition.Identifier.get -> International.EInvoicing.Profiles.ProfileIdentifier
+International.EInvoicing.Profiles.En16931Edition.IsImplemented.get -> bool
+International.EInvoicing.Profiles.En16931Edition.Year.get -> int
+International.EInvoicing.Profiles.En16931Edition.Year.init -> void
 International.EInvoicing.Profiles.IProfileRegistry
 International.EInvoicing.Profiles.IProfileRegistry.All.get -> System.Collections.Generic.IReadOnlyCollection<International.EInvoicing.Profiles.Profile!>!
 International.EInvoicing.Profiles.IProfileRegistry.Find(International.EInvoicing.Profiles.ProfileIdentifier id, International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Profiles.Profile?
@@ -891,6 +900,8 @@ override International.EInvoicing.Model.ExtensionElement.GetHashCode() -> int
 override International.EInvoicing.Model.ExtensionElement.ToString() -> string!
 override International.EInvoicing.Profiles.DocumentSyntax.GetHashCode() -> int
 override International.EInvoicing.Profiles.DocumentSyntax.ToString() -> string!
+override International.EInvoicing.Profiles.En16931Edition.GetHashCode() -> int
+override International.EInvoicing.Profiles.En16931Edition.ToString() -> string!
 override International.EInvoicing.Profiles.Profile.Equals(object? obj) -> bool
 override International.EInvoicing.Profiles.Profile.GetHashCode() -> int
 override International.EInvoicing.Profiles.Profile.ToString() -> string!
@@ -945,6 +956,7 @@ static International.EInvoicing.Diagnostics.Diagnostic.operator ==(International
 static International.EInvoicing.Diagnostics.DiagnosticCodes.InvalidValue.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnknownProfile.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedDateFormat.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedEdition.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedProfile.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticDescriptor.operator !=(International.EInvoicing.Diagnostics.DiagnosticDescriptor? left, International.EInvoicing.Diagnostics.DiagnosticDescriptor? right) -> bool
 static International.EInvoicing.Diagnostics.DiagnosticDescriptor.operator ==(International.EInvoicing.Diagnostics.DiagnosticDescriptor? left, International.EInvoicing.Diagnostics.DiagnosticDescriptor? right) -> bool
@@ -975,6 +987,13 @@ static International.EInvoicing.Profiles.DocumentSyntax.operator !=(Internationa
 static International.EInvoicing.Profiles.DocumentSyntax.operator ==(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool
 static International.EInvoicing.Profiles.DocumentSyntax.Ubl.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Unknown.get -> International.EInvoicing.Profiles.DocumentSyntax
+static International.EInvoicing.Profiles.En16931Edition.Implemented.get -> International.EInvoicing.Profiles.En16931Edition
+static International.EInvoicing.Profiles.En16931Edition.Of(International.EInvoicing.Profiles.ProfileIdentifier declared) -> International.EInvoicing.Profiles.En16931Edition?
+static International.EInvoicing.Profiles.En16931Edition.operator !=(International.EInvoicing.Profiles.En16931Edition left, International.EInvoicing.Profiles.En16931Edition right) -> bool
+static International.EInvoicing.Profiles.En16931Edition.operator ==(International.EInvoicing.Profiles.En16931Edition left, International.EInvoicing.Profiles.En16931Edition right) -> bool
+static International.EInvoicing.Profiles.En16931Edition.Original.get -> International.EInvoicing.Profiles.En16931Edition
+static International.EInvoicing.Profiles.En16931Edition.Revised.get -> International.EInvoicing.Profiles.En16931Edition
+static International.EInvoicing.Profiles.En16931Edition.TryGet(International.EInvoicing.Profiles.ProfileIdentifier declared, out International.EInvoicing.Profiles.En16931Edition? edition) -> bool
 static International.EInvoicing.Profiles.KnownProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Profiles.KnownProfiles.En16931Cii.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Profiles.KnownProfiles.En16931Ubl.get -> International.EInvoicing.Profiles.Profile!
@@ -1070,6 +1089,7 @@ static International.EInvoicing.Xml.XmlCharacters.Sanitize(string? value) -> str
 ~International.EInvoicing.Diagnostics.ParseResult<T>.Equals(International.EInvoicing.Diagnostics.ParseResult<T>? other) -> bool
 ~override International.EInvoicing.Diagnostics.SourceLocation.Equals(object obj) -> bool
 ~override International.EInvoicing.Profiles.DocumentSyntax.Equals(object obj) -> bool
+~override International.EInvoicing.Profiles.En16931Edition.Equals(object obj) -> bool
 ~override International.EInvoicing.Profiles.ProfileIdentifier.Equals(object obj) -> bool
 ~override International.EInvoicing.Values.AmountField.Equals(object obj) -> bool
 ~override International.EInvoicing.Values.BinaryField.Equals(object obj) -> bool

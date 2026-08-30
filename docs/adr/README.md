@@ -20,3 +20,4 @@ in place with a link to the one that replaced it.
 | [0010](0010-no-pdf-rendering.md) | Hybrid invoices attach to an existing PDF; we never render one | Accepted |
 | [0011](0011-public-api-tracking.md) | Track the public API in files that are reviewed | Accepted |
 | [0012](0012-async-at-the-boundary.md) | Asynchronous at the boundary, synchronous at the parse | Accepted |
+| [0013](0013-en16931-editions.md) | Two editions of EN 16931, and which one a document declares | Accepted |

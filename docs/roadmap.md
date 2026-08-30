@@ -112,7 +112,7 @@ writing it. Belgium checks the enterprise number and writes it in the scheme Pep
 exposes `.Library`, so the shortcut is a shortcut and not a fence. See
 [the guide](guides/country-shortcuts.md).
 
-### 7. EN 16931-1:2026 — the standard moved under us
+### 7. EN 16931-1:2026 — the standard moved under us 🚧 *first half done, August 2026*
 
 **The problem.** CEN published **EN 16931-1:2026** in May 2026 and **formally withdrew the 2017 version**;
 the 2017 model stays compliant only for a migration period. Everything this library is built on — the
@@ -126,11 +126,27 @@ supplies and special VAT schemes, an extension methodology, and updated UBL and 
 them, and it decides what our public API has to look like — which is exactly the thing we just locked.
 Adding fields to `EInvoice` is a minor version; changing what a field means is not.
 
-**What would make it done.** The 2026 edition read and written alongside the 2017 one, chosen by the
-declared profile rather than by a global setting, with the coverage block in the validation report saying
-which edition a document was checked against. `Field<T>` already carries what a two-edition model needs —
-a document read as 2017 and written as 2026 must be honest about what it could not carry across, and that
-is the same loss report the UBL ↔ CII conversion needs.
+**Done.** Two things, and they are the two that could be done honestly today.
+
+The shipped artefacts went from **1.3.13** (October 2024) to **1.3.16** (April 2026) — two years of published
+corrections, and the EAS code list with them. Running them found a real defect in our XPath engine: a step's
+predicate was applied to the whole flattened result rather than to each node the step started from, so
+`a/b[1]` meant the first `b` in the document instead of the first `b` of *each* `a`. BR-CO-11 and BR-CO-12
+were rewritten in 1.3.16 to sum `ActualAmount[1]` across every document-level allowance, which is exactly the
+shape that exposes it: any invoice with two allowances was being rejected for arithmetic it had got right.
+
+And the edition is now something the library can name. `En16931Edition` reads the edition out of the
+specification identifier; a document declaring an edition we do not implement is reported as
+`EIV1044 UnsupportedEdition` — an EN 16931 invoice of an edition we do not carry — rather than as an unknown
+profile, read as far as the 2017 model reaches with everything else kept in extension data, and validated
+against rules the report names as the 2017 ones. See [ADR 0013](adr/0013-en16931-editions.md).
+
+**Still to do, and blocked on publication.** The standard text is sold, not published, so the terms the
+revision adds cannot be derived from anything this repository may carry; and the 2026 validation artefacts do
+not exist yet — the maintainer of the EN 16931 artefacts
+[said in April 2026](https://github.com/ConnectingEurope/eInvoicing-EN16931/issues/445) that work on them was
+starting. When they land: the 2026 model beside the 2017 one, chosen by the declared profile, with a loss
+report for a document carried from one to the other — the same loss report the UBL ↔ CII conversion needs.
 
 *Check: [ec.europa.eu — obtaining a copy of the standard](https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/467108971/Obtaining+a+copy+of+the+European+standard+on+eInvoicing).*
 

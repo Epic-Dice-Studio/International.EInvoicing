@@ -20,6 +20,13 @@ public static class DiagnosticCodes
         DiagnosticSeverity.Error,
         "Profile '{0}' is a known standard but no implementation is registered.");
 
+    /// <summary>The document declares an edition of EN 16931 this library does not implement.</summary>
+    public static DiagnosticDescriptor UnsupportedEdition { get; } = new(
+        "EIV1044",
+        DiagnosticCategory.UnsupportedProfile,
+        DiagnosticSeverity.Error,
+        "Profile '{0}' declares an edition of EN 16931 this library does not implement.");
+
     /// <summary>A value could not be interpreted as its declared type; the raw text is preserved.</summary>
     public static DiagnosticDescriptor InvalidValue { get; } = new(
         "EIV2001",
