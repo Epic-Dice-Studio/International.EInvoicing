@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
 using International.EInvoicing.Validation.Schematron;
@@ -17,6 +18,9 @@ namespace International.EInvoicing.Countries.France.Tests;
 /// </remarks>
 public class FrRuleSetTests
 {
+    /// <summary>The version of the DGFiP artefacts these tests are pinned to.</summary>
+    private const string ArtefactVersion = "1.4.0.03";
+
     private static string? RulesDirectory
     {
         get
@@ -58,9 +62,62 @@ public class FrRuleSetTests
         SchematronRuleSet rules = SchematronRuleSet.Load(
             File.ReadAllText(path),
             Path.GetFileNameWithoutExtension(path),
-            "1.4.0.03");
+            ArtefactVersion);
 
         rules.AssertionCount.ShouldBeGreaterThan(0);
+    }
+
+    /// <summary>
+    /// The invoice rule sets are the large ones — a thousand assertions for UBL — and the measurement that
+    /// matters is that the engine runs every one of them against a real document rather than skipping what
+    /// it cannot express.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(RuleSets))]
+    public void NoRuleIsLeftUnevaluableOnARealDocument(string path)
+    {
+        Assert.SkipWhen(path.Length == 0, "The French artefacts are not present; run build/fetch-specs.sh france.");
+        Assert.SkipWhen(path.Contains("CDAR", StringComparison.Ordinal), "Covered by the lifecycle tests.");
+
+        SchematronRuleSet rules = SchematronRuleSet.Load(
+            File.ReadAllText(path),
+            Path.GetFileNameWithoutExtension(path),
+            ArtefactVersion);
+
+        foreach (string document in Examples(path.Contains("CII", StringComparison.Ordinal)))
+        {
+            ValidationReport report = new SchematronValidator().Validate(File.ReadAllText(document), rules);
+
+            report.Messages
+                .Where(message => message.Message.StartsWith("This rule could not be evaluated", StringComparison.Ordinal))
+                .ShouldBeEmpty($"{Path.GetFileName(document)} left rules unevaluated");
+        }
+    }
+
+    /// <summary>A rule set that accepts everything proves nothing: an invoice with no number must be caught.</summary>
+    [Theory]
+    [MemberData(nameof(RuleSets))]
+    public void EachInvoiceRuleSetRejectsAnInvoiceWithNoNumber(string path)
+    {
+        Assert.SkipWhen(path.Length == 0, "The French artefacts are not present; run build/fetch-specs.sh france.");
+        Assert.SkipWhen(path.Contains("CDAR", StringComparison.Ordinal), "Covered by the lifecycle tests.");
+
+        bool cii = path.Contains("CII", StringComparison.Ordinal);
+
+        SchematronRuleSet rules = SchematronRuleSet.Load(
+            File.ReadAllText(path),
+            Path.GetFileNameWithoutExtension(path),
+            ArtefactVersion);
+
+        string document = Examples(cii).First();
+        string stripped = Regex.Replace(
+            File.ReadAllText(document),
+            cii ? "<ram:ID>[^<]*</ram:ID>" : "<cbc:ID>[^<]*</cbc:ID>",
+            string.Empty,
+            RegexOptions.None,
+            TimeSpan.FromSeconds(5));
+
+        new SchematronValidator().Validate(stripped, rules).IsValid.ShouldBeFalse();
     }
 
     [Fact]
@@ -90,6 +147,13 @@ public class FrRuleSetTests
         resolution.IsExact.ShouldBeTrue();
         resolution.Profile!.Name.ShouldBe("Extended CTC FR");
     }
+
+    /// <summary>Official EN 16931 example invoices, which every rule set here is meant to run against.</summary>
+    private static IEnumerable<string> Examples(bool cii) =>
+        Directory
+            .EnumerateFiles(Path.Combine(RepositoryRoot(), "specs", "en16931", cii ? "cii" : "ubl", "examples"), "*.xml")
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .Take(4);
 
     private static string RepositoryRoot()
     {
