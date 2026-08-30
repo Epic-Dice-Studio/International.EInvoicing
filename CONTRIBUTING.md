@@ -55,8 +55,18 @@ Do not open a public issue. See [SECURITY.md](SECURITY.md).
 
 ## Releasing (maintainers)
 
-Versions come from git tags via MinVer: tagging `v0.1.0` publishes `0.1.0`. Pushes to `main` publish
-`x.y.z-preview.N` to GitHub Packages automatically, which needs no configuration.
+**Versions come from git tags, via MinVer.** Nothing in a workflow decides a version number. Tagging
+`v0.1.0` publishes `0.1.0`. While `v0.1.0-preview.1` is the newest tag, every push to `main` publishes
+`0.1.0-preview.1.<commits since the tag>` — each ordering after the last, and all of them before the
+eventual `0.1.0`. Moving the base version means moving the tag, not editing a file.
+
+**Two workflows publish, and both go to nuget.org.** `preview.yml` runs on every push to `main`: it builds,
+runs the tests, and pushes a prerelease. `release.yml` runs on a `v*` tag and pushes the stable version.
+Previews are only visible to someone who asks for them — `dotnet add package … --prerelease` — so they do
+not disturb anyone consuming stable versions.
+
+A version pushed to nuget.org **can never be replaced or deleted**, only unlisted. That is why the preview
+workflow runs the tests before it pushes, and why it serialises: two runs must not race for one version.
 
 Publishing to NuGet.org needs three things set up once, and no API key. NuGet.org keys now expire after 30
 days, so the release workflow uses **trusted publishing**: it exchanges the workflow's OIDC token for a key
@@ -70,13 +80,20 @@ that lives about an hour.
 2. **Create the trusted publishing policy.** On nuget.org, user menu → Trusted Publishing → new policy:
    - package owner: the nuget.org account or organisation that will own the packages
    - repository: `Epic-Dice-Studio/International.EInvoicing`
-   - workflow file: `release.yml`
+   - workflow file: `release.yml` — and **a second policy for `preview.yml`**, otherwise the previews are
+     refused while the tagged releases succeed
    - environment: `nuget`
+
+   A policy covers one package owner and one workflow file, so each publishing workflow needs its own. If
+   the packages do not exist on nuget.org yet, create the policy with the package-pattern option so the
+   first push of each ID is allowed.
 3. **Add the repository secret `NUGET_USER`** with your nuget.org *username* — the profile name, not the
    email address. It is the only secret the release needs.
 
 Optionally create the `nuget` GitHub environment (Settings → Environments) with required reviewers, so a
-release waits for an explicit approval before anything leaves the repository.
+release waits for an explicit approval before anything leaves the repository. **Be deliberate about this
+one**: both workflows use that environment, so required reviewers would also hold every preview — every push
+to `main` — until someone approves it.
 
 Then:
 

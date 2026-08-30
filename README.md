@@ -11,7 +11,9 @@
 
 **Generate, read and validate electronic invoices in .NET — for every country, without fighting the library.**
 
-> **Status: pre-alpha.** Nothing is published on NuGet yet. The foundations (build, CI, hardened XML,
+> **Status: pre-alpha.** Only prereleases are published — every push to `main` publishes
+> `0.1.0-preview.1.N` to NuGet, so `dotnet add package International.EInvoicing --prerelease` gets the
+> latest. No stable version has been cut. The foundations (build, CI, hardened XML,
 > documentation, normative artefacts) are in place; the model and the first syntax are being built.
 > The table below is the honest state of things and is generated from the code's own coverage file.
 
