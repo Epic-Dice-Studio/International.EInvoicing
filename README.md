@@ -1,5 +1,14 @@
 # International.EInvoicing
 
+[![NuGet](https://img.shields.io/nuget/v/International.EInvoicing?logo=nuget&label=NuGet)](https://www.nuget.org/packages/International.EInvoicing)
+[![Downloads](https://img.shields.io/nuget/dt/International.EInvoicing?logo=nuget&label=downloads)](https://www.nuget.org/packages/International.EInvoicing)
+[![CI](https://github.com/Epic-Dice-Studio/International.EInvoicing/actions/workflows/ci.yml/badge.svg)](https://github.com/Epic-Dice-Studio/International.EInvoicing/actions/workflows/ci.yml)
+[![Docs](https://github.com/Epic-Dice-Studio/International.EInvoicing/actions/workflows/docs-check.yml/badge.svg)](https://github.com/Epic-Dice-Studio/International.EInvoicing/actions/workflows/docs-check.yml)
+[![CodeQL](https://github.com/Epic-Dice-Studio/International.EInvoicing/actions/workflows/codeql.yml/badge.svg)](https://github.com/Epic-Dice-Studio/International.EInvoicing/actions/workflows/codeql.yml)
+[![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%2010.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com)
+[![License](https://img.shields.io/github/license/Epic-Dice-Studio/International.EInvoicing?label=licence)](LICENSE)
+[![Playground](https://img.shields.io/badge/playground-try%20it%20in%20your%20browser-2ea44f)](https://epic-dice-studio.github.io/International.EInvoicing/demo/)
+
 **Generate, read and validate electronic invoices in .NET — for every country, without fighting the library.**
 
 > **Status: pre-alpha.** Nothing is published on NuGet yet. The foundations (build, CI, hardened XML,
