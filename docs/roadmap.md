@@ -43,7 +43,7 @@ document is read; `IsCreditNote` consults the root in UBL and the type code in C
 official EN 16931 credit note: read with its lines, nothing left unmapped, round-tripped, and still accepted
 by EN 16931 after being written back.
 
-### 2. `International.EInvoicing.Peppol`
+### 2. `International.EInvoicing.Peppol` ✅ *done, August 2026*
 
 **Why first among the additions.** Belgium, the Netherlands, Norway, Sweden, Denmark, Finland, Ireland,
 Iceland, Australia, New Zealand, Singapore and Japan all exchange Peppol BIS Billing 3.0. One package, then a
@@ -52,9 +52,12 @@ country is a code list and an identifier rather than a format.
 **What it holds.** The CIUS profiles for both syntaxes, the EAS and ICD code lists, participant identifier
 parsing and checking, and the rule-set registration for artefacts a caller fetched. Not: SMP lookup, not AS4.
 
-**Done when** a Peppol participant identifier is validated rather than pattern-matched, the electronic
-address (BT-34/BT-49) can be built without knowing the scheme by heart, and Belgium's own entry stops saying
-*planned* for validation.
+**Done.** `PeppolParticipant` reads `0208:0203201340` with or without the network qualifier and says whether
+its scheme is one the shipped code list knows; `PeppolEndpointScheme` carries that list, taken from the
+EN 16931 artefacts this library already ships rather than transcribed, with a test comparing the two on every
+build. `AddPeppolRulesFrom(directory)` loads all four rule sets Peppol publishes in one call — its own and
+its copy of the EN 16931 ones, because both apply. Belgium is built on the package, and its validation entry
+no longer says *planned*.
 
 ### 3. Cross-checking against an external validator
 
@@ -66,14 +69,16 @@ go unnoticed.
 **Done when** a nightly workflow runs the KoSIT validator over everything the samples and tests generate and
 fails on disagreement, with the disagreements — not just the failures — reported.
 
-### 4. Locking the public API
+### 4. Locking the public API ✅ *done, August 2026*
 
 `Microsoft.CodeAnalysis.PublicApiAnalyzers` and `PackageValidation`, planned from the start and still absent.
 The developer-experience pass moved a lot of surface; this is the moment to freeze it, while a rename is a
 diff rather than a major version.
 
-**Done when** every package has its `PublicAPI.Shipped.txt`, and a breaking change fails the build with the
-name of what broke.
+**Done.** Every shipping package carries the pair of files, nullability included, and adding or removing a
+public member fails the build until it is recorded. The analyzer's own rules found three places publishing
+overlapping optional parameters — `SecureXml.CreateReader`, `FrCdar.Collected`, `EInvoicing.Create` — each
+now spelled out. See [ADR 0011](adr/0011-public-api-tracking.md).
 
 ### 5. Finishing France
 

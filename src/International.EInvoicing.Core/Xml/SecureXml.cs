@@ -36,19 +36,35 @@ public static class SecureXml
     }
 
     /// <summary>Creates a hardened reader over <paramref name="stream"/>, which is left open.</summary>
+    /// <remarks>
+    /// Spelled out rather than given an optional parameter: adding one to a published overload changes what
+    /// already-compiled callers bind to, which is a break nobody sees at build time.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="stream"/> is <c>null</c>.</exception>
-    public static XmlReader CreateReader(Stream stream, DocumentLimits? limits = null)
+    public static XmlReader CreateReader(Stream stream) => CreateReader(stream, DocumentLimits.Default);
+
+    /// <summary>Creates a hardened reader over <paramref name="stream"/>, which is left open.</summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public static XmlReader CreateReader(Stream stream, DocumentLimits limits)
     {
         ArgumentNullException.ThrowIfNull(stream);
-        return XmlReader.Create(stream, CreateReaderSettings(limits ?? DocumentLimits.Default));
+        ArgumentNullException.ThrowIfNull(limits);
+
+        return XmlReader.Create(stream, CreateReaderSettings(limits));
     }
 
     /// <summary>Creates a hardened reader over <paramref name="xml"/>.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="xml"/> is <c>null</c>.</exception>
-    public static XmlReader CreateReader(string xml, DocumentLimits? limits = null)
+    public static XmlReader CreateReader(string xml) => CreateReader(xml, DocumentLimits.Default);
+
+    /// <summary>Creates a hardened reader over <paramref name="xml"/>.</summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public static XmlReader CreateReader(string xml, DocumentLimits limits)
     {
         ArgumentNullException.ThrowIfNull(xml);
-        return XmlReader.Create(new StringReader(xml), CreateReaderSettings(limits ?? DocumentLimits.Default));
+        ArgumentNullException.ThrowIfNull(limits);
+
+        return XmlReader.Create(new StringReader(xml), CreateReaderSettings(limits));
     }
 
     /// <summary>

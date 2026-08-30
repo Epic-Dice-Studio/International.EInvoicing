@@ -1,0 +1,22 @@
+const International.EInvoicing.Cii.CreditTransferSchemes.Proprietary = "proprietary" -> string!
+International.EInvoicing.Cii.CiiDiagnostics
+International.EInvoicing.Cii.CiiNames
+International.EInvoicing.Cii.CiiServiceCollectionExtensions
+International.EInvoicing.Cii.CreditTransferSchemes
+International.EInvoicing.Cii.Reading.CiiInvoiceReader
+International.EInvoicing.Cii.Reading.CiiInvoiceReader.CiiInvoiceReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Cii.Reading.CiiInvoiceReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Cii.Reading.CiiInvoiceReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter.CiiInvoiceWriter() -> void
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter.Write(International.EInvoicing.Model.EInvoice! invoice, System.IO.Stream! stream) -> void
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter.WriteToString(International.EInvoicing.Model.EInvoice! invoice) -> string!
+static International.EInvoicing.Cii.CiiDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Cii.CiiDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Cii.CiiNames.Qdt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cii.CiiNames.Ram.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cii.CiiNames.Rsm.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cii.CiiNames.Udt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cii.CiiServiceCollectionExtensions.AddCii(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Cii.CiiServiceCollectionExtensions.AddCiiServices(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static International.EInvoicing.Cii.Reading.CiiInvoiceReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax

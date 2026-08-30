@@ -46,6 +46,9 @@ All notable changes to this project are documented here. The format follows
 - CI: build and test matrix, packaging, documentation gates, upstream specification monitoring.
 
 ### Changed
+- `SecureXml.CreateReader`, `FrCdar.Collected` and `EInvoicing.Create` are spelled out as explicit overloads
+  rather than sharing optional parameters. Adding a parameter to a published overload later is a break that
+  compiles cleanly and fails in someone else's process; the API analyzer found all three.
 - The French lifecycle builder now reads as the sentence it is —
   `FrCdar.FromBuyer(...).SentBy(...).ToSeller(...).About(...).Approved()`. A lifecycle message has three
   parties and it was too easy to fill in the wrong one, so where you start fixes who reports the status,

@@ -1,0 +1,38 @@
+const International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.Scheme = "0208" -> string!
+International.EInvoicing.Countries.Belgium.BelgiumServiceCollectionExtensions
+International.EInvoicing.Countries.Belgium.BeProfiles
+International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber
+International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.BeEnterpriseNumber() -> void
+International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.Equals(International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber other) -> bool
+International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.IsSet.get -> bool
+International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.ToField() -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.ToFormattedString() -> string!
+International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.Value.get -> string!
+International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.VatNumber.get -> string!
+International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication
+International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.BeStructuredCommunication() -> void
+International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.Digits.get -> string!
+International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.Equals(International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication other) -> bool
+International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.IsSet.get -> bool
+International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.ToField() -> International.EInvoicing.Values.TextField
+override International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.GetHashCode() -> int
+override International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.ToString() -> string!
+override International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.GetHashCode() -> int
+override International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.ToString() -> string!
+static International.EInvoicing.Countries.Belgium.BelgiumServiceCollectionExtensions.AddBelgium(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Belgium.BeProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Belgium.BeProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Belgium.BeProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.IsValid(string? value) -> bool
+static International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.operator !=(International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber left, International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber right) -> bool
+static International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.operator ==(International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber left, International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber right) -> bool
+static International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.Parse(string! value) -> International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber
+static International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.TryParse(string? value, out International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber number) -> bool
+static International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.ForInvoice(long reference) -> International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication
+static International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.IsValid(string? value) -> bool
+static International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.operator !=(International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication left, International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication right) -> bool
+static International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.operator ==(International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication left, International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication right) -> bool
+static International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.Parse(string! value) -> International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication
+static International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.TryParse(string? value, out International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication communication) -> bool
+~override International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.Equals(object obj) -> bool
+~override International.EInvoicing.Countries.Belgium.Identifiers.BeStructuredCommunication.Equals(object obj) -> bool

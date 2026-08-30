@@ -1,0 +1,73 @@
+International.EInvoicing.DocumentFormat
+International.EInvoicing.DocumentFormat.Cii = 1 -> International.EInvoicing.DocumentFormat
+International.EInvoicing.DocumentFormat.Ubl = 0 -> International.EInvoicing.DocumentFormat
+International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.Cdar = 4 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.Cii = 3 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.Pdf = 5 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.Ubl = 1 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.UblCreditNote = 2 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.Unknown = 0 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentResult
+International.EInvoicing.DocumentResult.<Clone>$() -> International.EInvoicing.DocumentResult!
+International.EInvoicing.DocumentResult.Deconstruct(out International.EInvoicing.DocumentKind kind, out International.EInvoicing.Model.EInvoice? invoice, out International.EInvoicing.Cdar.Model.LifecycleStatusMessage? status) -> void
+International.EInvoicing.DocumentResult.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Diagnostics.Diagnostic!>!
+International.EInvoicing.DocumentResult.Diagnostics.init -> void
+International.EInvoicing.DocumentResult.DocumentResult() -> void
+International.EInvoicing.DocumentResult.Equals(International.EInvoicing.DocumentResult? other) -> bool
+International.EInvoicing.DocumentResult.Errors.get -> System.Collections.Generic.IEnumerable<International.EInvoicing.Diagnostics.Diagnostic!>!
+International.EInvoicing.DocumentResult.HasErrors.get -> bool
+International.EInvoicing.DocumentResult.Invoice.get -> International.EInvoicing.Model.EInvoice?
+International.EInvoicing.DocumentResult.Invoice.init -> void
+International.EInvoicing.DocumentResult.IsCreditNote.get -> bool
+International.EInvoicing.DocumentResult.IsUsable.get -> bool
+International.EInvoicing.DocumentResult.Kind.get -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentResult.Kind.init -> void
+International.EInvoicing.DocumentResult.LifecycleStatus.get -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage?
+International.EInvoicing.DocumentResult.LifecycleStatus.init -> void
+International.EInvoicing.DocumentResult.OfAtLeast(International.EInvoicing.Diagnostics.DiagnosticSeverity severity) -> System.Collections.Generic.IEnumerable<International.EInvoicing.Diagnostics.Diagnostic!>!
+International.EInvoicing.DocumentResult.Profile.get -> International.EInvoicing.Profiles.ProfileResolution?
+International.EInvoicing.DocumentResult.Profile.init -> void
+International.EInvoicing.DocumentResult.RequireInvoice() -> International.EInvoicing.Model.EInvoice!
+International.EInvoicing.DocumentResult.RequireLifecycleStatus() -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
+International.EInvoicing.DocumentResult.TryGetInvoice(out International.EInvoicing.Model.EInvoice? invoice) -> bool
+International.EInvoicing.DocumentResult.TryGetLifecycleStatus(out International.EInvoicing.Cdar.Model.LifecycleStatusMessage? status) -> bool
+International.EInvoicing.DocumentResult.Warnings.get -> System.Collections.Generic.IEnumerable<International.EInvoicing.Diagnostics.Diagnostic!>!
+International.EInvoicing.EInvoicing
+International.EInvoicing.EInvoicing.Cii.get -> International.EInvoicing.Cii.Reading.CiiInvoiceReader!
+International.EInvoicing.EInvoicing.CiiWriter.get -> International.EInvoicing.Cii.Writing.CiiInvoiceWriter!
+International.EInvoicing.EInvoicing.EInvoicing(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles, System.Collections.Generic.IEnumerable<International.EInvoicing.Validation.IDocumentRuleSet!>! ruleSets, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf = null) -> void
+International.EInvoicing.EInvoicing.KnownProfiles.get -> System.Collections.Generic.IReadOnlyCollection<International.EInvoicing.Profiles.Profile!>!
+International.EInvoicing.EInvoicing.Lifecycle.get -> International.EInvoicing.Cdar.Reading.CdarReader!
+International.EInvoicing.EInvoicing.LifecycleWriter.get -> International.EInvoicing.Cdar.Writing.CdarWriter!
+International.EInvoicing.EInvoicing.Profiles.get -> International.EInvoicing.Profiles.IProfileResolver!
+International.EInvoicing.EInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.EInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.EInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.EInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.EInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.EInvoicing.ReadFileAsync(string! path, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.EInvoicing.RuleSets.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Validation.IDocumentRuleSet!>!
+International.EInvoicing.EInvoicing.Ubl.get -> International.EInvoicing.Ubl.Reading.UblInvoiceReader!
+International.EInvoicing.EInvoicing.UblWriter.get -> International.EInvoicing.Ubl.Writing.UblInvoiceWriter!
+International.EInvoicing.EInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.EInvoicing.Write(International.EInvoicing.Cdar.Model.LifecycleStatusMessage! status) -> string!
+International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
+International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format, System.IO.Stream! destination) -> void
+International.EInvoicing.EInvoicingBuilderExtensions
+International.EInvoicing.EInvoicingDiagnostics
+override International.EInvoicing.DocumentResult.Equals(object? obj) -> bool
+override International.EInvoicing.DocumentResult.GetHashCode() -> int
+override International.EInvoicing.DocumentResult.ToString() -> string!
+static International.EInvoicing.DocumentResult.operator !=(International.EInvoicing.DocumentResult? left, International.EInvoicing.DocumentResult? right) -> bool
+static International.EInvoicing.DocumentResult.operator ==(International.EInvoicing.DocumentResult? left, International.EInvoicing.DocumentResult? right) -> bool
+static International.EInvoicing.EInvoicing.Create(International.EInvoicing.Configuration.EInvoicingOptions! options) -> International.EInvoicing.EInvoicing!
+static International.EInvoicing.EInvoicing.Create(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver? profiles, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.EInvoicing!
+static International.EInvoicing.EInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.EInvoicing!
+static International.EInvoicing.EInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.EInvoicing!
+static International.EInvoicing.EInvoicing.CreateDefault(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf = null) -> International.EInvoicing.EInvoicing!
+static International.EInvoicing.EInvoicing.Detect(string! document) -> International.EInvoicing.DocumentKind
+static International.EInvoicing.EInvoicingBuilderExtensions.AddDefaults(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.EInvoicingBuilderExtensions.AddFacade(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.EInvoicingDiagnostics.UnrecognisedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!

@@ -27,6 +27,10 @@ Tests run on `net10.0` locally. CI additionally installs the .NET 8 runtime and 
 - If you added a diagnostic code, add its page under `docs/diagnostics/`. CI checks this.
 - If you changed what the library supports, edit `docs/coverage.json` and run
   `dotnet run --project build/Tools -- coverage`. CI checks this too.
+- If you changed the public API, the build tells you so. Record the change:
+  `dotnet format analyzers <project> --diagnostics RS0016 --severity warn` writes the new entries into that
+  package's `PublicAPI.Unshipped.txt`, and the diff is what a reviewer looks at. See
+  [ADR 0011](docs/adr/0011-public-api-tracking.md).
 - If you added a dependency, add an ADR under `docs/adr/` explaining why.
 - If you changed the public API, check that `samples/International.EInvoicing.Samples` still shows it well.
   It is part of the solution, so CI already refuses a sample that stopped compiling — but a sample that

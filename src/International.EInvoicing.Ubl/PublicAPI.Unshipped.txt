@@ -1,0 +1,21 @@
+International.EInvoicing.Ubl.Reading.UblInvoiceReader
+International.EInvoicing.Ubl.Reading.UblInvoiceReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Ubl.Reading.UblInvoiceReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Ubl.Reading.UblInvoiceReader.UblInvoiceReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Ubl.UblDiagnostics
+International.EInvoicing.Ubl.UblNames
+International.EInvoicing.Ubl.UblServiceCollectionExtensions
+International.EInvoicing.Ubl.Writing.UblInvoiceWriter
+International.EInvoicing.Ubl.Writing.UblInvoiceWriter.UblInvoiceWriter() -> void
+International.EInvoicing.Ubl.Writing.UblInvoiceWriter.Write(International.EInvoicing.Model.EInvoice! invoice, System.IO.Stream! stream) -> void
+International.EInvoicing.Ubl.Writing.UblInvoiceWriter.WriteToString(International.EInvoicing.Model.EInvoice! invoice) -> string!
+static International.EInvoicing.Ubl.Reading.UblInvoiceReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+static International.EInvoicing.Ubl.UblDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Ubl.UblDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Ubl.UblNames.Cac.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Ubl.UblNames.Cbc.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Ubl.UblNames.CreditNote.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Ubl.UblNames.Ext.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Ubl.UblNames.Invoice.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Ubl.UblServiceCollectionExtensions.AddUbl(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Ubl.UblServiceCollectionExtensions.AddUblServices(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

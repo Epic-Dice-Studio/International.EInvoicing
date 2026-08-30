@@ -19,6 +19,7 @@
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
     <PackageReference Include="MinVer" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Versions come from git tags: v1.2.3 ships 1.2.3, commits after it ship 1.2.4-alpha.0.N. -->

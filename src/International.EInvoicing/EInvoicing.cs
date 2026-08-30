@@ -135,9 +135,14 @@ public sealed class EInvoicing
     /// </code>
     /// </remarks>
     /// <param name="configure">What to assemble.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="configure"/> is <c>null</c>.</exception>
+    public static EInvoicing Create(Action<EInvoicingBuilder> configure) => Create(configure, null);
+
+    /// <summary>A library instance assembled the way you want it, able to open hybrid PDFs.</summary>
+    /// <param name="configure">What to assemble.</param>
     /// <param name="pdf">A PDF reader, if hybrid invoices should be opened.</param>
     /// <exception cref="ArgumentNullException"><paramref name="configure"/> is <c>null</c>.</exception>
-    public static EInvoicing Create(Action<EInvoicingBuilder> configure, IPdfAttachmentReader? pdf = null)
+    public static EInvoicing Create(Action<EInvoicingBuilder> configure, IPdfAttachmentReader? pdf)
     {
         ArgumentNullException.ThrowIfNull(configure);
 
@@ -153,10 +158,14 @@ public sealed class EInvoicing
 
     /// <summary>The same, from parts you already have.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="options"/> is <c>null</c>.</exception>
+    public static EInvoicing Create(EInvoicingOptions options) => Create(options, null, null);
+
+    /// <summary>The same, from parts you already have.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <c>null</c>.</exception>
     public static EInvoicing Create(
         EInvoicingOptions options,
-        IProfileResolver? profiles = null,
-        IPdfAttachmentReader? pdf = null)
+        IProfileResolver? profiles,
+        IPdfAttachmentReader? pdf)
     {
         ArgumentNullException.ThrowIfNull(options);
 

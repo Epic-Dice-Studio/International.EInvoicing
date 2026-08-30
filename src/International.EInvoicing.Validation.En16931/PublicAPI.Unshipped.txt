@@ -1,0 +1,8 @@
+const International.EInvoicing.Validation.En16931.En16931Rules.ArtefactVersion = "1.3.13" -> string!
+International.EInvoicing.Validation.En16931.En16931BuilderExtensions
+International.EInvoicing.Validation.En16931.En16931Rules
+International.EInvoicing.Validation.En16931.En16931ServiceCollectionExtensions
+static International.EInvoicing.Validation.En16931.En16931BuilderExtensions.AddEn16931Rules(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Validation.En16931.En16931Rules.Covers(International.EInvoicing.Profiles.DocumentSyntax syntax) -> bool
+static International.EInvoicing.Validation.En16931.En16931Rules.For(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Validation.Schematron.SchematronRuleSet!
+static International.EInvoicing.Validation.En16931.En16931ServiceCollectionExtensions.AddEn16931Validation(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

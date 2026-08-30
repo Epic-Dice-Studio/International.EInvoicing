@@ -302,16 +302,27 @@ public sealed class FrCdar
 
     /// <summary>212 — the invoice has been collected.</summary>
     /// <param name="collected">How much was collected, and at which VAT rate.</param>
+    public LifecycleStatusMessage Collected(FrCollectedAmount collected) => Collected([collected], null);
+
+    /// <summary>212 — the invoice has been collected, at a moment you name.</summary>
+    /// <param name="collected">How much was collected, and at which VAT rate.</param>
     /// <param name="at">When the status occurred.</param>
-    public LifecycleStatusMessage Collected(FrCollectedAmount collected, DateTimeOffset? at = null) =>
+    public LifecycleStatusMessage Collected(FrCollectedAmount collected, DateTimeOffset? at) =>
         Collected([collected], at);
+
+    /// <summary>212 — the invoice has been collected, at more than one VAT rate.</summary>
+    /// <param name="collected">How much was collected, once per VAT rate. At least one is required.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="collected"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="collected"/> is empty.</exception>
+    public LifecycleStatusMessage Collected(IEnumerable<FrCollectedAmount> collected) =>
+        Collected(collected, null);
 
     /// <summary>212 — the invoice has been collected, at more than one VAT rate.</summary>
     /// <param name="collected">How much was collected, once per VAT rate. At least one is required.</param>
     /// <param name="at">When the status occurred.</param>
     /// <exception cref="ArgumentNullException"><paramref name="collected"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException"><paramref name="collected"/> is empty.</exception>
-    public LifecycleStatusMessage Collected(IEnumerable<FrCollectedAmount> collected, DateTimeOffset? at = null)
+    public LifecycleStatusMessage Collected(IEnumerable<FrCollectedAmount> collected, DateTimeOffset? at)
     {
         ArgumentNullException.ThrowIfNull(collected);
 

@@ -1,0 +1,25 @@
+International.EInvoicing.Countries.Germany.DeProfiles
+International.EInvoicing.Countries.Germany.GermanyServiceCollectionExtensions
+International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId
+International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.CheckDigits.get -> string!
+International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.CoarseAddress.get -> string!
+International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.DeLeitwegId() -> void
+International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.Equals(International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId other) -> bool
+International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.FineAddress.get -> string!
+International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.IsSet.get -> bool
+International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.ToBuyerReference() -> International.EInvoicing.Values.TextField
+override International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.GetHashCode() -> int
+override International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.ToString() -> string!
+static International.EInvoicing.Countries.Germany.DeProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Germany.DeProfiles.XRechnungCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Germany.DeProfiles.XRechnungExtensionCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Germany.DeProfiles.XRechnungExtensionUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Germany.DeProfiles.XRechnungUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Germany.GermanyServiceCollectionExtensions.AddGermany(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.Create(string! coarseAddress, string! fineAddress = "") -> International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId
+static International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.IsValid(string? value) -> bool
+static International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.operator !=(International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId left, International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId right) -> bool
+static International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.operator ==(International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId left, International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId right) -> bool
+static International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.Parse(string! value) -> International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId
+static International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.TryParse(string? value, out International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId leitwegId) -> bool
+~override International.EInvoicing.Countries.Germany.Identifiers.DeLeitwegId.Equals(object obj) -> bool

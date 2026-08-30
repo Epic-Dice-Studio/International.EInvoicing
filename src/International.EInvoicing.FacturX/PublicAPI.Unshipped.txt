@@ -1,0 +1,44 @@
+const International.EInvoicing.FacturX.Pdf.FacturXAttachment.FacturXFileName = "factur-x.xml" -> string!
+International.EInvoicing.FacturX.FacturXDiagnostics
+International.EInvoicing.FacturX.FacturXProfiles
+International.EInvoicing.FacturX.FacturXReader
+International.EInvoicing.FacturX.FacturXReader.FacturXReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Cii.Reading.CiiInvoiceReader! cii, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf = null) -> void
+International.EInvoicing.FacturX.FacturXReader.Read(System.IO.Stream! content) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.FacturX.FacturXServiceCollectionExtensions
+International.EInvoicing.FacturX.FacturXWriter
+International.EInvoicing.FacturX.FacturXWriter.FacturXWriter(International.EInvoicing.Cii.Writing.CiiInvoiceWriter! cii, International.EInvoicing.FacturX.Pdf.IPdfAttachmentWriter? pdf = null) -> void
+International.EInvoicing.FacturX.FacturXWriter.Write(International.EInvoicing.Model.EInvoice! invoice, System.IO.Stream! humanReadablePdf, System.IO.Stream! destination) -> void
+International.EInvoicing.FacturX.FacturXWriter.WritePayload(International.EInvoicing.Model.EInvoice! invoice) -> International.EInvoicing.FacturX.Pdf.FacturXAttachment!
+International.EInvoicing.FacturX.Pdf.FacturXAttachment
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.<Clone>$() -> International.EInvoicing.FacturX.Pdf.FacturXAttachment!
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.Deconstruct(out string! FileName, out byte[]! Xml, out string! Relationship) -> void
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.Equals(International.EInvoicing.FacturX.Pdf.FacturXAttachment? other) -> bool
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.FacturXAttachment(string! FileName, byte[]! Xml, string! Relationship = "Alternative") -> void
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.FileName.get -> string!
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.FileName.init -> void
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.Relationship.get -> string!
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.Relationship.init -> void
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.Xml.get -> byte[]!
+International.EInvoicing.FacturX.Pdf.FacturXAttachment.Xml.init -> void
+International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader
+International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader.FindAttachment(System.IO.Stream! pdf, System.Collections.Generic.IReadOnlyList<string!>! fileNames, long maximumBytes) -> International.EInvoicing.FacturX.Pdf.FacturXAttachment?
+International.EInvoicing.FacturX.Pdf.IPdfAttachmentWriter
+International.EInvoicing.FacturX.Pdf.IPdfAttachmentWriter.Attach(System.IO.Stream! source, International.EInvoicing.FacturX.Pdf.FacturXAttachment! attachment, International.EInvoicing.Profiles.Profile! profile, System.IO.Stream! destination) -> void
+override International.EInvoicing.FacturX.Pdf.FacturXAttachment.Equals(object? obj) -> bool
+override International.EInvoicing.FacturX.Pdf.FacturXAttachment.GetHashCode() -> int
+override International.EInvoicing.FacturX.Pdf.FacturXAttachment.ToString() -> string!
+static International.EInvoicing.FacturX.FacturXDiagnostics.MissingPayload.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.FacturX.FacturXDiagnostics.PayloadTooLarge.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.FacturX.FacturXDiagnostics.ProfileIsNotAnEn16931Invoice.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.FacturX.FacturXProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.FacturX.FacturXProfiles.Basic.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.FacturX.FacturXProfiles.BasicWithoutLines.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.FacturX.FacturXProfiles.En16931.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.FacturX.FacturXProfiles.Extended.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.FacturX.FacturXProfiles.IsEn16931Compliant(International.EInvoicing.Profiles.Profile! profile) -> bool
+static International.EInvoicing.FacturX.FacturXProfiles.Minimum.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.FacturX.FacturXReader.LooksLikePdf(System.ReadOnlySpan<byte> content) -> bool
+static International.EInvoicing.FacturX.FacturXServiceCollectionExtensions.AddFacturX(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.FacturX.Pdf.FacturXAttachment.KnownFileNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.FacturX.Pdf.FacturXAttachment.operator !=(International.EInvoicing.FacturX.Pdf.FacturXAttachment? left, International.EInvoicing.FacturX.Pdf.FacturXAttachment? right) -> bool
+static International.EInvoicing.FacturX.Pdf.FacturXAttachment.operator ==(International.EInvoicing.FacturX.Pdf.FacturXAttachment? left, International.EInvoicing.FacturX.Pdf.FacturXAttachment? right) -> bool
