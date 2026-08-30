@@ -84,8 +84,8 @@
           "package": "International.EInvoicing.Peppol",
           "read": "planned",
           "write": "planned",
-          "validate": "planned",
-          "notes": "Validation artefacts are not redistributable (no licence declared upstream): run build/fetch-specs.sh peppol to obtain them locally. See ADR 0009."
+          "validate": "in-progress",
+          "notes": "The engine runs the published Peppol rules and agrees with every case of Peppol's own unit corpus — 227 of 227 for UBL, 127 of 127 for CII. The artefacts themselves declare no licence and are therefore not shipped: fetch them once with build/fetch-specs.sh peppol and load them like any other rule set. Reading and writing the CIUS is not done."
         },
         {
           "name": "XRechnung (CIUS + Extension)",

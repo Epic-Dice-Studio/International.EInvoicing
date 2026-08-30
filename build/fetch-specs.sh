@@ -67,8 +67,14 @@ fetch_en16931() {
 fetch_peppol() {
     local src="$WORK_DIR/peppol"
     clone_at https://github.com/OpenPEPPOL/peppol-bis-invoice-3.git "$PEPPOL_REF" "$src"
-    rm -rf "$SPECS_DIR/peppol/rules"
+    rm -rf "$SPECS_DIR/peppol/rules" "$SPECS_DIR/peppol/examples" \
+        "$SPECS_DIR/peppol/unit-UBL-PEPPOL" "$SPECS_DIR/peppol/unit-CII-PEPPOL"
     sync_into "$src/rules/sch" "$SPECS_DIR/peppol/rules"
+    sync_into "$src/rules/examples" "$SPECS_DIR/peppol/examples"
+    # Peppol's own unit corpus: each case names how many times a rule should fire. This is what the engine
+    # is measured against, and it is stronger than any example document.
+    sync_into "$src/rules/unit-UBL-PEPPOL" "$SPECS_DIR/peppol/unit-UBL-PEPPOL"
+    sync_into "$src/rules/unit-CII-PEPPOL" "$SPECS_DIR/peppol/unit-CII-PEPPOL"
     copy_licence "$src" "$SPECS_DIR/peppol"
 }
 

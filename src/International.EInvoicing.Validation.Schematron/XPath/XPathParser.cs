@@ -92,7 +92,7 @@ internal sealed class XPathParser
     /// </summary>
     private XPathNode ParseComparison()
     {
-        XPathNode left = ParseAdditive();
+        XPathNode left = ParseRange();
 
         while (true)
         {
@@ -109,8 +109,25 @@ internal sealed class XPathParser
             }
 
             _position++;
-            left = new BinaryNode(op, left, ParseAdditive());
+            left = new BinaryNode(op, left, ParseRange());
         }
+    }
+
+    /// <summary>
+    /// The range operator, <c>0 to $length - 1</c>. The Peppol rule sets use it to walk the digits of an
+    /// identifier while checking it.
+    /// </summary>
+    private XPathNode ParseRange()
+    {
+        XPathNode left = ParseAdditive();
+
+        if (!Current.IsName("to"))
+        {
+            return left;
+        }
+
+        _position++;
+        return new BinaryNode("to", left, ParseAdditive());
     }
 
     /// <summary>
@@ -138,7 +155,11 @@ internal sealed class XPathParser
                 _position++;
             }
 
-            operand = new FunctionNode(castable ? "castable-as" : type, [operand]);
+            // The target type matters: "castable as xs:date" asks a different question from
+            // "castable as xs:decimal", and Peppol checks both.
+            operand = castable
+                ? new FunctionNode("castable-as", [operand, new LiteralNode(XPathValue.Text(type))])
+                : new FunctionNode(type, [operand]);
         }
 
         return operand;

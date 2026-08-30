@@ -116,8 +116,27 @@ internal sealed class XPathEvaluator(
         return node.Operator switch
         {
             "+" or "-" or "*" or "div" or "idiv" or "mod" => Arithmetic(node.Operator, left, right),
+            "to" => Range(left, right),
             _ => XPathValue.Boolean(Compare(node.Operator, left, right)),
         };
+    }
+
+    /// <summary>Every whole number from one bound to the other, as XPath's <c>to</c> produces it.</summary>
+    private static XPathValue Range(XPathValue left, XPathValue right)
+    {
+        if (left.AsNumber() is not { } first || right.AsNumber() is not { } last)
+        {
+            return XPathValue.Empty;
+        }
+
+        var items = new List<object>();
+
+        for (decimal value = Math.Truncate(first); value <= Math.Truncate(last); value++)
+        {
+            items.Add(value);
+        }
+
+        return XPathValue.Nodes(items);
     }
 
     private static XPathValue Arithmetic(string op, XPathValue left, XPathValue right)
@@ -554,7 +573,9 @@ internal sealed class XPathEvaluator(
             "string" or "xs:string" => XPathValue.Text(First().AsText()),
             "number" or "xs:decimal" or "xs:double" or "xs:integer" or "xs:float" =>
                 First().AsNumber() is { } value ? XPathValue.Number(value) : XPathValue.Empty,
-            "castable-as" => XPathValue.Boolean(First().AsNumber() is not null),
+            "castable-as" => XPathValue.Boolean(IsCastable(
+                First(),
+                arguments.Count > 1 ? arguments[1].AsText() : "xs:decimal")),
             "xs:date" or "xs:dateTime" => XPathValue.Text(First().AsText()),
             "normalize-space" => XPathValue.Text(NormalizeSpace(First().AsText())),
             "upper-case" => XPathValue.Text(First().AsText().ToUpperInvariant()),
@@ -595,12 +616,34 @@ internal sealed class XPathEvaluator(
             "position" => XPathValue.Number(context.Position),
             "last" => XPathValue.Number(context.Size),
             "translate" => XPathValue.Text(Translate(arguments[0].AsText(), arguments[1].AsText(), arguments[2].AsText())),
+            "reverse" => XPathValue.Nodes([.. First().Items.Reverse()]),
             "string-to-codepoints" => XPathValue.Nodes(
                 [.. First().AsText().Select(character => (object)(decimal)character)]),
             "tokenize" => XPathValue.Nodes([.. Regex
                 .Split(arguments[0].AsText(), arguments[1].AsText(), RegexOptions.None, TimeSpan.FromSeconds(1))
                 .Cast<object>()]),
             _ => throw new XPathException($"Function '{node.Name}' is not supported."),
+        };
+    }
+
+    /// <summary>Whether a value could be cast to a type, which is a different question per type.</summary>
+    private static bool IsCastable(XPathValue value, string type)
+    {
+        if (value.IsEmpty)
+        {
+            return false;
+        }
+
+        string text = value.AsText().Trim();
+
+        return type switch
+        {
+            "xs:date" => DateOnly.TryParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _),
+            "xs:dateTime" => DateTime.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out _),
+            "xs:time" => TimeOnly.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out _),
+            "xs:integer" => long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out _),
+            "xs:string" => true,
+            _ => value.AsNumber() is not null,
         };
     }
 
@@ -690,19 +733,35 @@ internal sealed class XPathEvaluator(
         return index < 0 ? string.Empty : value[(index + separator.Length)..];
     }
 
+    /// <summary>
+    /// XPath's <c>substring</c>: the characters whose one-based position falls in the window that starts at
+    /// <c>start</c> and runs for <c>length</c>.
+    /// </summary>
+    /// <remarks>
+    /// The window, not an offset and a count: a start below one shortens what the length reaches, which is
+    /// how <c>substring($value, 0, $n)</c> takes the first <c>n - 1</c> characters. The Peppol check-digit
+    /// functions are written that way.
+    /// </remarks>
     private static string Substring(List<XPathValue> arguments)
     {
         string text = arguments[0].AsText();
-        int start = (int)Math.Round(arguments[1].AsNumber() ?? 1, MidpointRounding.AwayFromZero) - 1;
-        start = Math.Clamp(start, 0, text.Length);
+        decimal start = Math.Round(arguments[1].AsNumber() ?? 1, MidpointRounding.AwayFromZero);
+        decimal end = arguments.Count < 3
+            ? decimal.MaxValue
+            : start + Math.Round(arguments[2].AsNumber() ?? 0, MidpointRounding.AwayFromZero);
 
-        if (arguments.Count < 3)
+        var result = new System.Text.StringBuilder(text.Length);
+
+        for (int index = 0; index < text.Length; index++)
         {
-            return text[start..];
+            decimal position = index + 1;
+
+            if (position >= start && position < end)
+            {
+                result.Append(text[index]);
+            }
         }
 
-        int length = (int)Math.Round(arguments[2].AsNumber() ?? 0, MidpointRounding.AwayFromZero);
-        length = Math.Clamp(length, 0, text.Length - start);
-        return text.Substring(start, length);
+        return result.ToString();
     }
 }

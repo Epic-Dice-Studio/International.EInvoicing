@@ -7,6 +7,9 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- Peppol BIS Billing 3.0 validation, measured against Peppol's own unit corpus: 227 of 227 UBL cases and
+  127 of 127 CII cases agree with the published expected results. The artefacts declare no licence and are
+  not shipped — `build/fetch-specs.sh peppol` fetches them, and they load like any other rule set.
 - French e-reporting — *flux 10*: the transactions and payments transmissions, with a model, a reader, a
   writer and builders that add the totals up from the VAT split rather than asking for them twice. Measured
   against the DGFiP's published flux 10 rules, which is the only measurement available since no sample
@@ -31,6 +34,10 @@ All notable changes to this project are documented here. The format follows
 - A Schematron rule context is a match pattern, not a path from the document root. Reading it as a path
   silently matched nothing for every relative context, leaving rules such as BR-29, BR-30, BR-CL-13 and the
   whole French lifecycle set dormant.
+- The XPath range operator (`0 to $n`), `reverse`, and `xsl:choose` in a rule set's own functions.
+- `castable as` now asks about the type it was given rather than always about a number, and `substring` is
+  the window XPath defines rather than an offset and a count — `substring($v, 0, $n)` takes the first
+  `n - 1` characters, which is how the Peppol check-digit functions are written.
 - Ordering comparisons on dates (`xs:date(a) >= xs:date(b)`), the `text()` node test, and the `replace`,
   `translate`, `xs:string` and `string-to-codepoints` functions, all of which the published rule sets use.
 - A validation message now names the rule that failed even when the rule set puts its code in the message
