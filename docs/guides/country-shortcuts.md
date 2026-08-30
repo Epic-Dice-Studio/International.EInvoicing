@@ -15,6 +15,8 @@ Three types hold that knowledge for you:
 | `NorwegianEInvoicing` | `International.EInvoicing.Countries.Norway` |
 | `SwedishEInvoicing` | `International.EInvoicing.Countries.Sweden` |
 | `DanishEInvoicing` | `International.EInvoicing.Countries.Denmark` |
+| `DutchEInvoicing` | `International.EInvoicing.Countries.Netherlands` |
+| `IcelandicEInvoicing` | `International.EInvoicing.Countries.Iceland` |
 
 None of them is a wall. Each exposes `.Library`, the fully assembled `EInvoicing` underneath, so anything the
 shortcut does not cover is one property away.
@@ -189,6 +191,35 @@ between two Danish parties by `DK-R-005`, a fatal rule:
 invoice.Payment!.MeansTypeCode = DkPaymentMeans.SepaCreditTransfer;   // 58; DkPaymentMeans.All has the rest
 ```
 
+## The Netherlands and Iceland
+
+Same shape again, and each has one national rule that rejects an otherwise perfect invoice — which is the
+whole reason these two shortcuts exist rather than a line of documentation.
+
+**The Netherlands.** `NL-R-003` and `NL-R-005` are fatal: when the supplier is Dutch, *both* parties' legal
+entity identifiers must carry scheme `0106` (KvK) or `0190` (OIN).
+
+```csharp
+DutchEInvoicing nederland = DutchEInvoicing.Create();
+
+nederland.Invoice()
+    .From(seller => nederland.Describe(seller, "12345678", "Leverancier BV"))                    // KvK
+    .To(buyer => nederland.Describe(buyer, "00000001234567890000", NlLegalIdentifier.Oin, "Ministerie"));
+```
+
+**Iceland.** `IS-R-002` and `IS-R-004` say the same thing about scheme `0196`, the kennitala — whose check
+digit `Describe` verifies before writing it.
+
+```csharp
+IcelandicEInvoicing island = IcelandicEInvoicing.Create();
+
+island.Invoice().From(seller => island.Describe(seller, "120000-0350", "Seljandi ehf"));
+```
+
+NLCIUS is deliberately absent from the Dutch package: its published specification identifier is not in any
+artefact this repository holds, and guessing one is how a library starts rejecting valid documents. Register
+it yourself and it wins.
+
 ## Wiring one into a container
 
 `Create(configure)` takes the same builder the general library takes, so anything you would have registered
@@ -202,6 +233,6 @@ builder.Services.AddSingleton(provider =>
 
 ## Somewhere else?
 
-Only these six countries have a shortcut today. Every other country is reachable through the general
+Only these eight countries have a shortcut today. Every other country is reachable through the general
 library — a profile, a rule set fetched from its publisher, and the identifiers it needs. What is planned,
 country by country and in what order, is in the [roadmap](../roadmap.md).

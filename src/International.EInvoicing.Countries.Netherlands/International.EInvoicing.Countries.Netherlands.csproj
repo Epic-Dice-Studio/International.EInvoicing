@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Netherlands</PackageId>
+    <Description>
+      What Dutch electronic invoicing adds on top of the norms: the Peppol BIS profile, and the KvK and OIN
+      legal entity identifiers the Dutch rules require on both parties.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;netherlands;nederland;peppol;nlcius;kvk;oin;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

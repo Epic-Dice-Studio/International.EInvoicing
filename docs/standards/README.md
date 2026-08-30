@@ -18,6 +18,8 @@ format is a matter of following the page rather than rediscovering the norm.
 | [country-no.md](country-no.md) | Norway: EHF 3.0, the organisation number, the rules inside Peppol. |
 | [country-se.md](country-se.md) | Sweden: Peppol BIS, the organisation number, Bankgiro and Plusgiro. |
 | [country-dk.md](country-dk.md) | Denmark: NemHandel, the CVR number, the payment means Denmark refuses. |
+| [country-nl.md](country-nl.md) | Netherlands: Peppol BIS, the KvK/OIN scheme its rules demand, why NLCIUS is absent. |
+| [country-is.md](country-is.md) | Iceland: Peppol BIS, the kennitala, the scheme its rules look in. |
 
 Before a standard is declared done, its page should also record what [prior art](../prior-art.md) revealed:
 mature implementations have already met the documents that break new ones.

@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Netherlands and Iceland**, each for one fatal national rule that rejects an otherwise perfect
+  invoice: `NL-R-003` and `NL-R-005` require a KvK or OIN scheme on both parties' legal entity identifiers,
+  and `IS-R-002` and `IS-R-004` require scheme 0196 on the kennitala. `DutchEInvoicing` and
+  `IcelandicEInvoicing` put them where the rules look, and a test strips the scheme back out of a document
+  the library wrote to confirm those really are the rules that reject it. NLCIUS is deliberately not carried
+  — its published specification identifier is not in any artefact this repository holds.
 - **Norway, Sweden and Denmark.** Three more country packages, each with the shortcut object its neighbours
   have: `NorwegianEInvoicing` declaring EHF 3.0, `SwedishEInvoicing` and `DanishEInvoicing` declaring Peppol
   BIS Billing, each in its own currency and with the business process the network requires. Their national

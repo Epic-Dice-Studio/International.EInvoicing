@@ -9,6 +9,8 @@
     <Project Path="src/International.EInvoicing.Countries.Norway/International.EInvoicing.Countries.Norway.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Sweden/International.EInvoicing.Countries.Sweden.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Denmark/International.EInvoicing.Countries.Denmark.csproj" />
+    <Project Path="src/International.EInvoicing.Countries.Netherlands/International.EInvoicing.Countries.Netherlands.csproj" />
+    <Project Path="src/International.EInvoicing.Countries.Iceland/International.EInvoicing.Countries.Iceland.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
     <Project Path="src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
@@ -31,6 +33,8 @@
     <Project Path="tests/International.EInvoicing.Countries.Norway.Tests/International.EInvoicing.Countries.Norway.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Sweden.Tests/International.EInvoicing.Countries.Sweden.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Denmark.Tests/International.EInvoicing.Countries.Denmark.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Countries.Netherlands.Tests/International.EInvoicing.Countries.Netherlands.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Countries.Iceland.Tests/International.EInvoicing.Countries.Iceland.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Belgium.Tests/International.EInvoicing.Countries.Belgium.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.France.Tests/International.EInvoicing.Countries.France.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Germany.Tests/International.EInvoicing.Countries.Germany.Tests.csproj" />

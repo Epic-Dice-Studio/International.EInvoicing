@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Iceland</PackageId>
+    <Description>
+      What Icelandic electronic invoicing adds on top of the norms: the Peppol BIS profile, and the kennitala
+      the Icelandic rules require on both parties.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;iceland;island;peppol;kennitala;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

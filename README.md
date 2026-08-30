@@ -145,6 +145,8 @@ validation is never presented as a success.
 | Norway — EHF 3.0, organisasjonsnummer <sub>EHF 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Norway` |
 | Sweden — Peppol BIS, organisationsnummer <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Sweden` |
 | Denmark — Peppol BIS, CVR, allowed payment means <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Denmark` |
+| Netherlands — Peppol BIS, KvK and OIN <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Netherlands` |
+| Iceland — Peppol BIS, kennitala <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Iceland` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
 > **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build.
@@ -164,6 +166,10 @@ validation is never presented as a success.
 > **Sweden — Peppol BIS, organisationsnummer** — Peppol BIS Billing, and the organisation number whose Luhn check is measured against the rule Peppol publishes for scheme 0007. The Swedish rules travel inside the Peppol rule set.
 
 > **Denmark — Peppol BIS, CVR, allowed payment means** — Peppol BIS Billing over NemHandel, the CVR number in the schemes Peppol reserves for it, and the payment means codes DK-R-005 allows — code 30 is valid EN 16931 and refused in Denmark. OIOUBL and NemHandel BIS 4 are not carried; see the roadmap.
+
+> **Netherlands — Peppol BIS, KvK and OIN** — Peppol BIS Billing, and the legal entity identifier NL-R-003 and NL-R-005 reject an invoice for omitting — scheme 0106 or 0190 on both parties. NLCIUS is not carried: its published identifier is not in any artefact this repository holds.
+
+> **Iceland — Peppol BIS, kennitala** — Peppol BIS Billing, and the kennitala with its modulo 11 check, written where IS-R-002 and IS-R-004 look for it.
 
 > **Rest of the world** — Some fifty countries, catalogued in the roadmap below by what each would cost to add: a rule set and an identifier for the Peppol ones, a reader and a writer for the national formats, a different document entirely for the clearance countries.
 

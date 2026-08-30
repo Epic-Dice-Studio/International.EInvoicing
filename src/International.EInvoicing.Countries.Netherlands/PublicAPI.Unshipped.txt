@@ -1,0 +1,32 @@
+#nullable enable
+const International.EInvoicing.Countries.Netherlands.Identifiers.NlLegalIdentifier.Kvk = "0106" -> string!
+const International.EInvoicing.Countries.Netherlands.Identifiers.NlLegalIdentifier.Oin = "0190" -> string!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.CreditNote(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Describe(International.EInvoicing.Building.PartyBuilder! party, string! identifier, string! scheme, string! name) -> International.EInvoicing.Building.PartyBuilder!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Describe(International.EInvoicing.Building.PartyBuilder! party, string! kvkNumber, string! name) -> International.EInvoicing.Building.PartyBuilder!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
+International.EInvoicing.Countries.Netherlands.Identifiers.NlLegalIdentifier
+International.EInvoicing.Countries.Netherlands.NetherlandsServiceCollectionExtensions
+International.EInvoicing.Countries.Netherlands.NlProfiles
+static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Create() -> International.EInvoicing.Countries.Netherlands.DutchEInvoicing!
+static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Netherlands.DutchEInvoicing!
+static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Netherlands.DutchEInvoicing!
+static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Netherlands.DutchEInvoicing!
+static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Netherlands.DutchEInvoicing!
+static International.EInvoicing.Countries.Netherlands.Identifiers.NlLegalIdentifier.IsAccepted(string? scheme) -> bool
+static International.EInvoicing.Countries.Netherlands.NetherlandsServiceCollectionExtensions.AddNetherlands(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Netherlands.NlProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Netherlands.NlProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Netherlands.NlProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
