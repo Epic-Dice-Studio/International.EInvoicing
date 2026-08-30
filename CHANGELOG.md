@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **One country, one object.** `FrenchEInvoicing`, `GermanEInvoicing` and `BelgianEInvoicing` hold what
+  their country expects, so a caller who invoices in one place does not have to learn which profile, which
+  business process and which rule sets that place wants. France reads all four of its documents through one
+  call — invoice, credit note, lifecycle status and the namespace-less *flux 10* report — and says which
+  arrived. Germany parses the Leitweg-ID before writing it, so a routing identifier that would be rejected on
+  arrival is rejected at the source. Belgium checks the KBO/BCE number modulo 97 and writes it in the scheme
+  Peppol reserves for it. Each exposes `.Library`, so the shortcut is a shortcut and not a fence.
 - **Developer experience.** One vocabulary for assembling the library, whether or not there is a container:
   `services.AddEInvoicing(e => e.AddDefaults().AddFrance())` and `EInvoicing.Create(e => e.AddDefaults())`
   take the same calls. Each package method now registers what it needs, so there is no second list of

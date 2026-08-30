@@ -10,6 +10,7 @@ the [runnable sample](../../samples/README.md) — `dotnet run --project samples
 | | |
 |---|---|
 | [Getting started](getting-started.md) | Install, read, write, check — in one page |
+| [One country, one object](country-shortcuts.md) | France, Germany, Belgium — one type each, everything that country needs |
 | [Reading a document](reading.md) | Hand over a stream, get back an invoice, credit note or lifecycle status |
 | [Writing a document](writing.md) | Builders, credit notes, hybrid Factur-X, anything the norm has no field for |
 | [Lifecycle statuses](lifecycle.md) | Every French status, and how sending to a partner differs from the public portal |

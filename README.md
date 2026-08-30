@@ -34,6 +34,22 @@ EInvoice invoice = EInvoiceBuilder.Create(KnownProfiles.En16931Ubl)
 einvoicing.Validate(einvoicing.Write(invoice)).EnsureConforming();
 ```
 
+Invoicing in one country only? There is a shorter way in — one type that already knows what that country
+expects:
+
+```csharp
+FrenchEInvoicing france = FrenchEInvoicing.Create();
+
+// France exchanges four documents on one channel. This tells you which one arrived.
+FrenchDocument document = france.ReadFile(path);        // Invoice, CreditNote, LifecycleStatus, EReport
+
+GermanEInvoicing germany = GermanEInvoicing.Create();
+germany.InvoiceToPublicBody("04011000-1234512345-06");  // XRechnung, Leitweg-ID checked before it is written
+
+BelgianEInvoicing belgium = BelgianEInvoicing.Create();
+belgium.Invoice().From(seller => belgium.Describe(seller, "0776.914.174", "Epic Dice Studio BV"));
+```
+
 Start with [getting started](docs/guides/getting-started.md), or run the sample and watch every feature go
 past:
 

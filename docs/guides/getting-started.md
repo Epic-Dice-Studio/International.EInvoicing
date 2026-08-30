@@ -16,6 +16,10 @@ For hybrid PDFs, add the PDF half. It is separate so the choice of PDF library s
 dotnet add package International.EInvoicing.FacturX.PdfSharp
 ```
 
+**Invoicing in one country only?** There is a shorter way in: `FrenchEInvoicing`, `GermanEInvoicing` and
+`BelgianEInvoicing` each know the profile, the business process and the rule sets their country expects —
+see [one country, one object](country-shortcuts.md). Everything below still applies; they are built on it.
+
 ## Read something
 
 ```csharp
@@ -177,6 +181,7 @@ PDF, and reports French lifecycle statuses and e-reporting. See
 
 | | |
 |---|---|
+| [One country, one object](country-shortcuts.md) | France, Germany or Belgium, without assembling anything |
 | [Reading a document](reading.md) | Streams, detection, diagnostics, limits |
 | [Writing a document](writing.md) | Builders, credit notes, hybrid PDFs, extensions |
 | [Lifecycle statuses](lifecycle.md) | French statuses, partner against public portal |

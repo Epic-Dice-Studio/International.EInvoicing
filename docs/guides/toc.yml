@@ -2,6 +2,8 @@
   href: README.md
 - name: Getting started
   href: getting-started.md
+- name: One country, one object
+  href: country-shortcuts.md
 - name: E-reporting (France)
   href: e-reporting.md
 - name: National identifiers
