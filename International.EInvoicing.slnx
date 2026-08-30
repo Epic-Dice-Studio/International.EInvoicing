@@ -6,7 +6,9 @@
     <Project Path="src/International.EInvoicing.Cdar/International.EInvoicing.Cdar.csproj" />
     <Project Path="src/International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
     <Project Path="src/International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+    <Project Path="src/International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
     <Project Path="src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
+    <Project Path="src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
     <Project Path="src/International.EInvoicing.FacturX.PdfSharp/International.EInvoicing.FacturX.PdfSharp.csproj" />
     <Project Path="src/International.EInvoicing.FacturX/International.EInvoicing.FacturX.csproj" />
     <Project Path="src/International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
@@ -18,7 +20,9 @@
     <Project Path="tests/International.EInvoicing.Cdar.Tests/International.EInvoicing.Cdar.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Cii.Tests/International.EInvoicing.Cii.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Core.Tests/International.EInvoicing.Core.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Countries.Belgium.Tests/International.EInvoicing.Countries.Belgium.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.France.Tests/International.EInvoicing.Countries.France.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Countries.Germany.Tests/International.EInvoicing.Countries.Germany.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.FacturX.Tests/International.EInvoicing.FacturX.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Tests/International.EInvoicing.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Ubl.Tests/International.EInvoicing.Ubl.Tests.csproj" />

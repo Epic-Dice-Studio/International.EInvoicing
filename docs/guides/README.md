@@ -14,6 +14,7 @@ Task-oriented documentation: each page answers "how do I…" for a real situatio
 | [Lifecycle statuses](lifecycle.md) | Every French status, and how sending to a partner differs from the public portal |
 | [Validation](validation.md) | What ran, what failed, and your own rule sets |
 | [Raw values](raw-values.md) | The text and attributes behind any field |
+| [National identifiers](identifiers.md) | SIREN, SIRET, VAT, Leitweg-ID, KBO/BCE, structured communication |
 
 ## Going further
 

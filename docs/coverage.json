@@ -121,9 +121,10 @@
           "name": "France — legal identifiers (SIREN, SIRET, VAT)",
           "version": "—",
           "package": "International.EInvoicing.Countries.France",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "SIREN, SIRET and VAT numbers with their check digits, including the La Poste establishments that satisfy a different rule from Luhn."
         },
         {
           "name": "France — e-reporting",
@@ -138,17 +139,19 @@
           "name": "Germany — XRechnung, ZUGFeRD, Leitweg-ID",
           "version": "XRechnung 3.x",
           "package": "International.EInvoicing.Countries.Germany",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "done",
+          "validate": "planned",
+          "notes": "XRechnung profiles registered for both syntaxes, and the Leitweg-ID with its ISO 7064 check digit, tested against the published example and the official test suite. XRechnung rule sets are not embedded yet."
         },
         {
           "name": "Belgium — Peppol BIS, KBO/BCE, structured communication",
           "version": "BIS 3.0",
           "package": "International.EInvoicing.Countries.Belgium",
-          "read": "planned",
-          "write": "planned",
-          "validate": "planned"
+          "read": "done",
+          "write": "done",
+          "validate": "planned",
+          "notes": "The Peppol BIS profiles the mandate is built on, the KBO/BCE enterprise number and the structured communication. Peppol validation artefacts are not redistributable; fetch them locally."
         },
         {
           "name": "Rest of the world",

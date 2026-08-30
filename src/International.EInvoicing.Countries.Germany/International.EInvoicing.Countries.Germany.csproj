@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Germany</PackageId>
+    <Description>
+      What German electronic invoicing adds on top of the norms: the XRechnung profiles for both syntaxes,
+      and the Leitweg-ID with its check digit.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;germany;xrechnung;zugferd;leitweg;erechnung;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+  </ItemGroup>
+
+</Project>

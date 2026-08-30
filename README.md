@@ -99,15 +99,21 @@ validation is never presented as a success.
 |---|---|---|---|---|
 | France — invoicing (CIUS FR, Factur-X) <sub>DSE 3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.France` |
 | France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.France` |
-| France — legal identifiers (SIREN, SIRET, VAT) | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.France` |
+| France — legal identifiers (SIREN, SIRET, VAT) | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — e-reporting <sub>DSE 3.x</sub> | 🔬 | 🔬 | 🔬 | — |
-| Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Germany` |
-| Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | 📋 | 📋 | 📋 | `International.EInvoicing.Countries.Belgium` |
+| Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.Germany` |
+| Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.Belgium` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
 > **France — lifecycle statuses (CDAR)** — Both profiles - to a partner and to the public portal - with a builder where naming a status fills in the codes it implies. Seven statuses carry codes read from the DGFiP sample messages; the other four follow the pattern those establish and say so.
 
+> **France — legal identifiers (SIREN, SIRET, VAT)** — SIREN, SIRET and VAT numbers with their check digits, including the La Poste establishments that satisfy a different rule from Luhn.
+
 > **France — e-reporting** — Deferred past 1.0; specification still moving.
+
+> **Germany — XRechnung, ZUGFeRD, Leitweg-ID** — XRechnung profiles registered for both syntaxes, and the Leitweg-ID with its ISO 7064 check digit, tested against the published example and the official test suite. XRechnung rule sets are not embedded yet.
+
+> **Belgium — Peppol BIS, KBO/BCE, structured communication** — The Peppol BIS profiles the mandate is built on, the KBO/BCE enterprise number and the structured communication. Peppol validation artefacts are not redistributable; fetch them locally.
 
 > **Rest of the world** — See the roadmap below.
 

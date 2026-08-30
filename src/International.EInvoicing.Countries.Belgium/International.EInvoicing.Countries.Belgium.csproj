@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Belgium</PackageId>
+    <Description>
+      What Belgian electronic invoicing adds on top of the norms: the Peppol BIS profile the 2026 mandate is
+      built on, the KBO/BCE enterprise number, and the structured payment communication.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;belgium;peppol;kbo;bce;mercurius;facturation;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+  </ItemGroup>
+
+</Project>

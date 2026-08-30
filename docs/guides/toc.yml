@@ -2,6 +2,8 @@
   href: README.md
 - name: Getting started
   href: getting-started.md
+- name: National identifiers
+  href: identifiers.md
 - name: Lifecycle statuses
   href: lifecycle.md
 - name: Reading the raw value behind a field
