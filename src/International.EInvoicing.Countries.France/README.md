@@ -17,4 +17,18 @@ LifecycleStatusMessage refused = FrCdar
 Sending to a partner and sending to the public portal are **different profiles**, not variants of one, so
 they are different entry points: `FrCdar.ToPartner(...)` and `FrCdar.ToPublicPortal(...)`.
 
+And the **e-reporting** transmission — *flux 10* — that the reform asks for alongside invoicing: sales to
+consumers, transactions with parties abroad, and when the money arrived.
+
+```csharp
+FrEReport report = FrEReporting
+    .Transactions(new DateOnly(2026, 9, 1), new DateOnly(2026, 9, 30))
+    .From("0003", "PA-E Vendeur")
+    .For("100000009", "VENDEUR")
+    .Day(new DateOnly(2026, 9, 1), FrEReportCodes.RetailTransactions, split => split
+        .At(20m, 1000m)
+        .At(5.5m, 200m))
+    .Build();
+```
+
 Full documentation: <https://github.com/Epic-Dice-Studio/International.EInvoicing>

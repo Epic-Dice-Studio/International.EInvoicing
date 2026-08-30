@@ -594,6 +594,7 @@ internal sealed class XPathEvaluator(
             "namespace-uri" => XPathValue.Text(NameOf(FirstItem(First()))?.NamespaceName ?? string.Empty),
             "position" => XPathValue.Number(context.Position),
             "last" => XPathValue.Number(context.Size),
+            "translate" => XPathValue.Text(Translate(arguments[0].AsText(), arguments[1].AsText(), arguments[2].AsText())),
             "string-to-codepoints" => XPathValue.Nodes(
                 [.. First().AsText().Select(character => (object)(decimal)character)]),
             "tokenize" => XPathValue.Nodes([.. Regex
@@ -601,6 +602,31 @@ internal sealed class XPathEvaluator(
                 .Cast<object>()]),
             _ => throw new XPathException($"Function '{node.Name}' is not supported."),
         };
+    }
+
+    /// <summary>
+    /// XPath's <c>translate</c>: each character of <paramref name="from"/> is replaced by the one at the same
+    /// position in <paramref name="to"/>, or dropped when there is none.
+    /// </summary>
+    private static string Translate(string value, string from, string to)
+    {
+        var result = new System.Text.StringBuilder(value.Length);
+
+        foreach (char character in value)
+        {
+            int index = from.IndexOf(character, StringComparison.Ordinal);
+
+            if (index < 0)
+            {
+                result.Append(character);
+            }
+            else if (index < to.Length)
+            {
+                result.Append(to[index]);
+            }
+        }
+
+        return result.ToString();
     }
 
     private static object FirstItem(XPathValue value)

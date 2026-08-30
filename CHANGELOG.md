@@ -7,6 +7,10 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Added
+- French e-reporting — *flux 10*: the transactions and payments transmissions, with a model, a reader, a
+  writer and builders that add the totals up from the VAT split rather than asking for them twice. Measured
+  against the DGFiP's published flux 10 rules, which is the only measurement available since no sample
+  transmissions are published.
 - French lifecycle statuses measured against the DGFiP's own rules: every status, to a trading partner and to
   the public portal, and the eleven published sample messages, checked on each build. The artefacts are
   fetched (`build/fetch-specs.sh france`), not redistributed.
@@ -28,4 +32,6 @@ All notable changes to this project are documented here. The format follows
   silently matched nothing for every relative context, leaving rules such as BR-29, BR-30, BR-CL-13 and the
   whole French lifecycle set dormant.
 - Ordering comparisons on dates (`xs:date(a) >= xs:date(b)`), the `text()` node test, and the `replace`,
-  `xs:string` and `string-to-codepoints` functions, all of which the published rule sets use.
+  `translate`, `xs:string` and `string-to-codepoints` functions, all of which the published rule sets use.
+- A validation message now names the rule that failed even when the rule set puts its code in the message
+  rather than in an attribute, as the French e-reporting artefacts do.

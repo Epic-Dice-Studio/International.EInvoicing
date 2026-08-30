@@ -102,7 +102,7 @@ validation is never presented as a success.
 | France — invoicing (CIUS FR, Factur-X) <sub>DSE 3.x</sub> | 🚧 | 🚧 | 🚧 | `International.EInvoicing.Countries.France` |
 | France — lifecycle statuses (CDAR) <sub>DSE 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — legal identifiers (SIREN, SIRET, VAT) | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
-| France — e-reporting <sub>DSE 3.x</sub> | 🔬 | 🔬 | 🔬 | — |
+| France — e-reporting (flux 10) <sub>PPF flux 10 v1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
 | Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.Countries.Belgium` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
@@ -113,7 +113,7 @@ validation is never presented as a success.
 
 > **France — legal identifiers (SIREN, SIRET, VAT)** — SIREN, SIRET and VAT numbers with their check digits, including the La Poste establishments that satisfy a different rule from Luhn.
 
-> **France — e-reporting** — Deferred past 1.0; specification still moving.
+> **France — e-reporting (flux 10)** — The transactions and payments transmissions, built, written and read back. The DGFiP publishes no sample transmissions, so what is measured is that every document this library builds satisfies the published flux 10 rules.
 
 > **Germany — XRechnung, ZUGFeRD, Leitweg-ID** — XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite.
 

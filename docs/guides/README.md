@@ -12,6 +12,7 @@ Task-oriented documentation: each page answers "how do I…" for a real situatio
 | [Reading a document](reading.md) | Hand over a stream, get back an invoice, credit note or lifecycle status |
 | [Writing a document](writing.md) | Builders, credit notes, hybrid Factur-X, anything the norm has no field for |
 | [Lifecycle statuses](lifecycle.md) | Every French status, and how sending to a partner differs from the public portal |
+| [E-reporting](e-reporting.md) | The French flux 10 report: sales, transactions abroad, and when the money arrived |
 | [Validation](validation.md) | What ran, what failed, and your own rule sets |
 | [Raw values](raw-values.md) | The text and attributes behind any field |
 | [National identifiers](identifiers.md) | SIREN, SIRET, VAT, Leitweg-ID, KBO/BCE, structured communication |

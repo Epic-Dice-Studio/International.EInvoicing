@@ -22,6 +22,7 @@ XRECHNUNG_SCHEMATRON_REF="master"
 XRECHNUNG_TESTSUITE_REF="master"
 PHIVE_RULES_REF="master"
 FRENCH_RULES_VERSION="1.4.0.03"
+FRENCH_FLUX10_VERSION="1.0"
 
 log()  { printf '\033[1m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[33m!!\033[0m %s\n' "$*" >&2; }
@@ -89,8 +90,13 @@ fetch_france() {
     clone_at https://github.com/phax/phive-rules.git "$PHIVE_RULES_REF" "$src"
 
     local french="$src/phive-rules-france/src/test/resources/external"
-    rm -rf "$SPECS_DIR/fr-dse/rules" "$SPECS_DIR/fr-dse/samples"
-    sync_into "$french/rule-source/ctc/$FRENCH_RULES_VERSION" "$SPECS_DIR/fr-dse/rules"
+    rm -rf "$SPECS_DIR/fr-dse/rules" "$SPECS_DIR/fr-dse/samples" "$SPECS_DIR/fr-dse/schemas"
+    # Invoices and lifecycle messages.
+    sync_into "$french/rule-source/ctc/$FRENCH_RULES_VERSION" "$SPECS_DIR/fr-dse/rules/ctc"
+    # E-reporting, flux 10.
+    sync_into "$french/rule-source/flux10/$FRENCH_FLUX10_VERSION" "$SPECS_DIR/fr-dse/rules/flux10"
+    sync_into "$src/phive-rules-france/src/main/resources/external/schemas/flux10/$FRENCH_FLUX10_VERSION" \
+        "$SPECS_DIR/fr-dse/schemas/flux10"
     # The DGFiP lifecycle samples: what the CDAR rules are measured against.
     sync_into "$french/test-files/ctc/$FRENCH_RULES_VERSION" "$SPECS_DIR/fr-dse/samples"
 }

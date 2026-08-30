@@ -69,3 +69,4 @@ specs/peppol/rules/
 # French rule sets: published by the DGFiP, carried by a repository that declares no licence
 specs/fr-dse/rules/
 specs/fr-dse/samples/
+specs/fr-dse/schemas/

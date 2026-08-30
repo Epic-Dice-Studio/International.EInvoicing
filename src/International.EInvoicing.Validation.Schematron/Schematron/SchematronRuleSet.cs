@@ -180,7 +180,7 @@ public sealed class SchematronRuleSet
         string test = assertion.Attribute("test")?.Value
             ?? throw new XPathException("A Schematron assertion has no test.");
 
-        string identifier = assertion.Attribute("id")?.Value ?? "(unnamed)";
+        string identifier = assertion.Attribute("id")?.Value ?? CodeIn(assertion.Value) ?? "(unnamed)";
         string flag = assertion.Attribute("flag")?.Value ?? "fatal";
 
         RuleSeverity severity = flag.ToUpperInvariant() switch
@@ -196,6 +196,21 @@ public sealed class SchematronRuleSet
             NormalizeMessage(assertion.Value),
             severity,
             isReport);
+    }
+
+    /// <summary>
+    /// The rule code a message opens with, for rule sets that name their rules in the message rather than in
+    /// an attribute — the French e-reporting artefacts do, and a report saying "(unnamed)" helps nobody.
+    /// </summary>
+    private static string? CodeIn(string message)
+    {
+        System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(
+            message.TrimStart(),
+            @"^\[([^\]]{1,40})\]",
+            System.Text.RegularExpressions.RegexOptions.None,
+            TimeSpan.FromSeconds(1));
+
+        return match.Success ? match.Groups[1].Value : null;
     }
 
     private static XPathNode Parse(string expression)

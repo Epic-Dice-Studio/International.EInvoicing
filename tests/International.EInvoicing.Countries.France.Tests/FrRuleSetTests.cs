@@ -77,7 +77,7 @@ public class FrRuleSetTests
     public void NoRuleIsLeftUnevaluableOnARealDocument(string path)
     {
         Assert.SkipWhen(path.Length == 0, "The French artefacts are not present; run build/fetch-specs.sh france.");
-        Assert.SkipWhen(path.Contains("CDAR", StringComparison.Ordinal), "Covered by the lifecycle tests.");
+        Assert.SkipWhen(!IsInvoiceRuleSet(path), "Covered by the lifecycle and e-reporting tests.");
 
         SchematronRuleSet rules = SchematronRuleSet.Load(
             File.ReadAllText(path),
@@ -100,7 +100,7 @@ public class FrRuleSetTests
     public void EachInvoiceRuleSetRejectsAnInvoiceWithNoNumber(string path)
     {
         Assert.SkipWhen(path.Length == 0, "The French artefacts are not present; run build/fetch-specs.sh france.");
-        Assert.SkipWhen(path.Contains("CDAR", StringComparison.Ordinal), "Covered by the lifecycle tests.");
+        Assert.SkipWhen(!IsInvoiceRuleSet(path), "Covered by the lifecycle and e-reporting tests.");
 
         bool cii = path.Contains("CII", StringComparison.Ordinal);
 
@@ -147,6 +147,11 @@ public class FrRuleSetTests
         resolution.IsExact.ShouldBeTrue();
         resolution.Profile!.Name.ShouldBe("Extended CTC FR");
     }
+
+    /// <summary>The rule sets that apply to an invoice, as opposed to a lifecycle message or a report.</summary>
+    private static bool IsInvoiceRuleSet(string path) =>
+        !path.Contains("CDAR", StringComparison.Ordinal)
+        && !path.Contains("flux10", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Official EN 16931 example invoices, which every rule set here is meant to run against.</summary>
     private static IEnumerable<string> Examples(bool cii) =>

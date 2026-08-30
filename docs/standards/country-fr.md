@@ -22,7 +22,7 @@ of transactions and payment data.
 | French invoice profile (EXTENDED CTC FR) | `.Countries.France` | registered; rules run from the fetched artefacts |
 | CDAR lifecycle statuses, French profiling | `.Countries.France` | implemented, measured against the DGFiP rules |
 | SIREN / SIRET / VAT identifiers | `.Countries.France` | implemented |
-| E-reporting | — | researching, deferred past 1.0 |
+| E-reporting (flux 10) | `.Countries.France` | implemented, measured against the DGFiP rules |
 | Transmission to an approved platform | — | permanently out of scope |
 
 ## Official sources
@@ -49,7 +49,9 @@ That fills two folders, both ignored by git:
 
 | Folder | What it holds |
 |---|---|
-| `specs/fr-dse/rules/1.4.0.03/` | `BR-FR-CDV` (CDAR), `BR-FR-Flux2` and `EXTENDED-CTC-FR`, for UBL and CII |
+| `specs/fr-dse/rules/ctc/1.4.0.03/` | `BR-FR-CDV` (CDAR), `BR-FR-Flux2` and `EXTENDED-CTC-FR`, for UBL and CII |
+| `specs/fr-dse/rules/flux10/1.0/` | `PPF_Flux10`, the e-reporting rules |
+| `specs/fr-dse/schemas/flux10/1.0/` | The e-reporting XSDs |
 | `specs/fr-dse/samples/1.4.0.03/` | The eleven DGFiP lifecycle sample messages |
 
 They are then ordinary rule sets:
@@ -98,8 +100,10 @@ against them alone. Both syntaxes share the identifier — `FrProfiles.ExtendedC
 - **"Factur-X" is not one thing.** MINIMUM and BASIC WL are not complete EN 16931 invoices; their legal use is
   narrow. Selecting a profile is a business decision, so the library must never pick one silently.
 - **The specification is versioned and moving.** Record the version you implemented against in the tests.
-- **E-reporting is not invoicing.** It has its own documents, its own periodicity, and it is not covered here
-  yet — say so, rather than half-implementing it.
+- **E-reporting is not invoicing.** It has its own document — no XML namespace, its own codes, its own rules
+  — and its own periodicity. See the [e-reporting guide](../guides/e-reporting.md).
+- **The DGFiP publishes no sample transmissions for flux 10.** What can be measured is that the documents
+  this library builds satisfy the published rules, which is what the tests do.
 - **A collection status needs amounts.** Status 212 must carry at least one collected amount with its VAT
   rate; a message that only names the status is rejected.
 - **Refusal reasons are not one list.** Each status has its own, and the public-sector platform (`9999`)

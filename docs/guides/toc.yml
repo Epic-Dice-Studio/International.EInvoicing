@@ -2,6 +2,8 @@
   href: README.md
 - name: Getting started
   href: getting-started.md
+- name: E-reporting (France)
+  href: e-reporting.md
 - name: National identifiers
   href: identifiers.md
 - name: Lifecycle statuses
