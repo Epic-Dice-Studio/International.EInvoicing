@@ -17,6 +17,9 @@
     <Project Path="src/International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
     <Project Path="src/International.EInvoicing/International.EInvoicing.csproj" />
   </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/International.EInvoicing.Samples/International.EInvoicing.Samples.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/International.EInvoicing.Cdar.Tests/International.EInvoicing.Cdar.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Cii.Tests/International.EInvoicing.Cii.Tests.csproj" />

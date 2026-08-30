@@ -227,9 +227,11 @@ public sealed class UblInvoiceReader
             return null;
         }
 
+        // BT-28 is the name a party trades under; BT-27, its legal name, lives in the legal entity below.
         var party = new Party
         {
-            Name = values.ReadText(Descend(values, Descend(values, element, UblNames.Cac + "PartyName"), UblNames.Cbc + "Name")),
+            TradingName = values.ReadText(
+                Descend(values, Descend(values, element, UblNames.Cac + "PartyName"), UblNames.Cbc + "Name")),
             ElectronicAddress = values.ReadIdentifier(element.Element(UblNames.Cbc + "EndpointID")),
         };
 
@@ -243,11 +245,14 @@ public sealed class UblInvoiceReader
         {
             party.LegalRegistrationIdentifier = values.ReadIdentifier(legalEntity.Element(UblNames.Cbc + "CompanyID"));
             party.AdditionalLegalInformation = values.ReadText(legalEntity.Element(UblNames.Cbc + "CompanyLegalForm"));
+            party.Name = values.ReadText(legalEntity.Element(UblNames.Cbc + "RegistrationName"));
+        }
 
-            if (!party.Name.IsSet)
-            {
-                party.Name = values.ReadText(legalEntity.Element(UblNames.Cbc + "RegistrationName"));
-            }
+        // A document that gives only a trading name still has a party with a name. The trading name stays
+        // where it was, so writing the document back does not drop the element it came from.
+        if (!party.Name.IsSet)
+        {
+            party.Name = party.TradingName;
         }
 
         foreach (XElement taxScheme in DescendAll(values, element, UblNames.Cac + "PartyTaxScheme"))

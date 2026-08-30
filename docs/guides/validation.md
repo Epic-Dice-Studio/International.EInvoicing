@@ -182,3 +182,11 @@ this library has no typed support for. Look at both.
 - [Reading a document](reading.md)
 - [Adding or suppressing a rule](../recipes/add-a-rule.md)
 - [The diagnostic catalogue](../diagnostics/README.md)
+
+## Run it
+
+[`samples/International.EInvoicing.Samples/Chapters/NationalRuleSets.cs`](../../samples/International.EInvoicing.Samples/Chapters/NationalRuleSets.cs) is this page as code — rule sets shipped and fetched.
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```

@@ -159,6 +159,20 @@ one shipped. See the [recipes](../recipes/README.md).
 **Honest about its limits.** A profile with no rule set is reported as unchecked, never as passed
 ([validation](validation.md)).
 
+## See all of it at once
+
+Every page below has a chapter in the sample, which is part of the solution and therefore compiled on every
+push — an API that changes and a sample that stops building are the same event.
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```
+
+It builds an invoice that passes EN 16931, writes it in both syntaxes, reads it back, validates it, feeds
+itself documents it cannot fully read, registers a profile and a rule of its own, puts an invoice inside a
+PDF, and reports French lifecycle statuses and e-reporting. See
+[samples/README.md](../../samples/README.md) for the chapter list.
+
 ## Where to go next
 
 | | |
@@ -168,4 +182,5 @@ one shipped. See the [recipes](../recipes/README.md).
 | [Lifecycle statuses](lifecycle.md) | French statuses, partner against public portal |
 | [Validation](validation.md) | Rule sets, coverage, your own rules |
 | [Raw values](raw-values.md) | Reaching the text behind any field |
+| [The runnable sample](../../samples/README.md) | Every feature, one chapter at a time |
 | [Try it in the browser](https://epic-dice-studio.github.io/International.EInvoicing/demo/) | No install, nothing uploaded |

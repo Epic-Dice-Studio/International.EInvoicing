@@ -34,7 +34,12 @@ EInvoice invoice = EInvoiceBuilder.Create(KnownProfiles.En16931Ubl)
 einvoicing.Validate(einvoicing.Write(invoice)).EnsureConforming();
 ```
 
-Start with [getting started](docs/guides/getting-started.md).
+Start with [getting started](docs/guides/getting-started.md), or run the sample and watch every feature go
+past:
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```
 
 ---
 

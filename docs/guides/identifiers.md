@@ -85,3 +85,11 @@ against numbers this library made up. When a rule could not be verified, the cod
 - [Lifecycle statuses](lifecycle.md) — the French statuses
 - The country pages: [France](../standards/country-fr.md), [Germany](../standards/country-de.md),
   [Belgium](../standards/country-be.md)
+
+## Run it
+
+[`samples/International.EInvoicing.Samples/Chapters/NationalIdentifiers.cs`](../../samples/International.EInvoicing.Samples/Chapters/NationalIdentifiers.cs) is this page as code — the check digits, and what a typo does.
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```

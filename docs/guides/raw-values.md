@@ -70,3 +70,11 @@ A field you did not modify is written back from its raw text and original attrib
 is formatted according to the target profile. So a document you parse and re-emit without changes is
 equivalent to the original after canonicalisation — which is what makes it safe to pass invoices through your
 system without silently reformatting them.
+
+## Run it
+
+[`samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs`](../../samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs) is this page as code — a value kept as raw text because it could not be read.
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```

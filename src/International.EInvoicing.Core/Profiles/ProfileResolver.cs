@@ -19,6 +19,9 @@ public sealed class ProfileResolver : IProfileResolver
         _registry = registry;
     }
 
+    /// <summary>What this resolver knows about, for a caller asking what the library supports.</summary>
+    public IProfileRegistry Registry => _registry;
+
     /// <inheritdoc />
     public ProfileResolution Resolve(ProfileIdentifier declared, DocumentSyntax syntax)
     {

@@ -57,8 +57,10 @@ A pull request that adds parsing or generation is not complete until all five te
 4. **Rules** — one passing and one failing case per business rule implemented.
 5. **Diagnostics** — one test per diagnostic code the new code can emit.
 
-Plus: the entry in `docs/coverage.json` (then `dotnet run --project build/Tools -- coverage`), and the
-matching page in `docs/standards/`.
+Plus: the entry in `docs/coverage.json` (then `dotnet run --project build/Tools -- coverage`), the matching
+page in `docs/standards/`, and — when the feature is one a caller would reach for — a chapter in
+`samples/International.EInvoicing.Samples`. The sample is in the solution, so a stale one fails the build
+rather than quietly misleading someone.
 
 ## 5. Where to look before writing code
 

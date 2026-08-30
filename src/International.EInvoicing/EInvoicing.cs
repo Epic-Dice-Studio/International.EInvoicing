@@ -101,6 +101,12 @@ public sealed class EInvoicing
     /// <summary>How declared profiles are resolved, and what this instance implements.</summary>
     public IProfileResolver Profiles { get; }
 
+    /// <summary>
+    /// Every profile this instance knows, for a caller asking what it supports before handing it a document.
+    /// </summary>
+    public IReadOnlyCollection<Profile> KnownProfiles =>
+        Profiles is ProfileResolver resolver ? resolver.Registry.All : [];
+
     /// <summary>The rule sets this instance validates against, in the order they were added.</summary>
     public IReadOnlyList<IDocumentRuleSet> RuleSets => _ruleSets;
 

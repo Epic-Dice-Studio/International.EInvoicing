@@ -11,6 +11,7 @@ git clone https://github.com/Epic-Dice-Studio/International.EInvoicing
 cd International.EInvoicing
 dotnet build -c Release
 dotnet test  -c Release
+dotnet run --project samples/International.EInvoicing.Samples   # every feature, once, out loud
 ```
 
 Tests run on `net10.0` locally. CI additionally installs the .NET 8 runtime and runs
@@ -27,6 +28,9 @@ Tests run on `net10.0` locally. CI additionally installs the .NET 8 runtime and 
 - If you changed what the library supports, edit `docs/coverage.json` and run
   `dotnet run --project build/Tools -- coverage`. CI checks this too.
 - If you added a dependency, add an ADR under `docs/adr/` explaining why.
+- If you changed the public API, check that `samples/International.EInvoicing.Samples` still shows it well.
+  It is part of the solution, so CI already refuses a sample that stopped compiling — but a sample that
+  compiles and no longer demonstrates the feature is just as stale.
 
 ## Adding support for a standard, a country or a profile
 

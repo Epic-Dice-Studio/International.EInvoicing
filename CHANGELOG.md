@@ -54,6 +54,10 @@ All notable changes to this project are documented here. The format follows
   `IssuedBy*` methods.
 
 ### Fixed
+- UBL party names were mapped to the wrong business terms: the writer put BT-27, the legal name, into both
+  `cac:PartyName/cbc:Name` (BT-28, the trading name) and `cac:PartyLegalEntity/cbc:RegistrationName`, and the
+  reader then left the second unmapped — so a document round-tripped through this library gained two elements
+  of extension data and a diagnostic apiece. Found by writing the sample.
 - A control character in a caller's text no longer stops a document being written. XML cannot carry those
   characters at all, so they are dropped and everything else — accents, symbols, emoji — is written as it
   was. Found by reading what the neighbouring libraries have had to answer; see `docs/prior-art.md`.

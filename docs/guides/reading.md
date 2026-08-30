@@ -159,3 +159,11 @@ var reader = new UblInvoiceReader(options, profileResolver);
 - [Lifecycle statuses](lifecycle.md)
 - [Raw values](raw-values.md)
 - [Validation](validation.md)
+
+## Run it
+
+[`samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs`](../../samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs) is this page as code — reading, and what happens when a document fights back.
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```

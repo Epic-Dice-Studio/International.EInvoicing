@@ -160,3 +160,11 @@ published rules remain the authority.
 - [The France standards page](../standards/country-fr.md)
 - [Lifecycle statuses](lifecycle.md)
 - [Validating a document](validation.md)
+
+## Run it
+
+[`samples/International.EInvoicing.Samples/Chapters/FrenchEReporting.cs`](../../samples/International.EInvoicing.Samples/Chapters/FrenchEReporting.cs) is this page as code — transactions and payments, both flux.
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```

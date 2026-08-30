@@ -203,3 +203,11 @@ Descriptions and names come from accounting systems, and some of them carry cont
 escape for those, and writing one would fail with a message naming a hexadecimal value rather than a field.
 They are dropped when a document is written; accents, symbols and characters outside the basic plane are
 written exactly as given. `XmlCharacters.Sanitize` is the same helper, should your own writer need it.
+
+## Run it
+
+[`samples/International.EInvoicing.Samples/Chapters/Invoices.cs`](../../samples/International.EInvoicing.Samples/Chapters/Invoices.cs) is this page as code — building, writing and choosing a syntax.
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```

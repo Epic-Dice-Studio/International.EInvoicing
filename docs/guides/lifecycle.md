@@ -242,3 +242,11 @@ string xml = einvoicing.LifecycleWriter.WriteToString(message);
 - [Reading a document](reading.md)
 - [Writing a document](writing.md)
 - [The CDAR standard page](../standards/cdar.md), including where the structure was verified
+
+## Run it
+
+[`samples/International.EInvoicing.Samples/Chapters/FrenchLifecycle.cs`](../../samples/International.EInvoicing.Samples/Chapters/FrenchLifecycle.cs) is this page as code — every status, and the direction that decides who reports it.
+
+```bash
+dotnet run --project samples/International.EInvoicing.Samples
+```

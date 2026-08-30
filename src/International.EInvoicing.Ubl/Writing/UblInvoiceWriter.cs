@@ -220,10 +220,11 @@ public sealed class UblInvoiceWriter
             writer.WriteEndElement();
         }
 
-        if (party.Name.IsSet)
+        // BT-28: the name the party trades under, which is not necessarily its legal name below.
+        if (party.TradingName.IsSet)
         {
             StartCac(writer, "PartyName");
-            WriteText(writer, "Name", party.Name);
+            WriteText(writer, "Name", party.TradingName);
             writer.WriteEndElement();
         }
 

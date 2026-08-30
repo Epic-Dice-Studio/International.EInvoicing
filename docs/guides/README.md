@@ -2,7 +2,8 @@
 
 Task-oriented documentation: each page answers "how do I…" for a real situation, with code you can compile.
 
-**New here? Start with [getting started](getting-started.md).**
+**New here? Start with [getting started](getting-started.md).** Every page below has a matching chapter in
+the [runnable sample](../../samples/README.md) — `dotnet run --project samples/International.EInvoicing.Samples`.
 
 ## The whole job
 
