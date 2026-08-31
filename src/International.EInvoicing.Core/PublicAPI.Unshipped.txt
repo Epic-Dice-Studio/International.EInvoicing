@@ -263,6 +263,8 @@ International.EInvoicing.Model.AllowanceCharge.VatCategoryCode.get -> Internatio
 International.EInvoicing.Model.AllowanceCharge.VatCategoryCode.set -> void
 International.EInvoicing.Model.AllowanceCharge.VatRate.get -> International.EInvoicing.Values.Field<decimal>
 International.EInvoicing.Model.AllowanceCharge.VatRate.set -> void
+International.EInvoicing.Model.AllowanceReasonCodes
+International.EInvoicing.Model.ChargeReasonCodes
 International.EInvoicing.Model.Contact
 International.EInvoicing.Model.Contact.Contact() -> void
 International.EInvoicing.Model.Contact.Email.get -> International.EInvoicing.Values.TextField
@@ -271,6 +273,7 @@ International.EInvoicing.Model.Contact.Name.get -> International.EInvoicing.Valu
 International.EInvoicing.Model.Contact.Name.set -> void
 International.EInvoicing.Model.Contact.Telephone.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.Contact.Telephone.set -> void
+International.EInvoicing.Model.CountryCodes
 International.EInvoicing.Model.CreditTransfer
 International.EInvoicing.Model.CreditTransfer.AccountIdentifier.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.CreditTransfer.AccountIdentifier.set -> void
@@ -279,6 +282,7 @@ International.EInvoicing.Model.CreditTransfer.AccountName.set -> void
 International.EInvoicing.Model.CreditTransfer.CreditTransfer() -> void
 International.EInvoicing.Model.CreditTransfer.ServiceProviderIdentifier.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.CreditTransfer.ServiceProviderIdentifier.set -> void
+International.EInvoicing.Model.CurrencyCodes
 International.EInvoicing.Model.DeliveryInformation
 International.EInvoicing.Model.DeliveryInformation.ActualDeliveryDate.get -> International.EInvoicing.Values.DateField
 International.EInvoicing.Model.DeliveryInformation.ActualDeliveryDate.set -> void
@@ -420,6 +424,7 @@ International.EInvoicing.Model.ExtensionElement.NamespaceUri.init -> void
 International.EInvoicing.Model.ExtensionElement.QualifiedName.get -> string!
 International.EInvoicing.Model.ExtensionElement.Xml.get -> string!
 International.EInvoicing.Model.ExtensionElement.Xml.init -> void
+International.EInvoicing.Model.IcdSchemeCodes
 International.EInvoicing.Model.InvoiceLine
 International.EInvoicing.Model.InvoiceLine.AllowancesAndCharges.get -> System.Collections.Generic.List<International.EInvoicing.Model.AllowanceCharge!>!
 International.EInvoicing.Model.InvoiceLine.BuyerAccountingReference.get -> International.EInvoicing.Values.TextField
@@ -475,6 +480,7 @@ International.EInvoicing.Model.Item.Characteristics.get -> System.Collections.Ge
 International.EInvoicing.Model.ItemCharacteristic.Value.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.ItemCharacteristic.Value.set -> void
 International.EInvoicing.Model.Item.ClassificationCodes.get -> System.Collections.Generic.List<International.EInvoicing.Values.CodeField>!
+International.EInvoicing.Model.ItemClassificationSchemeCodes
 International.EInvoicing.Model.Item.Description.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.Item.Description.set -> void
 International.EInvoicing.Model.Item.Item() -> void
@@ -568,6 +574,7 @@ International.EInvoicing.Model.VatBreakdownEntry.TaxAmount.get -> International.
 International.EInvoicing.Model.VatBreakdownEntry.TaxAmount.set -> void
 International.EInvoicing.Model.VatBreakdownEntry.VatBreakdownEntry() -> void
 International.EInvoicing.Model.VatCategoryCodes
+International.EInvoicing.Model.VatExemptionReasonCodes
 International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Profiles.DocumentSyntax.Deconstruct(out string! Name) -> void
 International.EInvoicing.Profiles.DocumentSyntax.DocumentSyntax(string! Name) -> void
@@ -1073,8 +1080,18 @@ static International.EInvoicing.Identifiers.CheckDigit.SatisfiesGs1(System.ReadO
 static International.EInvoicing.Identifiers.CheckDigit.SatisfiesIso7064Mod11To10(System.ReadOnlySpan<char> digits) -> bool
 static International.EInvoicing.Identifiers.CheckDigit.SatisfiesLuhn(System.ReadOnlySpan<char> digits) -> bool
 static International.EInvoicing.Identifiers.CheckDigit.SatisfiesMod11(System.ReadOnlySpan<char> digits, System.ReadOnlySpan<int> weights) -> bool
+static International.EInvoicing.Model.AllowanceReasonCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.AllowanceReasonCodes.IsKnown(string? code) -> bool
+static International.EInvoicing.Model.ChargeReasonCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.ChargeReasonCodes.IsKnown(string? code) -> bool
+static International.EInvoicing.Model.CountryCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.CountryCodes.IsKnown(string? code) -> bool
+static International.EInvoicing.Model.CurrencyCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.CurrencyCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.ExtensionElement.operator !=(International.EInvoicing.Model.ExtensionElement? left, International.EInvoicing.Model.ExtensionElement? right) -> bool
 static International.EInvoicing.Model.ExtensionElement.operator ==(International.EInvoicing.Model.ExtensionElement? left, International.EInvoicing.Model.ExtensionElement? right) -> bool
+static International.EInvoicing.Model.IcdSchemeCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.IcdSchemeCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.InvoiceNodes.Descendants(this International.EInvoicing.Model.EInvoice! invoice) -> System.Collections.Generic.IEnumerable<International.EInvoicing.Model.InvoiceNode!>!
 static International.EInvoicing.Model.InvoiceNodes.Extensions(this International.EInvoicing.Model.EInvoice! invoice) -> System.Collections.Generic.IEnumerable<International.EInvoicing.Model.ExtensionElement!>!
 static International.EInvoicing.Model.InvoiceTypeCodes.ForCreditNotes.get -> System.Collections.Generic.IReadOnlyList<string!>!
@@ -1082,11 +1099,15 @@ static International.EInvoicing.Model.InvoiceTypeCodes.ForInvoices.get -> System
 static International.EInvoicing.Model.InvoiceTypeCodes.IsCreditNote(string? typeCode) -> bool
 static International.EInvoicing.Model.InvoiceTypeCodes.IsInvoice(string? typeCode) -> bool
 static International.EInvoicing.Model.InvoiceTypeCodes.IsKnown(string? typeCode) -> bool
+static International.EInvoicing.Model.ItemClassificationSchemeCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.ItemClassificationSchemeCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.PaymentMeansCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.PaymentMeansCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.VatCategoryCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.VatCategoryCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.VatCategoryCodes.NeedsExemptionReason(string? code) -> bool
+static International.EInvoicing.Model.VatExemptionReasonCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.VatExemptionReasonCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Profiles.DocumentSyntax.Cdar.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Cii.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.operator !=(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool

@@ -40,6 +40,72 @@ public partial class CodeListTests
     public void ThePaymentMeansCodesAreTheOnesTheRuleTests() =>
         PaymentMeansCodes.All.ShouldBe(ListBefore("BR-CL-16"), ignoreOrder: false);
 
+    [Fact]
+    public void TheCurrencyCodesAreTheOnesTheRuleTests() =>
+        CurrencyCodes.All.ShouldBe(ListBefore("BR-CL-04"), ignoreOrder: false);
+
+    [Fact]
+    public void TheCountryCodesAreTheOnesTheRuleTests() =>
+        CountryCodes.All.ShouldBe(ListBefore("BR-CL-14"), ignoreOrder: false);
+
+    [Fact]
+    public void TheIcdSchemeCodesAreTheOnesTheRuleTests() =>
+        IcdSchemeCodes.All.ShouldBe(ListBefore("BR-CL-21"), ignoreOrder: false);
+
+    /// <summary>The same list judges four different identifiers, and drifting between them would be a defect.</summary>
+    [Theory]
+    [InlineData("BR-CL-10")]
+    [InlineData("BR-CL-11")]
+    [InlineData("BR-CL-26")]
+    public void AndTheSameOnesTheOtherIdentifierRulesTest(string ruleIdentifier) =>
+        IcdSchemeCodes.All.ShouldBe(ListBefore(ruleIdentifier), ignoreOrder: false);
+
+    [Fact]
+    public void TheItemClassificationSchemeCodesAreTheOnesTheRuleTests() =>
+        ItemClassificationSchemeCodes.All.ShouldBe(ListBefore("BR-CL-13"), ignoreOrder: false);
+
+    [Fact]
+    public void TheAllowanceAndChargeReasonCodesAreTheOnesTheRulesTest()
+    {
+        AllowanceReasonCodes.All.ShouldBe(ListBefore("BR-CL-19"), ignoreOrder: false);
+        ChargeReasonCodes.All.ShouldBe(ListBefore("BR-CL-20"), ignoreOrder: false);
+    }
+
+    [Fact]
+    public void TheVatExemptionReasonCodesAreTheOnesTheRuleTests() =>
+        VatExemptionReasonCodes.All.ShouldBe(ListBefore("BR-CL-22"), ignoreOrder: false);
+
+    /// <summary>
+    /// The two additions to ISO 3166-1 that a transcribed list would have missed.
+    /// </summary>
+    /// <remarks>
+    /// <c>XI</c> is Northern Ireland, which the Windsor Framework requires on invoices for goods, and
+    /// <c>1A</c> is Kosovo. Neither is in ISO 3166-1, and both are in the list you are judged against.
+    /// </remarks>
+    [Fact]
+    public void TheCountryListCarriesWhatIsoDoesNot()
+    {
+        CountryCodes.IsKnown("XI").ShouldBeTrue();
+        CountryCodes.IsKnown("1A").ShouldBeTrue();
+        CountryCodes.IsKnown("UK").ShouldBeFalse("the United Kingdom is GB");
+    }
+
+    /// <summary>
+    /// The ICD list and the Peppol electronic-address list look alike and are not the same.
+    /// </summary>
+    /// <remarks>
+    /// Both are four-digit scheme identifiers, both give <c>0088</c> to a GLN, and picking from the wrong one
+    /// is a mistake nothing in the type system catches. The <c>99xx</c> block is the giveaway: those are
+    /// Peppol's own additions for electronic addresses and belong to no ICD.
+    /// </remarks>
+    [Fact]
+    public void TheIcdListIsNotTheElectronicAddressList()
+    {
+        IcdSchemeCodes.IsKnown("0088").ShouldBeTrue();
+        IcdSchemeCodes.IsKnown("9925").ShouldBeFalse("9925 is a Peppol endpoint scheme, not an ICD");
+        IcdSchemeCodes.IsKnown("9930").ShouldBeFalse();
+    }
+
     /// <summary>A shared code answers to both, and the reading is deliberate.</summary>
     [Fact]
     public void ACodeInBothListsIsBothAndSaysSo()

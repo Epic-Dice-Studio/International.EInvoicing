@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Seven more code lists a caller can pick from**, each read out of the shipped EN 16931 artefact and
+  compared against it on every build: `CurrencyCodes` (ISO 4217), `CountryCodes` (ISO 3166-1),
+  `IcdSchemeCodes` (ISO 6523, judging four different identifiers), `ItemClassificationSchemeCodes`,
+  `AllowanceReasonCodes`, `ChargeReasonCodes` and `VatExemptionReasonCodes`. Reading them from the artefact
+  rather than transcribing them is the point: the country list carries `XI` for Northern Ireland and `1A` for
+  Kosovo, neither of which is in ISO 3166-1, and a transcribed list would reject both.
 - **A document's declared encoding is honoured.** The bytes were decoded as UTF-8 whatever the document said,
   so a sender whose database is Latin-1 and whose template says UTF-8 — the single most discussed issue in the
   German validator's tracker — had `Müller` arrive as `M?ller`: a document that validates, arrives, and is
