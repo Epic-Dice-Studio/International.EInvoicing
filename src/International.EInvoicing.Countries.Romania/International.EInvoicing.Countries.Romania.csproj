@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Romania</PackageId>
+    <Description>
+      What Romanian electronic invoicing adds on top of the norms: CIUS-RO, the national CIUS the e-Factura
+      mandate is built on, and the rules that judge it.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;romania;efactura;cius-ro;anaf;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

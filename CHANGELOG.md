@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Romania.** CIUS-RO, the national CIUS the e-Factura mandate exchanges, with the 244 assertions Romania
+  publishes on top of EN 16931 — the largest national rule set here after Germany's. The identifier is read
+  from the artefact, which matters: it carries the *CIUS* version, 1.0.1, which is not the 1.0.9 of the rule
+  set that checks it.
+- `RoBucharestSector`, for the rule nobody expects: `BR-RO-100` is fatal, and it requires a Bucharest address
+  to put the **sector** in the city name — `SECTOR1` to `SECTOR6`. Writing "Bucureşti" there, which every
+  other country would want, is what fails.
 - **NLCIUS, which this library had said it could not carry.** It was left out because its specification
   identifier was in no artefact the repository held — a statement about the fetch list rather than about the
   world. The identifier is in the Dutch rule set itself. `build/fetch-specs.sh national` now fetches the

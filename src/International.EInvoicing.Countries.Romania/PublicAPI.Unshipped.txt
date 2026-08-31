@@ -1,0 +1,12 @@
+#nullable enable
+const International.EInvoicing.Countries.Romania.RoBucharestSector.Subdivision = "RO-B" -> string!
+International.EInvoicing.Countries.Romania.RoBucharestSector
+International.EInvoicing.Countries.Romania.RomaniaServiceCollectionExtensions
+International.EInvoicing.Countries.Romania.RoProfiles
+static International.EInvoicing.Countries.Romania.RoBucharestSector.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Countries.Romania.RoBucharestSector.IsSector(string? cityName) -> bool
+static International.EInvoicing.Countries.Romania.RoBucharestSector.Of(int sector) -> string!
+static International.EInvoicing.Countries.Romania.RomaniaServiceCollectionExtensions.AddRomania(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Romania.RomaniaServiceCollectionExtensions.AddRomanianRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Romania.RoProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Romania.RoProfiles.CiusRoUbl.get -> International.EInvoicing.Profiles.Profile!

@@ -322,7 +322,7 @@ Our model fits; the syntax or the rules do not, quite.
 
 | Country | Format | What we already have that applies | What is genuinely new |
 |---|---|---|---|
-| **Romania** | RO e-Factura (a CIUS of EN 16931, UBL) | the model, the syntax, the engine | its own rule set; B2C mandatory since 2025, full enforcement below €500k from **July 2026** |
+| **Romania** | ✅ **done** — `RoProfiles`, 244 assertions running | — | — |
 | **Austria** | ebInterface 6.x | the model | a second national XML alongside Peppol |
 | **Italy** | FatturaPA, via SDI | the model maps to EN 16931 | its own XML tree, `Fattura` type codes, **and a qualified signature** — see below. Spec **v1.9.1** in force since May 2026, with rejections where earlier versions warned |
 | **Spain** | Facturae 3.2.x | close to EN 16931 | plus **VeriFactu** (software certification and invoice chaining, from **1 January 2026** for corporates, **1 July 2026** for the self-employed) and **TicketBAI** in the Basque Country — three regimes at once |

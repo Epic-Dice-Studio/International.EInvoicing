@@ -193,6 +193,15 @@
           "notes": "NLCIUS and its G-account extension, with the Dutch rules that judge them; Peppol BIS with the Dutch rules inside it; and the legal entity identifier NL-R-003 and NL-R-005 reject an invoice for omitting — scheme 0106 or 0190 on both parties."
         },
         {
+          "name": "Romania — CIUS-RO (e-Factura)",
+          "version": "CIUS-RO 1.0.1",
+          "package": "International.EInvoicing.Countries.Romania",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "The national CIUS the e-Factura mandate exchanges, with the 244 assertions Romania publishes on top of EN 16931 — including BR-RO-100, which requires a Bucharest address to name its sector rather than the city. Rules fetched, not shipped."
+        },
+        {
           "name": "Iceland — Peppol BIS, kennitala",
           "version": "BIS 3.0",
           "package": "International.EInvoicing.Countries.Iceland",
