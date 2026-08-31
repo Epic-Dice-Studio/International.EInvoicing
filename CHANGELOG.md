@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Malaysia**, whose rules want three identifiers EN 16931 treats as optional: the BRN of *both* parties and
+  the supplier's TIN, each a fatal rule. `Describe` puts them where those rules look — the BRN as the legal
+  registration, the TIN as the tax registration under a scheme other than VAT. Its tax category codes are its
+  own too, including high-value goods, low-value goods and tourism tax, which have no European equivalent;
+  `MyTaxCategory` carries the list read out of the rule.
 - **Singapore**, the first country validated against a jurisdiction's own PINT rules from the start — and
   they had three fatal things to say that EN 16931 never hints at. `S`, the tax category code every European
   example uses, is rejected: Singapore's is `SR`, and `SgTaxCategory` carries the list read out of the rule

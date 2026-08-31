@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Malaysia</PackageId>
+    <Description>
+      What Malaysian electronic invoicing adds on top of the norms: the MY Peppol PINT profile MyInvois
+      exchanges, the BRN and TIN its rules require of both parties, and Malaysia's own tax category codes.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;malaysia;myinvois;peppol;pint;brn;tin;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

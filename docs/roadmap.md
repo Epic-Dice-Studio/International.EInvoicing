@@ -232,6 +232,7 @@ The three done ones are at the top so the tiers read as one list.
 | **Australia** | Peppol PINT (A-NZ), ABN, GST | ✅ `AustralianEInvoicing`, validated against the real PINT rules |
 | **New Zealand** | Peppol PINT (A-NZ), NZBN, GST | ✅ `NewZealandEInvoicing`, the same |
 | **Singapore** | Peppol PINT (SG), GST, Singapore's own category codes | ✅ `SingaporeEInvoicing` |
+| **Malaysia** | Peppol PINT (MY), BRN and TIN, its own category codes | ✅ `MalaysianEInvoicing` |
 
 France's own calendar: reception for everyone and issuing for large and mid-sized companies on
 **1 September 2026**, issuing for the rest on **1 September 2027**. Belgium's B2B mandate started
@@ -296,7 +297,7 @@ anything built in.
 | **New Zealand** | the same A-NZ PINT specialisation | ✅ `NewZealandEInvoicing` — the NZBN is a GLN, routed under 0088 |
 | **Singapore** | InvoiceNow (SG PINT) | ✅ `SingaporeEInvoicing`, validated against Singapore's own rules |
 | **Japan** | JP PINT | qualified-invoice system since 2023 |
-| **Malaysia** | MyInvois — PINT MY alongside the national API | phased since 2024; above RM 1 m since **January 2026** |
+| **Malaysia** | MyInvois — PINT MY alongside the national API | ✅ `MalaysianEInvoicing`; phased since 2024, above RM 1 m since **January 2026** |
 | **United Arab Emirates** | PINT AE, five-corner DCTCE model | pilot **July 2026**, mandatory **1 January 2027** above AED 50 m, **1 July 2027** below |
 | **United Kingdom** | PINT UK, expected | mandatory VAT e-invoicing announced for **April 2029**; roadmap due Budget 2026 |
 | **Oman** | PINT OM | artefacts published; mandate rolling out |

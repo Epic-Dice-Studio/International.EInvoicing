@@ -21,6 +21,7 @@ Three types hold that knowledge for you:
 | `AustralianEInvoicing` | `International.EInvoicing.Countries.Australia` |
 | `NewZealandEInvoicing` | `International.EInvoicing.Countries.NewZealand` |
 | `SingaporeEInvoicing` | `International.EInvoicing.Countries.Singapore` |
+| `MalaysianEInvoicing` | `International.EInvoicing.Countries.Malaysia` |
 
 None of them is a wall. Each exposes `.Library`, the fully assembled `EInvoicing` underneath, so anything the
 shortcut does not cover is one property away.
@@ -304,6 +305,26 @@ entity registration, not just a name and a tax number.
 Singapore has no `Describe`, deliberately: its rules name no identifier scheme, and this library does not
 guess identifiers.
 
+## Malaysia, where three optional fields are mandatory
+
+MyInvois runs on PINT as well, and its rules want identifiers EN 16931 leaves optional:
+
+```csharp
+MalaysianEInvoicing malaysia = MalaysianEInvoicing.Create();
+
+malaysia.Invoice()
+    .From(seller => malaysia.Describe(seller, "202001234567", "Pembekal Sdn Bhd", "C12345678901"))
+    .To(buyer => malaysia.Describe(buyer, "202101234567", "Pelanggan Sdn Bhd"))
+    .AddLine(line => line.WithItem("Perundingan").WithNetAmount(1000m)
+        .WithVat(MyTaxCategory.SalesTax, 10m));
+```
+
+The **BRN of both parties** (`ibr-02-my`, `ibr-03-my`) and the **supplier's TIN** (`ibr-04-my`) are three
+fatal rules for two numbers. And Malaysia's tax categories are its own — `SA` rather than `S`, plus
+high-value goods, low-value goods and a tourism tax with no European equivalent.
+
+Submitting to LHDN is a national API: transport, and out of scope. The document is PINT.
+
 ## Wiring one into a container
 
 `Create(configure)` takes the same builder the general library takes, so anything you would have registered
@@ -317,6 +338,6 @@ builder.Services.AddSingleton(provider =>
 
 ## Somewhere else?
 
-Only these twelve countries have a shortcut today. Every other country is reachable through the general
+Only these thirteen countries have a shortcut today. Every other country is reachable through the general
 library — a profile, a rule set fetched from its publisher, and the identifiers it needs. What is planned,
 country by country and in what order, is in the [roadmap](../roadmap.md).
