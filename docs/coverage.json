@@ -139,13 +139,13 @@
           "notes": "The transactions and payments transmissions, built, written and read back. The DGFiP publishes no sample transmissions, so what is measured is that every document this library builds satisfies the published flux 10 rules."
         },
         {
-          "name": "Germany — XRechnung, ZUGFeRD, Leitweg-ID",
+          "name": "Germany — XRechnung, ZUGFeRD, Leitweg-ID, Skonto",
           "version": "XRechnung 3.x",
           "package": "International.EInvoicing.Countries.Germany",
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite."
+          "notes": "XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite. Early-payment discounts, which Germany encodes inside BT-20's free text where BR-DE-18 judges them by regular expression, are read and written as DeSkonto rather than by hand."
         },
         {
           "name": "Greece — Peppol BIS, AFM, six-segment invoice number",
