@@ -17,6 +17,7 @@ WORK_DIR="$(mktemp -d)"
 trap 'rm -rf "$WORK_DIR"' EXIT
 
 EN16931_REF="validation-1.3.16"
+EN16931_COMPILED_REF="1.3.16"
 PEPPOL_REF="master"
 XRECHNUNG_SCHEMATRON_REF="master"
 XRECHNUNG_TESTSUITE_REF="master"
@@ -118,6 +119,12 @@ fetch_pint() {
     local pint="$src/phive-rules-peppol-pint/src/main/resources/external/schematron"
     rm -rf "$SPECS_DIR/peppol/pint"
     sync_into "$pint" "$SPECS_DIR/peppol/pint"
+
+    # The same publisher's compiled EN 16931, of the version this repository ships as source. It is what
+    # proves the compiled-Schematron reader: the two forms must yield the same assertions.
+    rm -rf "$SPECS_DIR/en16931/compiled"
+    sync_into "$src/phive-rules-en16931/src/main/resources/external/schematron/$EN16931_COMPILED_REF" \
+        "$SPECS_DIR/en16931/compiled"
 }
 
 fetch_manual() {

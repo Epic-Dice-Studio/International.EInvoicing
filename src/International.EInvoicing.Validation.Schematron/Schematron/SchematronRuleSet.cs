@@ -154,6 +154,82 @@ public sealed partial class SchematronRuleSet
         }
     }
 
+    /// <summary>
+    /// Builds a rule set from a Schematron that was compiled to XSLT.
+    /// </summary>
+    /// <remarks>
+    /// The parsing of expressions, the severities and the message handling are the same code the source form
+    /// uses, which is the point: a rule read from either serialisation has to become the same rule, and
+    /// <c>CompiledSchematronTests</c> holds the two to that.
+    /// </remarks>
+    internal static SchematronRuleSet FromCompiled(
+        string name,
+        string version,
+        Dictionary<string, string> namespaces,
+        IReadOnlyList<(string? Identifier, IReadOnlyList<XElement> Templates)> patterns,
+        XElement root)
+    {
+        List<SchematronPattern> read =
+        [
+            .. patterns.Select(pattern => new SchematronPattern(
+                pattern.Identifier,
+                [.. pattern.Templates.Select(ReadCompiledRule)])),
+        ];
+
+        return new SchematronRuleSet(name, version, namespaces, read)
+        {
+            GlobalVariables = [.. CompiledVariables(CompiledSchematron.GlobalVariablesOf(root))],
+            Functions = SchematronFunction.ReadAll(root, Parse),
+        };
+    }
+
+    private static SchematronRule ReadCompiledRule(XElement template) =>
+        new(
+            Parse(CompiledSchematron.ContextOf(template)),
+            [.. CompiledVariables(CompiledSchematron.VariablesOf(template))],
+            [.. CompiledSchematron.AssertionsOf(template).Select(ReadCompiledAssertion)]);
+
+    private static SchematronAssertion ReadCompiledAssertion(XElement emission)
+    {
+        string test = emission.Attribute("test")?.Value
+            ?? throw new XPathException("A compiled Schematron assertion has no test.");
+
+        string message = NormalizeMessage(CompiledSchematron.MessageOf(emission));
+        string identifier = CompiledSchematron.ConstantAttribute(emission, "id")
+            ?? CodeIn(message)
+            ?? "(unnamed)";
+
+        string flag = CompiledSchematron.ConstantAttribute(emission, "flag") ?? "fatal";
+
+        RuleSeverity severity = flag.ToUpperInvariant() switch
+        {
+            "WARNING" => RuleSeverity.Warning,
+            "INFO" or "INFORMATION" => RuleSeverity.Information,
+            _ => RuleSeverity.Error,
+        };
+
+        return new SchematronAssertion(
+            identifier,
+            Parse(test),
+            message,
+            severity,
+            CompiledSchematron.IsReport(emission));
+    }
+
+    private static IEnumerable<SchematronVariable> CompiledVariables(IEnumerable<XElement> variables)
+    {
+        foreach (XElement variable in variables)
+        {
+            if (variable.Attribute("name")?.Value is not { Length: > 0 } name
+                || variable.Attribute("select")?.Value is not { Length: > 0 } select)
+            {
+                continue;
+            }
+
+            yield return new SchematronVariable(name, Parse(select));
+        }
+    }
+
     private static SchematronPattern ReadPattern(XElement pattern) =>
         new(
             pattern.Attribute("id")?.Value,
