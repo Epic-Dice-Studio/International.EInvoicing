@@ -19,6 +19,7 @@ the [runnable sample](../../samples/README.md) — `dotnet run --project samples
 | [Validation](validation.md) | What ran, what failed, and your own rule sets |
 | [Converting between syntaxes](convert-between-syntaxes.md) | UBL ↔ CII, and a report of what the crossing cost |
 | [Hooking into generation](hook-into-generation.md) | Your own numbering, rounding or signature, on every document written |
+| [Testing your integration](testing.md) | Conforming samples, a round-trip harness, hostile documents, assertions |
 | [Raw values](raw-values.md) | The text and attributes behind any field |
 | [National identifiers](identifiers.md) | SIREN, SIRET, VAT, Leitweg-ID, KBO/BCE, structured communication |
 

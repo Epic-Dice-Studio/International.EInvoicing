@@ -6,6 +6,20 @@ namespace International.EInvoicing.Diagnostics;
 /// </summary>
 public static class DiagnosticCodes
 {
+    /// <summary>
+    /// The document is not well-formed XML, so nothing could be read from it.
+    /// </summary>
+    /// <remarks>
+    /// Declared here as well as in each syntax package because it is the one failure that belongs to no
+    /// syntax: a truncated file is not an unrecognised document, and saying so sends the reader looking in
+    /// the wrong place.
+    /// </remarks>
+    public static DiagnosticDescriptor MalformedDocument { get; } = new(
+        "EIV5001",
+        DiagnosticCategory.Safety,
+        DiagnosticSeverity.Fatal,
+        "The document is not well-formed XML: {0}");
+
     /// <summary>The declared profile identifier matches nothing the library knows.</summary>
     public static DiagnosticDescriptor UnknownProfile { get; } = new(
         "EIV1042",

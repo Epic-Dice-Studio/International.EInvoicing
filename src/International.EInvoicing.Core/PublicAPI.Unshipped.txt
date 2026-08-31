@@ -1018,6 +1018,7 @@ static International.EInvoicing.Building.TotalsBuilderExtensions.WithComputedTot
 static International.EInvoicing.Building.TotalsBuilderExtensions.WithComputedVatBreakdown(this International.EInvoicing.Building.EInvoiceBuilder! builder, int decimals = 2) -> International.EInvoicing.Building.EInvoiceBuilder!
 static International.EInvoicing.Configuration.EInvoicingServiceCollectionExtensions.AddEInvoicing(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.InvalidValue.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Diagnostics.DiagnosticCodes.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnknownProfile.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedDateFormat.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedEdition.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!

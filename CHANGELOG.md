@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **`International.EInvoicing.Testing`**, so an integrator can test *their* profile with our tools.
+  `SampleInvoices` builds documents EN 16931 actually accepts — thirty-odd terms, which is where an afternoon
+  goes; `RoundTrip.Check` proves nothing was lost, by element census rather than by text, because byte
+  equality is not promised and should never be asserted; `HostileDocuments` is the corpus that defends "reading
+  never throws"; and `Expect` carries the evidence into the failure message. Framework-free — the assertions
+  throw, which every runner understands.
+- **A truncated file was reported as "not a document this library recognises".** It is malformed XML, and
+  saying otherwise sends the reader checking profile identifiers for an hour before noticing the file ends
+  mid-element. The facade now tells the two apart, and `DiagnosticCodes.MalformedDocument` names the first.
 - **A command-line tool**, `International.EInvoicing.Cli`. `einvoice validate` checks a file or a whole
   directory against every rule set that applies and prints which ones ran; `inspect` says what a document is
   and what reading it reported; `convert` carries it to the other syntax with the loss report; `profiles` and

@@ -261,7 +261,7 @@ public sealed class EInvoicing
             _ => new DocumentResult
             {
                 Kind = DocumentKind.Unknown,
-                Diagnostics = [Unrecognised()],
+                Diagnostics = [WhyNot(text)],
             },
         };
     }
@@ -588,6 +588,28 @@ public sealed class EInvoicing
         DocumentKind.Cdar => DocumentSyntax.Cdar,
         _ => null,
     };
+
+    /// <summary>
+    /// Why nothing could be read: the document is not well-formed, or it is well-formed and not ours.
+    /// </summary>
+    /// <remarks>
+    /// Worth telling apart. "This is not a document I recognise" sent at a truncated file has somebody
+    /// checking their profile identifiers for an hour before they notice the file ends mid-element.
+    /// </remarks>
+    private static Diagnostic WhyNot(string text)
+    {
+        try
+        {
+            using var reader = SecureXml.CreateReader(text);
+            XDocument.Load(reader);
+        }
+        catch (System.Xml.XmlException malformed)
+        {
+            return Diagnostic.Create(DiagnosticCodes.MalformedDocument, malformed.Message);
+        }
+
+        return Unrecognised();
+    }
 
     private DocumentResult ReadHybrid(byte[] pdf)
     {

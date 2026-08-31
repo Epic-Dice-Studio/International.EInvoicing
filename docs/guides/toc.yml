@@ -10,6 +10,8 @@
   href: convert-between-syntaxes.md
 - name: Running your own logic during generation
   href: hook-into-generation.md
+- name: Testing your integration
+  href: testing.md
 - name: E-reporting (France)
   href: e-reporting.md
 - name: National identifiers

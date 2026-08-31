@@ -261,6 +261,16 @@ The [playground](https://epic-dice-studio.github.io/International.EInvoicing/dem
 documents entirely in your browser — the library is compiled to WebAssembly, so **no invoice you open there
 reaches a server**.
 
+## Testing your integration
+
+```
+dotnet add package International.EInvoicing.Testing
+```
+
+Sample documents that pass EN 16931, a round-trip harness, a corpus of documents that fight back, and
+assertions that say what actually happened. Framework-free.
+See [the guide](docs/guides/testing.md).
+
 ## From the command line
 
 ```

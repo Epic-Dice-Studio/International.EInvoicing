@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Testing</PackageId>
+    <RootNamespace>International.EInvoicing.Testing</RootNamespace>
+    <Description>
+      A test kit for electronic invoicing: conforming sample documents, a round-trip harness that proves
+      nothing was lost, a corpus of documents that fight back, and assertions that read like the promise they
+      defend. Framework-free — use it from xUnit, NUnit, MSTest or none of them.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;testing;en16931;ubl;cii;round-trip;schematron</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -34,6 +34,7 @@
     <Project Path="src/International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
     <Project Path="src/International.EInvoicing/International.EInvoicing.csproj" />
     <Project Path="src/International.EInvoicing.Cli/International.EInvoicing.Cli.csproj" />
+    <Project Path="src/International.EInvoicing.Testing/International.EInvoicing.Testing.csproj" />
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/International.EInvoicing.Samples/International.EInvoicing.Samples.csproj" />
@@ -65,6 +66,7 @@
     <Project Path="tests/International.EInvoicing.FacturX.Tests/International.EInvoicing.FacturX.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Tests/International.EInvoicing.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Cli.Tests/International.EInvoicing.Cli.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Testing.Tests/International.EInvoicing.Testing.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Peppol.Tests/International.EInvoicing.Peppol.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Ubl.Tests/International.EInvoicing.Ubl.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Validation.En16931.Tests/International.EInvoicing.Validation.En16931.Tests.csproj" />
