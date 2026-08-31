@@ -16,6 +16,7 @@ the [runnable sample](../../samples/README.md) — `dotnet run --project samples
 | [Lifecycle statuses](lifecycle.md) | Every French status, and how sending to a partner differs from the public portal |
 | [E-reporting](e-reporting.md) | The French flux 10 report: sales, transactions abroad, and when the money arrived |
 | [Validation](validation.md) | What ran, what failed, and your own rule sets |
+| [Converting between syntaxes](convert-between-syntaxes.md) | UBL ↔ CII, and a report of what the crossing cost |
 | [Raw values](raw-values.md) | The text and attributes behind any field |
 | [National identifiers](identifiers.md) | SIREN, SIRET, VAT, Leitweg-ID, KBO/BCE, structured communication |
 
@@ -25,7 +26,6 @@ the [runnable sample](../../samples/README.md) — `dotnet run --project samples
 - `create-a-profile.md` — your own profile, registered from your own code — see
   [the recipe](../recipes/add-a-profile.md) meanwhile
 - `hook-into-generation.md` — run your own logic during generation *(planned)*
-- `convert-between-syntaxes.md` — UBL ↔ CII, and what conversion can lose *(planned)*
 - `migrate-from-zugferd-csharp.md` — concept mapping from the most common .NET alternative *(planned)*
 
 Pages marked *planned* land with the feature they document. A guide describing an API that does not exist is

@@ -191,7 +191,7 @@ BIS 4** as its only domestic format by 2029 — the first national format retire
 
 | | Why it matters |
 |---|---|
-| **UBL ↔ CII conversion, with a loss report** | A French recipient must accept UBL, CII and Factur-X. Converting between them is a real requirement, and doing it silently is the dangerous version — the report is the feature. |
+| ~~**UBL ↔ CII conversion, with a loss report**~~ | ✅ **done.** `EInvoicing.Convert` returns the document *and* what the crossing cost. The losses are found rather than predicted: the result is read back, and what it reports is recorded along with every extension element the source carried — syntax-specific by definition, with nowhere to go on the other side. It deliberately does not diff the two models, because every mapped term survives by construction. See [the guide](guides/convert-between-syntaxes.md). |
 | **The write pipeline** (`IWritePipelineStep`) | "Hook into generation" is a guide that has been marked *planned* since the beginning. Numbering, house rounding, signing, logging — all of it belongs in a step rather than in a fork. |
 | **Embedded code lists** | 🚧 the ones a caller picks from are done — invoice and credit-note type codes, VAT categories, payment means, and the EAS schemes — each read from the shipped artefact and compared to it on every build. Doing it found the credit-note list five codes short, so a credit note carrying 420, 458, 502, 503 or 532 was read as an invoice. Still to come: ISO 4217 and 3166, and the item-classification schemes. |
 | **A CLI** — `dotnet einvoice validate invoice.xml` | The reference validator in this space is a Java jar. There is no .NET equivalent. Cheap to build on what already exists, and the most visible thing we could ship. |

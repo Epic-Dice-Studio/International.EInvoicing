@@ -4,6 +4,8 @@
   href: getting-started.md
 - name: One country, one object
   href: country-shortcuts.md
+- name: Converting between UBL and CII
+  href: convert-between-syntaxes.md
 - name: E-reporting (France)
   href: e-reporting.md
 - name: National identifiers

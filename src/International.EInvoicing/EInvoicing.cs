@@ -352,6 +352,77 @@ public sealed class EInvoicing
     }
 
     /// <summary>
+    /// Converts an invoice to another syntax, and says what the conversion cost.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Converting between UBL and CII is a real requirement — a French recipient must accept both — and
+    /// doing it silently is the dangerous version, which is why this returns a report rather than a string.
+    /// </para>
+    /// <para>
+    /// The losses are found rather than predicted: the converted document is read back, and what that
+    /// reports is recorded, along with every extension element the source carried. Those are syntax-specific
+    /// by definition and have nowhere to go in the other syntax; everything the model maps survives by
+    /// construction, because both writers write from the same model.
+    /// </para>
+    /// </remarks>
+    /// <param name="invoice">The invoice to convert.</param>
+    /// <param name="format">The syntax to write it in.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="invoice"/> is <c>null</c>.</exception>
+    /// <exception cref="NotSupportedException">No writer is registered for that syntax.</exception>
+    public ConversionResult Convert(EInvoice invoice, DocumentFormat format)
+    {
+        ArgumentNullException.ThrowIfNull(invoice);
+
+        string xml = Write(invoice, format);
+        DocumentResult read = Read(xml);
+
+        List<ConversionLoss> losses =
+        [
+            .. invoice.Extensions().Select(extension => new ConversionLoss(
+                ConversionLossKind.SyntaxSpecificContent,
+                extension.Location.Path is { Length: > 0 } path ? path : extension.QualifiedName,
+                extension.QualifiedName)),
+            .. read.Diagnostics
+                .Where(diagnostic => diagnostic.Severity >= DiagnosticSeverity.Warning)
+                .Select(diagnostic => new ConversionLoss(
+                    ConversionLossKind.ReportedOnReread,
+                        diagnostic.Location.Path ?? "(unknown)",
+                    diagnostic.Message)),
+        ];
+
+        return new ConversionResult(xml, format, read.Invoice, losses, read.Diagnostics);
+    }
+
+    /// <summary>
+    /// Converts a document to another syntax, and says what the conversion cost.
+    /// </summary>
+    /// <remarks>
+    /// The document is read first, so what reading it reported is part of the report: a conversion built on a
+    /// document that would not read cleanly is not a clean conversion, and the caller is told so rather than
+    /// handed a plausible-looking result.
+    /// </remarks>
+    /// <param name="xml">The document to convert.</param>
+    /// <param name="format">The syntax to write it in.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="xml"/> is <c>null</c>.</exception>
+    /// <exception cref="NotSupportedException">No writer is registered for that syntax.</exception>
+    public ConversionResult Convert(string xml, DocumentFormat format)
+    {
+        ArgumentNullException.ThrowIfNull(xml);
+
+        DocumentResult source = Read(xml);
+
+        if (source.Invoice is not { } invoice)
+        {
+            return new ConversionResult(string.Empty, format, null, [], source.Diagnostics);
+        }
+
+        ConversionResult converted = Convert(invoice, format);
+
+        return converted with { Diagnostics = [.. source.Diagnostics, .. converted.Diagnostics] };
+    }
+
+    /// <summary>
     /// Writes an invoice in the syntax its own profile is written in.
     /// </summary>
     /// <remarks>

@@ -1,29 +1,3 @@
-const International.EInvoicing.Model.InvoiceTypeCodes.CommercialInvoice = "380" -> string!
-const International.EInvoicing.Model.InvoiceTypeCodes.CorrectedInvoice = "384" -> string!
-const International.EInvoicing.Model.InvoiceTypeCodes.CreditNote = "381" -> string!
-const International.EInvoicing.Model.InvoiceTypeCodes.PrepaymentInvoice = "386" -> string!
-const International.EInvoicing.Model.InvoiceTypeCodes.SelfBilledCreditNote = "261" -> string!
-const International.EInvoicing.Model.InvoiceTypeCodes.SelfBilledInvoice = "389" -> string!
-const International.EInvoicing.Model.PaymentMeansCodes.Cash = "10" -> string!
-const International.EInvoicing.Model.PaymentMeansCodes.CreditTransfer = "30" -> string!
-const International.EInvoicing.Model.PaymentMeansCodes.DirectDebit = "49" -> string!
-const International.EInvoicing.Model.PaymentMeansCodes.MutuallyDefined = "ZZZ" -> string!
-const International.EInvoicing.Model.PaymentMeansCodes.NotDefined = "1" -> string!
-const International.EInvoicing.Model.PaymentMeansCodes.PaymentCard = "48" -> string!
-const International.EInvoicing.Model.PaymentMeansCodes.SepaCreditTransfer = "58" -> string!
-const International.EInvoicing.Model.PaymentMeansCodes.SepaDirectDebit = "59" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.CanaryIslands = "L" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.CeutaAndMelilla = "M" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.Exempt = "E" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.Export = "G" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.IntraCommunitySupply = "K" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.OutsideScope = "O" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.ReverseCharge = "AE" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.Standard = "S" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.TransferredVat = "B" -> string!
-const International.EInvoicing.Model.VatCategoryCodes.ZeroRated = "Z" -> string!
-const International.EInvoicing.Values.DateField.FormatCcyyMmDd = "102" -> string!
-const International.EInvoicing.Values.DateTimeField.FormatCcyyMmDdHhMmSs = "204" -> string!
 International.EInvoicing.Building.EInvoiceBuilder
 International.EInvoicing.Building.EInvoiceBuilder.AddLine(System.Action<International.EInvoicing.Building.InvoiceLineBuilder!>! configure) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.AddVatBreakdown(string! categoryCode, decimal rate, decimal taxableAmount, decimal taxAmount) -> International.EInvoicing.Building.EInvoiceBuilder!
@@ -31,13 +5,13 @@ International.EInvoicing.Building.EInvoiceBuilder.Amount(decimal value) -> Inter
 International.EInvoicing.Building.EInvoiceBuilder.Build() -> International.EInvoicing.Model.EInvoice!
 International.EInvoicing.Building.EInvoiceBuilder.DueOn(System.DateOnly dueDate) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.Extend(System.Action<International.EInvoicing.Model.EInvoice!>! configure) -> International.EInvoicing.Building.EInvoiceBuilder!
-International.EInvoicing.Building.EInvoiceBuilder.From(string! name, string? vatIdentifier = null) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.From(System.Action<International.EInvoicing.Building.PartyBuilder!>! configure) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Building.EInvoiceBuilder.From(string! name, string? vatIdentifier = null) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.InCurrency(string! currencyCode) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.IssuedOn(System.DateOnly issueDate) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.OfType(string! typeCode) -> International.EInvoicing.Building.EInvoiceBuilder!
-International.EInvoicing.Building.EInvoiceBuilder.To(string! name, string? vatIdentifier = null) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.To(System.Action<International.EInvoicing.Building.PartyBuilder!>! configure) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Building.EInvoiceBuilder.To(string! name, string? vatIdentifier = null) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.WithBuyer(System.Action<International.EInvoicing.Building.PartyBuilder!>! configure) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.WithBuyerReference(string! reference) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Building.EInvoiceBuilder.WithNote(string! text, string? subjectCode = null) -> International.EInvoicing.Building.EInvoiceBuilder!
@@ -48,8 +22,8 @@ International.EInvoicing.Building.EInvoiceBuilder.WithTotals(System.Action<Inter
 International.EInvoicing.Building.InvoiceLineBuilder
 International.EInvoicing.Building.InvoiceLineBuilder.Extend(System.Action<International.EInvoicing.Model.InvoiceLine!>! configure) -> International.EInvoicing.Building.InvoiceLineBuilder!
 International.EInvoicing.Building.InvoiceLineBuilder.WithIdentifier(string! identifier) -> International.EInvoicing.Building.InvoiceLineBuilder!
-International.EInvoicing.Building.InvoiceLineBuilder.WithItem(string! name) -> International.EInvoicing.Building.InvoiceLineBuilder!
 International.EInvoicing.Building.InvoiceLineBuilder.WithItem(System.Action<International.EInvoicing.Model.Item!>! configure) -> International.EInvoicing.Building.InvoiceLineBuilder!
+International.EInvoicing.Building.InvoiceLineBuilder.WithItem(string! name) -> International.EInvoicing.Building.InvoiceLineBuilder!
 International.EInvoicing.Building.InvoiceLineBuilder.WithNetAmount(decimal amount) -> International.EInvoicing.Building.InvoiceLineBuilder!
 International.EInvoicing.Building.InvoiceLineBuilder.WithNetPrice(decimal price, decimal? baseQuantity = null, string? unitCode = null) -> International.EInvoicing.Building.InvoiceLineBuilder!
 International.EInvoicing.Building.InvoiceLineBuilder.WithNote(string! note) -> International.EInvoicing.Building.InvoiceLineBuilder!
@@ -200,8 +174,8 @@ International.EInvoicing.Diagnostics.SourceLocation.SourceLocation() -> void
 International.EInvoicing.Diagnostics.SourceLocation.SourceLocation(string? Path, int Line, int Position) -> void
 International.EInvoicing.Documents.DocumentStreams
 International.EInvoicing.Documents.IDocumentReader<TDocument>
-International.EInvoicing.Documents.IDocumentReader<TDocument>.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<TDocument!>!
 International.EInvoicing.Documents.IDocumentReader<TDocument>.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<TDocument!>!
+International.EInvoicing.Documents.IDocumentReader<TDocument>.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<TDocument!>!
 International.EInvoicing.Documents.IDocumentReader<TDocument>.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<TDocument!>!>!
 International.EInvoicing.Documents.IDocumentReader<TDocument>.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Documents.IDocumentWriter<TDocument>
@@ -425,6 +399,7 @@ International.EInvoicing.Model.InvoiceLine.VatRate.set -> void
 International.EInvoicing.Model.InvoiceNode
 International.EInvoicing.Model.InvoiceNode.Extensions.get -> International.EInvoicing.Model.ExtensionData!
 International.EInvoicing.Model.InvoiceNode.InvoiceNode() -> void
+International.EInvoicing.Model.InvoiceNodes
 International.EInvoicing.Model.InvoiceNote
 International.EInvoicing.Model.InvoiceNote.InvoiceNote() -> void
 International.EInvoicing.Model.InvoiceNote.SubjectCode.get -> International.EInvoicing.Values.CodeField
@@ -524,9 +499,9 @@ International.EInvoicing.Model.PostalAddress.Line2.get -> International.EInvoici
 International.EInvoicing.Model.PostalAddress.Line2.set -> void
 International.EInvoicing.Model.PostalAddress.Line3.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.PostalAddress.Line3.set -> void
-International.EInvoicing.Model.PostalAddress.PostalAddress() -> void
 International.EInvoicing.Model.PostalAddress.PostCode.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.PostalAddress.PostCode.set -> void
+International.EInvoicing.Model.PostalAddress.PostalAddress() -> void
 International.EInvoicing.Model.VatBreakdownEntry
 International.EInvoicing.Model.VatBreakdownEntry.CategoryCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.VatBreakdownEntry.CategoryCode.set -> void
@@ -536,10 +511,10 @@ International.EInvoicing.Model.VatBreakdownEntry.ExemptionReasonCode.get -> Inte
 International.EInvoicing.Model.VatBreakdownEntry.ExemptionReasonCode.set -> void
 International.EInvoicing.Model.VatBreakdownEntry.Rate.get -> International.EInvoicing.Values.Field<decimal>
 International.EInvoicing.Model.VatBreakdownEntry.Rate.set -> void
-International.EInvoicing.Model.VatBreakdownEntry.TaxableAmount.get -> International.EInvoicing.Values.AmountField
-International.EInvoicing.Model.VatBreakdownEntry.TaxableAmount.set -> void
 International.EInvoicing.Model.VatBreakdownEntry.TaxAmount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Model.VatBreakdownEntry.TaxAmount.set -> void
+International.EInvoicing.Model.VatBreakdownEntry.TaxableAmount.get -> International.EInvoicing.Values.AmountField
+International.EInvoicing.Model.VatBreakdownEntry.TaxableAmount.set -> void
 International.EInvoicing.Model.VatBreakdownEntry.VatBreakdownEntry() -> void
 International.EInvoicing.Model.VatCategoryCodes
 International.EInvoicing.Profiles.DocumentSyntax
@@ -805,6 +780,15 @@ International.EInvoicing.Values.FieldSource.Location.get -> International.EInvoi
 International.EInvoicing.Values.FieldSource.Location.init -> void
 International.EInvoicing.Values.FieldSource.Raw.get -> string?
 International.EInvoicing.Values.FieldSource.Raw.init -> void
+International.EInvoicing.Values.IField
+International.EInvoicing.Values.IField.Diagnostic.get -> International.EInvoicing.Diagnostics.Diagnostic?
+International.EInvoicing.Values.IField.HasValue.get -> bool
+International.EInvoicing.Values.IField.IsFromSource.get -> bool
+International.EInvoicing.Values.IField.IsRawOnly.get -> bool
+International.EInvoicing.Values.IField.IsSet.get -> bool
+International.EInvoicing.Values.IField.Location.get -> International.EInvoicing.Diagnostics.SourceLocation
+International.EInvoicing.Values.IField.Raw.get -> string?
+International.EInvoicing.Values.IField.UntypedValue.get -> object?
 International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Values.IdentifierField.Deconstruct(out string? Value, out string? SchemeId, out string? SchemeAgencyId, out string? SchemeVersionId, out International.EInvoicing.Values.FieldSource? Source) -> void
 International.EInvoicing.Values.IdentifierField.Diagnostic.get -> International.EInvoicing.Diagnostics.Diagnostic?
@@ -828,15 +812,6 @@ International.EInvoicing.Values.IdentifierField.Source.init -> void
 International.EInvoicing.Values.IdentifierField.UntypedValue.get -> object?
 International.EInvoicing.Values.IdentifierField.Value.get -> string?
 International.EInvoicing.Values.IdentifierField.Value.init -> void
-International.EInvoicing.Values.IField
-International.EInvoicing.Values.IField.Diagnostic.get -> International.EInvoicing.Diagnostics.Diagnostic?
-International.EInvoicing.Values.IField.HasValue.get -> bool
-International.EInvoicing.Values.IField.IsFromSource.get -> bool
-International.EInvoicing.Values.IField.IsRawOnly.get -> bool
-International.EInvoicing.Values.IField.IsSet.get -> bool
-International.EInvoicing.Values.IField.Location.get -> International.EInvoicing.Diagnostics.SourceLocation
-International.EInvoicing.Values.IField.Raw.get -> string?
-International.EInvoicing.Values.IField.UntypedValue.get -> object?
 International.EInvoicing.Values.IndicatorField
 International.EInvoicing.Values.IndicatorField.Deconstruct(out bool? Value, out International.EInvoicing.Values.FieldSource? Source) -> void
 International.EInvoicing.Values.IndicatorField.Diagnostic.get -> International.EInvoicing.Diagnostics.Diagnostic?
@@ -910,6 +885,32 @@ International.EInvoicing.Xml.DocumentLimits.MaxElementDepth.get -> int
 International.EInvoicing.Xml.DocumentLimits.MaxElementDepth.init -> void
 International.EInvoicing.Xml.SecureXml
 International.EInvoicing.Xml.XmlCharacters
+const International.EInvoicing.Model.InvoiceTypeCodes.CommercialInvoice = "380" -> string!
+const International.EInvoicing.Model.InvoiceTypeCodes.CorrectedInvoice = "384" -> string!
+const International.EInvoicing.Model.InvoiceTypeCodes.CreditNote = "381" -> string!
+const International.EInvoicing.Model.InvoiceTypeCodes.PrepaymentInvoice = "386" -> string!
+const International.EInvoicing.Model.InvoiceTypeCodes.SelfBilledCreditNote = "261" -> string!
+const International.EInvoicing.Model.InvoiceTypeCodes.SelfBilledInvoice = "389" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.Cash = "10" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.CreditTransfer = "30" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.DirectDebit = "49" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.MutuallyDefined = "ZZZ" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.NotDefined = "1" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.PaymentCard = "48" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.SepaCreditTransfer = "58" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.SepaDirectDebit = "59" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.CanaryIslands = "L" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.CeutaAndMelilla = "M" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.Exempt = "E" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.Export = "G" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.IntraCommunitySupply = "K" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.OutsideScope = "O" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.ReverseCharge = "AE" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.Standard = "S" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.TransferredVat = "B" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.ZeroRated = "Z" -> string!
+const International.EInvoicing.Values.DateField.FormatCcyyMmDd = "102" -> string!
+const International.EInvoicing.Values.DateTimeField.FormatCcyyMmDdHhMmSs = "204" -> string!
 override International.EInvoicing.Diagnostics.Diagnostic.Equals(object? obj) -> bool
 override International.EInvoicing.Diagnostics.Diagnostic.GetHashCode() -> int
 override International.EInvoicing.Diagnostics.Diagnostic.ToString() -> string!
@@ -1009,6 +1010,8 @@ static International.EInvoicing.Identifiers.CheckDigit.SatisfiesLuhn(System.Read
 static International.EInvoicing.Identifiers.CheckDigit.SatisfiesMod11(System.ReadOnlySpan<char> digits, System.ReadOnlySpan<int> weights) -> bool
 static International.EInvoicing.Model.ExtensionElement.operator !=(International.EInvoicing.Model.ExtensionElement? left, International.EInvoicing.Model.ExtensionElement? right) -> bool
 static International.EInvoicing.Model.ExtensionElement.operator ==(International.EInvoicing.Model.ExtensionElement? left, International.EInvoicing.Model.ExtensionElement? right) -> bool
+static International.EInvoicing.Model.InvoiceNodes.Descendants(this International.EInvoicing.Model.EInvoice! invoice) -> System.Collections.Generic.IEnumerable<International.EInvoicing.Model.InvoiceNode!>!
+static International.EInvoicing.Model.InvoiceNodes.Extensions(this International.EInvoicing.Model.EInvoice! invoice) -> System.Collections.Generic.IEnumerable<International.EInvoicing.Model.ExtensionElement!>!
 static International.EInvoicing.Model.InvoiceTypeCodes.ForCreditNotes.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.InvoiceTypeCodes.ForInvoices.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.InvoiceTypeCodes.IsCreditNote(string? typeCode) -> bool
@@ -1021,17 +1024,17 @@ static International.EInvoicing.Model.VatCategoryCodes.IsKnown(string? code) -> 
 static International.EInvoicing.Model.VatCategoryCodes.NeedsExemptionReason(string? code) -> bool
 static International.EInvoicing.Profiles.DocumentSyntax.Cdar.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Cii.get -> International.EInvoicing.Profiles.DocumentSyntax
-static International.EInvoicing.Profiles.DocumentSyntax.operator !=(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool
-static International.EInvoicing.Profiles.DocumentSyntax.operator ==(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool
 static International.EInvoicing.Profiles.DocumentSyntax.Ubl.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Unknown.get -> International.EInvoicing.Profiles.DocumentSyntax
+static International.EInvoicing.Profiles.DocumentSyntax.operator !=(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool
+static International.EInvoicing.Profiles.DocumentSyntax.operator ==(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool
 static International.EInvoicing.Profiles.En16931Edition.Implemented.get -> International.EInvoicing.Profiles.En16931Edition
 static International.EInvoicing.Profiles.En16931Edition.Of(International.EInvoicing.Profiles.ProfileIdentifier declared) -> International.EInvoicing.Profiles.En16931Edition?
-static International.EInvoicing.Profiles.En16931Edition.operator !=(International.EInvoicing.Profiles.En16931Edition left, International.EInvoicing.Profiles.En16931Edition right) -> bool
-static International.EInvoicing.Profiles.En16931Edition.operator ==(International.EInvoicing.Profiles.En16931Edition left, International.EInvoicing.Profiles.En16931Edition right) -> bool
 static International.EInvoicing.Profiles.En16931Edition.Original.get -> International.EInvoicing.Profiles.En16931Edition
 static International.EInvoicing.Profiles.En16931Edition.Revised.get -> International.EInvoicing.Profiles.En16931Edition
 static International.EInvoicing.Profiles.En16931Edition.TryGet(International.EInvoicing.Profiles.ProfileIdentifier declared, out International.EInvoicing.Profiles.En16931Edition? edition) -> bool
+static International.EInvoicing.Profiles.En16931Edition.operator !=(International.EInvoicing.Profiles.En16931Edition left, International.EInvoicing.Profiles.En16931Edition right) -> bool
+static International.EInvoicing.Profiles.En16931Edition.operator ==(International.EInvoicing.Profiles.En16931Edition left, International.EInvoicing.Profiles.En16931Edition right) -> bool
 static International.EInvoicing.Profiles.KnownProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Profiles.KnownProfiles.En16931Cii.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Profiles.KnownProfiles.En16931Ubl.get -> International.EInvoicing.Profiles.Profile!
@@ -1061,64 +1064,64 @@ static International.EInvoicing.Validation.ValidationMessage.operator ==(Interna
 static International.EInvoicing.Validation.ValidationReport.Empty.get -> International.EInvoicing.Validation.ValidationReport!
 static International.EInvoicing.Validation.ValidationReport.operator !=(International.EInvoicing.Validation.ValidationReport? left, International.EInvoicing.Validation.ValidationReport? right) -> bool
 static International.EInvoicing.Validation.ValidationReport.operator ==(International.EInvoicing.Validation.ValidationReport? left, International.EInvoicing.Validation.ValidationReport? right) -> bool
-static International.EInvoicing.Values.AmountField.implicit operator decimal?(International.EInvoicing.Values.AmountField field) -> decimal?
+static International.EInvoicing.Values.AmountField.Unset.get -> International.EInvoicing.Values.AmountField
 static International.EInvoicing.Values.AmountField.implicit operator International.EInvoicing.Values.AmountField(decimal value) -> International.EInvoicing.Values.AmountField
+static International.EInvoicing.Values.AmountField.implicit operator decimal?(International.EInvoicing.Values.AmountField field) -> decimal?
 static International.EInvoicing.Values.AmountField.operator !=(International.EInvoicing.Values.AmountField left, International.EInvoicing.Values.AmountField right) -> bool
 static International.EInvoicing.Values.AmountField.operator ==(International.EInvoicing.Values.AmountField left, International.EInvoicing.Values.AmountField right) -> bool
-static International.EInvoicing.Values.AmountField.Unset.get -> International.EInvoicing.Values.AmountField
+static International.EInvoicing.Values.BinaryField.Unset.get -> International.EInvoicing.Values.BinaryField
 static International.EInvoicing.Values.BinaryField.operator !=(International.EInvoicing.Values.BinaryField left, International.EInvoicing.Values.BinaryField right) -> bool
 static International.EInvoicing.Values.BinaryField.operator ==(International.EInvoicing.Values.BinaryField left, International.EInvoicing.Values.BinaryField right) -> bool
-static International.EInvoicing.Values.BinaryField.Unset.get -> International.EInvoicing.Values.BinaryField
+static International.EInvoicing.Values.CodeField.Unset.get -> International.EInvoicing.Values.CodeField
 static International.EInvoicing.Values.CodeField.implicit operator International.EInvoicing.Values.CodeField(string? value) -> International.EInvoicing.Values.CodeField
 static International.EInvoicing.Values.CodeField.implicit operator string?(International.EInvoicing.Values.CodeField field) -> string?
 static International.EInvoicing.Values.CodeField.operator !=(International.EInvoicing.Values.CodeField left, International.EInvoicing.Values.CodeField right) -> bool
 static International.EInvoicing.Values.CodeField.operator ==(International.EInvoicing.Values.CodeField left, International.EInvoicing.Values.CodeField right) -> bool
-static International.EInvoicing.Values.CodeField.Unset.get -> International.EInvoicing.Values.CodeField
+static International.EInvoicing.Values.DateField.Unset.get -> International.EInvoicing.Values.DateField
 static International.EInvoicing.Values.DateField.implicit operator International.EInvoicing.Values.DateField(System.DateOnly value) -> International.EInvoicing.Values.DateField
 static International.EInvoicing.Values.DateField.implicit operator System.DateOnly?(International.EInvoicing.Values.DateField field) -> System.DateOnly?
 static International.EInvoicing.Values.DateField.operator !=(International.EInvoicing.Values.DateField left, International.EInvoicing.Values.DateField right) -> bool
 static International.EInvoicing.Values.DateField.operator ==(International.EInvoicing.Values.DateField left, International.EInvoicing.Values.DateField right) -> bool
-static International.EInvoicing.Values.DateField.Unset.get -> International.EInvoicing.Values.DateField
+static International.EInvoicing.Values.DateTimeField.Unset.get -> International.EInvoicing.Values.DateTimeField
 static International.EInvoicing.Values.DateTimeField.implicit operator International.EInvoicing.Values.DateTimeField(System.DateTimeOffset value) -> International.EInvoicing.Values.DateTimeField
 static International.EInvoicing.Values.DateTimeField.implicit operator System.DateTimeOffset?(International.EInvoicing.Values.DateTimeField field) -> System.DateTimeOffset?
 static International.EInvoicing.Values.DateTimeField.operator !=(International.EInvoicing.Values.DateTimeField left, International.EInvoicing.Values.DateTimeField right) -> bool
 static International.EInvoicing.Values.DateTimeField.operator ==(International.EInvoicing.Values.DateTimeField left, International.EInvoicing.Values.DateTimeField right) -> bool
-static International.EInvoicing.Values.DateTimeField.Unset.get -> International.EInvoicing.Values.DateTimeField
+static International.EInvoicing.Values.Field<T>.Unset.get -> International.EInvoicing.Values.Field<T>
 static International.EInvoicing.Values.Field<T>.implicit operator International.EInvoicing.Values.Field<T>(T value) -> International.EInvoicing.Values.Field<T>
 static International.EInvoicing.Values.Field<T>.implicit operator T?(International.EInvoicing.Values.Field<T> field) -> T?
 static International.EInvoicing.Values.Field<T>.operator !=(International.EInvoicing.Values.Field<T> left, International.EInvoicing.Values.Field<T> right) -> bool
 static International.EInvoicing.Values.Field<T>.operator ==(International.EInvoicing.Values.Field<T> left, International.EInvoicing.Values.Field<T> right) -> bool
-static International.EInvoicing.Values.Field<T>.Unset.get -> International.EInvoicing.Values.Field<T>
 static International.EInvoicing.Values.FieldSource.operator !=(International.EInvoicing.Values.FieldSource? left, International.EInvoicing.Values.FieldSource? right) -> bool
 static International.EInvoicing.Values.FieldSource.operator ==(International.EInvoicing.Values.FieldSource? left, International.EInvoicing.Values.FieldSource? right) -> bool
+static International.EInvoicing.Values.IdentifierField.Unset.get -> International.EInvoicing.Values.IdentifierField
 static International.EInvoicing.Values.IdentifierField.implicit operator International.EInvoicing.Values.IdentifierField(string? value) -> International.EInvoicing.Values.IdentifierField
 static International.EInvoicing.Values.IdentifierField.implicit operator string?(International.EInvoicing.Values.IdentifierField field) -> string?
 static International.EInvoicing.Values.IdentifierField.operator !=(International.EInvoicing.Values.IdentifierField left, International.EInvoicing.Values.IdentifierField right) -> bool
 static International.EInvoicing.Values.IdentifierField.operator ==(International.EInvoicing.Values.IdentifierField left, International.EInvoicing.Values.IdentifierField right) -> bool
-static International.EInvoicing.Values.IdentifierField.Unset.get -> International.EInvoicing.Values.IdentifierField
-static International.EInvoicing.Values.IndicatorField.implicit operator bool?(International.EInvoicing.Values.IndicatorField field) -> bool?
+static International.EInvoicing.Values.IndicatorField.Unset.get -> International.EInvoicing.Values.IndicatorField
 static International.EInvoicing.Values.IndicatorField.implicit operator International.EInvoicing.Values.IndicatorField(bool value) -> International.EInvoicing.Values.IndicatorField
+static International.EInvoicing.Values.IndicatorField.implicit operator bool?(International.EInvoicing.Values.IndicatorField field) -> bool?
 static International.EInvoicing.Values.IndicatorField.operator !=(International.EInvoicing.Values.IndicatorField left, International.EInvoicing.Values.IndicatorField right) -> bool
 static International.EInvoicing.Values.IndicatorField.operator ==(International.EInvoicing.Values.IndicatorField left, International.EInvoicing.Values.IndicatorField right) -> bool
-static International.EInvoicing.Values.IndicatorField.Unset.get -> International.EInvoicing.Values.IndicatorField
-static International.EInvoicing.Values.QuantityField.implicit operator decimal?(International.EInvoicing.Values.QuantityField field) -> decimal?
+static International.EInvoicing.Values.QuantityField.Unset.get -> International.EInvoicing.Values.QuantityField
 static International.EInvoicing.Values.QuantityField.implicit operator International.EInvoicing.Values.QuantityField(decimal value) -> International.EInvoicing.Values.QuantityField
+static International.EInvoicing.Values.QuantityField.implicit operator decimal?(International.EInvoicing.Values.QuantityField field) -> decimal?
 static International.EInvoicing.Values.QuantityField.operator !=(International.EInvoicing.Values.QuantityField left, International.EInvoicing.Values.QuantityField right) -> bool
 static International.EInvoicing.Values.QuantityField.operator ==(International.EInvoicing.Values.QuantityField left, International.EInvoicing.Values.QuantityField right) -> bool
-static International.EInvoicing.Values.QuantityField.Unset.get -> International.EInvoicing.Values.QuantityField
+static International.EInvoicing.Values.TextField.Unset.get -> International.EInvoicing.Values.TextField
 static International.EInvoicing.Values.TextField.implicit operator International.EInvoicing.Values.TextField(string? value) -> International.EInvoicing.Values.TextField
 static International.EInvoicing.Values.TextField.implicit operator string?(International.EInvoicing.Values.TextField field) -> string?
 static International.EInvoicing.Values.TextField.operator !=(International.EInvoicing.Values.TextField left, International.EInvoicing.Values.TextField right) -> bool
 static International.EInvoicing.Values.TextField.operator ==(International.EInvoicing.Values.TextField left, International.EInvoicing.Values.TextField right) -> bool
-static International.EInvoicing.Values.TextField.Unset.get -> International.EInvoicing.Values.TextField
 static International.EInvoicing.Xml.DocumentLimits.Default.get -> International.EInvoicing.Xml.DocumentLimits!
+static International.EInvoicing.Xml.DocumentLimits.Unlimited.get -> International.EInvoicing.Xml.DocumentLimits!
 static International.EInvoicing.Xml.DocumentLimits.operator !=(International.EInvoicing.Xml.DocumentLimits? left, International.EInvoicing.Xml.DocumentLimits? right) -> bool
 static International.EInvoicing.Xml.DocumentLimits.operator ==(International.EInvoicing.Xml.DocumentLimits? left, International.EInvoicing.Xml.DocumentLimits? right) -> bool
-static International.EInvoicing.Xml.DocumentLimits.Unlimited.get -> International.EInvoicing.Xml.DocumentLimits!
-static International.EInvoicing.Xml.SecureXml.CreateReader(string! xml) -> System.Xml.XmlReader!
-static International.EInvoicing.Xml.SecureXml.CreateReader(string! xml, International.EInvoicing.Xml.DocumentLimits! limits) -> System.Xml.XmlReader!
 static International.EInvoicing.Xml.SecureXml.CreateReader(System.IO.Stream! stream) -> System.Xml.XmlReader!
 static International.EInvoicing.Xml.SecureXml.CreateReader(System.IO.Stream! stream, International.EInvoicing.Xml.DocumentLimits! limits) -> System.Xml.XmlReader!
+static International.EInvoicing.Xml.SecureXml.CreateReader(string! xml) -> System.Xml.XmlReader!
+static International.EInvoicing.Xml.SecureXml.CreateReader(string! xml, International.EInvoicing.Xml.DocumentLimits! limits) -> System.Xml.XmlReader!
 static International.EInvoicing.Xml.SecureXml.CreateReaderSettings() -> System.Xml.XmlReaderSettings!
 static International.EInvoicing.Xml.SecureXml.CreateReaderSettings(International.EInvoicing.Xml.DocumentLimits! limits) -> System.Xml.XmlReaderSettings!
 static International.EInvoicing.Xml.SecureXml.IsDepthExceeded(System.Xml.XmlReader! reader, International.EInvoicing.Xml.DocumentLimits! limits) -> bool

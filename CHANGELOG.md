@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **UBL ↔ CII conversion, with a loss report.** `EInvoicing.Convert` takes an invoice you built or the XML of
+  one you received and returns a `ConversionResult`: the converted document, the invoice as it reads back, and
+  a list of what the crossing cost. The losses are *found* rather than predicted — the result is read back and
+  what it reports is recorded, along with every extension element the source carried, which is syntax-specific
+  by definition and has nowhere to go in the other syntax. Converting silently is the dangerous version; the
+  report is the feature. `InvoiceNodes.Descendants` and `.Extensions` walk the model for it, written out by
+  hand so trimming and ahead-of-time compilation keep working.
 - **Code lists a caller can pick from**, not only be judged by. `InvoiceTypeCodes` now carries both lists —
   invoices and credit notes — and `VatCategoryCodes` and `PaymentMeansCodes` join it, each read out of the
   shipped EN 16931 artefact and compared against it on every build, the way the Peppol scheme list already

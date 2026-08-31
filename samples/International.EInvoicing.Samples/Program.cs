@@ -15,6 +15,7 @@ string ubl = Invoices.Write(einvoicing, invoice);
 Invoices.ReadBack(einvoicing, ubl);
 Invoices.Validate(einvoicing, ubl);
 
+Converting.Run(einvoicing, ubl);
 HostileDocuments.Run(einvoicing);
 Extending.Run();
 HybridPdf.Run(Invoices.Build(announce: false));
