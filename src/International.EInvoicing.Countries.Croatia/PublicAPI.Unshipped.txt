@@ -41,3 +41,9 @@ static International.EInvoicing.Countries.Croatia.Identifiers.HrOib.operator ==(
 static International.EInvoicing.Countries.Croatia.Identifiers.HrOib.Parse(string! value) -> International.EInvoicing.Countries.Croatia.Identifiers.HrOib
 static International.EInvoicing.Countries.Croatia.Identifiers.HrOib.TryParse(string? value, out International.EInvoicing.Countries.Croatia.Identifiers.HrOib oib) -> bool
 ~override International.EInvoicing.Countries.Croatia.Identifiers.HrOib.Equals(object obj) -> bool
+static International.EInvoicing.Countries.Croatia.HrProfiles.CiusHrUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Croatia.CroatiaServiceCollectionExtensions.AddCroatianRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+International.EInvoicing.Countries.Croatia.HrBusinessProcess
+static International.EInvoicing.Countries.Croatia.HrBusinessProcess.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Countries.Croatia.HrBusinessProcess.ForBuyer(string! designation) -> string!
+static International.EInvoicing.Countries.Croatia.HrBusinessProcess.IsValid(string? value) -> bool

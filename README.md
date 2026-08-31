@@ -163,7 +163,7 @@ validation is never presented as a success.
 | Portugal — CIUS-PT <sub>CIUS-PT 2.1.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Portugal` |
 | Iceland — Peppol BIS, kennitala <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Iceland` |
 | Italy — Peppol BIS, partita IVA <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Italy` |
-| Croatia — Peppol BIS, OIB <sub>BIS 3.0</sub> | ✅ | ✅ | 🚧 | `International.EInvoicing.Countries.Croatia` |
+| Croatia — Peppol BIS, CIUS-HR, OIB <sub>BIS 3.0</sub> | ✅ | ✅ | 🚧 | `International.EInvoicing.Countries.Croatia` |
 | Australia — Peppol PINT (A-NZ), ABN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Australia` |
 | New Zealand — Peppol PINT (A-NZ), NZBN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.NewZealand` |
 | Singapore — Peppol PINT (InvoiceNow), GST <sub>PINT @sg-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Singapore` |
@@ -203,7 +203,7 @@ validation is never presented as a success.
 
 > **Italy — Peppol BIS, partita IVA** — What Italy exchanges over Peppol: the partita IVA with the check Peppol publishes for scheme 0211, measured against it in both directions, and the full postal address IT-R-002 to IT-R-004 require. FatturaPA and the SDI are a separate project — their own syntax, and a qualified signature this library does not produce.
 
-> **Croatia — Peppol BIS, OIB** — The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10. The HR-FISK 2.0 CIUS is not carried — its identifier is published nowhere this repository can read — and neither is the advanced electronic seal or the fiscalisation reporting, which are a signature and a transport.
+> **Croatia — Peppol BIS, CIUS-HR, OIB** — The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10, and CIUS-HR 2025 with its extension — profile and rules both, once the artefacts are fetched. An invoice this library writes satisfies 71 of the 74 Croatian assertions; the three left want UBL elements EN 16931 does not define. The advanced electronic seal and the fiscalisation reporting stay out: a signature and a transport.
 
 > **Australia — Peppol PINT (A-NZ), ABN** — The A-NZ PINT profile and business process — both different strings from Peppol BIS — the ABN with the modulo 89 check measured against Peppol's rule for scheme 0151, and GST rather than VAT, which four fatal A-NZ rules require. Validated against the PINT base and jurisdiction rules once they are fetched.
 

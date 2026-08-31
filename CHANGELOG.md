@@ -6,6 +6,23 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Croatia's CIUS was not missing, it was unfetched** — and finding that out cost one line. CIUS-HR 2025
+  had been recorded as blocked on an identifier "published nowhere this repository can read". The publisher's
+  rules are aggregated by `phive-rules` as compiled XSLT, which this library has read since Factur-X, and the
+  fetch script already pulled four other national modules from it. Adding `eracun` to that list yielded the
+  identifier *and* all 74 assertions from the same file. `HrProfiles.CiusHrUbl` is that identifier — one, not
+  two, because CIUS-HR never travels without its extension — and `AddCroatianRulesFrom` runs the rules.
+  An invoice this library writes now satisfies **71 of the 74**. The three left are `cbc:IssueTime` and the
+  operator's name and OIB in `cac:SellerContact`: ordinary UBL elements that EN 16931 does not define, so the
+  model has nowhere to hold them. A test names them one by one and fails the day that changes.
+- **`HrBusinessProcess`** — BT-23 is mandatory in Croatia and restricted to `P1`–`P12` or `P99:` and the
+  buyer's own designation. The shape is checked; what the twelve mean is in a specification no artefact here
+  carries, so no labels are invented for them.
+- **The docs site had no API reference at all.** docfx forces `TargetFramework=net10.0` over every project in
+  `src/`, and the CLI is a dotnet tool pinned to net8.0 alone, so its project references resolved against a
+  framework it was never restored for: twenty errors, the metadata step dead, and every published page of API
+  documentation missing. The tool is excluded from that step, and the build emits 365 API pages where it
+  emitted none. The fourteen link warnings were dead links on the site, and now point at GitHub.
 - **German *Skonto*, structured rather than hand-rolled.** An early-payment discount is a number your
   accounting system needs, and Germany keeps it inside BT-20's free text, where `BR-DE-18` judges it with a
   regular expression — the percentage with exactly two decimals, the keywords in capitals, no stray space, and

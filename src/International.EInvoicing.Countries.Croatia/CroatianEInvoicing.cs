@@ -19,10 +19,10 @@ namespace International.EInvoicing.Countries.Croatia;
 /// invoice, so that is what this holds — checked before it is written.
 /// </para>
 /// <para>
-/// What a document library cannot supply is set out in <c>docs/standards/country-hr.md</c>: the advanced
-/// electronic seal every invoice must carry, the real-time fiscalisation messages both parties send to the
-/// tax administration, and the HR-FISK 2.0 CIUS identifier, which is published nowhere this repository can
-/// read.
+/// CIUS-HR 2025 and its extension are carried too, with the rules that judge them — see
+/// <see cref="CroatiaServiceCollectionExtensions.AddCroatianRulesFrom"/>. What a document library cannot
+/// supply is set out in <c>docs/standards/country-hr.md</c>: the advanced electronic seal every invoice must
+/// carry, and the real-time fiscalisation messages both parties send to the tax administration.
 /// </para>
 /// </remarks>
 [System.Diagnostics.CodeAnalysis.SuppressMessage(

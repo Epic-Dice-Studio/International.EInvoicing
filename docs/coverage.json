@@ -247,13 +247,13 @@
           "notes": "What Italy exchanges over Peppol: the partita IVA with the check Peppol publishes for scheme 0211, measured against it in both directions, and the full postal address IT-R-002 to IT-R-004 require. FatturaPA and the SDI are a separate project — their own syntax, and a qualified signature this library does not produce."
         },
         {
-          "name": "Croatia — Peppol BIS, OIB",
+          "name": "Croatia — Peppol BIS, CIUS-HR, OIB",
           "version": "BIS 3.0",
           "package": "International.EInvoicing.Countries.Croatia",
           "read": "done",
           "write": "done",
           "validate": "in-progress",
-          "notes": "The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10. The HR-FISK 2.0 CIUS is not carried — its identifier is published nowhere this repository can read — and neither is the advanced electronic seal or the fiscalisation reporting, which are a signature and a transport."
+          "notes": "The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10, and CIUS-HR 2025 with its extension — profile and rules both, once the artefacts are fetched. An invoice this library writes satisfies 71 of the 74 Croatian assertions; the three left want UBL elements EN 16931 does not define. The advanced electronic seal and the fiscalisation reporting stay out: a signature and a transport."
         },
         {
           "name": "Australia — Peppol PINT (A-NZ), ABN",

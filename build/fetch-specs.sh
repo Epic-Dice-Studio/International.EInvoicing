@@ -137,7 +137,7 @@ fetch_national() {
     rm -rf "$SPECS_DIR/national"
 
     local module
-    for module in simplerinvoicing cius-ro serbia turkey isdoc cius-pt zugferd ublbe; do
+    for module in simplerinvoicing cius-ro serbia turkey isdoc cius-pt zugferd ublbe eracun; do
         sync_into "$src/phive-rules-$module/src/main/resources/external/schematron" \
             "$SPECS_DIR/national/$module"
     done

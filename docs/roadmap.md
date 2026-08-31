@@ -228,7 +228,7 @@ The three done ones are at the top so the tiers read as one list.
 | **Denmark** | Peppol BIS Billing, CVR, the payment means `DK-R-005` allows | ✅ complete, `DanishEInvoicing` |
 | **Netherlands** | NLCIUS and Peppol BIS, the KvK/OIN scheme `NL-R-003` demands | ✅ complete, `DutchEInvoicing` |
 | **Iceland** | Peppol BIS Billing, kennitala in the scheme `IS-R-002` demands | ✅ complete, `IcelandicEInvoicing` |
-| **Croatia** | Peppol BIS Billing, OIB on both parties | 🚧 the invoice, `CroatianEInvoicing` — the seal and the fiscalisation reporting are not ours to do |
+| **Croatia** | Peppol BIS Billing, CIUS-HR 2025 + extension, OIB on both parties | 🚧 the invoice, `CroatianEInvoicing`, and the 74 published assertions run — an invoice this library writes satisfies 71 of them; the seal and the fiscalisation reporting are not ours to do |
 | **Australia** | Peppol PINT (A-NZ), ABN, GST | ✅ `AustralianEInvoicing`, validated against the real PINT rules |
 | **New Zealand** | Peppol PINT (A-NZ), NZBN, GST | ✅ `NewZealandEInvoicing`, the same |
 | **Singapore** | Peppol PINT (SG), GST, Singapore's own category codes | ✅ `SingaporeEInvoicing` |
@@ -281,14 +281,18 @@ what it can do is the third thing — a valid invoice carrying both OIBs — whi
 question it raises is the same one Italy and Spain raise, still open below.
 
 **Slovakia** is the genuine Tier 1 remainder: Peppol BIS Billing 3.0 with a Slovak CIUS from
-**1 January 2027**, plus an SK tax data document sent to the financial administration within fifteen minutes
-— again transport, not document.
+**1 January 2027**, plus an SK tax data document sent to the financial administration within fifteen minutes.
+The transmission is transport and out of scope, but the **document** it carries has published rules —
+`phive-rules-peppol-taxdata` holds them for Slovakia, and for the UAE, Oman and ViDA beside it — so the
+document half is now fetchable like any other.
 
-A pattern that looked like a wall turned out to be a fetch list. NLCIUS, HR-FISK 2.0 and the Slovak CIUS were
-all recorded as "blocked on an identifier no artefact we hold publishes". For NLCIUS that was wrong: the
-identifier is in the Dutch rule set, and once the national rule modules were fetched it fell out immediately —
-along with Romania's, Serbia's and Portugal's. **HR-FISK 2.0 and the Slovak CIUS are still genuinely
-missing**, but the lesson stands: before declaring a fact unobtainable, check whether it is merely
+A pattern that looked like a wall turned out to be a fetch list, twice. NLCIUS, HR-FISK 2.0 and the Slovak
+CIUS were all recorded as "blocked on an identifier no artefact we hold publishes". For NLCIUS that was wrong:
+the identifier is in the Dutch rule set, and once the national rule modules were fetched it fell out
+immediately — along with Romania's, Serbia's and Portugal's. **It was wrong for Croatia too**: the same
+aggregator carries `phive-rules-eracun`, whose compiled XSLT holds the CIUS-HR identifier and all 74 of its
+assertions. One line in the fetch script, and a country that had been called expensive was mostly done. The
+lesson has now paid for itself twice: before declaring a fact unobtainable, check whether it is merely
 unfetched.
 
 ### Tier 2 — Peppol **PINT** jurisdictions · *the profiles exist now; each needs its identifiers and rules*
