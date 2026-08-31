@@ -48,6 +48,7 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
         {
             using var reader = SecureXml.CreateReader(stream, _options.Limits);
             root = XElement.Load(reader, LoadOptions.SetLineInfo);
+            SecureXml.EnsureDepthWithin(root, _options.Limits);
         }
         catch (System.Xml.XmlException exception)
         {
@@ -136,7 +137,13 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
 
         foreach (XElement document in TakeAll(root, UblNames.Cac + "AdditionalDocumentReference", mapped))
         {
-            AdditionalDocument mappedDocument = ReadAdditionalDocument(document, values);
+            if (Limits.Exceeded(invoice.AdditionalDocuments.Count, _options.Limits.MaxAttachmentCount))
+            {
+                diagnostics.Add(Limits.TooMany(_options.Limits.MaxAttachmentCount, "attached documents"));
+                break;
+            }
+
+            AdditionalDocument mappedDocument = ReadAdditionalDocument(document, values, _options.Limits);
             owners[document] = mappedDocument;
             invoice.AdditionalDocuments.Add(mappedDocument);
         }
@@ -172,6 +179,12 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
 
         foreach (XElement line in TakeAll(root, shape.Line, mapped))
         {
+            if (Limits.Exceeded(invoice.Lines.Count, _options.Limits.MaxDocumentLines))
+            {
+                diagnostics.Add(Limits.TooMany(_options.Limits.MaxDocumentLines, "invoice lines"));
+                break;
+            }
+
             InvoiceLine mappedLine = ReadLine(shape, line, values, owners);
             owners[line] = mappedLine;
             invoice.Lines.Add(mappedLine);
@@ -215,7 +228,10 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
                 EndDate = values.ReadDate(element.Element(UblNames.Cbc + "EndDate"), "BT-74"),
             };
 
-    private static AdditionalDocument ReadAdditionalDocument(XElement element, UblValueReader values)
+    private static AdditionalDocument ReadAdditionalDocument(
+        XElement element,
+        UblValueReader values,
+        DocumentLimits limits)
     {
         XElement? attachment = Descend(values, element, UblNames.Cac + "Attachment");
         XElement? embedded = attachment?.Element(UblNames.Cbc + "EmbeddedDocumentBinaryObject");
@@ -230,20 +246,20 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
 
         if (embedded is not null)
         {
-            document.Attachment = ReadBinary(embedded, values);
+            document.Attachment = ReadBinary(embedded, values, limits);
         }
 
         return document;
     }
 
-    private static BinaryField ReadBinary(XElement element, UblValueReader values)
+    private static BinaryField ReadBinary(XElement element, UblValueReader values, DocumentLimits limits)
     {
         string mimeCode = element.Attribute("mimeCode")?.Value ?? string.Empty;
         string filename = element.Attribute("filename")?.Value ?? string.Empty;
         var source = new FieldSource(element.Value, UblValueReader.LocationOf(element));
 
-        return Convert.TryFromBase64String(element.Value, new byte[element.Value.Length], out _)
-            ? new BinaryField(Convert.FromBase64String(element.Value), mimeCode, filename, source)
+        return Limits.Decode(element.Value, limits, values.Diagnostics) is { } decoded
+            ? new BinaryField(decoded, mimeCode, filename, source)
             : new BinaryField(null, mimeCode, filename, source);
     }
 

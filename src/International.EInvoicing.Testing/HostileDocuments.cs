@@ -4,7 +4,7 @@ namespace International.EInvoicing.Testing;
 
 /// <summary>One document that fights back, and what reading it must do.</summary>
 /// <param name="Name">What to call it in a test name.</param>
-/// <param name="Xml">The document.</param>
+/// <param name="Xml">The document, as text.</param>
 /// <param name="StaysUsable">Whether something usable must still come out.</param>
 /// <param name="ExpectedDiagnostic">The code reading it must report, when one is promised.</param>
 /// <param name="What">What is wrong with it, in a sentence.</param>
@@ -15,6 +15,15 @@ public sealed record HostileDocument(
     string? ExpectedDiagnostic,
     string What)
 {
+    /// <summary>
+    /// The document as bytes, which is how some of these have to be read.
+    /// </summary>
+    /// <remarks>
+    /// A mis-declared encoding does not survive being handed over as a <see cref="string"/>: by then the
+    /// decoding has already happened, correctly or not. Those cases carry their own bytes.
+    /// </remarks>
+    public byte[] Bytes { get; init; } = System.Text.Encoding.UTF8.GetBytes(Xml);
+
     /// <inheritdoc />
     public override string ToString() => Name;
 }
@@ -93,7 +102,61 @@ public static class HostileDocuments
             StaysUsable: false,
             ExpectedDiagnostic: null,
             "well-formed XML that is not an invoice in any syntax"),
+        new(
+            "declares-utf8-and-sends-latin1",
+            Latin1Invoice,
+            StaysUsable: true,
+            DiagnosticCodes.DeclaredEncodingMismatch.Code,
+            "the sender's database is Latin-1 and its template says UTF-8; the buyer's name is the casualty")
+        {
+            Bytes = Latin1Bytes(),
+        },
+        new(
+            "declares-an-encoding-nobody-carries-a-package-for",
+            Invoice(declaration: "<?xml version=\"1.0\" encoding=\"windows-1252\"?>"),
+            StaysUsable: true,
+            DiagnosticCodes.UnsupportedEncoding.Code,
+            "a real encoding this library does not decode; it must say what it assumed"),
+        new(
+            "nested-a-thousand-deep",
+            DeeplyNested(1_000),
+            StaysUsable: false,
+            ExpectedDiagnostic: null,
+            "not an attack that allocates, one that recurses; the depth limit exists for it"),
+        new(
+            "an-attachment-larger-than-the-limit",
+            Invoice(extra: Attachment(2_000_000)),
+            StaysUsable: true,
+            ExpectedDiagnostic: null,
+            "a base64 payload past DocumentLimits.MaxAttachmentBytes must be refused, not decoded"),
+        new(
+            "a-line-that-claims-a-quantity-of-nothing",
+            Invoice(extra: string.Empty, payable: ""),
+            StaysUsable: true,
+            ExpectedDiagnostic: null,
+            "an empty amount element, which the schema forbids and systems still emit"),
     ];
+
+    /// <summary>An invoice whose buyer name needs a byte above 0x7F to survive.</summary>
+    private static string Latin1Invoice => Invoice(buyer: "Müller und Söhne");
+
+    /// <summary>The same invoice, declared UTF-8 and encoded ISO-8859-1 — the mismatch itself.</summary>
+    private static byte[] Latin1Bytes() =>
+        System.Text.Encoding.GetEncoding(28591).GetBytes(Latin1Invoice);
+
+    private static string DeeplyNested(int depth) =>
+        "<Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\">"
+        + string.Concat(Enumerable.Repeat("<a>", depth))
+        + string.Concat(Enumerable.Repeat("</a>", depth))
+        + "</Invoice>";
+
+    private static string Attachment(int bytes) =>
+        "<cac:AdditionalDocumentReference>"
+        + "<cbc:ID>ATTACHMENT-1</cbc:ID>"
+        + "<cac:Attachment><cbc:EmbeddedDocumentBinaryObject mimeCode=\"application/pdf\" filename=\"big.pdf\">"
+        + new string('A', bytes)
+        + "</cbc:EmbeddedDocumentBinaryObject></cac:Attachment>"
+        + "</cac:AdditionalDocumentReference>";
 
     /// <summary>The documents that must still produce something usable.</summary>
     public static IEnumerable<HostileDocument> Survivable => All.Where(document => document.StaysUsable);
@@ -102,14 +165,16 @@ public static class HostileDocuments
         string? profile = "urn:cen.eu:en16931:2017",
         string issueDate = "2026-09-01",
         string payable = "540.00",
-        string extra = "")
+        string extra = "",
+        string buyer = "Buyer SA",
+        string declaration = "")
     {
         string customization = profile is null
             ? string.Empty
             : $"<cbc:CustomizationID>{profile}</cbc:CustomizationID>";
 
         return $"""
-            <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+            {declaration}<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
                      xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
                      xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
               {customization}
@@ -122,7 +187,7 @@ public static class HostileDocuments
                 <cac:Party><cac:PartyName><cbc:Name>Seller Ltd</cbc:Name></cac:PartyName></cac:Party>
               </cac:AccountingSupplierParty>
               <cac:AccountingCustomerParty>
-                <cac:Party><cac:PartyName><cbc:Name>Buyer SA</cbc:Name></cac:PartyName></cac:Party>
+                <cac:Party><cac:PartyName><cbc:Name>{buyer}</cbc:Name></cac:PartyName></cac:Party>
               </cac:AccountingCustomerParty>
               <cac:LegalMonetaryTotal>
                 <cbc:PayableAmount currencyID="EUR">{payable}</cbc:PayableAmount>

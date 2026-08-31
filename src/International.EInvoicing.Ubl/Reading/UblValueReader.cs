@@ -18,6 +18,9 @@ namespace International.EInvoicing.Ubl.Reading;
 /// </remarks>
 internal sealed class UblValueReader(DiagnosticCollector diagnostics, HashSet<XElement> mapped)
 {
+    /// <summary>Where anything this reader could not do is reported.</summary>
+    public DiagnosticCollector Diagnostics => diagnostics;
+
     /// <summary>Marks an element as mapped. Returns false when there is no element to read.</summary>
     public bool Consume([NotNullWhen(true)] XElement? element)
     {

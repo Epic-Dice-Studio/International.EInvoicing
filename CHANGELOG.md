@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **A document's declared encoding is honoured.** The bytes were decoded as UTF-8 whatever the document said,
+  so a sender whose database is Latin-1 and whose template says UTF-8 — the single most discussed issue in the
+  German validator's tracker — had `Müller` arrive as `M?ller`: a document that validates, arrives, and is
+  wrong in the one field a human reads. The declaration and any byte-order mark are now obeyed, a mismatch is
+  reported as [EIV5002](docs/diagnostics/EIV5002.md) with ISO-8859-1 as the fallback, and an encoding this
+  library does not carry a package for is named in [EIV5003](docs/diagnostics/EIV5003.md) rather than
+  silently assumed.
+- **Three limits were declared and never enforced.** `MaxElementDepth`, `MaxAttachmentBytes` and
+  `MaxAttachmentCount`/`MaxDocumentLines` were documented reassurance a reader relied on and nothing checked.
+  Depth is now refused after loading — LINQ-to-XML survives the parse, but every consumer afterwards recurses
+  — an attachment is measured *before* it is decoded, and a document carrying more than the limits allow says
+  so as [EIV4004](docs/diagnostics/EIV4004.md) rather than handing back a silently truncated invoice.
+- **The hostile corpus grew** to cover all of it: a mis-declared encoding, an encoding we do not decode,
+  nesting a thousand deep, an oversized attachment, an empty amount.
 - **Property-based tests on rounding**, and they found a real defect on the first run. Three hundred generated
   invoices per syntax — quantities to three decimals, prices to four, base quantities that are not one, so the
   multiplication lands off two decimals more often than on — written and judged by the official EN 16931

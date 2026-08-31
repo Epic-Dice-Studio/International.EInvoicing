@@ -48,6 +48,7 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         {
             using var reader = SecureXml.CreateReader(stream, _options.Limits);
             root = XElement.Load(reader, LoadOptions.SetLineInfo);
+            SecureXml.EnsureDepthWithin(root, _options.Limits);
         }
         catch (System.Xml.XmlException exception)
         {
@@ -87,7 +88,7 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
     {
         var mapped = new HashSet<XElement>();
         var owners = new Dictionary<XElement, InvoiceNode>();
-        var values = new CiiValueReader(diagnostics, mapped);
+        var values = new CiiValueReader(diagnostics, mapped) { Limits = _options.Limits };
         var invoice = new EInvoice();
 
         ReadContext(root, invoice, values);
@@ -96,6 +97,12 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         XElement? transaction = In(values, root, CiiNames.Rsm + "SupplyChainTradeTransaction");
         foreach (XElement line in AllIn(values, transaction, CiiNames.Ram + "IncludedSupplyChainTradeLineItem"))
         {
+            if (Limits.Exceeded(invoice.Lines.Count, values.Limits.MaxDocumentLines))
+            {
+                diagnostics.Add(Limits.TooMany(values.Limits.MaxDocumentLines, "invoice lines"));
+                break;
+            }
+
             InvoiceLine mappedLine = ReadLine(line, values, owners);
             owners[line] = mappedLine;
             invoice.Lines.Add(mappedLine);
@@ -173,6 +180,12 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
 
         foreach (XElement document in AllIn(values, agreement, CiiNames.Ram + "AdditionalReferencedDocument"))
         {
+            if (Limits.Exceeded(invoice.AdditionalDocuments.Count, values.Limits.MaxAttachmentCount))
+            {
+                values.Diagnostics.Add(Limits.TooMany(values.Limits.MaxAttachmentCount, "attached documents"));
+                break;
+            }
+
             AdditionalDocument mappedDocument = ReadAdditionalDocument(document, values);
             owners[document] = mappedDocument;
             invoice.AdditionalDocuments.Add(mappedDocument);
@@ -556,27 +569,22 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
 
         if (binary is not null)
         {
-            document.Attachment = ReadBinary(binary);
+            document.Attachment = ReadBinary(binary, values);
             values.Consume(binary);
         }
 
         return document;
     }
 
-    private static BinaryField ReadBinary(XElement element)
+    private static BinaryField ReadBinary(XElement element, CiiValueReader values)
     {
         string mimeCode = element.Attribute("mimeCode")?.Value ?? string.Empty;
         string filename = element.Attribute("filename")?.Value ?? string.Empty;
         var source = new FieldSource(element.Value, CiiValueReader.LocationOf(element));
 
-        try
-        {
-            return new BinaryField(Convert.FromBase64String(element.Value), mimeCode, filename, source);
-        }
-        catch (FormatException)
-        {
-            return new BinaryField(null, mimeCode, filename, source);
-        }
+        return Limits.Decode(element.Value, values.Limits, values.Diagnostics) is { } decoded
+            ? new BinaryField(decoded, mimeCode, filename, source)
+            : new BinaryField(null, mimeCode, filename, source);
     }
 
     private static IdentifierField ReadReferencedDocument(XElement parent, string name, CiiValueReader values) =>

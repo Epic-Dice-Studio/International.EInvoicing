@@ -53,6 +53,7 @@ public sealed class CdarReader : IDocumentReader<LifecycleStatusMessage>
         {
             using var reader = SecureXml.CreateReader(stream, _options.Limits);
             root = XElement.Load(reader, LoadOptions.SetLineInfo);
+            SecureXml.EnsureDepthWithin(root, _options.Limits);
         }
         catch (XmlException exception)
         {

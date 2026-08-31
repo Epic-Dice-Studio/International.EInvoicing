@@ -20,6 +20,34 @@ public static class DiagnosticCodes
         DiagnosticSeverity.Fatal,
         "The document is not well-formed XML: {0}");
 
+    /// <summary>An attachment is larger than the limit, so it was not decoded.</summary>
+    public static DiagnosticDescriptor AttachmentTooLarge { get; } = new(
+        "EIV4003",
+        DiagnosticCategory.Safety,
+        DiagnosticSeverity.Warning,
+        "An attachment (BT-125) of about {0} bytes is over the {1} byte limit and was not decoded.");
+
+    /// <summary>The document carries more of something than the limits allow, and the rest was not read.</summary>
+    public static DiagnosticDescriptor TooMany { get; } = new(
+        "EIV4004",
+        DiagnosticCategory.Safety,
+        DiagnosticSeverity.Error,
+        "The document carries more than {0} {1}; the rest was not read.");
+
+    /// <summary>The document's bytes are not valid in the encoding it declares.</summary>
+    public static DiagnosticDescriptor DeclaredEncodingMismatch { get; } = new(
+        "EIV5002",
+        DiagnosticCategory.Safety,
+        DiagnosticSeverity.Warning,
+        "The document declares encoding '{0}' but byte {1} is not valid in it.");
+
+    /// <summary>The document declares an encoding this library does not decode.</summary>
+    public static DiagnosticDescriptor UnsupportedEncoding { get; } = new(
+        "EIV5003",
+        DiagnosticCategory.Safety,
+        DiagnosticSeverity.Warning,
+        "The document declares encoding '{0}', which this library does not decode.");
+
     /// <summary>The declared profile identifier matches nothing the library knows.</summary>
     public static DiagnosticDescriptor UnknownProfile { get; } = new(
         "EIV1042",

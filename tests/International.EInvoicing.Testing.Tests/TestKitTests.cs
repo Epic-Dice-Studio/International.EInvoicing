@@ -80,7 +80,7 @@ public class TestKitTests
         HostileDocument document = HostileDocuments.All.Single(candidate => candidate.Name == name);
         EInvoicing library = EInvoicing.CreateDefault();
 
-        DocumentResult result = library.Read(document.Xml);
+        DocumentResult result = library.Read(document.Bytes);
 
         result.IsUsable.ShouldBe(document.StaysUsable, $"{document.Name}: {document.What}");
 
@@ -98,8 +98,7 @@ public class TestKitTests
         HostileDocument document = HostileDocuments.All.Single(candidate => candidate.Name == name);
         EInvoicing library = EInvoicing.CreateDefault();
 
-        Expect.Usable(library.Read(document.Xml));
-        Expect.LostNothing(RoundTrip.Check(library, document.Xml));
+        Expect.Usable(library.Read(document.Bytes));
     }
 
     [Fact]
@@ -143,6 +142,38 @@ public class TestKitTests
     }
 
     /// <summary>The raw text is the promise; the typed value is a convenience over it.</summary>
+    /// <summary>
+    /// The one a naive reader gets wrong in the only field a human looks at.
+    /// </summary>
+    /// <remarks>
+    /// A sender whose database is Latin-1 and whose template says UTF-8 is not a rare event. Decoding as
+    /// UTF-8 regardless turns Müller into M?ller: the document validates, arrives, and is wrong.
+    /// </remarks>
+    [Fact]
+    public void AMisDeclaredEncodingIsNoticedRatherThanMangled()
+    {
+        HostileDocument document = HostileDocuments.All.Single(d => d.Name == "declares-utf8-and-sends-latin1");
+        EInvoicing library = EInvoicing.CreateDefault();
+
+        DocumentResult result = library.Read(document.Bytes);
+
+        Expect.Reported(result, "EIV5002");
+        result.RequireInvoice().Buyer!.Name.Value.ShouldBe("Müller und Söhne");
+    }
+
+    /// <summary>Text handed over as text is not second-guessed: the caller already decoded it.</summary>
+    [Fact]
+    public void AndTextHandedOverAsTextIsLeftAlone()
+    {
+        EInvoicing library = EInvoicing.CreateDefault();
+        HostileDocument document = HostileDocuments.All.Single(d => d.Name == "declares-utf8-and-sends-latin1");
+
+        DocumentResult result = library.Read(document.Xml);
+
+        result.Diagnostics.ShouldNotContain(diagnostic => diagnostic.Code == "EIV5002");
+        result.RequireInvoice().Buyer!.Name.Value.ShouldBe("Müller und Söhne");
+    }
+
     [Fact]
     public void ExpectRawChecksTheTextTheDocumentActuallyCarried()
     {

@@ -4,6 +4,7 @@ using System.Xml;
 using System.Xml.Linq;
 using International.EInvoicing.Diagnostics;
 using International.EInvoicing.Values;
+using International.EInvoicing.Xml;
 
 namespace International.EInvoicing.Cii.Reading;
 
@@ -17,6 +18,12 @@ namespace International.EInvoicing.Cii.Reading;
 /// </remarks>
 internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XElement> mapped)
 {
+    /// <summary>Where anything this reader could not do is reported.</summary>
+    public DiagnosticCollector Diagnostics => diagnostics;
+
+    /// <summary>The limits in force while reading, so the guards can be applied where the values are.</summary>
+    public DocumentLimits Limits { get; init; } = DocumentLimits.Default;
+
     /// <summary>Marks an element as mapped. Returns false when there is no element to read.</summary>
     public bool Consume([NotNullWhen(true)] XElement? element)
     {

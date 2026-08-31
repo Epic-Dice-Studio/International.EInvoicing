@@ -6,6 +6,8 @@ International.EInvoicing.Testing.EInvoicingAssertionException.EInvoicingAssertio
 International.EInvoicing.Testing.Expect
 International.EInvoicing.Testing.HostileDocument
 International.EInvoicing.Testing.HostileDocument.<Clone>$() -> International.EInvoicing.Testing.HostileDocument!
+International.EInvoicing.Testing.HostileDocument.Bytes.get -> byte[]!
+International.EInvoicing.Testing.HostileDocument.Bytes.init -> void
 International.EInvoicing.Testing.HostileDocument.Deconstruct(out string! Name, out string! Xml, out bool StaysUsable, out string? ExpectedDiagnostic, out string! What) -> void
 International.EInvoicing.Testing.HostileDocument.Equals(International.EInvoicing.Testing.HostileDocument? other) -> bool
 International.EInvoicing.Testing.HostileDocument.ExpectedDiagnostic.get -> string?

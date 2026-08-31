@@ -250,9 +250,12 @@ public sealed class EInvoicing
             return ReadHybrid(document);
         }
 
-        string text = System.Text.Encoding.UTF8.GetString(document);
+        // The document says what encoding it is in, and senders get that wrong often enough that decoding
+        // everything as UTF-8 turns Müller into MÃ¼ller in the one field a human reads.
+        DecodedDocument decoded = DocumentText.Decode(document);
+        string text = decoded.Text;
 
-        return Detect(text) switch
+        return WithDecoding(decoded, Detect(text) switch
         {
             DocumentKind.Ubl => FromInvoice(DocumentKind.Ubl, Ubl.Read(text)),
             DocumentKind.UblCreditNote => FromInvoice(DocumentKind.UblCreditNote, Ubl.Read(text)),
@@ -263,8 +266,14 @@ public sealed class EInvoicing
                 Kind = DocumentKind.Unknown,
                 Diagnostics = [WhyNot(text)],
             },
-        };
+        });
     }
+
+    /// <summary>Adds what decoding reported, if anything, to what reading reported.</summary>
+    private static DocumentResult WithDecoding(DecodedDocument decoded, DocumentResult result) =>
+        decoded.Diagnostic is { } diagnostic
+            ? result with { Diagnostics = [diagnostic, .. result.Diagnostics] }
+            : result;
 
     /// <summary>
     /// Reads a document from a stream without blocking on the read. The stream is left open.

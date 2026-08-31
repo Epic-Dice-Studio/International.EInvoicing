@@ -1,4 +1,5 @@
 using System.Xml;
+using System.Xml.Linq;
 
 namespace International.EInvoicing.Xml;
 
@@ -66,6 +67,55 @@ public static class SecureXml
         ArgumentNullException.ThrowIfNull(limits);
 
         return XmlReader.Create(new StringReader(xml), CreateReaderSettings(limits));
+    }
+
+    /// <summary>
+    /// Refuses a document that nests deeper than <see cref="DocumentLimits.MaxElementDepth"/>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The limit is not about memory — a deeply nested document is small. It is about what happens next:
+    /// evaluating an XPath expression over it, writing it back, walking it in a rule. Those recurse, and a
+    /// document nested ten thousand deep exhausts the stack, which no <c>catch</c> can recover from.
+    /// </para>
+    /// <para>
+    /// Checked after loading rather than during, because LINQ-to-XML builds the tree iteratively and so
+    /// survives the parse; it is every consumer afterwards that must be protected. Reported as
+    /// <c>XmlException</c> so it joins the malformed-document path a reader already has, and reaches the
+    /// caller as EIV5001 rather than as a crash.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    /// <exception cref="XmlException">The document nests deeper than the limit allows.</exception>
+    public static void EnsureDepthWithin(XElement root, DocumentLimits limits)
+    {
+        ArgumentNullException.ThrowIfNull(root);
+        ArgumentNullException.ThrowIfNull(limits);
+
+        if (limits.MaxElementDepth <= 0)
+        {
+            return;
+        }
+
+        Stack<(XElement Element, int Depth)> pending = new();
+        pending.Push((root, 1));
+
+        while (pending.Count > 0)
+        {
+            (XElement element, int depth) = pending.Pop();
+
+            if (depth > limits.MaxElementDepth)
+            {
+                throw new XmlException(
+                    $"The document nests deeper than {limits.MaxElementDepth} elements, the limit in "
+                    + "DocumentLimits.MaxElementDepth. Raise it only if you trust the source.");
+            }
+
+            foreach (XElement child in element.Elements())
+            {
+                pending.Push((child, depth + 1));
+            }
+        }
     }
 
     /// <summary>

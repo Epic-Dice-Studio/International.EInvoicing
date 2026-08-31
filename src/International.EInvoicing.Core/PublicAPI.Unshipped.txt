@@ -920,6 +920,17 @@ International.EInvoicing.Values.TextField.TextField() -> void
 International.EInvoicing.Values.TextField.UntypedValue.get -> object?
 International.EInvoicing.Values.TextField.Value.get -> string?
 International.EInvoicing.Values.TextField.Value.init -> void
+International.EInvoicing.Xml.DecodedDocument
+International.EInvoicing.Xml.DecodedDocument.<Clone>$() -> International.EInvoicing.Xml.DecodedDocument!
+International.EInvoicing.Xml.DecodedDocument.DecodedDocument(string! Text, System.Text.Encoding! Encoding, International.EInvoicing.Diagnostics.Diagnostic? Diagnostic) -> void
+International.EInvoicing.Xml.DecodedDocument.Deconstruct(out string! Text, out System.Text.Encoding! Encoding, out International.EInvoicing.Diagnostics.Diagnostic? Diagnostic) -> void
+International.EInvoicing.Xml.DecodedDocument.Diagnostic.get -> International.EInvoicing.Diagnostics.Diagnostic?
+International.EInvoicing.Xml.DecodedDocument.Diagnostic.init -> void
+International.EInvoicing.Xml.DecodedDocument.Encoding.get -> System.Text.Encoding!
+International.EInvoicing.Xml.DecodedDocument.Encoding.init -> void
+International.EInvoicing.Xml.DecodedDocument.Equals(International.EInvoicing.Xml.DecodedDocument? other) -> bool
+International.EInvoicing.Xml.DecodedDocument.Text.get -> string!
+International.EInvoicing.Xml.DecodedDocument.Text.init -> void
 International.EInvoicing.Xml.DocumentLimits
 International.EInvoicing.Xml.DocumentLimits.<Clone>$() -> International.EInvoicing.Xml.DocumentLimits!
 International.EInvoicing.Xml.DocumentLimits.DocumentLimits() -> void
@@ -934,6 +945,8 @@ International.EInvoicing.Xml.DocumentLimits.MaxDocumentLines.get -> int
 International.EInvoicing.Xml.DocumentLimits.MaxDocumentLines.init -> void
 International.EInvoicing.Xml.DocumentLimits.MaxElementDepth.get -> int
 International.EInvoicing.Xml.DocumentLimits.MaxElementDepth.init -> void
+International.EInvoicing.Xml.DocumentText
+International.EInvoicing.Xml.Limits
 International.EInvoicing.Xml.SecureXml
 International.EInvoicing.Xml.SyntaxNamespaces
 International.EInvoicing.Xml.XmlCharacters
@@ -1009,6 +1022,9 @@ override International.EInvoicing.Values.QuantityField.ToString() -> string!
 ~override International.EInvoicing.Values.TextField.Equals(object obj) -> bool
 override International.EInvoicing.Values.TextField.GetHashCode() -> int
 override International.EInvoicing.Values.TextField.ToString() -> string!
+override International.EInvoicing.Xml.DecodedDocument.Equals(object? obj) -> bool
+override International.EInvoicing.Xml.DecodedDocument.GetHashCode() -> int
+override International.EInvoicing.Xml.DecodedDocument.ToString() -> string!
 override International.EInvoicing.Xml.DocumentLimits.Equals(object? obj) -> bool
 override International.EInvoicing.Xml.DocumentLimits.GetHashCode() -> int
 override International.EInvoicing.Xml.DocumentLimits.ToString() -> string!
@@ -1017,11 +1033,15 @@ static International.EInvoicing.Building.EInvoiceBuilder.Create(International.EI
 static International.EInvoicing.Building.TotalsBuilderExtensions.WithComputedTotals(this International.EInvoicing.Building.EInvoiceBuilder! builder, int decimals = 2) -> International.EInvoicing.Building.EInvoiceBuilder!
 static International.EInvoicing.Building.TotalsBuilderExtensions.WithComputedVatBreakdown(this International.EInvoicing.Building.EInvoiceBuilder! builder, int decimals = 2) -> International.EInvoicing.Building.EInvoiceBuilder!
 static International.EInvoicing.Configuration.EInvoicingServiceCollectionExtensions.AddEInvoicing(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static International.EInvoicing.Diagnostics.DiagnosticCodes.AttachmentTooLarge.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Diagnostics.DiagnosticCodes.DeclaredEncodingMismatch.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.InvalidValue.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Diagnostics.DiagnosticCodes.TooMany.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnknownProfile.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedDateFormat.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedEdition.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedEncoding.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.DiagnosticCodes.UnsupportedProfile.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Diagnostics.Diagnostic.Create(International.EInvoicing.Diagnostics.DiagnosticDescriptor! descriptor, params object?[]! messageArguments) -> International.EInvoicing.Diagnostics.Diagnostic!
 static International.EInvoicing.Diagnostics.DiagnosticDescriptor.operator !=(International.EInvoicing.Diagnostics.DiagnosticDescriptor? left, International.EInvoicing.Diagnostics.DiagnosticDescriptor? right) -> bool
@@ -1159,16 +1179,23 @@ static International.EInvoicing.Values.TextField.implicit operator string?(Inter
 static International.EInvoicing.Values.TextField.operator !=(International.EInvoicing.Values.TextField left, International.EInvoicing.Values.TextField right) -> bool
 static International.EInvoicing.Values.TextField.operator ==(International.EInvoicing.Values.TextField left, International.EInvoicing.Values.TextField right) -> bool
 static International.EInvoicing.Values.TextField.Unset.get -> International.EInvoicing.Values.TextField
+static International.EInvoicing.Xml.DecodedDocument.operator !=(International.EInvoicing.Xml.DecodedDocument? left, International.EInvoicing.Xml.DecodedDocument? right) -> bool
+static International.EInvoicing.Xml.DecodedDocument.operator ==(International.EInvoicing.Xml.DecodedDocument? left, International.EInvoicing.Xml.DecodedDocument? right) -> bool
 static International.EInvoicing.Xml.DocumentLimits.Default.get -> International.EInvoicing.Xml.DocumentLimits!
 static International.EInvoicing.Xml.DocumentLimits.operator !=(International.EInvoicing.Xml.DocumentLimits? left, International.EInvoicing.Xml.DocumentLimits? right) -> bool
 static International.EInvoicing.Xml.DocumentLimits.operator ==(International.EInvoicing.Xml.DocumentLimits? left, International.EInvoicing.Xml.DocumentLimits? right) -> bool
 static International.EInvoicing.Xml.DocumentLimits.Unlimited.get -> International.EInvoicing.Xml.DocumentLimits!
+static International.EInvoicing.Xml.DocumentText.Decode(byte[]! content) -> International.EInvoicing.Xml.DecodedDocument!
+static International.EInvoicing.Xml.Limits.Decode(string! base64, International.EInvoicing.Xml.DocumentLimits! limits, International.EInvoicing.Diagnostics.DiagnosticCollector! diagnostics) -> byte[]?
+static International.EInvoicing.Xml.Limits.Exceeded(int soFar, int limit) -> bool
+static International.EInvoicing.Xml.Limits.TooMany(int limit, string! what) -> International.EInvoicing.Diagnostics.Diagnostic!
 static International.EInvoicing.Xml.SecureXml.CreateReaderSettings(International.EInvoicing.Xml.DocumentLimits! limits) -> System.Xml.XmlReaderSettings!
 static International.EInvoicing.Xml.SecureXml.CreateReaderSettings() -> System.Xml.XmlReaderSettings!
 static International.EInvoicing.Xml.SecureXml.CreateReader(string! xml, International.EInvoicing.Xml.DocumentLimits! limits) -> System.Xml.XmlReader!
 static International.EInvoicing.Xml.SecureXml.CreateReader(string! xml) -> System.Xml.XmlReader!
 static International.EInvoicing.Xml.SecureXml.CreateReader(System.IO.Stream! stream, International.EInvoicing.Xml.DocumentLimits! limits) -> System.Xml.XmlReader!
 static International.EInvoicing.Xml.SecureXml.CreateReader(System.IO.Stream! stream) -> System.Xml.XmlReader!
+static International.EInvoicing.Xml.SecureXml.EnsureDepthWithin(System.Xml.Linq.XElement! root, International.EInvoicing.Xml.DocumentLimits! limits) -> void
 static International.EInvoicing.Xml.SecureXml.IsDepthExceeded(System.Xml.XmlReader! reader, International.EInvoicing.Xml.DocumentLimits! limits) -> bool
 static International.EInvoicing.Xml.SyntaxNamespaces.BelongsTo(string! namespaceUri, International.EInvoicing.Profiles.DocumentSyntax syntax) -> bool
 static International.EInvoicing.Xml.XmlCharacters.Sanitize(string? value) -> string?

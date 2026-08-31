@@ -4,6 +4,8 @@
   href: EIV1042.md
 - name: EIV1043 — UnsupportedProfile
   href: EIV1043.md
+- name: EIV1044 — UnsupportedEdition
+  href: EIV1044.md
 - name: EIV2001 — InvalidValue
   href: EIV2001.md
 - name: EIV2002 — UnsupportedDateFormat
@@ -14,9 +16,17 @@
   href: EIV4001.md
 - name: EIV4002 — PayloadTooLarge
   href: EIV4002.md
+- name: EIV4003 — AttachmentTooLarge
+  href: EIV4003.md
+- name: EIV4004 — TooMany
+  href: EIV4004.md
 - name: EIV4010 — ProfileIsNotAnEn16931Invoice
   href: EIV4010.md
 - name: EIV5001 — MalformedXml
   href: EIV5001.md
+- name: EIV5002 — DeclaredEncodingMismatch
+  href: EIV5002.md
+- name: EIV5003 — UnsupportedEncoding
+  href: EIV5003.md
 - name: EIV5010 — UnrecognisedDocument
   href: EIV5010.md
