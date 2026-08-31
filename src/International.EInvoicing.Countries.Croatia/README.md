@@ -31,10 +31,13 @@ and puts it where both the legal registration and the electronic address are rea
   certificate from an approved Croatian trust service provider. Signing is not in this library's scope.
 - **The fiscalisation messages.** Issuer and recipient each report to the tax administration in near real
   time. That is transport, which is permanently out of scope.
-- **The HR-FISK 2.0 CIUS identifier.** It is published nowhere this repository can read, and a guessed
-  identifier in BT-24 makes every document written with it wrong. Register it from your own code and it wins.
-- **The six-digit KPD classification code** every line must carry. Set it yourself on `Item.ClassificationCodes`
-  with the scheme your intermediary requires.
+- **The KPD classification code** every line must carry. Set it on `Item.ClassificationCodes` under list
+  `CG`; the rules carry all 3 359 permitted codes, so a plausible one that is not among them is refused.
+
+**CIUS-HR 2025 is carried**, profile and rules both. Its 74 assertions are not redistributable, so they are
+fetched rather than shipped: `build/fetch-specs.sh national`, then `AddCroatianRulesFrom(...)`. With
+`AddCroatianOperator(...)` — which writes the time of issue and the operator's name and OIB, three terms
+EN 16931 has no words for — an invoice this package writes satisfies all 74.
 
 See [docs/standards/country-hr.md](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/docs/standards/country-hr.md).
 
