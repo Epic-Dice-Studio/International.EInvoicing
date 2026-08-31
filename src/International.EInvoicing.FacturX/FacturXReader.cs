@@ -94,7 +94,83 @@ public sealed class FacturXReader
         }
 
         using var xml = new MemoryStream(attachment.Xml);
-        return Report(_cii.Read(xml));
+        ParseResult<EInvoice> result = Report(_cii.Read(xml));
+
+        CheckMetadata(pdf, attachment, result.Value, diagnostics);
+
+        return diagnostics.Diagnostics.Count == 0
+            ? result
+            : new ParseResult<EInvoice>(result.Value, [.. result.Diagnostics, .. diagnostics.Diagnostics]);
+    }
+
+    /// <summary>
+    /// Whether the container tells the truth about the document inside it.
+    /// </summary>
+    /// <remarks>
+    /// A PDF whose XMP says EN 16931 over MINIMUM XML, or names a file it does not carry, is read as two
+    /// different invoices by two receivers who each believe they are right. The XML is the invoice, so this
+    /// warns rather than refuses — but it warns, because nothing else in the chain will: no Schematron rule
+    /// looks at a PDF, and a schema does not either.
+    /// </remarks>
+    private void CheckMetadata(
+        Stream pdf,
+        FacturXAttachment attachment,
+        EInvoice? invoice,
+        DiagnosticCollector diagnostics)
+    {
+        if (!pdf.CanSeek)
+        {
+            return;
+        }
+
+        pdf.Position = 0;
+
+        if (FacturXMetadata.Read(_pdf?.FindMetadata(pdf)) is not { } metadata)
+        {
+            return;
+        }
+
+        if (metadata.FileName is { Length: > 0 } declared
+            && !string.Equals(declared, attachment.FileName, StringComparison.OrdinalIgnoreCase))
+        {
+            diagnostics.Add(Diagnostic.Create(
+                FacturXDiagnostics.MetadataDisagrees,
+                "the embedded file is called",
+                declared,
+                attachment.FileName) with
+            {
+                Expected = attachment.FileName,
+                Found = declared,
+            });
+        }
+
+        if (invoice is null || metadata.ConformanceLevel is not { Length: > 0 } claimed)
+        {
+            return;
+        }
+
+        Profile? profile = FacturXProfiles.All
+            .FirstOrDefault(candidate => candidate.Id.Value == invoice.SpecificationIdentifier.Value);
+
+        if (profile is null)
+        {
+            return;
+        }
+
+        string actual = FacturXProfiles.ConformanceLevelOf(profile);
+
+        if (!string.Equals(claimed, actual, StringComparison.OrdinalIgnoreCase))
+        {
+            diagnostics.Add(Diagnostic.Create(
+                FacturXDiagnostics.MetadataDisagrees,
+                "the profile is",
+                claimed,
+                actual) with
+            {
+                Expected = actual,
+                Found = claimed,
+            });
+        }
     }
 
     /// <summary>

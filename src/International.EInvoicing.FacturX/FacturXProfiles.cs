@@ -31,6 +31,37 @@ public static class FacturXProfiles
     /// <summary>Every Factur-X profile, from the least to the most complete.</summary>
     public static IReadOnlyList<Profile> All { get; } = [Minimum, BasicWithoutLines, Basic, En16931, Extended];
 
+    /// <summary>
+    /// The name Factur-X's metadata gives a profile, which is not its identifier.
+    /// </summary>
+    /// <remarks>
+    /// The XMP says <c>BASIC WL</c> where BT-24 says
+    /// <c>urn:factur-x.eu:1p0:basicwl</c>: same profile, two vocabularies, and the container is judged
+    /// against the document by comparing them.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="profile"/> is <c>null</c>.</exception>
+    public static string ConformanceLevelOf(Profile profile)
+    {
+        ArgumentNullException.ThrowIfNull(profile);
+
+        if (profile == Minimum)
+        {
+            return "MINIMUM";
+        }
+
+        if (profile == BasicWithoutLines)
+        {
+            return "BASIC WL";
+        }
+
+        if (profile == Basic)
+        {
+            return "BASIC";
+        }
+
+        return profile == Extended ? "EXTENDED" : "EN 16931";
+    }
+
     /// <summary>Whether a profile carries everything EN 16931 requires of an invoice.</summary>
     public static bool IsEn16931Compliant(Profile profile)
     {

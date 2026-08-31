@@ -20,6 +20,20 @@ public static class FacturXDiagnostics
         "The embedded invoice is larger than the {0} byte limit and was not decoded.");
 
     /// <summary>
+    /// The PDF's own metadata disagrees with the invoice embedded in it.
+    /// </summary>
+    /// <remarks>
+    /// A receiver that trusts the XMP and one that reads the XML then hold different documents, and both
+    /// think they are right. It is a warning rather than a refusal because the XML is the invoice — the
+    /// metadata is what the container says <em>about</em> it.
+    /// </remarks>
+    public static DiagnosticDescriptor MetadataDisagrees { get; } = new(
+        "EIV4011",
+        DiagnosticCategory.Container,
+        DiagnosticSeverity.Warning,
+        "The PDF's metadata says {0} '{1}', and the invoice inside it says '{2}'.");
+
+    /// <summary>
     /// The document declares a profile that is not a complete EN 16931 invoice. Reading succeeds; the caller
     /// is told because the legal usefulness of such a document is narrow.
     /// </summary>

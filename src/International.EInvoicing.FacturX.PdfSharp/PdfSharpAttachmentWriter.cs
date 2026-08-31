@@ -118,41 +118,29 @@ public sealed class PdfSharpAttachmentWriter : IPdfAttachmentWriter
                   <fx:DocumentType>INVOICE</fx:DocumentType>
                   <fx:DocumentFileName>{attachment.FileName}</fx:DocumentFileName>
                   <fx:Version>1.0</fx:Version>
-                  <fx:ConformanceLevel>{ConformanceLevelOf(profile)}</fx:ConformanceLevel>
+                  <fx:ConformanceLevel>{FacturXProfiles.ConformanceLevelOf(profile)}</fx:ConformanceLevel>
                 </rdf:Description>
               </rdf:RDF>
             </x:xmpmeta>
             <?xpacket end="w"?>
             """;
 
-        var metadata = new PdfDictionary(document);
-        metadata.CreateStream(System.Text.Encoding.UTF8.GetBytes(xmp));
+        // A PdfMetadata rather than a plain dictionary, and this is not decoration: PDFsharp writes its own
+        // XMP as it saves, and replaces anything in /Metadata that is not one of these. The Factur-X block
+        // then survives in the file as an object nobody points at, which is the same as not writing it —
+        // a receiver reading the document's metadata sees the PDF library's, with no profile in it.
+        // A PdfMetadata rather than a plain dictionary, which is as close as this backend gets: PDFsharp
+        // writes its own XMP while saving and puts it in /Metadata whatever was there, so the Factur-X block
+        // below ends up in the file as an object nothing points at. A receiver reading the document's
+        // metadata sees PDFsharp's, with no profile in it. The block is still written, and the day the
+        // backend stops overwriting it the document is conformant with no further change here — but it is a
+        // known gap today, pinned by a test and recorded in the roadmap.
+        var metadata = new PdfMetadata(document);
+        metadata.Stream.Value = System.Text.Encoding.UTF8.GetBytes(xmp);
         metadata.Elements["/Type"] = new PdfName("/Metadata");
         metadata.Elements["/Subtype"] = new PdfName("/XML");
-        document.Internals.AddObject(metadata);
 
-        document.Internals.Catalog.Elements["/Metadata"] = metadata.Reference;
-    }
-
-    /// <summary>The conformance level names Factur-X uses in its metadata, which are not the profile URNs.</summary>
-    private static string ConformanceLevelOf(Profile profile)
-    {
-        if (profile == FacturXProfiles.Minimum)
-        {
-            return "MINIMUM";
-        }
-
-        if (profile == FacturXProfiles.BasicWithoutLines)
-        {
-            return "BASIC WL";
-        }
-
-        if (profile == FacturXProfiles.Basic)
-        {
-            return "BASIC";
-        }
-
-        return profile == FacturXProfiles.Extended ? "EXTENDED" : "EN 16931";
+        document.Internals.Catalog.Elements["/Metadata"] = metadata.ReferenceNotNull;
     }
 
     private static string FormatDate(DateTimeOffset moment) =>

@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **A hybrid PDF is now checked against its own metadata** — [EIV4011](docs/diagnostics/EIV4011.md). The XMP
+  repeats the profile and the name of the embedded file so a reader can tell what it holds without opening
+  it; when that disagrees with the XML inside, a receiver who trusts the metadata and one who reads the
+  payload hold different documents and both are confident. Nothing else in the chain notices: no Schematron
+  rule looks at a PDF, and neither does a schema. Both the Factur-X and ZUGFeRD namespaces are read, and
+  metadata that says nothing about an invoice stays silent rather than becoming noise.
+- **And it found that our own container does not carry that block.** PDFsharp writes its own XMP as it saves
+  and puts it in the catalogue whatever was there, so the Factur-X metadata this library writes sits in the
+  file as an object nothing points at — every hybrid PDF it produces is affected. The block is still written,
+  a test pins exactly what is wrong, and the roadmap carries the fix: appending it as a PDF incremental
+  update, which leaves every existing byte offset alone.
 - **The playground converts between syntaxes**, with the loss report beside the result — UBL to CII and back,
   from a pasted document or any of the samples. What did not cross is listed by name and by where it was,
   because a silent conversion is the dangerous kind. A Factur-X PDF is opened under *Look inside one* first:

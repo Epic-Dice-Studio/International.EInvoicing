@@ -1,3 +1,4 @@
+using System.Text;
 using International.EInvoicing.FacturX.Pdf;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.Advanced;
@@ -41,6 +42,26 @@ public sealed class PdfSharpAttachmentReader : IPdfAttachmentReader
             }
 
             return null;
+        }
+        catch (Exception exception) when (IsMalformedDocument(exception))
+        {
+            return null;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException"><paramref name="pdf"/> is <c>null</c>.</exception>
+    public string? FindMetadata(Stream pdf)
+    {
+        ArgumentNullException.ThrowIfNull(pdf);
+
+        try
+        {
+            using PdfDocument document = PdfReader.Open(pdf, PdfDocumentOpenMode.Import);
+
+            return document.Internals.Catalog.Elements.GetDictionary("/Metadata") is { Stream: not null } metadata
+                ? Encoding.UTF8.GetString(metadata.Stream.UnfilteredValue)
+                : null;
         }
         catch (Exception exception) when (IsMalformedDocument(exception))
         {
