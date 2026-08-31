@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Portugal.** CIUS-PT, whose artefact is the largest here — over two thousand assertions, since it bundles
+  the EN 16931 UBL rules with its own. It requires a delivery address, which EN 16931 leaves optional. SAF-T,
+  ATCUD and the QR code are separate obligations that leave the document entirely, and stay out of scope.
+- **Amounts, VAT percentages and quantities are now written with at least two decimals.** A decimal's natural
+  form writes `1000` for a thousand euros and `23` for a VAT rate — good numbers, poor amounts. Portugal's
+  `DT-CIUS-PT-094` and a dozen neighbours reject them outright, and most implementations expect two decimals
+  everywhere. More than two are kept, and a field read from a document still writes back its original text,
+  so this changes only what the library produces itself.
 - **Serbia.** SRBDT, the CIUS the SEF exchanges since 2023, with its conformant extension and the 134
   assertions Serbia publishes. `RSR-05` required the **tax point date code** (BT-8) — which the model carried
   and the UBL writer silently dropped, and the reader never read. UBL keeps it inside `cac:InvoicePeriod` as

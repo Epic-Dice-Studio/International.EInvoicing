@@ -211,6 +211,15 @@
           "notes": "The SRBDT CIUS and its conformant extension, with the 134 assertions Serbia publishes — including RSR-05, which requires the tax point date code EN 16931 leaves optional. Rules fetched, not shipped."
         },
         {
+          "name": "Portugal — CIUS-PT",
+          "version": "CIUS-PT 2.1.1",
+          "package": "International.EInvoicing.Countries.Portugal",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "The national CIUS, with the largest artefact here — over two thousand assertions, since CIUS-PT bundles the EN 16931 UBL rules with its own. It requires a delivery address, and numbers written to two decimals. Rules fetched, not shipped. SAF-T and ATCUD are separate obligations and out of scope."
+        },
+        {
           "name": "Iceland — Peppol BIS, kennitala",
           "version": "BIS 3.0",
           "package": "International.EInvoicing.Countries.Iceland",

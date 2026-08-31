@@ -426,7 +426,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         {
             StartCac(writer, "TaxCategory");
             WriteCode(writer, "ID", allowanceCharge.VatCategoryCode);
-            WriteDecimal(writer, "Percent", allowanceCharge.VatRate);
+            WriteDecimal(writer, "Percent", allowanceCharge.VatRate, twoDecimalsAtLeast: true);
             StartCac(writer, "TaxScheme");
             Cbc(writer, "ID", taxScheme);
             writer.WriteEndElement();
@@ -465,7 +465,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             WriteAmount(writer, "TaxAmount", entry.TaxAmount);
             StartCac(writer, "TaxCategory");
             WriteCode(writer, "ID", entry.CategoryCode);
-            WriteDecimal(writer, "Percent", entry.Rate);
+            WriteDecimal(writer, "Percent", entry.Rate, twoDecimalsAtLeast: true);
             WriteCode(writer, "TaxExemptionReasonCode", entry.ExemptionReasonCode);
             WriteText(writer, "TaxExemptionReason", entry.ExemptionReason);
             StartCac(writer, "TaxScheme");
@@ -571,7 +571,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         {
             StartCac(writer, "ClassifiedTaxCategory");
             WriteCode(writer, "ID", line.VatCategoryCode);
-            WriteDecimal(writer, "Percent", line.VatRate);
+            WriteDecimal(writer, "Percent", line.VatRate, twoDecimalsAtLeast: true);
             StartCac(writer, "TaxScheme");
             Cbc(writer, "ID", taxScheme);
             writer.WriteEndElement();
@@ -712,7 +712,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
         writer.WriteStartElement(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName);
         WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode);
-        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? FormatAmount(field.Value)));
         writer.WriteEndElement();
     }
 
@@ -726,15 +726,19 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteStartElement(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName);
         WriteAttributeIfSet(writer, "unitCode", field.UnitCode);
         WriteAttributeIfSet(writer, "unitCodeListVersionID", field.UnitCodeListVersion);
-        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? FormatAmount(field.Value)));
         writer.WriteEndElement();
     }
 
-    private static void WriteDecimal(XmlWriter writer, string localName, Field<decimal> field)
+    private static void WriteDecimal(
+        XmlWriter writer,
+        string localName,
+        Field<decimal> field,
+        bool twoDecimalsAtLeast = false)
     {
         if (field.IsSet)
         {
-            Cbc(writer, localName, field.Raw ?? Format(field.Value));
+            Cbc(writer, localName, field.Raw ?? (twoDecimalsAtLeast ? FormatAmount(field.Value) : Format(field.Value)));
         }
     }
 
@@ -758,4 +762,17 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
     private static string Format(decimal? value) =>
         value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
+
+    /// <summary>
+    /// An amount, with at least two decimal places.
+    /// </summary>
+    /// <remarks>
+    /// A decimal's natural form writes 1000 for a thousand euros, 23 for a VAT rate and 1 for a quantity —
+    /// perfectly good numbers, and poor amounts. Portugal's <c>DT-CIUS-PT-094</c> and its neighbours require
+    /// two decimals on each of those, and most implementations expect them everywhere. More than two are
+    /// kept, since a unit price may legitimately carry them, and a field read from a document still writes
+    /// back its original text — so this changes only the values this library produces itself.
+    /// </remarks>
+    private static string FormatAmount(decimal? value) =>
+        value?.ToString("0.00###############", CultureInfo.InvariantCulture) ?? string.Empty;
 }

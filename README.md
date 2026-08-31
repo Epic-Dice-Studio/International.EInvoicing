@@ -159,6 +159,7 @@ validation is never presented as a success.
 | Netherlands — NLCIUS and Peppol BIS, KvK and OIN <sub>NLCIUS v1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Netherlands` |
 | Romania — CIUS-RO (e-Factura) <sub>CIUS-RO 1.0.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Romania` |
 | Serbia — SRBDT (SEF) <sub>srbdt 2022</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Serbia` |
+| Portugal — CIUS-PT <sub>CIUS-PT 2.1.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Portugal` |
 | Iceland — Peppol BIS, kennitala <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Iceland` |
 | Croatia — Peppol BIS, OIB <sub>BIS 3.0</sub> | ✅ | ✅ | 🚧 | `International.EInvoicing.Countries.Croatia` |
 | Australia — Peppol PINT (A-NZ), ABN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Australia` |
@@ -191,6 +192,8 @@ validation is never presented as a success.
 > **Romania — CIUS-RO (e-Factura)** — The national CIUS the e-Factura mandate exchanges, with the 244 assertions Romania publishes on top of EN 16931 — including BR-RO-100, which requires a Bucharest address to name its sector rather than the city. Rules fetched, not shipped.
 
 > **Serbia — SRBDT (SEF)** — The SRBDT CIUS and its conformant extension, with the 134 assertions Serbia publishes — including RSR-05, which requires the tax point date code EN 16931 leaves optional. Rules fetched, not shipped.
+
+> **Portugal — CIUS-PT** — The national CIUS, with the largest artefact here — over two thousand assertions, since CIUS-PT bundles the EN 16931 UBL rules with its own. It requires a delivery address, and numbers written to two decimals. Rules fetched, not shipped. SAF-T and ATCUD are separate obligations and out of scope.
 
 > **Iceland — Peppol BIS, kennitala** — Peppol BIS Billing, and the kennitala with its modulo 11 check, written where IS-R-002 and IS-R-004 look for it.
 

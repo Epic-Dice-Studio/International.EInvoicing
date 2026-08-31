@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Portugal</PackageId>
+    <Description>
+      What Portuguese electronic invoicing adds on top of the norms: CIUS-PT, the national CIUS, and the
+      rules that judge it.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;portugal;cius-pt;feap;esap;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>
