@@ -16,6 +16,7 @@ Invoices.ReadBack(einvoicing, ubl);
 Invoices.Validate(einvoicing, ubl);
 
 Converting.Run(einvoicing, ubl);
+Generation.Run(Invoices.Build(announce: false));
 HostileDocuments.Run(einvoicing);
 Extending.Run();
 HybridPdf.Run(Invoices.Build(announce: false));

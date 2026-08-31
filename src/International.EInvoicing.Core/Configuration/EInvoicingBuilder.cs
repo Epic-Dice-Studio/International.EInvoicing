@@ -1,4 +1,5 @@
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Documents;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
 using International.EInvoicing.Xml;
@@ -20,6 +21,7 @@ public sealed class EInvoicingBuilder
     private readonly List<Profile> _profiles = [];
     private readonly List<Action<DiagnosticPolicyBuilder>> _diagnosticConfigurations = [];
     private readonly List<IDocumentRuleSet> _ruleSets = [];
+    private readonly List<IWritePipelineStep> _writeSteps = [];
     private readonly IServiceCollection? _services;
 
     private DocumentLimits _limits = DocumentLimits.Default;
@@ -115,6 +117,52 @@ public sealed class EInvoicingBuilder
     }
 
     /// <summary>
+    /// Adds a step that runs whenever the library writes a document.
+    /// </summary>
+    /// <remarks>
+    /// Numbering, house rounding, a signature, an element your ERP insists on: the answer to "run my own
+    /// logic during generation", without a fork and without hoping every call site remembers. Steps run in
+    /// the order they are added, wrapped around the writer — so a writer used directly runs them too.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="step"/> is <c>null</c>.</exception>
+    public EInvoicingBuilder AddWriteStep(IWritePipelineStep step)
+    {
+        ArgumentNullException.ThrowIfNull(step);
+
+        _writeSteps.Add(step);
+
+        if (_services is not null)
+        {
+            _services.AddSingleton(step);
+        }
+
+        return this;
+    }
+
+    /// <summary>Adds a step written inline, for the ones too small to deserve a type.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="step"/> is <c>null</c>.</exception>
+    public EInvoicingBuilder AddWriteStep(Action<WriteContext, Action<WriteContext>> step)
+    {
+        ArgumentNullException.ThrowIfNull(step);
+
+        return AddWriteStep(new InlineWriteStep(step));
+    }
+
+    /// <summary>Adds several steps.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="steps"/> is <c>null</c>.</exception>
+    public EInvoicingBuilder AddWriteSteps(IEnumerable<IWritePipelineStep> steps)
+    {
+        ArgumentNullException.ThrowIfNull(steps);
+
+        foreach (IWritePipelineStep step in steps)
+        {
+            AddWriteStep(step);
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Registers services, when this builder is filling a container. Does nothing when it is not, so a
     /// package method can call it unconditionally.
     /// </summary>
@@ -154,6 +202,9 @@ public sealed class EInvoicingBuilder
     /// <summary>The rule sets assembled so far, in the order they were added.</summary>
     public IReadOnlyList<IDocumentRuleSet> BuildRuleSets() => _ruleSets;
 
+    /// <summary>The write pipeline steps assembled so far, in the order they run.</summary>
+    public IReadOnlyList<IWritePipelineStep> BuildWriteSteps() => _writeSteps;
+
     /// <summary>The options assembled so far.</summary>
     public EInvoicingOptions BuildOptions() => new()
     {
@@ -166,4 +217,9 @@ public sealed class EInvoicingBuilder
             }
         }),
     };
+
+    private sealed class InlineWriteStep(Action<WriteContext, Action<WriteContext>> step) : IWritePipelineStep
+    {
+        public void Write(WriteContext context, Action<WriteContext> next) => step(context, next);
+    }
 }

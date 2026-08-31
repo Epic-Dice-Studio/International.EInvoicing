@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The write pipeline.** `AddWriteStep` puts your own logic inside generation — numbering, house rounding, a
+  signature, an element one customer demands — with ASP.NET Core's middleware shape: work before `next`, after
+  it, or decline to call it. The steps are wrapped *around the writer* rather than called by the facade, so
+  `library.Write`, `library.UblWriter.WriteToString` and a writer resolved out of the container all run them.
+  A guarantee with a bypass is not a guarantee. See [the guide](docs/guides/hook-into-generation.md).
 - **UBL ↔ CII conversion, with a loss report.** `EInvoicing.Convert` takes an invoice you built or the XML of
   one you received and returns a `ConversionResult`: the converted document, the invoice as it reads back, and
   a list of what the crossing cost. The losses are *found* rather than predicted — the result is read back and

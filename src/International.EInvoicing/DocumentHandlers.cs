@@ -32,6 +32,7 @@ public sealed class DocumentHandlers
     private readonly IReadOnlyList<IDocumentWriter<EInvoice>> _invoiceWriters;
     private readonly IReadOnlyList<IDocumentReader<LifecycleStatusMessage>> _lifecycleReaders;
     private readonly IReadOnlyList<IDocumentWriter<LifecycleStatusMessage>> _lifecycleWriters;
+    private readonly IReadOnlyList<IWritePipelineStep> _writeSteps;
 
     /// <summary>Collects the handlers a container has registered.</summary>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
@@ -40,37 +41,71 @@ public sealed class DocumentHandlers
         IEnumerable<IDocumentWriter<EInvoice>> invoiceWriters,
         IEnumerable<IDocumentReader<LifecycleStatusMessage>> lifecycleReaders,
         IEnumerable<IDocumentWriter<LifecycleStatusMessage>> lifecycleWriters)
+        : this(invoiceReaders, invoiceWriters, lifecycleReaders, lifecycleWriters, [])
+    {
+    }
+
+    /// <summary>The same, with the write pipeline the caller assembled.</summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public DocumentHandlers(
+        IEnumerable<IDocumentReader<EInvoice>> invoiceReaders,
+        IEnumerable<IDocumentWriter<EInvoice>> invoiceWriters,
+        IEnumerable<IDocumentReader<LifecycleStatusMessage>> lifecycleReaders,
+        IEnumerable<IDocumentWriter<LifecycleStatusMessage>> lifecycleWriters,
+        IEnumerable<IWritePipelineStep> writeSteps)
     {
         ArgumentNullException.ThrowIfNull(invoiceReaders);
         ArgumentNullException.ThrowIfNull(invoiceWriters);
         ArgumentNullException.ThrowIfNull(lifecycleReaders);
         ArgumentNullException.ThrowIfNull(lifecycleWriters);
+        ArgumentNullException.ThrowIfNull(writeSteps);
 
         _invoiceReaders = [.. invoiceReaders];
         _invoiceWriters = [.. invoiceWriters];
         _lifecycleReaders = [.. lifecycleReaders];
         _lifecycleWriters = [.. lifecycleWriters];
+        _writeSteps = [.. writeSteps];
     }
 
     /// <summary>The handlers this library ships, for a caller assembling it without a container.</summary>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
-    public static DocumentHandlers CreateDefault(EInvoicingOptions options, IProfileResolver profiles)
+    public static DocumentHandlers CreateDefault(EInvoicingOptions options, IProfileResolver profiles) =>
+        CreateDefault(options, profiles, []);
+
+    /// <summary>The same, with the write pipeline the caller assembled.</summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public static DocumentHandlers CreateDefault(
+        EInvoicingOptions options,
+        IProfileResolver profiles,
+        IEnumerable<IWritePipelineStep> writeSteps)
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(profiles);
+        ArgumentNullException.ThrowIfNull(writeSteps);
 
         return new DocumentHandlers(
             [new UblInvoiceReader(options, profiles), new CiiInvoiceReader(options, profiles)],
             [new UblInvoiceWriter(), new CiiInvoiceWriter()],
             [new CdarReader(options, profiles)],
-            [new CdarWriter()]);
+            [new CdarWriter()],
+            writeSteps);
     }
 
     /// <summary>The invoice reader for a syntax, or <c>null</c> when nothing handles it.</summary>
     public IDocumentReader<EInvoice>? InvoiceReaderFor(DocumentSyntax syntax) => Last(_invoiceReaders, syntax);
 
-    /// <summary>The invoice writer for a syntax, or <c>null</c> when nothing handles it.</summary>
-    public IDocumentWriter<EInvoice>? InvoiceWriterFor(DocumentSyntax syntax) => Last(_invoiceWriters, syntax);
+    /// <summary>The write pipeline steps that run in front of every invoice writer, in the order they run.</summary>
+    public IReadOnlyList<IWritePipelineStep> WriteSteps => _writeSteps;
+
+    /// <summary>
+    /// The invoice writer for a syntax, or <c>null</c> when nothing handles it.
+    /// </summary>
+    /// <remarks>
+    /// The write pipeline comes wrapped around it, so a caller that takes the writer and uses it directly
+    /// still runs the steps. A guarantee with a bypass is not a guarantee.
+    /// </remarks>
+    public IDocumentWriter<EInvoice>? InvoiceWriterFor(DocumentSyntax syntax) =>
+        Last(_invoiceWriters, syntax) is { } writer ? WritePipeline.Around(writer, _writeSteps) : null;
 
     /// <summary>The lifecycle reader, or <c>null</c> when nothing handles lifecycle messages.</summary>
     public IDocumentReader<LifecycleStatusMessage>? LifecycleReader() =>

@@ -187,10 +187,14 @@ public sealed class EInvoicing
         var builder = new EInvoicingBuilder();
         configure(builder);
 
+        EInvoicingOptions options = builder.BuildOptions();
+        var resolver = new ProfileResolver(builder.BuildRegistry());
+
         return new EInvoicing(
-            builder.BuildOptions(),
-            new ProfileResolver(builder.BuildRegistry()),
+            options,
+            resolver,
             builder.BuildRuleSets(),
+            DocumentHandlers.CreateDefault(options, resolver, builder.BuildWriteSteps()),
             pdf);
     }
 

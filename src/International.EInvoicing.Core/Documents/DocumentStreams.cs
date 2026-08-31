@@ -38,6 +38,16 @@ public static class DocumentStreams
         return buffer.ToArray();
     }
 
+    /// <summary>Sends text to a stream as UTF-8.</summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public static void WriteAll(string content, Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(content);
+        ArgumentNullException.ThrowIfNull(destination);
+
+        destination.Write(System.Text.Encoding.UTF8.GetBytes(content));
+    }
+
     /// <summary>Sends text to a stream as UTF-8, without blocking while it is sent.</summary>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
     /// <exception cref="OperationCanceledException">The token was cancelled.</exception>
