@@ -6,6 +6,22 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Reading a PDF could throw, which the rest of this library promises never to do.** An empty file, a file
+  that is not a PDF, a bare `%PDF-1.7` header, a truncated document, one byte changed in the trailer — eight
+  of fifteen hostile cases came out as an exception rather than as "there is no invoice in this file", and
+  `EInvoicing.Read` propagated it to the caller. Only PDFsharp's own `PdfReaderException` was caught, and a
+  malformed document reaches whatever failure the code happens to hit first. The reader now answers `null` for
+  everything the PDF is or is not, `IPdfAttachmentReader` says so as a contract, and a hostile PDF corpus —
+  the neighbours' list: no attachment, encrypted, truncated, damaged, oversized — holds it to that.
+- **`ancestor-or-self` and `descendant-or-self` dropped the node itself** in the Schematron engine's XPath:
+  both were mapped onto their plain forms. The compiled EN 16931 artefacts use the first to build the path of
+  a failure and OpenPeppol's tax data rules to count the elements above a node, so nothing changed verdicts
+  today — but an engine that answers a different question from the one asked is a defect before anyone
+  notices.
+- **A path did not yield a node-set.** Two lines share one parent, and walking up from both reached that
+  parent twice, so `count()` over such a path over-counted and `sum()` would have double-added. Nodes are now
+  folded once, in document order; sequences of values still repeat, because `sum(tokenize(...))` depends on
+  it.
 - **An invoice that is not subject to VAT could not be written at all.** EN 16931 forbids a VAT rate on
   category `O` rather than requiring zero — `BR-O-05`, `BR-O-06`, `BR-O-07` — and both `WithVat` and the
   computed breakdown always wrote one. `VatCategoryCodes.ForbidsRate` names the distinction, `WithVat(category)`

@@ -391,7 +391,9 @@ neither of those less true, and both of them make every country after it cheaper
       is what a Peppol receiver owes a sender, then Ordering and Despatch Advice.
    3. **The Factur-X container checks that are ours** — the XMP agreeing with the XML, not PDF/A conformance.
    4. **Reading a tax data document**, so the reporting documents have the parity the invoices have.
-   5. **The hostile corpus for PDF containers**, so the attachment reader gets the defence the XML reader has.
+   5. ~~**The hostile corpus for PDF containers**~~ ✅ done, and it earned its keep immediately: eight of
+      fifteen hostile PDFs came out of the reader as an exception rather than as "no invoice here", through
+      `EInvoicing.Read` and into the caller.
    6. **Order-X**, once the Peppol order family has settled the shape.
 
 1. **EN 16931-1:2026 and PINT** — both are multipliers, both change what the countries below cost, and both

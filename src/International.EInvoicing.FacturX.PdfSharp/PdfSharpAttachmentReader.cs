@@ -15,27 +15,23 @@ namespace International.EInvoicing.FacturX.PdfSharp;
 public sealed class PdfSharpAttachmentReader : IPdfAttachmentReader
 {
     /// <inheritdoc />
+    /// <remarks>
+    /// A PDF that arrives is hostile input, and this answers <c>null</c> for every way one can be unusable —
+    /// not a PDF at all, truncated, encrypted, or structurally broken somewhere inside the tables this walks.
+    /// PDFsharp signals those with whatever exception the failure happens to reach first, and a reader that
+    /// let one out would break the promise the rest of this library keeps: reading never throws on a document
+    /// somebody else wrote.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
     public FacturXAttachment? FindAttachment(Stream pdf, IReadOnlyList<string> fileNames, long maximumBytes)
     {
         ArgumentNullException.ThrowIfNull(pdf);
         ArgumentNullException.ThrowIfNull(fileNames);
 
-        PdfDocument document;
         try
         {
-            // Disposed by the using below; CA2000 cannot follow ownership out of a try block.
-#pragma warning disable CA2000
-            document = PdfReader.Open(pdf, PdfDocumentOpenMode.Import);
-#pragma warning restore CA2000
-        }
-        catch (PdfReaderException)
-        {
-            return null;
-        }
+            using PdfDocument document = PdfReader.Open(pdf, PdfDocumentOpenMode.Import);
 
-        using (document)
-        {
             foreach (string fileName in fileNames)
             {
                 if (Find(document, fileName, maximumBytes) is { } attachment)
@@ -43,10 +39,27 @@ public sealed class PdfSharpAttachmentReader : IPdfAttachmentReader
                     return attachment;
                 }
             }
-        }
 
-        return null;
+            return null;
+        }
+        catch (Exception exception) when (IsMalformedDocument(exception))
+        {
+            return null;
+        }
     }
+
+    /// <summary>
+    /// Whether an exception is the PDF's fault rather than the caller's or the machine's.
+    /// </summary>
+    /// <remarks>
+    /// PDFsharp raises <see cref="PdfReaderException"/> for what it recognises as a bad document, and
+    /// whatever the code happened to hit for what it does not: a cast on a dictionary that holds something
+    /// else, an index into a table that ends early, a null where the structure promised an object. All of
+    /// those mean the same thing to a caller — there is no invoice in this file. What must still escape is
+    /// anything that says the process is in trouble, or that the caller asked to stop.
+    /// </remarks>
+    private static bool IsMalformedDocument(Exception exception) =>
+        exception is not OutOfMemoryException and not OperationCanceledException and not StackOverflowException;
 
     private static FacturXAttachment? Find(PdfDocument document, string fileName, long maximumBytes)
     {

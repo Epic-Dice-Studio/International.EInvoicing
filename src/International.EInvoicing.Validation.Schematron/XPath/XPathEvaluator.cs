@@ -307,6 +307,11 @@ internal sealed class XPathEvaluator(
     {
         var results = new List<object>();
 
+        // A step yields a node-set, and a node reached twice is in it once: two lines share one parent, so
+        // parent::* over both is one element. Only nodes are folded — a sequence of values may repeat, and
+        // sum(tokenize(...)) depends on that.
+        var seen = new HashSet<XObject>(ReferenceEqualityComparer.Instance);
+
         foreach (object node in nodes)
         {
             IEnumerable<object> origins = step.DescendantOrSelf ? DescendantsAndSelf(node) : [node];
@@ -315,7 +320,15 @@ internal sealed class XPathEvaluator(
             {
                 IReadOnlyList<object> selected = [.. SelectFrom(step, [origin], context)];
 
-                results.AddRange(step.FiltersSequence ? selected : Filter(step.Predicates, selected, context));
+                foreach (object item in step.FiltersSequence
+                    ? selected
+                    : Filter(step.Predicates, selected, context))
+                {
+                    if (item is not XObject found || seen.Add(found))
+                    {
+                        results.Add(item);
+                    }
+                }
             }
         }
 
@@ -361,7 +374,9 @@ internal sealed class XPathEvaluator(
             ? element.Attributes().Where(a => NameMatches(step.Name, a.Name))
             : [],
         StepAxis.Descendant => Descendants(node).Where(child => NameMatches(step.Name, NameOf(child))),
+        StepAxis.DescendantOrSelf => DescendantsAndSelf(node).Where(item => NameMatches(step.Name, NameOf(item))),
         StepAxis.Ancestor => Ancestors(node).Where(ancestor => NameMatches(step.Name, NameOf(ancestor))),
+        StepAxis.AncestorOrSelf => AncestorsAndSelf(node).Where(item => NameMatches(step.Name, NameOf(item))),
         StepAxis.Preceding => Preceding(node).Where(other => NameMatches(step.Name, NameOf(other))),
         StepAxis.PrecedingSibling => Siblings(node, before: true).Where(other => NameMatches(step.Name, NameOf(other))),
         StepAxis.FollowingSibling => Siblings(node, before: false).Where(other => NameMatches(step.Name, NameOf(other))),
@@ -389,6 +404,16 @@ internal sealed class XPathEvaluator(
         XElement element => [element, .. element.Descendants()],
         _ => [node],
     };
+
+    /// <summary>
+    /// The node and every ancestor above it, nearest first.
+    /// </summary>
+    /// <remarks>
+    /// The <c>-or-self</c> half is not decoration: <c>ancestor-or-self::*</c> is how the compiled artefacts
+    /// build the path they report a failure at, and how OpenPeppol's tax data rules count the elements above
+    /// a node. Treating it as plain <c>ancestor</c> quietly answers a different question.
+    /// </remarks>
+    private static IEnumerable<object> AncestorsAndSelf(object node) => [node, .. Ancestors(node)];
 
     private static IEnumerable<object> Ancestors(object node)
     {

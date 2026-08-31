@@ -67,6 +67,12 @@ internal enum StepAxis
     /// <summary>Every ancestor. The artefacts use it to exclude a rule inside a particular subtree.</summary>
     Ancestor,
 
+    /// <summary>Every ancestor, and the node itself. Dropping the node is a different question entirely.</summary>
+    AncestorOrSelf,
+
+    /// <summary>Every descendant, and the node itself.</summary>
+    DescendantOrSelf,
+
     /// <summary>Every node before this one in document order, excluding its ancestors.</summary>
     Preceding,
 
