@@ -193,7 +193,7 @@ BIS 4** as its only domestic format by 2029 — the first national format retire
 |---|---|
 | **UBL ↔ CII conversion, with a loss report** | A French recipient must accept UBL, CII and Factur-X. Converting between them is a real requirement, and doing it silently is the dangerous version — the report is the feature. |
 | **The write pipeline** (`IWritePipelineStep`) | "Hook into generation" is a guide that has been marked *planned* since the beginning. Numbering, house rounding, signing, logging — all of it belongs in a step rather than in a fork. |
-| **Embedded code lists** | UNTDID 1001/2379/4461/5305/7143, ISO 4217/3166, EAS/ICD. Today they exist only inside Schematron, so the library can punish a wrong code but cannot help pick a right one. |
+| **Embedded code lists** | 🚧 the ones a caller picks from are done — invoice and credit-note type codes, VAT categories, payment means, and the EAS schemes — each read from the shipped artefact and compared to it on every build. Doing it found the credit-note list five codes short, so a credit note carrying 420, 458, 502, 503 or 532 was read as an invoice. Still to come: ISO 4217 and 3166, and the item-classification schemes. |
 | **A CLI** — `dotnet einvoice validate invoice.xml` | The reference validator in this space is a Java jar. There is no .NET equivalent. Cheap to build on what already exists, and the most visible thing we could ship. |
 | **`International.EInvoicing.Testing`** | The golden corpus, the assertions and the round-trip harness, so an integrator can test *their* profile with our tools. |
 | **Property-based tests on rounding** | The `BR-CO` rules comparing totals to sums of lines are exactly where implementations break. Generated cases find what hand-written ones do not. |

@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Code lists a caller can pick from**, not only be judged by. `InvoiceTypeCodes` now carries both lists —
+  invoices and credit notes — and `VatCategoryCodes` and `PaymentMeansCodes` join it, each read out of the
+  shipped EN 16931 artefact and compared against it on every build, the way the Peppol scheme list already
+  was. `VatCategoryCodes.NeedsExemptionReason` answers in one place what five rule families each say about
+  their own category.
+- **A credit note carrying type 420, 458, 502, 503 or 532 was read as an invoice.** The credit-note list was
+  five codes short, and writing the test that compares it to the artefact is what showed it.
 - **The Factur-X and Belgian rule sets are wired at last**, closing two cells the support matrix had called
   *planned* since the beginning. Both are published as compiled XSLT, which is why they sat unused; reading
   that came later. `AddFacturXRulesFrom` registers one rule set per profile — including MINIMUM and BASIC WL,

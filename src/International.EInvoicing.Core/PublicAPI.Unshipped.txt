@@ -1,7 +1,27 @@
 const International.EInvoicing.Model.InvoiceTypeCodes.CommercialInvoice = "380" -> string!
 const International.EInvoicing.Model.InvoiceTypeCodes.CorrectedInvoice = "384" -> string!
 const International.EInvoicing.Model.InvoiceTypeCodes.CreditNote = "381" -> string!
+const International.EInvoicing.Model.InvoiceTypeCodes.PrepaymentInvoice = "386" -> string!
+const International.EInvoicing.Model.InvoiceTypeCodes.SelfBilledCreditNote = "261" -> string!
 const International.EInvoicing.Model.InvoiceTypeCodes.SelfBilledInvoice = "389" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.Cash = "10" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.CreditTransfer = "30" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.DirectDebit = "49" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.MutuallyDefined = "ZZZ" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.NotDefined = "1" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.PaymentCard = "48" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.SepaCreditTransfer = "58" -> string!
+const International.EInvoicing.Model.PaymentMeansCodes.SepaDirectDebit = "59" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.CanaryIslands = "L" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.CeutaAndMelilla = "M" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.Exempt = "E" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.Export = "G" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.IntraCommunitySupply = "K" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.OutsideScope = "O" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.ReverseCharge = "AE" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.Standard = "S" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.TransferredVat = "B" -> string!
+const International.EInvoicing.Model.VatCategoryCodes.ZeroRated = "Z" -> string!
 const International.EInvoicing.Values.DateField.FormatCcyyMmDd = "102" -> string!
 const International.EInvoicing.Values.DateTimeField.FormatCcyyMmDdHhMmSs = "204" -> string!
 International.EInvoicing.Building.EInvoiceBuilder
@@ -490,6 +510,7 @@ International.EInvoicing.Model.PaymentInstructions.MeansTypeCode.set -> void
 International.EInvoicing.Model.PaymentInstructions.PaymentInstructions() -> void
 International.EInvoicing.Model.PaymentInstructions.RemittanceInformation.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.PaymentInstructions.RemittanceInformation.set -> void
+International.EInvoicing.Model.PaymentMeansCodes
 International.EInvoicing.Model.PostalAddress
 International.EInvoicing.Model.PostalAddress.City.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.PostalAddress.City.set -> void
@@ -520,6 +541,7 @@ International.EInvoicing.Model.VatBreakdownEntry.TaxableAmount.set -> void
 International.EInvoicing.Model.VatBreakdownEntry.TaxAmount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Model.VatBreakdownEntry.TaxAmount.set -> void
 International.EInvoicing.Model.VatBreakdownEntry.VatBreakdownEntry() -> void
+International.EInvoicing.Model.VatCategoryCodes
 International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Profiles.DocumentSyntax.Deconstruct(out string! Name) -> void
 International.EInvoicing.Profiles.DocumentSyntax.DocumentSyntax() -> void
@@ -987,7 +1009,16 @@ static International.EInvoicing.Identifiers.CheckDigit.SatisfiesLuhn(System.Read
 static International.EInvoicing.Identifiers.CheckDigit.SatisfiesMod11(System.ReadOnlySpan<char> digits, System.ReadOnlySpan<int> weights) -> bool
 static International.EInvoicing.Model.ExtensionElement.operator !=(International.EInvoicing.Model.ExtensionElement? left, International.EInvoicing.Model.ExtensionElement? right) -> bool
 static International.EInvoicing.Model.ExtensionElement.operator ==(International.EInvoicing.Model.ExtensionElement? left, International.EInvoicing.Model.ExtensionElement? right) -> bool
+static International.EInvoicing.Model.InvoiceTypeCodes.ForCreditNotes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.InvoiceTypeCodes.ForInvoices.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.InvoiceTypeCodes.IsCreditNote(string? typeCode) -> bool
+static International.EInvoicing.Model.InvoiceTypeCodes.IsInvoice(string? typeCode) -> bool
+static International.EInvoicing.Model.InvoiceTypeCodes.IsKnown(string? typeCode) -> bool
+static International.EInvoicing.Model.PaymentMeansCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.PaymentMeansCodes.IsKnown(string? code) -> bool
+static International.EInvoicing.Model.VatCategoryCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.VatCategoryCodes.IsKnown(string? code) -> bool
+static International.EInvoicing.Model.VatCategoryCodes.NeedsExemptionReason(string? code) -> bool
 static International.EInvoicing.Profiles.DocumentSyntax.Cdar.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Cii.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.operator !=(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool
