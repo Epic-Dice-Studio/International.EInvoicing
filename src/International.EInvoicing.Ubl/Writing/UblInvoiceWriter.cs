@@ -87,18 +87,19 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         WriteDeliveryAndPayment(invoice, writer);
 
         string taxScheme = TaxSchemeOf(invoice);
+        string? currency = invoice.CurrencyCode.Value ?? invoice.CurrencyCode.Raw;
 
         foreach (AllowanceCharge allowanceCharge in invoice.AllowancesAndCharges)
         {
-            WriteAllowanceCharge(allowanceCharge, writer, taxScheme);
+            WriteAllowanceCharge(allowanceCharge, writer, taxScheme, currency);
         }
 
-        WriteTaxTotal(invoice, writer);
-        WriteTotals(invoice.Totals, writer);
+        WriteTaxTotal(invoice, writer, currency);
+        WriteTotals(invoice.Totals, writer, currency);
 
         foreach (InvoiceLine line in invoice.Lines)
         {
-            WriteLine(line, shape, writer, taxScheme);
+            WriteLine(line, shape, writer, taxScheme, currency);
         }
 
         WriteExtensions(invoice.Extensions, writer);
@@ -412,15 +413,19 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
     }
 
-    private static void WriteAllowanceCharge(AllowanceCharge allowanceCharge, XmlWriter writer, string taxScheme)
+    private static void WriteAllowanceCharge(
+        AllowanceCharge allowanceCharge,
+        XmlWriter writer,
+        string taxScheme,
+        string? currency)
     {
         StartCac(writer, "AllowanceCharge");
         Cbc(writer, "ChargeIndicator", allowanceCharge.IsCharge ? "true" : "false");
         WriteCode(writer, "AllowanceChargeReasonCode", allowanceCharge.ReasonCode);
         WriteText(writer, "AllowanceChargeReason", allowanceCharge.Reason);
         WriteDecimal(writer, "MultiplierFactorNumeric", allowanceCharge.Percentage);
-        WriteAmount(writer, "Amount", allowanceCharge.Amount);
-        WriteAmount(writer, "BaseAmount", allowanceCharge.BaseAmount);
+        WriteAmount(writer, "Amount", allowanceCharge.Amount, currency);
+        WriteAmount(writer, "BaseAmount", allowanceCharge.BaseAmount, currency);
 
         if (allowanceCharge.VatCategoryCode.IsSet)
         {
@@ -446,7 +451,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     private static string TaxSchemeOf(EInvoice invoice) =>
         invoice.TaxSchemeIdentifier.Value is { Length: > 0 } scheme ? scheme : "VAT";
 
-    private static void WriteTaxTotal(EInvoice invoice, XmlWriter writer)
+    private static void WriteTaxTotal(EInvoice invoice, XmlWriter writer, string? currency)
     {
         string taxScheme = TaxSchemeOf(invoice);
 
@@ -456,13 +461,13 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         StartCac(writer, "TaxTotal");
-        WriteAmount(writer, "TaxAmount", invoice.Totals.TaxAmount);
+        WriteAmount(writer, "TaxAmount", invoice.Totals.TaxAmount, currency);
 
         foreach (VatBreakdownEntry entry in invoice.VatBreakdown)
         {
             StartCac(writer, "TaxSubtotal");
-            WriteAmount(writer, "TaxableAmount", entry.TaxableAmount);
-            WriteAmount(writer, "TaxAmount", entry.TaxAmount);
+            WriteAmount(writer, "TaxableAmount", entry.TaxableAmount, currency);
+            WriteAmount(writer, "TaxAmount", entry.TaxAmount, currency);
             StartCac(writer, "TaxCategory");
             WriteCode(writer, "ID", entry.CategoryCode);
             WriteDecimal(writer, "Percent", entry.Rate, twoDecimalsAtLeast: true);
@@ -478,27 +483,32 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteTotals(DocumentTotals totals, XmlWriter writer)
+    private static void WriteTotals(DocumentTotals totals, XmlWriter writer, string? currency)
     {
         StartCac(writer, "LegalMonetaryTotal");
-        WriteAmount(writer, "LineExtensionAmount", totals.LineTotalAmount);
-        WriteAmount(writer, "TaxExclusiveAmount", totals.TaxExclusiveAmount);
-        WriteAmount(writer, "TaxInclusiveAmount", totals.TaxInclusiveAmount);
-        WriteAmount(writer, "AllowanceTotalAmount", totals.AllowanceTotalAmount);
-        WriteAmount(writer, "ChargeTotalAmount", totals.ChargeTotalAmount);
-        WriteAmount(writer, "PrepaidAmount", totals.PrepaidAmount);
-        WriteAmount(writer, "PayableRoundingAmount", totals.RoundingAmount);
-        WriteAmount(writer, "PayableAmount", totals.DuePayableAmount);
+        WriteAmount(writer, "LineExtensionAmount", totals.LineTotalAmount, currency);
+        WriteAmount(writer, "TaxExclusiveAmount", totals.TaxExclusiveAmount, currency);
+        WriteAmount(writer, "TaxInclusiveAmount", totals.TaxInclusiveAmount, currency);
+        WriteAmount(writer, "AllowanceTotalAmount", totals.AllowanceTotalAmount, currency);
+        WriteAmount(writer, "ChargeTotalAmount", totals.ChargeTotalAmount, currency);
+        WriteAmount(writer, "PrepaidAmount", totals.PrepaidAmount, currency);
+        WriteAmount(writer, "PayableRoundingAmount", totals.RoundingAmount, currency);
+        WriteAmount(writer, "PayableAmount", totals.DuePayableAmount, currency);
         writer.WriteEndElement();
     }
 
-    private static void WriteLine(InvoiceLine line, UblDocumentShape shape, XmlWriter writer, string taxScheme)
+    private static void WriteLine(
+        InvoiceLine line,
+        UblDocumentShape shape,
+        XmlWriter writer,
+        string taxScheme,
+        string? currency)
     {
         StartCac(writer, shape.Line.LocalName);
         WriteIdentifier(writer, "ID", line.Identifier);
         WriteText(writer, "Note", line.Note);
         WriteQuantity(writer, shape.Quantity.LocalName, line.Quantity);
-        WriteAmount(writer, "LineExtensionAmount", line.NetAmount);
+        WriteAmount(writer, "LineExtensionAmount", line.NetAmount, currency);
         WriteText(writer, "AccountingCost", line.BuyerAccountingReference);
         WritePeriod(writer, "InvoicePeriod", line.Period);
 
@@ -511,11 +521,11 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
         foreach (AllowanceCharge allowanceCharge in line.AllowancesAndCharges)
         {
-            WriteAllowanceCharge(allowanceCharge, writer, taxScheme);
+            WriteAllowanceCharge(allowanceCharge, writer, taxScheme, currency);
         }
 
         WriteItem(line, writer, taxScheme);
-        WritePrice(line, writer);
+        WritePrice(line, writer, currency);
 
         WriteExtensions(line.Extensions, writer);
         writer.WriteEndElement();
@@ -590,7 +600,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WritePrice(InvoiceLine line, XmlWriter writer)
+    private static void WritePrice(InvoiceLine line, XmlWriter writer, string? currency)
     {
         if (line.Price is not { } price)
         {
@@ -598,15 +608,15 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         StartCac(writer, "Price");
-        WriteAmount(writer, "PriceAmount", price.NetPrice);
+        WriteAmount(writer, "PriceAmount", price.NetPrice, currency);
         WriteQuantity(writer, "BaseQuantity", price.BaseQuantity);
 
         if (price.Discount.IsSet || price.GrossPrice.IsSet)
         {
             StartCac(writer, "AllowanceCharge");
             Cbc(writer, "ChargeIndicator", "false");
-            WriteAmount(writer, "Amount", price.Discount);
-            WriteAmount(writer, "BaseAmount", price.GrossPrice);
+            WriteAmount(writer, "Amount", price.Discount, currency);
+            WriteAmount(writer, "BaseAmount", price.GrossPrice, currency);
             writer.WriteEndElement();
         }
 
@@ -717,7 +727,17 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteAmount(XmlWriter writer, string localName, AmountField field)
+    /// <summary>
+    /// Writes an amount, in the currency the field carries or, failing that, the document's own.
+    /// </summary>
+    /// <remarks>
+    /// UBL makes <c>currencyID</c> mandatory on every amount, and BR-CL-03 requires it to be an ISO 4217
+    /// code. A caller who assigns a plain <c>decimal</c> to an amount field gives it no currency — and an
+    /// amount without the attribute is rejected by the schema before any rule runs. The document currency
+    /// (BT-5) is the right answer for every amount except the ones in the accounting currency, which carry
+    /// their own.
+    /// </remarks>
+    private static void WriteAmount(XmlWriter writer, string localName, AmountField field, string? documentCurrency)
     {
         if (!field.IsSet)
         {
@@ -725,7 +745,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         writer.WriteStartElement(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName);
-        WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode);
+        WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode ?? documentCurrency);
         writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? FormatAmount(field.Value)));
         writer.WriteEndElement();
     }

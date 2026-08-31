@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Testing/International.EInvoicing.Testing.csproj" />
   </ItemGroup>
 
 </Project>

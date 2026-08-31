@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Property-based tests on rounding**, and they found a real defect on the first run. Three hundred generated
+  invoices per syntax — quantities to three decimals, prices to four, base quantities that are not one, so the
+  multiplication lands off two decimals more often than on — written and judged by the official EN 16931
+  artefact. The seed is fixed, and printed in every failure so a case found here can be pinned as its own test.
+- **An amount assigned as a plain `decimal` was written to UBL with no `currencyID`.** UBL makes the attribute
+  mandatory on every amount and BR-CL-03 requires an ISO 4217 code, so those documents were rejected by the
+  schema before any rule ran. Both writers now fall back to the document currency, BT-5, when the field itself
+  carries none. A hundred and four of the first three hundred generated invoices failed on this.
 - **`International.EInvoicing.Testing`**, so an integrator can test *their* profile with our tools.
   `SampleInvoices` builds documents EN 16931 actually accepts — thirty-odd terms, which is where an afternoon
   goes; `RoundTrip.Check` proves nothing was lost, by element census rather than by text, because byte

@@ -380,7 +380,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        WriteTotals(invoice.Totals, writer);
+        WriteTotals(invoice.Totals, writer, invoice.CurrencyCode.Value ?? invoice.CurrencyCode.Raw);
 
         foreach (DocumentReference preceding in invoice.PrecedingInvoices)
         {
@@ -429,14 +429,14 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteTotals(DocumentTotals totals, XmlWriter writer)
+    private static void WriteTotals(DocumentTotals totals, XmlWriter writer, string? documentCurrency)
     {
         StartRam(writer, "SpecifiedTradeSettlementHeaderMonetarySummation");
         WriteAmount(writer, "LineTotalAmount", totals.LineTotalAmount);
         WriteAmount(writer, "ChargeTotalAmount", totals.ChargeTotalAmount);
         WriteAmount(writer, "AllowanceTotalAmount", totals.AllowanceTotalAmount);
         WriteAmount(writer, "TaxBasisTotalAmount", totals.TaxExclusiveAmount);
-        WriteAmount(writer, "TaxTotalAmount", totals.TaxAmount, withCurrency: true);
+        WriteAmount(writer, "TaxTotalAmount", totals.TaxAmount, withCurrency: true, documentCurrency);
         WriteAmount(writer, "RoundingAmount", totals.RoundingAmount);
         WriteAmount(writer, "GrandTotalAmount", totals.TaxInclusiveAmount);
         WriteAmount(writer, "TotalPrepaidAmount", totals.PrepaidAmount);
@@ -712,11 +712,21 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
     /// <c>currencyID</c> anywhere else is rejected — "attribute @currencyID marked as not used in the given
     /// context" — by every Factur-X profile, which is where this came to light.
     /// </remarks>
+    /// <summary>
+    /// Writes an amount, with <c>currencyID</c> only where CII allows it.
+    /// </summary>
+    /// <remarks>
+    /// Unlike UBL, CII forbids the attribute on nearly every amount: the currency is stated once, on the
+    /// document. <c>TaxTotalAmount</c> is the exception, because a document may state the tax in a second,
+    /// accounting currency. <paramref name="documentCurrency"/> stands in when the field itself carries none,
+    /// which is what a caller assigning a plain <c>decimal</c> leaves behind.
+    /// </remarks>
     private static void WriteAmount(
         XmlWriter writer,
         string localName,
         AmountField field,
-        bool withCurrency = false)
+        bool withCurrency = false,
+        string? documentCurrency = null)
     {
         if (!field.IsSet)
         {
@@ -727,7 +737,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
 
         if (withCurrency)
         {
-            WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode);
+            WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode ?? documentCurrency);
         }
 
         writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
