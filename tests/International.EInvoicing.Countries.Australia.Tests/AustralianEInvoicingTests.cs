@@ -71,6 +71,37 @@ public class AustralianEInvoicingTests
         }
     }
 
+    /// <summary>
+    /// The real measurement, now that the PINT rules can be read: an invoice this library writes, put in
+    /// front of the artefacts OpenPEPPOL publishes for this jurisdiction — the base rules and the A-NZ ones.
+    /// </summary>
+    [Fact]
+    public void AnInvoiceThisLibraryWritesSatisfiesThePintRules()
+    {
+        string directory = Path.Combine(RepositoryRoot(), "specs", "peppol", "pint", "schematron");
+
+        Assert.SkipWhen(
+            !Directory.Exists(directory),
+            "The PINT artefacts are not present; run build/fetch-specs.sh pint.");
+
+        IReadOnlyList<SchematronRuleSet> rules = PeppolPintRules.For(AuProfiles.PintBilling, directory);
+        rules.Count.ShouldBe(2, "both the base and the jurisdiction rules apply");
+
+        string xml = Australia.Write(AnInvoice());
+        var validator = new SchematronValidator();
+
+        foreach (SchematronRuleSet ruleSet in rules)
+        {
+            ValidationReport report = validator.Validate(xml, ruleSet);
+
+            report.IsValid.ShouldBeTrue(
+                $"{ruleSet.Name} rejected the invoice this library wrote:{Environment.NewLine}"
+                + string.Join(
+                    Environment.NewLine,
+                    report.OfAtLeast(RuleSeverity.Error).Select(m => $"  {m.RuleIdentifier}: {m.Message}")));
+        }
+    }
+
     [Fact]
     public void WhatItWritesItReadsBack() =>
         Australia.Read(Australia.Write(AnInvoice())).RequireInvoice().Number.Value.ShouldBe("2026-0001");

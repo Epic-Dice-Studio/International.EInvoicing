@@ -343,6 +343,8 @@ International.EInvoicing.Model.EInvoice.TaxPointDate.get -> International.EInvoi
 International.EInvoicing.Model.EInvoice.TaxPointDate.set -> void
 International.EInvoicing.Model.EInvoice.TaxPointDateCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.EInvoice.TaxPointDateCode.set -> void
+International.EInvoicing.Model.EInvoice.TaxSchemeIdentifier.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.EInvoice.TaxSchemeIdentifier.set -> void
 International.EInvoicing.Model.EInvoice.TenderOrLotReference.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.EInvoice.TenderOrLotReference.set -> void
 International.EInvoicing.Model.EInvoice.Totals.get -> International.EInvoicing.Model.DocumentTotals!

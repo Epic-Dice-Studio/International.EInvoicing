@@ -86,9 +86,11 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         WriteParties(invoice, writer);
         WriteDeliveryAndPayment(invoice, writer);
 
+        string taxScheme = TaxSchemeOf(invoice);
+
         foreach (AllowanceCharge allowanceCharge in invoice.AllowancesAndCharges)
         {
-            WriteAllowanceCharge(allowanceCharge, writer);
+            WriteAllowanceCharge(allowanceCharge, writer, taxScheme);
         }
 
         WriteTaxTotal(invoice, writer);
@@ -96,7 +98,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
         foreach (InvoiceLine line in invoice.Lines)
         {
-            WriteLine(line, shape, writer);
+            WriteLine(line, shape, writer, taxScheme);
         }
 
         WriteExtensions(invoice.Extensions, writer);
@@ -211,13 +213,15 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
     private static void WriteParties(EInvoice invoice, XmlWriter writer)
     {
-        WriteParty(writer, "AccountingSupplierParty", invoice.Seller, wrapped: true);
-        WriteParty(writer, "AccountingCustomerParty", invoice.Buyer, wrapped: true);
-        WriteParty(writer, "PayeeParty", invoice.Payee, wrapped: false);
-        WriteParty(writer, "TaxRepresentativeParty", invoice.SellerTaxRepresentative, wrapped: false);
+        string taxScheme = TaxSchemeOf(invoice);
+
+        WriteParty(writer, "AccountingSupplierParty", invoice.Seller, wrapped: true, taxScheme);
+        WriteParty(writer, "AccountingCustomerParty", invoice.Buyer, wrapped: true, taxScheme);
+        WriteParty(writer, "PayeeParty", invoice.Payee, wrapped: false, taxScheme);
+        WriteParty(writer, "TaxRepresentativeParty", invoice.SellerTaxRepresentative, wrapped: false, taxScheme);
     }
 
-    private static void WriteParty(XmlWriter writer, string elementName, Party? party, bool wrapped)
+    private static void WriteParty(XmlWriter writer, string elementName, Party? party, bool wrapped, string taxScheme)
     {
         if (party is null)
         {
@@ -249,7 +253,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         WriteAddress(writer, "PostalAddress", party.Address);
-        WriteTaxScheme(writer, party);
+        WriteTaxScheme(writer, party, taxScheme);
         WriteLegalEntity(writer, party);
         WriteContact(writer, party.Contact);
 
@@ -261,14 +265,14 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteTaxScheme(XmlWriter writer, Party party)
+    private static void WriteTaxScheme(XmlWriter writer, Party party, string taxScheme)
     {
         if (party.VatIdentifier.IsSet)
         {
             StartCac(writer, "PartyTaxScheme");
             WriteIdentifier(writer, "CompanyID", party.VatIdentifier);
             StartCac(writer, "TaxScheme");
-            Cbc(writer, "ID", "VAT");
+            Cbc(writer, "ID", taxScheme);
             writer.WriteEndElement();
             writer.WriteEndElement();
         }
@@ -407,7 +411,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
     }
 
-    private static void WriteAllowanceCharge(AllowanceCharge allowanceCharge, XmlWriter writer)
+    private static void WriteAllowanceCharge(AllowanceCharge allowanceCharge, XmlWriter writer, string taxScheme)
     {
         StartCac(writer, "AllowanceCharge");
         Cbc(writer, "ChargeIndicator", allowanceCharge.IsCharge ? "true" : "false");
@@ -423,7 +427,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             WriteCode(writer, "ID", allowanceCharge.VatCategoryCode);
             WriteDecimal(writer, "Percent", allowanceCharge.VatRate);
             StartCac(writer, "TaxScheme");
-            Cbc(writer, "ID", "VAT");
+            Cbc(writer, "ID", taxScheme);
             writer.WriteEndElement();
             writer.WriteEndElement();
         }
@@ -431,8 +435,20 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
+    /// <summary>
+    /// The tax scheme this invoice's categories belong to: what it says, or VAT.
+    /// </summary>
+    /// <remarks>
+    /// EN 16931's bindings say VAT and Australia and New Zealand require GST, so this is a document
+    /// property rather than a constant — see <c>EInvoice.TaxSchemeIdentifier</c>.
+    /// </remarks>
+    private static string TaxSchemeOf(EInvoice invoice) =>
+        invoice.TaxSchemeIdentifier.Value is { Length: > 0 } scheme ? scheme : "VAT";
+
     private static void WriteTaxTotal(EInvoice invoice, XmlWriter writer)
     {
+        string taxScheme = TaxSchemeOf(invoice);
+
         if (!invoice.Totals.TaxAmount.IsSet && invoice.VatBreakdown.Count == 0)
         {
             return;
@@ -452,7 +468,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             WriteCode(writer, "TaxExemptionReasonCode", entry.ExemptionReasonCode);
             WriteText(writer, "TaxExemptionReason", entry.ExemptionReason);
             StartCac(writer, "TaxScheme");
-            Cbc(writer, "ID", "VAT");
+            Cbc(writer, "ID", taxScheme);
             writer.WriteEndElement();
             writer.WriteEndElement();
             writer.WriteEndElement();
@@ -475,7 +491,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteLine(InvoiceLine line, UblDocumentShape shape, XmlWriter writer)
+    private static void WriteLine(InvoiceLine line, UblDocumentShape shape, XmlWriter writer, string taxScheme)
     {
         StartCac(writer, shape.Line.LocalName);
         WriteIdentifier(writer, "ID", line.Identifier);
@@ -494,17 +510,17 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
         foreach (AllowanceCharge allowanceCharge in line.AllowancesAndCharges)
         {
-            WriteAllowanceCharge(allowanceCharge, writer);
+            WriteAllowanceCharge(allowanceCharge, writer, taxScheme);
         }
 
-        WriteItem(line, writer);
+        WriteItem(line, writer, taxScheme);
         WritePrice(line, writer);
 
         WriteExtensions(line.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WriteItem(InvoiceLine line, XmlWriter writer)
+    private static void WriteItem(InvoiceLine line, XmlWriter writer, string taxScheme)
     {
         if (line.Item is not { } item)
         {
@@ -556,7 +572,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             WriteCode(writer, "ID", line.VatCategoryCode);
             WriteDecimal(writer, "Percent", line.VatRate);
             StartCac(writer, "TaxScheme");
-            Cbc(writer, "ID", "VAT");
+            Cbc(writer, "ID", taxScheme);
             writer.WriteEndElement();
             writer.WriteEndElement();
         }

@@ -29,6 +29,18 @@ public sealed class EInvoice : InvoiceNode
     /// <summary>BT-6 — the currency VAT is accounted for in, when it differs from BT-5.</summary>
     public CodeField TaxAccountingCurrencyCode { get; set; }
 
+    /// <summary>
+    /// The tax scheme the categories on this invoice belong to. <c>VAT</c> unless said otherwise.
+    /// </summary>
+    /// <remarks>
+    /// EN 16931 is a European standard and its syntax bindings say <c>VAT</c>, which is why this defaults
+    /// there. It is not universal: Australia and New Zealand require <c>GST</c>, and their Peppol rules
+    /// reject an invoice that says <c>VAT</c> — <c>aligned-ibrp-047-aunz</c> and its neighbours. This is one
+    /// value because a document uses one scheme throughout; nothing in the syntax forbids more, and nothing
+    /// this library has met needs more.
+    /// </remarks>
+    public CodeField TaxSchemeIdentifier { get; set; }
+
     /// <summary>BT-7 — the date VAT becomes accountable.</summary>
     public DateField TaxPointDate { get; set; }
 

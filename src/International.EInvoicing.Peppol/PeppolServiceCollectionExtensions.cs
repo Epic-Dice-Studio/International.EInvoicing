@@ -97,4 +97,53 @@ public static class PeppolServiceCollectionExtensions
 
         return builder;
     }
+
+    /// <summary>
+    /// Adds the Peppol PINT rule sets found in a directory of fetched artefacts.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// PINT validates in two layers and both apply: the base rules every jurisdiction shares, and the ones
+    /// its own specialisation adds. Each is registered against the profiles it governs, so a BIS Billing
+    /// document is not judged by them and a PINT document is not judged by EN 16931.
+    /// </para>
+    /// <para>
+    /// OpenPEPPOL publishes these as pre-compiled XSLT under no redistribution licence, so they are fetched
+    /// rather than shipped: <c>build/fetch-specs.sh pint</c>, then point this at
+    /// <c>specs/peppol/pint/schematron</c>.
+    /// </para>
+    /// </remarks>
+    /// <param name="builder">The library being assembled.</param>
+    /// <param name="directory">The <c>schematron</c> directory the fetch script writes.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="directory"/> is empty.</exception>
+    /// <exception cref="DirectoryNotFoundException">The directory does not exist.</exception>
+    public static EInvoicingBuilder AddPeppolPintRulesFrom(this EInvoicingBuilder builder, string directory)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory);
+
+        if (!Directory.Exists(directory))
+        {
+            throw new DirectoryNotFoundException(
+                $"No PINT rule sets at '{directory}'. OpenPEPPOL publishes them under no redistribution "
+                + "licence, so this library does not ship them: run build/fetch-specs.sh pint, or point this "
+                + "at your own copy of the schematron directory.");
+        }
+
+        foreach (Profile profile in PeppolPintProfiles.All)
+        {
+            foreach (SchematronRuleSet rules in PeppolPintRules.For(profile, directory))
+            {
+                string identifier = profile.Id.Value;
+
+                builder.AddRules(
+                    profile.Syntax,
+                    rules,
+                    specification => string.Equals(specification.Value, identifier, StringComparison.Ordinal));
+            }
+        }
+
+        return builder;
+    }
 }

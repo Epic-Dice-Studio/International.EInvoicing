@@ -97,7 +97,8 @@ public sealed class NewZealandEInvoicing
         EInvoiceBuilder
             .Create(syntax == DocumentSyntax.Cii ? NzProfiles.PintBilling : NzProfiles.PintBilling)
             .InCurrency("NZD")
-            .ForPeppolPint();
+            .ForPeppolPint()
+            .Extend(invoice => invoice.TaxSchemeIdentifier = "GST");
 
     /// <summary>A credit note declaring Peppol BIS Billing, in UBL.</summary>
     public EInvoiceBuilder CreditNote() => CreditNote(DocumentSyntax.Ubl);

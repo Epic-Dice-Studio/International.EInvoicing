@@ -97,7 +97,8 @@ public sealed class AustralianEInvoicing
         EInvoiceBuilder
             .Create(syntax == DocumentSyntax.Cii ? AuProfiles.PintBilling : AuProfiles.PintBilling)
             .InCurrency("AUD")
-            .ForPeppolPint();
+            .ForPeppolPint()
+            .Extend(invoice => invoice.TaxSchemeIdentifier = "GST");
 
     /// <summary>A credit note declaring Peppol BIS Billing, in UBL.</summary>
     public EInvoiceBuilder CreditNote() => CreditNote(DocumentSyntax.Ubl);

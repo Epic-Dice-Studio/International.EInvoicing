@@ -137,13 +137,21 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             invoice.AdditionalDocuments.Add(mappedDocument);
         }
 
+        // Read before the parties, because it decides which of their registrations is BT-31.
+        string taxScheme = TaxSchemeOf(root);
+        invoice.TaxSchemeIdentifier = new Values.CodeField(taxScheme);
+
         invoice.Seller = ReadParty(
-            Descend(values, Take(root, UblNames.Cac + "AccountingSupplierParty", mapped), UblNames.Cac + "Party"), values);
+            Descend(values, Take(root, UblNames.Cac + "AccountingSupplierParty", mapped), UblNames.Cac + "Party"),
+            values,
+            taxScheme);
         invoice.Buyer = ReadParty(
-            Descend(values, Take(root, UblNames.Cac + "AccountingCustomerParty", mapped), UblNames.Cac + "Party"), values);
-        invoice.Payee = ReadParty(Take(root, UblNames.Cac + "PayeeParty", mapped), values);
+            Descend(values, Take(root, UblNames.Cac + "AccountingCustomerParty", mapped), UblNames.Cac + "Party"),
+            values,
+            taxScheme);
+        invoice.Payee = ReadParty(Take(root, UblNames.Cac + "PayeeParty", mapped), values, taxScheme);
         invoice.SellerTaxRepresentative = ReadParty(
-            Take(root, UblNames.Cac + "TaxRepresentativeParty", mapped), values);
+            Take(root, UblNames.Cac + "TaxRepresentativeParty", mapped), values, taxScheme);
 
         invoice.Delivery = ReadDelivery(Take(root, UblNames.Cac + "Delivery", mapped), values);
         invoice.Payment = ReadPayment(root, values, mapped);
@@ -235,7 +243,20 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             : new BinaryField(null, mimeCode, filename, source);
     }
 
-    private static Party? ReadParty(XElement? element, UblValueReader values)
+    /// <summary>
+    /// The tax scheme this document's categories belong to, taken from the breakdown where the standard puts
+    /// it. <c>VAT</c> when the document says nothing, which is what EN 16931's own bindings assume.
+    /// </summary>
+    private static string TaxSchemeOf(XElement root) => root
+        .Elements(UblNames.Cac + "TaxTotal")
+        .Elements(UblNames.Cac + "TaxSubtotal")
+        .Elements(UblNames.Cac + "TaxCategory")
+        .Elements(UblNames.Cac + "TaxScheme")
+        .Elements(UblNames.Cbc + "ID")
+        .Select(id => id.Value.Trim())
+        .FirstOrDefault(value => value.Length > 0) ?? "VAT";
+
+    private static Party? ReadParty(XElement? element, UblValueReader values, string taxScheme)
     {
         if (element is null)
         {
@@ -270,13 +291,17 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             party.Name = party.TradingName;
         }
 
-        foreach (XElement taxScheme in DescendAll(values, element, UblNames.Cac + "PartyTaxScheme"))
+        foreach (XElement registration in DescendAll(values, element, UblNames.Cac + "PartyTaxScheme"))
         {
-            string? scheme = Descend(values, Descend(values, taxScheme, UblNames.Cac + "TaxScheme"), UblNames.Cbc + "ID")?.Value;
-            values.Consume(Descend(values, taxScheme, UblNames.Cac + "TaxScheme"));
-            IdentifierField companyId = values.ReadIdentifier(taxScheme.Element(UblNames.Cbc + "CompanyID"));
+            string? scheme = Descend(values, Descend(values, registration, UblNames.Cac + "TaxScheme"), UblNames.Cbc + "ID")?.Value;
+            values.Consume(Descend(values, registration, UblNames.Cac + "TaxScheme"));
+            IdentifierField companyId = values.ReadIdentifier(registration.Element(UblNames.Cbc + "CompanyID"));
 
-            if (string.Equals(scheme, "VAT", StringComparison.OrdinalIgnoreCase))
+            // BT-31 is "the seller's VAT identifier" in a standard written for Europe. Where the local tax
+            // is called something else — GST in Australia and New Zealand — it is still BT-31, so the
+            // document's own scheme decides, not the word VAT.
+            if (string.Equals(scheme, taxScheme, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(scheme, "VAT", StringComparison.OrdinalIgnoreCase))
             {
                 party.VatIdentifier = companyId;
             }

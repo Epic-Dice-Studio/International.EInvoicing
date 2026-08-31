@@ -44,9 +44,10 @@ public static class PlaygroundCountries
         "OpenPEPPOL publishes it under no licence that allows redistribution, so it is fetched, not shipped.");
 
     private static readonly PlaygroundRuleSet PintRules = new(
-        "Peppol PINT (jurisdiction rules)",
+        "Peppol PINT (base and jurisdiction rules)",
         Embedded: false,
-        "OpenPEPPOL publishes them as pre-compiled XSLT, and this library's engine executes Schematron.");
+        "OpenPEPPOL publishes them under no redistribution licence, so they are fetched rather than shipped "
+            + "— build/fetch-specs.sh pint. They do run: the compiled form is read as data.");
 
     private static readonly PlaygroundRuleSet FrenchRules = new(
         "EXTENDED CTC FR and BR-FR",
@@ -309,8 +310,8 @@ public static class PlaygroundCountries
         DescribeSnippet = (abn, name) => $"seller => australia.Describe(seller, \"{abn}\", \"{name}\")",
         RuleSets = [PintRules],
         Trap = "Australia is on PINT, not BIS Billing — and the two disagree about the profile identifier "
-            + "AND the business process. An invoice with one right and the other wrong looks correct. The "
-            + "ABN's check weights every digit, so a transposition anywhere is caught.",
+            + "AND the business process. It also taxes in GST, not VAT: four fatal A-NZ rules reject an "
+            + "invoice whose tax categories say VAT, which is what EN 16931's own bindings assume.",
     };
 
     private static PlaygroundCountry NewZealand() => new()

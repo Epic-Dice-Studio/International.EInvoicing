@@ -102,11 +102,17 @@ public class CompiledSchematronTests
             assertion.Identifier,
             assertion.Test.ToString() ?? string.Empty,
             assertion.Severity.ToString(),
-            assertion.IsReport));
+            assertion.IsReport,
+            assertion.Message));
 
     private static IEnumerable<string> Contexts(SchematronRuleSet rules) => rules.Patterns
         .SelectMany(pattern => pattern.Rules)
         .Select(rule => rule.Context.ToString() ?? string.Empty);
 
-    private sealed record Assertion(string Identifier, string Test, string Severity, bool IsReport);
+    private sealed record Assertion(
+        string Identifier,
+        string Test,
+        string Severity,
+        bool IsReport,
+        string Message);
 }

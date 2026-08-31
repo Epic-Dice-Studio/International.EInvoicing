@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Peppol PINT rules now run.** This was the largest open item and it looked blocked: OpenPEPPOL
+  publishes PINT's artefacts as pre-compiled XSLT 2.0, which neither this library's Schematron engine nor
+  .NET's own XSLT processor can execute. The way through was that a compiled Schematron still contains every
+  original assertion verbatim — so `CompiledSchematron` reads them rather than translating them, and is
+  proved against the one rule set that exists in both forms at the same version. `PeppolPintRules` and
+  `AddPeppolPintRulesFrom(directory)` put both layers to work, each scoped to the profiles it governs.
+- **The tax scheme is no longer hard-coded to VAT**, which is what running the real A-NZ rules over our own
+  output immediately found: `EN 16931`'s bindings assume VAT, Australia and New Zealand require **GST**, and
+  four fatal rules say so. `EInvoice.TaxSchemeIdentifier` carries it, the UBL writer and reader respect it,
+  and BT-31 is now recognised under whatever the document's scheme is called rather than only under the word
+  VAT — so a GST registration no longer lands in the wrong field on the way back in.
 - **New Zealand**, which shares Australia's PINT specialisation — one Peppol authority across the Tasman, so
   the document is the same and only the identifier differs. The NZBN is issued as a GS1 location number,
   which is why Peppol routes it under scheme 0088 rather than a national one; it is checked before it is
