@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- A tool is run, not referenced: one framework, rolling forward onto whatever runtime is installed. -->
+    <TargetFrameworks></TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
+    <RollForward>Major</RollForward>
+    <RootNamespace>International.EInvoicing.Cli</RootNamespace>
+    <AssemblyName>einvoice</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+
+    <IsPackable>true</IsPackable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>einvoice</ToolCommandName>
+    <PackageId>International.EInvoicing.Cli</PackageId>
+    <Description>
+      Validate, inspect and convert electronic invoices from the command line. UBL 2.1, UN/CEFACT CII,
+      Factur-X PDFs and lifecycle messages, checked against EN 16931 and the national rule sets you point it
+      at. The reference validator in this space is a Java jar; this is the .NET one.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;cli;dotnet-tool;en16931;ubl;cii;factur-x;validation</PackageTags>
+
+    <!-- Console output is for people, not for translation. -->
+    <NoWarn>$(NoWarn);CA1303</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The whole tool is static methods taking their writers, so the tests run it without a process. -->
+    <InternalsVisibleTo Include="International.EInvoicing.Cli.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.FacturX.PdfSharp/International.EInvoicing.FacturX.PdfSharp.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
+  </ItemGroup>
+
+</Project>

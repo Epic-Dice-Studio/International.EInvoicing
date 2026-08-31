@@ -935,6 +935,7 @@ International.EInvoicing.Xml.DocumentLimits.MaxDocumentLines.init -> void
 International.EInvoicing.Xml.DocumentLimits.MaxElementDepth.get -> int
 International.EInvoicing.Xml.DocumentLimits.MaxElementDepth.init -> void
 International.EInvoicing.Xml.SecureXml
+International.EInvoicing.Xml.SyntaxNamespaces
 International.EInvoicing.Xml.XmlCharacters
 override International.EInvoicing.Diagnostics.DiagnosticDescriptor.Equals(object? obj) -> bool
 override International.EInvoicing.Diagnostics.DiagnosticDescriptor.GetHashCode() -> int
@@ -1168,4 +1169,5 @@ static International.EInvoicing.Xml.SecureXml.CreateReader(string! xml) -> Syste
 static International.EInvoicing.Xml.SecureXml.CreateReader(System.IO.Stream! stream, International.EInvoicing.Xml.DocumentLimits! limits) -> System.Xml.XmlReader!
 static International.EInvoicing.Xml.SecureXml.CreateReader(System.IO.Stream! stream) -> System.Xml.XmlReader!
 static International.EInvoicing.Xml.SecureXml.IsDepthExceeded(System.Xml.XmlReader! reader, International.EInvoicing.Xml.DocumentLimits! limits) -> bool
+static International.EInvoicing.Xml.SyntaxNamespaces.BelongsTo(string! namespaceUri, International.EInvoicing.Profiles.DocumentSyntax syntax) -> bool
 static International.EInvoicing.Xml.XmlCharacters.Sanitize(string? value) -> string?

@@ -399,15 +399,17 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
     private static AllowanceCharge ReadAllowanceCharge(XElement element, UblValueReader values)
     {
         XElement? category = Descend(values, element, UblNames.Cac + "TaxCategory");
+        XElement? indicator = element.Element(UblNames.Cbc + "ChargeIndicator");
+
+        // Read as a flag rather than through a field, so it needs saying explicitly that it was mapped —
+        // without this it lands in extension data and is written back a second time.
+        values.Consume(indicator);
         values.Consume(Descend(values, category, UblNames.Cac + "TaxScheme"));
         values.Consume(Descend(values, Descend(values, category, UblNames.Cac + "TaxScheme"), UblNames.Cbc + "ID"));
 
         return new AllowanceCharge
         {
-            IsCharge = string.Equals(
-                element.Element(UblNames.Cbc + "ChargeIndicator")?.Value.Trim(),
-                "true",
-                StringComparison.OrdinalIgnoreCase),
+            IsCharge = string.Equals(indicator?.Value.Trim(), "true", StringComparison.OrdinalIgnoreCase),
             Amount = values.ReadAmount(element.Element(UblNames.Cbc + "Amount")),
             BaseAmount = values.ReadAmount(element.Element(UblNames.Cbc + "BaseAmount")),
             Percentage = values.ReadDecimal(element.Element(UblNames.Cbc + "MultiplierFactorNumeric")),

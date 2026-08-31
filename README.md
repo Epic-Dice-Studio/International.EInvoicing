@@ -261,6 +261,20 @@ The [playground](https://epic-dice-studio.github.io/International.EInvoicing/dem
 documents entirely in your browser — the library is compiled to WebAssembly, so **no invoice you open there
 reaches a server**.
 
+## From the command line
+
+```
+dotnet tool install --global International.EInvoicing.Cli --prerelease
+
+einvoice validate invoice.xml            # against every rule set that applies, and it says which ran
+einvoice inspect  invoice.pdf            # what is it, what profile, what did reading it report
+einvoice convert  invoice.xml --to cii   # to the other syntax, with a report of what did not cross
+```
+
+Exit codes are `0` conforming, `1` rejected, `2` could not run — kept apart because a script that treats
+"I had no rules for this" as success is a pipeline that passes while checking nothing.
+See [the tool's README](src/International.EInvoicing.Cli/README.md).
+
 ## Documentation
 
 | | |

@@ -38,4 +38,5 @@ public static class CreditTransferSchemes
 {
     /// <summary>An account identified by something other than an IBAN.</summary>
     public const string Proprietary = "proprietary";
+
 }

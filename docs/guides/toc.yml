@@ -1,5 +1,7 @@
 - name: Overview
   href: README.md
+- name: The command line
+  href: command-line.md
 - name: Getting started
   href: getting-started.md
 - name: One country, one object

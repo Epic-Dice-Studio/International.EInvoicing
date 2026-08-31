@@ -632,10 +632,24 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
+    /// <summary>
+    /// Re-emits what the model had no field for — except what belongs to the other syntax.
+    /// </summary>
+    /// <remarks>
+    /// Extension data is kept so that a document written back in the syntax it came from loses nothing. An
+    /// invoice that arrived as UBL carries UBL elements, and writing those into a CII document produces
+    /// something no receiver will accept. They do not cross; <c>EInvoicing.Convert</c> reports them as the
+    /// cost of the conversion.
+    /// </remarks>
     private static void WriteExtensions(ExtensionData extensions, XmlWriter writer)
     {
         foreach (ExtensionElement element in extensions)
         {
+            if (SyntaxNamespaces.BelongsTo(element.NamespaceUri, DocumentSyntax.Ubl))
+            {
+                continue;
+            }
+
             writer.WriteRaw(element.Xml);
         }
     }

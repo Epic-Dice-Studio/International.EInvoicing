@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **A command-line tool**, `International.EInvoicing.Cli`. `einvoice validate` checks a file or a whole
+  directory against every rule set that applies and prints which ones ran; `inspect` says what a document is
+  and what reading it reported; `convert` carries it to the other syntax with the loss report; `profiles` and
+  `rules` say what the build knows. Exit codes separate *rejected* from *could not run*, and a document
+  declaring a specialisation of EN 16931 that only the base judged is told so, because a validator that says
+  "valid" when it means "I had no rules for this" is worse than none.
+- **Every allowance or charge left a duplicate of `cbc:ChargeIndicator` in extension data.** It is read as a
+  flag rather than through a field, and nothing marked it as mapped — so the catch-all swept it up and the
+  writer emitted it a second time. Found by running the new CLI over the Peppol examples.
+- **The writers re-emitted the other syntax's extension elements.** An invoice read from UBL carries UBL
+  elements the model has no field for; writing those into a CII document produced something no receiver would
+  accept. They now stop at the boundary, and `Convert` reports them as the cost of the crossing.
 - **The write pipeline.** `AddWriteStep` puts your own logic inside generation — numbering, house rounding, a
   signature, an element one customer demands — with ASP.NET Core's middleware shape: work before `next`, after
   it, or decline to call it. The steps are wrapped *around the writer* rather than called by the facade, so
