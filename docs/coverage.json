@@ -220,6 +220,15 @@
           "notes": "The A-NZ PINT profile and business process — both different strings from Peppol BIS — and the ABN with the modulo 89 check, measured against the rule Peppol publishes for scheme 0151. The jurisdiction rules are published as pre-compiled XSLT, which this library's Schematron engine cannot run, so they are reported as unchecked."
         },
         {
+          "name": "New Zealand — Peppol PINT (A-NZ), NZBN",
+          "version": "PINT @aunz-1",
+          "package": "International.EInvoicing.Countries.NewZealand",
+          "read": "done",
+          "write": "done",
+          "validate": "in-progress",
+          "notes": "The same A-NZ PINT specialisation Australia uses, and the NZBN — which is a GS1 location number, routed under scheme 0088 — measured against the GLN rule Peppol publishes. The jurisdiction rules are pre-compiled XSLT and are reported as unchecked."
+        },
+        {
           "name": "Rest of the world",
           "version": "—",
           "package": "—",

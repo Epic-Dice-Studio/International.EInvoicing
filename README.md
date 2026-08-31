@@ -160,6 +160,7 @@ validation is never presented as a success.
 | Iceland — Peppol BIS, kennitala <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Iceland` |
 | Croatia — Peppol BIS, OIB <sub>BIS 3.0</sub> | ✅ | ✅ | 🚧 | `International.EInvoicing.Countries.Croatia` |
 | Australia — Peppol PINT (A-NZ), ABN <sub>PINT @aunz-1</sub> | ✅ | ✅ | 🚧 | `International.EInvoicing.Countries.Australia` |
+| New Zealand — Peppol PINT (A-NZ), NZBN <sub>PINT @aunz-1</sub> | ✅ | ✅ | 🚧 | `International.EInvoicing.Countries.NewZealand` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
 > **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build.
@@ -187,6 +188,8 @@ validation is never presented as a success.
 > **Croatia — Peppol BIS, OIB** — The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10. The HR-FISK 2.0 CIUS is not carried — its identifier is published nowhere this repository can read — and neither is the advanced electronic seal or the fiscalisation reporting, which are a signature and a transport.
 
 > **Australia — Peppol PINT (A-NZ), ABN** — The A-NZ PINT profile and business process — both different strings from Peppol BIS — and the ABN with the modulo 89 check, measured against the rule Peppol publishes for scheme 0151. The jurisdiction rules are published as pre-compiled XSLT, which this library's Schematron engine cannot run, so they are reported as unchecked.
+
+> **New Zealand — Peppol PINT (A-NZ), NZBN** — The same A-NZ PINT specialisation Australia uses, and the NZBN — which is a GS1 location number, routed under scheme 0088 — measured against the GLN rule Peppol publishes. The jurisdiction rules are pre-compiled XSLT and are reported as unchecked.
 
 > **Rest of the world** — Some fifty countries, catalogued in the roadmap below by what each would cost to add: a rule set and an identifier for the Peppol ones, a reader and a writer for the national formats, a different document entirely for the clearance countries.
 

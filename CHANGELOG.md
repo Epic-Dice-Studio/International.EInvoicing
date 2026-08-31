@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **New Zealand**, which shares Australia's PINT specialisation — one Peppol authority across the Tasman, so
+  the document is the same and only the identifier differs. The NZBN is issued as a GS1 location number,
+  which is why Peppol routes it under scheme 0088 rather than a national one; it is checked before it is
+  written, and measured against Peppol's own `PEPPOL-COMMON-R040`.
 - **Australia**, the first country here on PINT rather than BIS Billing — which is the point of the package,
   since the two disagree about the profile identifier *and* the business process, and an invoice with one
   right and the other wrong looks correct. `AustralianEInvoicing` declares both, in AUD, and checks the ABN

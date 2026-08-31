@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.NewZealand</PackageId>
+    <Description>
+      What New Zealand electronic invoicing adds on top of the norms: the A-NZ Peppol PINT profile, and the
+      New Zealand Business Number with the GS1 check digit Peppol enforces on it.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;new-zealand;peppol;pint;nzbn;gln;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

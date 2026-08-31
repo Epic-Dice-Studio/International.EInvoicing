@@ -1,5 +1,6 @@
 using International.EInvoicing.Building;
 using International.EInvoicing.Model;
+using International.EInvoicing.Peppol;
 using International.EInvoicing.Playground.Services;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
@@ -20,7 +21,7 @@ namespace International.EInvoicing.Playground.Tests;
 public class PlaygroundCountriesTests
 {
     private static readonly EInvoicing Library =
-        EInvoicing.Create(library => library.AddDefaults().AddXRechnungRules());
+        EInvoicing.Create(library => library.AddDefaults().AddPeppol().AddXRechnungRules());
 
     public static TheoryData<string, string> Combinations
     {
@@ -52,6 +53,17 @@ public class PlaygroundCountriesTests
             profile.Syntax == DocumentSyntax.Cii ? DocumentFormat.Cii : DocumentFormat.Ubl);
 
         ValidationReport report = Library.Validate(xml);
+
+        // A country whose rules cannot run must not pass this vacuously: say so, and check what can be
+        // checked — that the document was written at all, and that Describe accepted its identifiers.
+        if (report.RuleSets.All(outcome => !outcome.Ran))
+        {
+            country.RuleSets.ShouldAllBe(
+                ruleSet => !ruleSet.Embedded,
+                $"{country.Name} claims a rule set this build carries, yet none ran over its invoice");
+            xml.ShouldContain(profile.Id.Value);
+            return;
+        }
 
         // Describe throws before writing when an identifier fails its country's check, so a sample
         // identifier that stopped satisfying its own check digits fails here too.

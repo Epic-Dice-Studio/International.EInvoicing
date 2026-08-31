@@ -1,4 +1,6 @@
 using International.EInvoicing.Building;
+using International.EInvoicing.Countries.Australia;
+using International.EInvoicing.Countries.Australia.Identifiers;
 using International.EInvoicing.Countries.Belgium;
 using International.EInvoicing.Countries.Belgium.Identifiers;
 using International.EInvoicing.Countries.Croatia;
@@ -13,6 +15,8 @@ using International.EInvoicing.Countries.Iceland;
 using International.EInvoicing.Countries.Iceland.Identifiers;
 using International.EInvoicing.Countries.Netherlands;
 using International.EInvoicing.Countries.Netherlands.Identifiers;
+using International.EInvoicing.Countries.NewZealand;
+using International.EInvoicing.Countries.NewZealand.Identifiers;
 using International.EInvoicing.Countries.Norway;
 using International.EInvoicing.Countries.Norway.Identifiers;
 using International.EInvoicing.Countries.Sweden;
@@ -39,6 +43,11 @@ public static class PlaygroundCountries
         Embedded: false,
         "OpenPEPPOL publishes it under no licence that allows redistribution, so it is fetched, not shipped.");
 
+    private static readonly PlaygroundRuleSet PintRules = new(
+        "Peppol PINT (jurisdiction rules)",
+        Embedded: false,
+        "OpenPEPPOL publishes them as pre-compiled XSLT, and this library's engine executes Schematron.");
+
     private static readonly PlaygroundRuleSet FrenchRules = new(
         "EXTENDED CTC FR and BR-FR",
         Embedded: false,
@@ -57,6 +66,8 @@ public static class PlaygroundCountries
         Denmark(),
         Iceland(),
         Croatia(),
+        Australia(),
+        NewZealand(),
     ];
 
     /// <summary>The country with that code, or the neutral entry.</summary>
@@ -281,6 +292,59 @@ public static class PlaygroundCountries
         Trap = "IS-R-002 and IS-R-004 are fatal: both parties need a legal entity identifier carrying "
             + "scheme 0196, the kennitala.",
     };
+
+    private static PlaygroundCountry Australia() => new()
+    {
+        Code = "AU",
+        Name = "Australia",
+        Currency = "AUD",
+        Facade = "AustralianEInvoicing",
+        Profiles = [new("Peppol PINT Billing (A-NZ)", AuProfiles.PintBilling)],
+        SellerIdentifier = "51824753556",
+        BuyerIdentifier = "53004085616",
+        SellerVat = "AU51824753556",
+        Prepare = builder => builder.ForPeppolPint(),
+        Describe = (party, abn, name) => AustralianEInvoicing.Create().Describe(party, abn, name),
+        CreationSnippet = "AustralianEInvoicing australia = AustralianEInvoicing.Create();",
+        DescribeSnippet = (abn, name) => $"seller => australia.Describe(seller, \"{abn}\", \"{name}\")",
+        RuleSets = [PintRules],
+        Trap = "Australia is on PINT, not BIS Billing — and the two disagree about the profile identifier "
+            + "AND the business process. An invoice with one right and the other wrong looks correct. The "
+            + "ABN's check weights every digit, so a transposition anywhere is caught.",
+    };
+
+    private static PlaygroundCountry NewZealand() => new()
+    {
+        Code = "NZ",
+        Name = "New Zealand",
+        Currency = "NZD",
+        Facade = "NewZealandEInvoicing",
+        Profiles = [new("Peppol PINT Billing (A-NZ)", NzProfiles.PintBilling)],
+        SellerIdentifier = ValidNzbn(942_904_000_959L),
+        BuyerIdentifier = ValidNzbn(942_904_000_137L),
+        SellerVat = "NZ123456789",
+        Prepare = builder => builder.ForPeppolPint(),
+        Describe = (party, nzbn, name) => NewZealandEInvoicing.Create().Describe(party, nzbn, name),
+        CreationSnippet = "NewZealandEInvoicing newZealand = NewZealandEInvoicing.Create();",
+        DescribeSnippet = (nzbn, name) => $"seller => newZealand.Describe(seller, \"{nzbn}\", \"{name}\")",
+        RuleSets = [PintRules],
+        Trap = "The NZBN is a GS1 location number, so Peppol routes it under scheme 0088 — the GLN scheme — "
+            + "rather than one of New Zealand's own. It shares Australia's PINT specialisation.",
+    };
+
+    /// <summary>Twelve digits and their GS1 check digit.</summary>
+    private static string ValidNzbn(long twelveDigits)
+    {
+        string body = twelveDigits.ToString("D12", System.Globalization.CultureInfo.InvariantCulture);
+        int sum = 0;
+
+        for (int index = 0; index < 12; index++)
+        {
+            sum += (body[index] - '0') * (index % 2 == 1 ? 3 : 1);
+        }
+
+        return body + ((10 - (sum % 10)) % 10).ToString(System.Globalization.CultureInfo.InvariantCulture);
+    }
 
     private static PlaygroundCountry Croatia() => new()
     {

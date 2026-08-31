@@ -18,6 +18,8 @@ Three types hold that knowledge for you:
 | `DutchEInvoicing` | `International.EInvoicing.Countries.Netherlands` |
 | `IcelandicEInvoicing` | `International.EInvoicing.Countries.Iceland` |
 | `CroatianEInvoicing` | `International.EInvoicing.Countries.Croatia` |
+| `AustralianEInvoicing` | `International.EInvoicing.Countries.Australia` |
+| `NewZealandEInvoicing` | `International.EInvoicing.Countries.NewZealand` |
 
 None of them is a wall. Each exposes `.Library`, the fully assembled `EInvoicing` underneath, so anything the
 shortcut does not cover is one property away.
@@ -245,6 +247,37 @@ I/O, so both belong to you. **HR-FISK 2.0**, Croatia's own CIUS, is absent for t
 published identifier is in no artefact this repository can read. See
 [the Croatian page](../standards/country-hr.md).
 
+## Australia and New Zealand, where Peppol is not the Peppol you know
+
+These two are the first shortcuts here for **Peppol PINT** rather than Peppol BIS Billing. PINT is what
+OpenPEPPOL publishes for jurisdictions outside Europe, and the two families disagree about **both** strings
+that identify a document:
+
+| | Profile (BT-24) | Business process (BT-23) |
+|---|---|---|
+| BIS Billing | `urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0` | `urn:fdc:peppol.eu:2017:poacc:billing:01:1.0` |
+| PINT A-NZ | `urn:peppol:pint:billing-1@aunz-1` | `urn:peppol:bis:billing` |
+
+An invoice with one right and the other wrong looks correct and is not, which is why `ForPeppolPint()` exists
+beside `ForPeppol()` rather than a flag on one method — and why the shortcut sets both for you.
+
+```csharp
+AustralianEInvoicing australia = AustralianEInvoicing.Create();
+australia.Invoice().From(seller => australia.Describe(seller, "51 824 753 556", "Supplier Pty Ltd"));
+
+NewZealandEInvoicing newZealand = NewZealandEInvoicing.Create();
+newZealand.Invoice().From(seller => newZealand.Describe(seller, "9429040009597", "Supplier Ltd"));
+```
+
+Australia and New Zealand share one Peppol authority and one specialisation, so the document is identical;
+what differs is the identifier. The **ABN** weights all eleven digits, so a transposition anywhere is caught.
+The **NZBN** is a GS1 location number, so Peppol routes it under the GLN scheme `0088` rather than one of New
+Zealand's own.
+
+**Their rules do not run.** OpenPEPPOL publishes PINT's artefacts as pre-compiled XSLT and this library's
+engine executes Schematron, so `Validate` reports the jurisdiction rules as *unchecked* rather than passed —
+which is the honest answer, and the one the [PINT page](../standards/peppol-pint.md) explains.
+
 ## Wiring one into a container
 
 `Create(configure)` takes the same builder the general library takes, so anything you would have registered
@@ -258,6 +291,6 @@ builder.Services.AddSingleton(provider =>
 
 ## Somewhere else?
 
-Only these nine countries have a shortcut today. Every other country is reachable through the general
+Only these eleven countries have a shortcut today. Every other country is reachable through the general
 library — a profile, a rule set fetched from its publisher, and the identifiers it needs. What is planned,
 country by country and in what order, is in the [roadmap](../roadmap.md).
