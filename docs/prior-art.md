@@ -7,6 +7,9 @@ read than to rediscover in production.
 This page is the standing task: **before declaring a format or a country done, spend an hour in the trackers
 below.** Record what you find here, as a row, whether or not it turns into work.
 
+For what those projects *do* rather than what breaks in them — and for the gaps that comparison opens — see
+[how this library compares](comparison.md).
+
 ## Where to look
 
 | Ecosystem | Project | Worth mining for |

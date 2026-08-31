@@ -238,6 +238,11 @@ validation is never presented as a success.
 
 <!-- coverage:end -->
 
+**[How this library compares](docs/comparison.md)** puts it beside the alternatives, with sources: in March
+2026 the .NET incumbent shipped its last open-source release and moved validation to a paid product, which
+leaves this library as the only maintained open-source way to validate an e-invoice against the published
+rules in .NET. The same page lists, without flattery, what the others do that this one does not.
+
 **[The roadmap](docs/roadmap.md)** says what comes next and why, and carries the full country catalogue —
 some fifty of them, grouped by what each would cost to add. The short version: two multipliers first, because
 both change what every country below costs. **EN 16931-1:2026** was published in May 2026 and the 2017 edition

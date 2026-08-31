@@ -2,6 +2,8 @@
   href: https://epic-dice-studio.github.io/International.EInvoicing/demo/
 - name: Roadmap
   href: roadmap.md
+- name: How this library compares
+  href: comparison.md
 - name: Guides
   href: guides/
 - name: Standards
