@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **German *Skonto*, structured rather than hand-rolled.** An early-payment discount is a number your
+  accounting system needs, and Germany keeps it inside BT-20's free text, where `BR-DE-18` judges it with a
+  regular expression — the percentage with exactly two decimals, the keywords in capitals, no stray space, and
+  a line break after the last statement. `DeSkonto` reads and writes one, `invoice.SkontoTerms()` returns what
+  a document states and `invoice.WithSkonto(...)` puts them on one, keeping whatever the note already said and
+  replacing any statement it already claimed. The expression is not transcribed: the tests read it out of the
+  shipped `common.sch`, so a statement this library accepts is one the rule accepts, and an invoice carrying
+  what it writes is put in front of the German rules in both syntaxes.
 - **Seven more code lists a caller can pick from**, each read out of the shipped EN 16931 artefact and
   compared against it on every build: `CurrencyCodes` (ISO 4217), `CountryCodes` (ISO 3166-1),
   `IcdSchemeCodes` (ISO 6523, judging four different identifiers), `ItemClassificationSchemeCodes`,

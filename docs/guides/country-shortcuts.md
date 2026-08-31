@@ -123,6 +123,42 @@ identifier that would have been rejected on arrival is rejected here instead, wi
 what is wrong. `germany.Invoice()` is the same without the routing identifier, and both take a
 `DocumentSyntax` when you want CII rather than UBL.
 
+### Skonto — the discount inside the free text
+
+EN 16931 has no business term for an early-payment discount. Germany needed one anyway, so XRechnung defined a
+syntax **inside** BT-20, the payment-terms note, and `BR-DE-18` validates it with a regular expression:
+
+```csharp
+using International.EInvoicing.Countries.Germany.Payment;
+
+invoice.WithSkonto(
+    new DeSkonto(Days: 7, Percentage: 2.00m),
+    new DeSkonto(Days: 14, Percentage: 1.00m, BaseAmount: 500.00m));   // a partial amount, not BT-115
+```
+
+BT-20 now reads, with whatever sentence it already carried kept after the statements:
+
+```text
+#SKONTO#TAGE=7#PROZENT=2.00#
+#SKONTO#TAGE=14#PROZENT=1.00#BASISBETRAG=500.00#
+```
+
+Reading is the other direction, and the reason to bother: a discount stated in a string is one your accounting
+system cannot act on.
+
+```csharp
+foreach (DeSkonto term in invoice.SkontoTerms())
+{
+    Console.WriteLine($"{term.Percentage}% within {term.Days} days");
+}
+```
+
+Lines that are not statements are left alone — BT-20 is free text, and a German invoice routinely says the
+same thing in a sentence for whoever reads it. What a hand-rolled writer gets wrong is the detail: the
+percentage needs exactly two decimals, the keywords are capitals, a stray space fails the rule, and the last
+statement must be followed by a line break. `DeSkontoTerms.Write` does that; `DeSkontoTerms.Parse` reads a
+note you have as a string, without an invoice.
+
 ## Belgium
 
 Belgium mandates Peppol BIS Billing rather than a Belgian format. Most of what the shortcut does is make that
