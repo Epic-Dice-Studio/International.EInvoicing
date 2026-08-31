@@ -200,7 +200,11 @@ BIS 4** as its only domestic format by 2029 — the first national format retire
 | ~~**German structured *Skonto***~~ | ✅ **done.** `DeSkonto`, `SkontoTerms()` and `WithSkonto()` in `Countries.Germany`. An early-payment discount is a number your accounting system needs, and Germany puts it inside BT-20's free text, where `BR-DE-18` judges it with a regular expression: the percentage needs exactly two decimals, the keywords capitals, and the last statement a trailing line break — the one a hand-rolled writer forgets. The expression is read out of the shipped `common.sch` in the tests rather than transcribed, so what this reads is what the rule accepts, and an invoice carrying the statements it writes is put in front of the German rules in both syntaxes. |
 | ~~**The rest of the hostile corpus**~~ | ✅ **done**, and it earned its keep. Declared encoding against actual encoding found that everything was decoded as UTF-8 regardless, so a Latin-1 sender's `Müller` arrived as `M?ller`. Deep nesting and oversized attachments found three limits that `DocumentLimits` declared and nothing enforced — documented reassurance a reader relied on. All of it is in `International.EInvoicing.Testing`, so an integrator can point it at their own reader. |
 | **XSD schema validation** | The cheapest gap the [comparison](comparison.md) found. A document can be schema-invalid and still pass every Schematron rule that does not happen to look at it — and the UBL 2.1 and CII D22B schemas are already under `specs/`, unused. Every Java tool does this; so does the one .NET Factur-X library that validates at all. |
-| **The PDF half of Factur-X** | PDF/A-3 *generation* from an ordinary PDF, and PDF/A-3 + XMP conformance *checking*. Half of "is this Factur-X valid?" is about the PDF, and this library answers only the XML half. It is also the main thing a paying customer of the commercial .NET libraries is paying for, which is why it needs a deliberate decision rather than drift — see [the comparison](comparison.md). |
+| **The Factur-X container checks that are ours** | Half of "is this Factur-X valid?" is about the PDF rather than the XML, and part of that half is ours to answer without becoming a PDF library: the attachment's name and relationship, the XMP block's presence, and whether what the XMP claims — profile, version, document type — agrees with the XML actually embedded. A file whose XMP says EN 16931 and whose XML is MINIMUM is a document every receiver will read differently. **Producing a PDF/A-3 stays out** (see *Not doing, on purpose*), and so does full PDF/A conformance, which is veraPDF's job and a specification of its own. |
+| **The Peppol documents that are not invoices** | An integrator on the Peppol network needs more than Billing: the **Invoice Response** and message-level response (`ApplicationResponse`), **Ordering**, **Despatch Advice**. They are the same syntax, the same code lists and the same rule-set machinery this library already runs — the model is what is missing, and it is the difference between "we do invoices" and "we do Peppol". Sized above the remaining countries because every Peppol country needs it and no country needs another country. |
+| **Reading a tax data document** | Written and judged today, not read back. A receiver's job — the tax authority's side — and the asymmetry is a hole in the read/write parity this library otherwise keeps. |
+| **Order-X** | Orders and order responses in CII, the same family as Factur-X and the natural pair to Peppol Ordering. mustangproject has it; nothing in the model prevents it. |
+| **ZUGFeRD 1.x, for reading** | A 2013 format still sitting in archives. Reading it is a mapping job with no ambiguity; writing it will never be worth doing. Low priority until somebody arrives with a file. |
 | ~~**Factur-X and Belgian rule sets**~~ | ✅ **done.** Both are published as compiled XSLT, which is why they sat unwired — reading that came later. Wiring Factur-X immediately found that this library wrote `@currencyID` on CII amounts that forbid it, which would have had every ZUGFeRD document rejected. |
 
 ---
@@ -375,6 +379,19 @@ canonical model fits worst. That is the open decision below, not a scheduling qu
 
 ### What that means for the order
 
+**The holes come before the next country.** Twenty countries is enough breadth to have learned what is
+missing in the middle, and the [comparison with the alternatives](comparison.md) named it: schema validation
+that every other library has, and the Peppol documents that are not invoices. A twenty-first country makes
+neither of those less true, and both of them make every country after it cheaper. So:
+
+0. **Close the gaps** — in this order, and before any new country:
+   1. **XSD schema validation.** Cheapest, and the one that changes what "valid" means here.
+   2. **The Peppol documents that are not invoices** — `ApplicationResponse` first, since an Invoice Response
+      is what a Peppol receiver owes a sender, then Ordering and Despatch Advice.
+   3. **The Factur-X container checks that are ours** — the XMP agreeing with the XML, not PDF/A conformance.
+   4. **Reading a tax data document**, so the reporting documents have the parity the invoices have.
+   5. **Order-X**, once the Peppol order family has settled the shape.
+
 1. **EN 16931-1:2026 and PINT** — both are multipliers, both change what the countries below cost, and both
    are cheaper now than after another dozen profiles are built on the 2017 model.
 2. ~~**Croatia and Slovakia**~~ — done, and neither was the country it looked like: Croatia's CIUS was
@@ -411,6 +428,21 @@ correctness gap, the public API locked, and one country complete end to end. Fra
 
 ## Not doing, on purpose
 
-Sending documents — no AS4 client, no access point API, no Chorus Pro connector. Producing the PDF a human
-reads. Both are stated in the [README](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/README.md) and neither is a maybe: the library performs no network
-I/O at all, which is what lets it run in a browser and makes it auditable.
+**Sending documents** — no AS4 client, no access point API, no Chorus Pro connector. **Producing the PDF a
+human reads** — neither generating a PDF/A-3 from an ordinary PDF nor rendering an invoice for the eye. Both
+are stated in the [README](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/README.md)
+and neither is a maybe: the library performs no network I/O at all, which is what lets it run in a browser and
+makes it auditable, and it writes no PDF, which is what keeps a PDF engine out of the dependency list of every
+consumer.
+
+Three more, each of which a competitor sells and each declined for a reason rather than for lack of time:
+
+- **Full PDF/A conformance checking.** It is a specification of its own with a reference implementation —
+  veraPDF — that is better at it than we would be. What *is* ours is whether the Factur-X container says
+  about itself what the XML inside it says; that is in the table above.
+- **Visualisation.** The published stylesheets are XSLT 2.0, and hosting a general XSLT 2.0 processor is the
+  exact dependency this library exists to avoid: its Schematron engine runs the *rules* natively precisely so
+  that no Saxon-through-IKVM is needed. Rendering is a different problem, and the answer to it is a different
+  tool.
+- **A REST server or container image.** The `einvoice` CLI covers the scriptable case, and everything else is
+  a deployment shape rather than a library.

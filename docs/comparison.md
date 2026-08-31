@@ -17,6 +17,8 @@ half: what they **do**, what we do, and which of the differences are gaps worth 
 | **mustangproject** | Java | APL 2.0, open | ZUGFeRD 1 → 2.5.2, Factur-X 1.09.x, XRechnung 3.0.2, Order-X, CII, UBL conversion | Full, offline, via Saxon |
 | **Securibox.FacturX** | .NET | Open | Factur-X 1.08, five profiles. No UBL | XSD + Schematron + PDF/A-3 + XMP |
 | **Mews fiscalizations** | .NET | Open | Reporting to national authorities — a different half of the problem | n/a |
+| **UblSharp** | .NET | Open, **unmaintained since March 2020** | The whole UBL 2.0/2.1 document set as generated classes — orders, despatch advices, catalogues, not only invoices | XSD only, in a separate package |
+| **UblTr** | .NET | Open | UBL-TR 1.2.1, Türkiye's national UBL | n/a |
 
 **The single most important fact on this page**: in March 2026 ZUGFeRD-csharp — the .NET incumbent, 394 stars
 and over a million downloads — shipped version 18.0 as its **last open-source release**. New features and
@@ -56,22 +58,34 @@ the Factur-X, Belgian, Romanian, Portuguese, Serbian, Croatian and Slovak rule s
 
 ## Where they are ahead — the real gaps
 
-Ranked by what it would cost a user of this library today.
+Ranked by what it would cost a user of this library today. Two of the differences turned out **not** to be
+gaps but decisions, and they are in the section after this one.
 
 | Gap | Who has it | Why it matters | Size |
 |---|---|---|---|
 | **XSD schema validation** | Securibox, mustangproject, every Java tool | A document can be schema-invalid and still pass every Schematron rule that happens not to look at it. We ship the UBL 2.1 and CII D22B schemas under `specs/` and do not use them. This is the cheapest real gap on the list. | Small |
-| **PDF/A-3 generation** | FactoorSharp, mustangproject | We attach CII to a PDF the caller already has. Turning an ordinary PDF into a conformant PDF/A-3 is what a caller with an existing print pipeline actually needs. Deliberately out of scope so far — worth revisiting, since it is the top reason to reach for a paid library. | Large |
-| **PDF/A-3 and XMP conformance checking** | Securibox, FactoorSharp (via VeraPDF) | Half of "is this Factur-X valid?" is about the PDF, not the XML. We answer only the XML half. | Medium |
-| **Visualisation** | mustangproject, FactoorSharp | Rendering an invoice for a human — the KoSIT and Factur-X stylesheets exist; running them needs the XSLT we deliberately do not host. | Medium |
+| **The Peppol documents that are not invoices** | UblSharp has the classes; mustangproject and FactoorSharp have none of it either | An integrator on the Peppol network owes the sender an **Invoice Response**, and often an **Ordering** and **Despatch Advice** flow. Same syntax, same code lists, same rule machinery — only the model is missing. This is the difference between "we do invoices" and "we do Peppol", and it is why UblSharp, abandoned since 2020, still gets pulled into projects. | Medium |
+| **XMP agreeing with the embedded XML** | Securibox, FactoorSharp | A Factur-X file whose XMP claims EN 16931 while the XML inside is MINIMUM is read differently by every receiver. Checking that is ours to do without becoming a PDF library — unlike the two decisions below. | Small |
 | **Order-X** | mustangproject | Orders and order responses, same family, same syntax. Nothing in the model prevents it. | Medium |
 | **ZUGFeRD 1.x reading and migration** | mustangproject, ZUGFeRD-csharp | A 2013 format still in archives. Reading it is a mapping job; nobody has asked. | Medium |
 | **FatturaPA and Facturae** | FactoorSharp validates both | Italy and Spain as *national formats* rather than as Peppol. Both are on the roadmap and both are blocked on the same signature decision. | Large |
-| **A REST server / container** | mustangserver | Not a library concern, but it is how many teams consume one. | Medium |
 
-Two of these — PDF/A-3 generation and visualisation — are the ones a paying customer of FactoorSharp is
-paying for. They are also the two furthest from what this library claims to be. That tension is worth
-deciding deliberately rather than by drift; see the scope note in the [roadmap](roadmap.md).
+## The differences that are decisions, not gaps
+
+Three differences will not be closed here, and saying so is more useful than leaving them on a list nobody
+intends to clear:
+
+- **Generating the PDF.** Turning an ordinary PDF into a conformant PDF/A-3 means a PDF engine in the
+  dependency list of every consumer of this library, for a job a print pipeline already does. This library
+  attaches XML to a PDF you have and reads it back out; it writes no PDF. Full PDF/A *conformance checking*
+  goes with it — that is veraPDF's specification and veraPDF's implementation.
+- **A REST server or container image.** The `einvoice` CLI covers the scriptable case; the rest is a
+  deployment shape rather than a library, and a shape every team already has an opinion about.
+- **Visualisation.** The published stylesheets are XSLT 2.0. Hosting a general XSLT 2.0 processor is the one
+  dependency this library exists to avoid — its Schematron engine runs the rules natively so that no
+  Saxon-through-IKVM is needed. Rendering an invoice for a human is a real need and a different tool.
+
+Both are recorded in the roadmap's [*Not doing, on purpose*](roadmap.md) so they stop being reopened.
 
 ## What we should not copy
 
@@ -98,4 +112,6 @@ linked below. Where a claim could not be verified from a primary source, it is n
 | [mustangproject](https://www.mustangproject.org/) | Formats, operations, licence |
 | [Securibox.FacturX](https://github.com/Securibox/facturx) | Factur-X profiles, XSD + Schematron + PDF/A-3 + XMP validation |
 | [Mews fiscalizations](https://github.com/MewsSystems/fiscalizations) | Scope |
+| [UblSharp](https://github.com/UblSharp/UblSharp) | UBL document coverage, XSD validation package, last release |
+| [UblTr](https://github.com/hkutluay/UblTr) | UBL-TR scope |
 | [Why validating Peppol UBL e-invoices in .NET is harder than it looks](https://dev.to/invoicexml/why-validating-peppol-ubl-e-invoices-in-net-is-harder-than-it-looks-3m2k) | The XSLT 2.0 problem and the IKVM/Saxon workaround |
