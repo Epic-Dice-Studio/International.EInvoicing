@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Japan**, whose PINT rules are light but not empty: `aligned-ibrp-052` requires an invoice period or a
+  line period, and EN 16931 leaves both optional — so an invoice valid everywhere else is refused there.
+  Japan's rules also accept the older `urn:fdc:peppol:jp:billing:3.0` and either family's business process,
+  which is unusual enough to be worth knowing.
 - **Malaysia**, whose rules want three identifiers EN 16931 treats as optional: the BRN of *both* parties and
   the supplier's TIN, each a fatal rule. `Describe` puts them where those rules look — the BRN as the legal
   registration, the TIN as the tax registration under a scheme other than VAT. Its tax category codes are its

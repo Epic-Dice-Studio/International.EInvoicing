@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Japan</PackageId>
+    <Description>
+      What Japanese electronic invoicing adds on top of the norms: the JP Peppol PINT profile, and the
+      invoice period its rules require where EN 16931 leaves it optional.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;japan;peppol;pint;qualified-invoice;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

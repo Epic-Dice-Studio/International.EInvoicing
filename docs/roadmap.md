@@ -233,6 +233,7 @@ The three done ones are at the top so the tiers read as one list.
 | **New Zealand** | Peppol PINT (A-NZ), NZBN, GST | ✅ `NewZealandEInvoicing`, the same |
 | **Singapore** | Peppol PINT (SG), GST, Singapore's own category codes | ✅ `SingaporeEInvoicing` |
 | **Malaysia** | Peppol PINT (MY), BRN and TIN, its own category codes | ✅ `MalaysianEInvoicing` |
+| **Japan** | Peppol PINT (JP), the invoice period its rules require | ✅ `JapaneseEInvoicing` |
 
 France's own calendar: reception for everyone and issuing for large and mid-sized companies on
 **1 September 2026**, issuing for the rest on **1 September 2027**. Belgium's B2B mandate started
@@ -296,14 +297,21 @@ anything built in.
 | **Australia** | A-NZ PINT | ✅ `AustralianEInvoicing` — B2G mandatory; B2B voluntary, strongly adopted |
 | **New Zealand** | the same A-NZ PINT specialisation | ✅ `NewZealandEInvoicing` — the NZBN is a GLN, routed under 0088 |
 | **Singapore** | InvoiceNow (SG PINT) | ✅ `SingaporeEInvoicing`, validated against Singapore's own rules |
-| **Japan** | JP PINT | qualified-invoice system since 2023 |
+| **Japan** | JP PINT | ✅ `JapaneseEInvoicing`; qualified-invoice system since 2023 |
 | **Malaysia** | MyInvois — PINT MY alongside the national API | ✅ `MalaysianEInvoicing`; phased since 2024, above RM 1 m since **January 2026** |
-| **United Arab Emirates** | PINT AE, five-corner DCTCE model | pilot **July 2026**, mandatory **1 January 2027** above AED 50 m, **1 July 2027** below |
+| **United Arab Emirates** | PINT AE, five-corner DCTCE model | **not a thin one** — see below. Pilot **July 2026**, mandatory **1 January 2027** above AED 50 m, **1 July 2027** below |
 | **United Kingdom** | PINT UK, expected | mandatory VAT e-invoicing announced for **April 2029**; roadmap due Budget 2026 |
 | **Oman** | PINT OM | artefacts published; mandate rolling out |
 
 Malaysia and the UAE also need their national submission rules, which are transport — out of scope here —
-but their *documents* are PINT, and the document is what we do. Each of these is now a country package of the
+but their *documents* are PINT, and the document is what we do.
+
+**The UAE is the exception in this tier, and reading its rules is what showed it.** Where Singapore, Malaysia
+and Japan add code lists and mandatory fields that EN 16931 already has terms for, the UAE adds **business
+terms of its own** — the `BTAE-xx` series: an authority name, a legal registration identifier *type*, a
+passport issuing country, mandatory Incoterms. Our model has no terms for those, so a conforming Emirati
+invoice needs model work first, not just a facade. It belongs with Croatia and Italy as a project rather than
+with its PINT neighbours as a package. Each of these is now a country package of the
 same shape as the Nordic ones: a profile that already exists, a legal identifier, and the jurisdiction rules
 once they can be run.
 

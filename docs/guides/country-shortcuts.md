@@ -22,6 +22,7 @@ Three types hold that knowledge for you:
 | `NewZealandEInvoicing` | `International.EInvoicing.Countries.NewZealand` |
 | `SingaporeEInvoicing` | `International.EInvoicing.Countries.Singapore` |
 | `MalaysianEInvoicing` | `International.EInvoicing.Countries.Malaysia` |
+| `JapaneseEInvoicing` | `International.EInvoicing.Countries.Japan` |
 
 None of them is a wall. Each exposes `.Library`, the fully assembled `EInvoicing` underneath, so anything the
 shortcut does not cover is one property away.
@@ -325,6 +326,21 @@ high-value goods, low-value goods and a tourism tax with no European equivalent.
 
 Submitting to LHDN is a national API: transport, and out of scope. The document is PINT.
 
+## Japan, where a period is mandatory
+
+```csharp
+JapaneseEInvoicing japan = JapaneseEInvoicing.Create();
+
+japan.Invoice().Extend(document => document.Period = new InvoicingPeriod
+{
+    StartDate = new DateOnly(2026, 9, 1),
+    EndDate = new DateOnly(2026, 9, 30),
+});
+```
+
+`aligned-ibrp-052` requires an invoice period or a line period. EN 16931 leaves both optional, so an invoice
+that passes everywhere else is refused in Japan — which is the whole reason to know it before sending one.
+
 ## Wiring one into a container
 
 `Create(configure)` takes the same builder the general library takes, so anything you would have registered
@@ -338,6 +354,6 @@ builder.Services.AddSingleton(provider =>
 
 ## Somewhere else?
 
-Only these thirteen countries have a shortcut today. Every other country is reachable through the general
+Only these fourteen countries have a shortcut today. Every other country is reachable through the general
 library — a profile, a rule set fetched from its publisher, and the identifiers it needs. What is planned,
 country by country and in what order, is in the [roadmap](../roadmap.md).

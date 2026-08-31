@@ -163,6 +163,7 @@ validation is never presented as a success.
 | New Zealand — Peppol PINT (A-NZ), NZBN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.NewZealand` |
 | Singapore — Peppol PINT (InvoiceNow), GST <sub>PINT @sg-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Singapore` |
 | Malaysia — Peppol PINT (MyInvois), BRN and TIN <sub>PINT @my-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Malaysia` |
+| Japan — Peppol PINT, qualified invoice <sub>PINT @jp-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Japan` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
 > **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build.
@@ -196,6 +197,8 @@ validation is never presented as a success.
 > **Singapore — Peppol PINT (InvoiceNow), GST** — The SG PINT profile and process, SGD and GST, and the Singaporean tax category codes read out of BR-CL-17-GST-SG — 'S' is rejected there. Validated against Singapore's own base and jurisdiction rules once they are fetched. No identifier scheme is asserted: Singapore's rules name none.
 
 > **Malaysia — Peppol PINT (MyInvois), BRN and TIN** — The MY PINT profile and process, the BRN of both parties and the supplier's TIN that three fatal rules require, and Malaysia's own tax category codes read out of aligned-ibrp-cl-01-my — 'S' is not among them. Validated against Malaysia's own base and jurisdiction rules once they are fetched.
+
+> **Japan — Peppol PINT, qualified invoice** — The JP PINT profile and process, JPY, and the invoice period aligned-ibrp-052 requires where EN 16931 leaves it optional. Validated against Japan's own base and jurisdiction rules once they are fetched.
 
 > **Rest of the world** — Some fifty countries, catalogued in the roadmap below by what each would cost to add: a rule set and an identifier for the Peppol ones, a reader and a writer for the national formats, a different document entirely for the clearance countries.
 
