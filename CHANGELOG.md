@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Slovakia, which turned out not to be a CIUS country.** The 2027 mandate has two halves, and the second
+  is a document rather than a summary: a **tax data document** each party's service provider sends to the
+  financial administration within fifteen minutes of the invoice, with an identifier, a structure and 88
+  published assertions of its own. `SkTaxData`, `SkTaxDataWriter` and `SkTaxDataValidator` build it, write it
+  and judge it; `SlovakEInvoicing.TaxDataFor` fills in what follows from the invoice and leaves the authority
+  and the endpoints — the network's business — to the caller. A document this library writes satisfies all 88,
+  with four negative controls proving the rules ran. The reported document is a **projection** of the invoice,
+  not a copy: its rules forbid every element they do not name, so an invoice you can send is not a report you
+  can send. No schema is published beside the rules, so the element order is the rules' own enumeration —
+  evidence, not proof, and said out loud in `docs/standards/country-sk.md`. There is no Slovak CIUS published
+  and no publisher's rule for the IČO check digit, so this library invents neither.
+- **`instance of`, in the Schematron engine.** Without it the Slovak rule set did not load at all — the rules
+  build the path they report a failure at by walking the ancestors and asking each one whether it is an
+  element — and a rule set that fails to load judges nothing.
 - **Croatia's CIUS was not missing, it was unfetched** — and finding that out cost one line. CIUS-HR 2025
   had been recorded as blocked on an identifier "published nowhere this repository can read". The publisher's
   rules are aggregated by `phive-rules` as compiled XSLT, which this library has read since Factur-X, and the

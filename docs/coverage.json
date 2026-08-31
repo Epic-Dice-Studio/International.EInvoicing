@@ -247,6 +247,15 @@
           "notes": "What Italy exchanges over Peppol: the partita IVA with the check Peppol publishes for scheme 0211, measured against it in both directions, and the full postal address IT-R-002 to IT-R-004 require. FatturaPA and the SDI are a separate project — their own syntax, and a qualified signature this library does not produce."
         },
         {
+          "name": "Slovakia — Peppol BIS, tax data document",
+          "version": "TDD sk-1 1.0.0",
+          "package": "International.EInvoicing.Countries.Slovakia",
+          "read": "in-progress",
+          "write": "done",
+          "validate": "done",
+          "notes": "The 2027 mandate has two halves: a Peppol BIS invoice, and a tax data document reported to the financial administration within fifteen minutes. The second is built from the invoice it reports — a projection, not a copy, since its rules forbid every element they do not name — and satisfies all 88 assertions OpenPeppol publishes for it. Reading one back is a receiver's job and is not there yet. There is no Slovak CIUS published, and no publisher's rule for the ICO check digit, so this library invents neither."
+        },
+        {
           "name": "Croatia — Peppol BIS, CIUS-HR, OIB",
           "version": "CIUS-HR 2025",
           "package": "International.EInvoicing.Countries.Croatia",

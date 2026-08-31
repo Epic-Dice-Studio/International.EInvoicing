@@ -27,6 +27,9 @@ internal sealed class XPathParser
 
     private XPathToken Current => _tokens[_position];
 
+    private XPathToken Peek(int ahead) =>
+        _position + ahead < _tokens.Count ? _tokens[_position + ahead] : _tokens[^1];
+
     private XPathNode ParseExpression()
     {
         // A conditional binds looser than anything else, so it is recognised before the operator ladder.
@@ -136,6 +139,8 @@ internal sealed class XPathParser
     /// </summary>
     private XPathNode ParseCast(XPathNode operand)
     {
+        operand = ParseInstanceOf(operand);
+
         while (Current.IsName("cast") || Current.IsName("castable"))
         {
             bool castable = Current.IsName("castable");
@@ -163,6 +168,53 @@ internal sealed class XPathParser
         }
 
         return operand;
+    }
+
+    /// <summary>
+    /// <c>instance of</c>, which asks what kind of thing an expression yielded.
+    /// </summary>
+    /// <remarks>
+    /// Peppol's tax data rules build the path they report a failure at by walking the ancestors and asking
+    /// each one whether it is an element. Without this the whole rule set fails to load, so a document that
+    /// nothing could judge would be reported as judged.
+    /// </remarks>
+    private XPathNode ParseInstanceOf(XPathNode operand)
+    {
+        while (Current.IsName("instance") && Peek(1).IsName("of"))
+        {
+            _position += 2;
+            operand = new FunctionNode("instance-of", [operand, new LiteralNode(XPathValue.Text(ParseSequenceType()))]);
+        }
+
+        return operand;
+    }
+
+    /// <summary>An item type with its occurrence indicator, as <c>element()*</c> or <c>xs:string?</c>.</summary>
+    private string ParseSequenceType()
+    {
+        string type = Current.Text;
+        _position++;
+
+        if (Current.Is("("))
+        {
+            int depth = 0;
+
+            do
+            {
+                depth += Current.Is("(") ? 1 : Current.Is(")") ? -1 : 0;
+                type += Current.Text;
+                _position++;
+            }
+            while (depth > 0 && Current.Kind != XPathTokenKind.End);
+        }
+
+        if (Current.Is("?") || Current.Is("*") || Current.Is("+"))
+        {
+            type += Current.Text;
+            _position++;
+        }
+
+        return type;
     }
 
     private XPathNode ParseAdditive()

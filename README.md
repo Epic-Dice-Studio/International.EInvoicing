@@ -163,6 +163,7 @@ validation is never presented as a success.
 | Portugal — CIUS-PT <sub>CIUS-PT 2.1.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Portugal` |
 | Iceland — Peppol BIS, kennitala <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Iceland` |
 | Italy — Peppol BIS, partita IVA <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Italy` |
+| Slovakia — Peppol BIS, tax data document <sub>TDD sk-1 1.0.0</sub> | 🚧 | ✅ | ✅ | `International.EInvoicing.Countries.Slovakia` |
 | Croatia — Peppol BIS, CIUS-HR, OIB <sub>CIUS-HR 2025</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Croatia` |
 | Australia — Peppol PINT (A-NZ), ABN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Australia` |
 | New Zealand — Peppol PINT (A-NZ), NZBN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.NewZealand` |
@@ -203,6 +204,8 @@ validation is never presented as a success.
 
 > **Italy — Peppol BIS, partita IVA** — What Italy exchanges over Peppol: the partita IVA with the check Peppol publishes for scheme 0211, measured against it in both directions, and the full postal address IT-R-002 to IT-R-004 require. FatturaPA and the SDI are a separate project — their own syntax, and a qualified signature this library does not produce.
 
+> **Slovakia — Peppol BIS, tax data document** — The 2027 mandate has two halves: a Peppol BIS invoice, and a tax data document reported to the financial administration within fifteen minutes. The second is built from the invoice it reports — a projection, not a copy, since its rules forbid every element they do not name — and satisfies all 88 assertions OpenPeppol publishes for it. Reading one back is a receiver's job and is not there yet. There is no Slovak CIUS published, and no publisher's rule for the ICO check digit, so this library invents neither.
+
 > **Croatia — Peppol BIS, CIUS-HR, OIB** — The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10, and CIUS-HR 2025 with its extension — profile and rules both, once the artefacts are fetched. An invoice this library writes satisfies all 74 Croatian assertions, including the three terms EN 16931 does not define: the time of issue and the operator who issued it, written by AddCroatianOperator. The advanced electronic seal and the fiscalisation reporting stay out: a signature and a transport.
 
 > **Australia — Peppol PINT (A-NZ), ABN** — The A-NZ PINT profile and business process — both different strings from Peppol BIS — the ABN with the modulo 89 check measured against Peppol's rule for scheme 0151, and GST rather than VAT, which four fatal A-NZ rules require. Validated against the PINT base and jurisdiction rules once they are fetched.
@@ -238,9 +241,10 @@ both change what every country below costs. **EN 16931-1:2026** was published in
 this library is built on was formally withdrawn; the revision is not backward compatible. And **Peppol PINT**
 is the specification everywhere Peppol was adopted outside Europe — the UAE, Malaysia, Singapore, Japan,
 Australia and New Zealand, probably the United Kingdom — which our Peppol package does not yet speak.
-After those: Croatia and Slovakia, whose B2B mandates are live or dated and cost a rule set each; Romania and
-Italy; a shared reporting model for Hungary and Greece built on the French flux 10 shape; then Spain and
-Poland; then, once the model question in the roadmap is answered, the clearance countries outside Europe.
+After those: a shared reporting model — the French flux 10, the Slovak tax data document and the ViDA one
+beside it are the same envelope with different terms — with Hungary and Greece on top of it; then Italy and
+Spain, each blocked on the signature decision; then Poland; then, once the model question in the roadmap is
+answered, the clearance countries outside Europe.
 
 ---
 

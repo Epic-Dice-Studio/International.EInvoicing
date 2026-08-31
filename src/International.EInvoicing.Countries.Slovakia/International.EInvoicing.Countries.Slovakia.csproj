@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Slovakia</PackageId>
+    <Description>
+      What Slovak electronic invoicing adds on top of the norms: the Peppol BIS profile the 2027 mandate
+      exchanges, and the tax data document (TDD) each party sends to the financial administration — built
+      from the invoice it reports, and judged by OpenPeppol's own 88 assertions.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;slovakia;slovensko;peppol;tax-data;tdd;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -585,6 +585,7 @@ internal sealed class XPathEvaluator(
             "string" or "xs:string" => XPathValue.Text(First().AsText()),
             "number" or "xs:decimal" or "xs:double" or "xs:integer" or "xs:float" =>
                 First().AsNumber() is { } value ? XPathValue.Number(value) : XPathValue.Empty,
+            "instance-of" => XPathValue.Boolean(IsInstanceOf(First(), arguments[1].AsText())),
             "castable-as" => XPathValue.Boolean(IsCastable(
                 First(),
                 arguments.Count > 1 ? arguments[1].AsText() : "xs:decimal")),
@@ -642,6 +643,53 @@ internal sealed class XPathEvaluator(
     }
 
     /// <summary>Whether a value could be cast to a type, which is a different question per type.</summary>
+    /// <summary>
+    /// <c>instance of</c>: whether every item is of the named kind, in the quantity the indicator allows.
+    /// </summary>
+    /// <remarks>
+    /// The node kinds are what the artefacts ask about — the tax data rules walk the ancestors asking each
+    /// one whether it is an element. An atomic type is answered by whether the value can be read as one,
+    /// which is the same question <c>castable as</c> answers.
+    /// </remarks>
+    private static bool IsInstanceOf(XPathValue value, string type)
+    {
+        char occurrence = type.Length > 0 && type[^1] is '?' or '*' or '+' ? type[^1] : ' ';
+        string itemType = occurrence == ' ' ? type : type[..^1];
+        IReadOnlyList<object> items = value.Items;
+
+        bool countAllowed = occurrence switch
+        {
+            '?' => items.Count <= 1,
+            '*' => true,
+            '+' => items.Count >= 1,
+            _ => items.Count == 1,
+        };
+
+        return countAllowed && items.All(item => IsOfItemType(item, itemType));
+    }
+
+    private static bool IsOfItemType(object item, string itemType) =>
+        Name(itemType) switch
+        {
+            "item()" => true,
+            "node()" => item is XObject,
+            "element()" => item is XElement,
+            "attribute()" => item is XAttribute,
+            "text()" => item is XText,
+            "comment()" => item is XComment,
+            "processing-instruction()" => item is XProcessingInstruction,
+            "document-node()" => item is XDocument,
+            _ => IsCastable(XPathValue.Nodes([item]), itemType),
+        };
+
+    /// <summary>The kind without its name test: <c>element(cbc:ID)</c> asks the same question as <c>element()</c>.</summary>
+    private static string Name(string itemType)
+    {
+        int parenthesis = itemType.IndexOf('(', StringComparison.Ordinal);
+
+        return parenthesis < 0 ? itemType : string.Concat(itemType.AsSpan(0, parenthesis), "()");
+    }
+
     private static bool IsCastable(XPathValue value, string type)
     {
         if (value.IsEmpty)

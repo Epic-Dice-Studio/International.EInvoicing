@@ -255,7 +255,7 @@ its national CIUS rules, its legal identifier and, where it exists, its national
 | **Luxembourg** | Peppol BIS Billing | Matricule | B2G mandatory |
 | **Austria** | Peppol BIS **and ebInterface** — see Tier 3 | UID | B2G mandatory |
 | **Switzerland** | Peppol BIS, plus swissDIGIN / eCH-011 | UID (CHE) | B2G above CHF 5,000; B2B voluntary |
-| **Slovakia** | Peppol, five-corner model | IČO | B2B from **1 January 2027** |
+| **Slovakia** | ✅ Peppol BIS + the tax data document, `SlovakEInvoicing` | none: no publisher's rule for the IČO check digit | B2B from **1 January 2027** |
 | **Slovenia** | e-SLOG, Peppol | Matična številka | B2G mandatory; B2B plans unconfirmed |
 | **Cyprus · Malta · Bulgaria · Greece (B2G)** | Peppol BIS | national VAT identifiers | B2G mandatory |
 
@@ -283,11 +283,15 @@ what it can do is the third thing — a valid CIUS-HR invoice carrying both OIBs
 the time it was issued — which [`CroatianEInvoicing`](standards/country-hr.md) now does. The rest belongs to
 the caller, and the signature question it raises is the same one Italy and Spain raise, still open below.
 
-**Slovakia** is the genuine Tier 1 remainder: Peppol BIS Billing 3.0 with a Slovak CIUS from
-**1 January 2027**, plus an SK tax data document sent to the financial administration within fifteen minutes.
-The transmission is transport and out of scope, but the **document** it carries has published rules —
-`phive-rules-peppol-taxdata` holds them for Slovakia, and for the UAE, Oman and ViDA beside it — so the
-document half is now fetchable like any other.
+**Slovakia is done**, and it turned out not to be a CIUS country at all. There is no Slovak CIUS published;
+what is Slovak is the **tax data document** each party's service provider sends to the financial
+administration within fifteen minutes of the invoice. The transmission is transport and out of scope, but the
+document is not, and OpenPeppol publishes 88 assertions that judge it —
+`phive-rules-peppol-taxdata`, which holds the same for the UAE, Oman and **ViDA** beside it. A document
+`.Countries.Slovakia` writes satisfies all 88. Two things are worth carrying forward: the reported document is
+a *projection* of the invoice, so an invoice you can send is not a report you can send; and no schema is
+published beside the rules, so the element order is evidence rather than proof. Reading one back is a
+receiver's job and is not there yet.
 
 A pattern that looked like a wall turned out to be a fetch list, twice. NLCIUS, HR-FISK 2.0 and the Slovak
 CIUS were all recorded as "blocked on an identifier no artefact we hold publishes". For NLCIUS that was wrong:
@@ -371,10 +375,13 @@ canonical model fits worst. That is the open decision below, not a scheduling qu
 
 1. **EN 16931-1:2026 and PINT** — both are multipliers, both change what the countries below cost, and both
    are cheaper now than after another dozen profiles are built on the 2017 model.
-2. **Croatia and Slovakia** — live or dated B2B mandates, Tier 1 cost.
+2. ~~**Croatia and Slovakia**~~ — done, and neither was the country it looked like: Croatia's CIUS was
+   unfetched rather than unpublished, and Slovakia has no CIUS at all, only a tax data document.
 3. **Romania and Italy** — the two European formats with the largest installed base that we do not read.
    Italy needs the signature decision first.
-4. **A shared reporting model**, then Hungary and Greece on top of it.
+4. **A shared reporting model**, then Hungary and Greece on top of it — and it is now the biggest multiplier
+   left. Three shapes are already in hand: the French flux 10, the Slovak tax data document, and the ViDA,
+   Emirati and Omani ones fetched beside it, which are the same envelope with different terms.
 5. **Spain and Poland**, each a project in its own right.
 6. Outside Europe, only after the model question below is answered.
 

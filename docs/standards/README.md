@@ -22,6 +22,7 @@ format is a matter of following the page rather than rediscovering the norm.
 | [country-is.md](country-is.md) | Iceland: Peppol BIS, the kennitala, the scheme its rules look in. |
 | [peppol-pint.md](peppol-pint.md) | Peppol PINT: the half of Peppol outside Europe, its identifiers, and why its rules do not run yet. |
 | [country-hr.md](country-hr.md) | Croatia: Fiskalizacija 2.0, the OIB, and the two thirds of the mandate a document library cannot do. |
+| [country-sk.md](country-sk.md) | Slovakia: Peppol BIS from 2027, and the tax data document reported beside every invoice. |
 
 Before a standard is declared done, its page should also record what [prior art](../prior-art.md) revealed:
 mature implementations have already met the documents that break new ones.
