@@ -228,7 +228,7 @@ The three done ones are at the top so the tiers read as one list.
 | **Denmark** | Peppol BIS Billing, CVR, the payment means `DK-R-005` allows | ✅ complete, `DanishEInvoicing` |
 | **Netherlands** | NLCIUS and Peppol BIS, the KvK/OIN scheme `NL-R-003` demands | ✅ complete, `DutchEInvoicing` |
 | **Iceland** | Peppol BIS Billing, kennitala in the scheme `IS-R-002` demands | ✅ complete, `IcelandicEInvoicing` |
-| **Croatia** | Peppol BIS Billing, CIUS-HR 2025 + extension, OIB on both parties | 🚧 the invoice, `CroatianEInvoicing`, and the 74 published assertions run — an invoice this library writes satisfies 71 of them; the seal and the fiscalisation reporting are not ours to do |
+| **Croatia** | Peppol BIS Billing, CIUS-HR 2025 + extension, OIB on both parties | ✅ the invoice, `CroatianEInvoicing` — all 74 published assertions satisfied; the seal and the fiscalisation reporting are not ours to do |
 | **Australia** | Peppol PINT (A-NZ), ABN, GST | ✅ `AustralianEInvoicing`, validated against the real PINT rules |
 | **New Zealand** | Peppol PINT (A-NZ), NZBN, GST | ✅ `NewZealandEInvoicing`, the same |
 | **Singapore** | Peppol PINT (SG), GST, Singapore's own category codes | ✅ `SingaporeEInvoicing` |
@@ -271,14 +271,17 @@ about the world. The identifier is in the Dutch rule set itself, which is now fe
 carries Romania's, Serbia's and Portugal's. Denmark's **OIOUBL 2.1** remains a syntax of its own, and a
 separate project.
 
-**Croatia turned out not to belong in this tier at all**, and finding out is worth recording. From the
-outside it looked like the cheapest kind of country — Peppol, EN 16931, a national CIUS. In fact
+**Croatia cost more than the tier, but less than it looked.** From the outside it looked like the cheapest
+kind of country — Peppol, EN 16931, a national CIUS — and the CIUS is now carried, with all 74 of its
+assertions satisfied by an invoice this library writes. What it added on top was three terms EN 16931 does not
+define, written by a country write step rather than pushed into the canonical model. What stays outside is
+larger:
 *Fiskalizacija 2.0* requires three things per invoice, and two of them are not documents: an **advanced
 electronic seal** produced with a certificate the invoicing system holds, and **two fiscalisation reports**,
 one from each party, to the tax administration. This library signs nothing and performs no network I/O, so
-what it can do is the third thing — a valid invoice carrying both OIBs — which
-[`CroatianEInvoicing`](standards/country-hr.md) now does. The rest belongs to the caller, and the signature
-question it raises is the same one Italy and Spain raise, still open below.
+what it can do is the third thing — a valid CIUS-HR invoice carrying both OIBs, the operator who issued it and
+the time it was issued — which [`CroatianEInvoicing`](standards/country-hr.md) now does. The rest belongs to
+the caller, and the signature question it raises is the same one Italy and Spain raise, still open below.
 
 **Slovakia** is the genuine Tier 1 remainder: Peppol BIS Billing 3.0 with a Slovak CIUS from
 **1 January 2027**, plus an SK tax data document sent to the financial administration within fifteen minutes.

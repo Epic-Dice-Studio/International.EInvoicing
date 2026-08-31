@@ -248,12 +248,12 @@
         },
         {
           "name": "Croatia — Peppol BIS, CIUS-HR, OIB",
-          "version": "BIS 3.0",
+          "version": "CIUS-HR 2025",
           "package": "International.EInvoicing.Countries.Croatia",
           "read": "done",
           "write": "done",
-          "validate": "in-progress",
-          "notes": "The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10, and CIUS-HR 2025 with its extension — profile and rules both, once the artefacts are fetched. An invoice this library writes satisfies 71 of the 74 Croatian assertions; the three left want UBL elements EN 16931 does not define. The advanced electronic seal and the fiscalisation reporting stay out: a signature and a transport."
+          "validate": "done",
+          "notes": "The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10, and CIUS-HR 2025 with its extension — profile and rules both, once the artefacts are fetched. An invoice this library writes satisfies all 74 Croatian assertions, including the three terms EN 16931 does not define: the time of issue and the operator who issued it, written by AddCroatianOperator. The advanced electronic seal and the fiscalisation reporting stay out: a signature and a transport."
         },
         {
           "name": "Australia — Peppol PINT (A-NZ), ABN",

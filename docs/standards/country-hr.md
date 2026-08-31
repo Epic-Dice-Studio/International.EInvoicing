@@ -25,7 +25,7 @@ Three things happen for every invoice:
 | CIUS-HR 2025 profile, with its extension | `.Countries.Croatia` | done — `HrProfiles.CiusHrUbl` |
 | The 74 published CIUS-HR assertions | `.Countries.Croatia` | run once fetched — `AddCroatianRulesFrom` |
 | Business process code (BT-23), `P1`–`P12` or `P99:` | `.Countries.Croatia` | done — `HrBusinessProcess` |
-| Time of issue, and the operator's identity (HR-BT-2, 4, 5) | — | **not written** — see below |
+| Time of issue, and the operator's identity (HR-BT-2, 4, 5) | `.Countries.Croatia` | done — `AddCroatianOperator` |
 | The advanced electronic seal | — | out of scope: this library does not sign |
 | Fiscalisation messages to the tax administration | — | permanently out of scope: no network I/O |
 | KPD classification code per line | caller | set it on `Item.ClassificationCodes` |
@@ -40,17 +40,31 @@ its extension, and the rules test BT-24 for both at once.
 
 Run `build/fetch-specs.sh national` and pass `specs/national/eracun/schematron` to `AddCroatianRulesFrom`.
 
-**What an invoice this library writes still fails**, and it is exactly three assertions out of seventy-four:
+**The three terms the norm does not define.** An invoice built from EN 16931 terms alone fails exactly three
+of the seventy-four assertions, and all three want something the canonical model has nowhere to hold:
 
-| Rule | Wants | Why it is not written |
+| Rule | Wants | |
 |---|---|---|
-| `HR-BR-2` | `cbc:IssueTime` (HR-BT-2) | EN 16931 has no time of issue, so the model has nowhere to hold one |
-| `HR-BR-37` | `cac:SellerContact/cbc:Name` (HR-BT-4) | the operator who issued the invoice; not a business term of the norm, and not the seller contact BG-6 maps to |
-| `HR-BR-9` | `cac:SellerContact/cbc:ID` (HR-BT-5) | that operator's OIB, in the same place |
+| `HR-BR-2` | `cbc:IssueTime` (HR-BT-2) | the time of issue |
+| `HR-BR-37` | `cac:SellerContact/cbc:Name` (HR-BT-4) | the operator who issued the invoice — not the seller contact BG-6 maps to |
+| `HR-BR-9` | `cac:SellerContact/cbc:ID` (HR-BT-5) | that operator's OIB |
 
 All three are ordinary UBL elements in ordinary UBL positions — no Croatian XML extension is involved, which
-is worth knowing before anyone plans one. A [write pipeline step](../guides/hook-into-generation.md) can put
-them in today; carrying them in the model is a decision still to be made.
+is worth knowing before anyone plans one — so they are written into the document rather than carried in the
+model, which stays EN 16931:
+
+```csharp
+EInvoicing library = EInvoicing.Create(croatia => croatia
+    .AddDefaults()
+    .AddCroatia()
+    .AddCroatianOperator(new HrOperator("Ana Horvat", "69435151530")));   // HR-BT-4 and HR-BT-5
+```
+
+The operator is usually the installation rather than the invoice, which is why one registration covers every
+document; an overload takes a delegate when it does not, and returning `null` from it leaves the document
+untouched — what a library writing Croatian and foreign invoices both wants. The OIB is checked when the
+`HrOperator` is constructed, not when the receiver rejects it. With that registered, an invoice this library
+writes satisfies **all seventy-four**.
 
 **The KPD list lives inside the rule.** `HR-BR-CL-2` carries all 3 359 codes, so a plausible code that is not
 one of them is refused as firmly as a missing one. The list is not redistributable, which is why this library
@@ -68,9 +82,9 @@ all:
 - **The fiscalisation messages are transport.** Two reports, from two parties, on two schedules, to a tax
   administration. This library performs no network I/O at all, by design.
 
-What is left — a valid invoice with both OIBs, in the right syntax, satisfying EN 16931, Peppol BIS and
-seventy-one of the seventy-four Croatian assertions — is what `.Countries.Croatia` does, and it is genuinely
-the hard half to get right.
+What is left — a valid invoice with both OIBs, in the right syntax, satisfying EN 16931, Peppol BIS and all
+seventy-four Croatian assertions — is what `.Countries.Croatia` does, and it is genuinely the hard half to get
+right.
 
 ## What is specifically Croatian
 

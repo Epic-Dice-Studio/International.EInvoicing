@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/International.EInvoicing.Countries.Croatia/International.EInvoicing.Countries.Croatia.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Validation.Schematron/International.EInvoicing.Validation.Schematron.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,10 @@
+using System.Xml.Linq;
 using International.EInvoicing.Building;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Model;
-using International.EInvoicing.Values;
+using International.EInvoicing.Ubl;
 using International.EInvoicing.Validation;
+using International.EInvoicing.Values;
 using Shouldly;
 using Xunit;
 
@@ -38,12 +40,12 @@ public class CiusHrTests
     }
 
     /// <summary>
-    /// What CIUS-HR still asks for, named rule by rule.
+    /// What the canonical model alone cannot say, named rule by rule.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// An invoice this library writes satisfies seventy-one of the seventy-four assertions. The three it does
-    /// not are all UBL elements that EN 16931 does not define, so the canonical model has nowhere to put them:
+    /// An invoice built from EN 16931 terms only satisfies seventy-one of the seventy-four assertions. The
+    /// three it does not are UBL elements the norm does not define, so nothing in the model holds them:
     /// </para>
     /// <list type="bullet">
     /// <item><c>HR-BR-2</c> — <c>cbc:IssueTime</c>, the time of issue (HR-BT-2).</item>
@@ -51,12 +53,12 @@ public class CiusHrTests
     /// <item><c>HR-BR-9</c> — <c>cac:SellerContact/cbc:ID</c>, that operator's OIB (HR-BT-5).</item>
     /// </list>
     /// <para>
-    /// This test is the record of that gap, and it fails the day any of it changes — including the day one of
-    /// the three starts being written, which is the point.
+    /// <c>AddCroatianOperator</c> writes all three, and the test below proves it. This one stays because it
+    /// says <em>which</em> three, and fails the day that set changes.
     /// </para>
     /// </remarks>
     [Fact]
-    public void WhatIsStillMissingIsThreeElementsTheNormDoesNotDefine()
+    public void WithoutAnOperatorItIsThreeElementsTheNormDoesNotDefine()
     {
         ValidationReport report = Validate(AnInvoice());
 
@@ -107,20 +109,84 @@ public class CiusHrTests
         Should.Throw<ArgumentException>(() => HrBusinessProcess.ForBuyer(" "));
     }
 
+    /// <summary>
+    /// The three that were missing, written into the document as it is produced — and the rules then pass.
+    /// </summary>
+    [Fact]
+    public void WithAnOperatorRegisteredTheWholeCiusIsSatisfied()
+    {
+        ValidationReport report = Validate(
+            AnInvoice(),
+            croatia => croatia.AddCroatianOperator(
+                _ => new HrOperator("Ana Horvat", HrOibTests.ValidNumbers[2]),
+                TimeProvider.System));
+
+        report.IsValid.ShouldBeTrue(Describe(report));
+    }
+
+    [Fact]
+    public void TheOperatorGoesWhereUblKeepsItAndTheTimeComesFromTheClock()
+    {
+        var clock = new FixedClock(new DateTimeOffset(2026, 9, 1, 14, 32, 5, TimeSpan.Zero));
+
+        EInvoicing library = Library(croatia => croatia.AddCroatianOperator(
+            _ => new HrOperator("Ana Horvat", HrOibTests.ValidNumbers[2]),
+            clock));
+
+        XElement root = XElement.Parse(library.Write(AnInvoice()));
+
+        root.Element(UblNames.Cbc + "IssueTime")?.Value.ShouldBe("14:32:05");
+        root.Elements().Select(element => element.Name.LocalName).ToList()
+            .IndexOf("IssueTime")
+            .ShouldBe(root.Elements().Select(element => element.Name.LocalName).ToList().IndexOf("IssueDate") + 1);
+
+        XElement contact = root.Element(UblNames.Cac + "AccountingSupplierParty")!
+            .Element(UblNames.Cac + "SellerContact")!;
+
+        contact.Element(UblNames.Cbc + "ID")!.Value.ShouldBe(HrOibTests.ValidNumbers[2]);
+        contact.Element(UblNames.Cbc + "Name")!.Value.ShouldBe("Ana Horvat");
+    }
+
+    /// <summary>An invoice the delegate declines leaves the document exactly as the writer produced it.</summary>
+    [Fact]
+    public void AnInvoiceWithNoOperatorIsLeftAlone()
+    {
+        EInvoicing withStep = Library(croatia => croatia.AddCroatianOperator(_ => null));
+
+        withStep.Write(AnInvoice()).ShouldBe(Library(_ => { }).Write(AnInvoice()));
+    }
+
+    [Fact]
+    public void AnOperatorWhoseOibIsWrongIsRefusedHere()
+    {
+        Should.Throw<FormatException>(() => new HrOperator("Ana Horvat", "12345678901"));
+        Should.Throw<ArgumentException>(() => new HrOperator(" ", HrOibTests.ValidNumbers[2]));
+    }
+
     private static IEnumerable<string> Failures(EInvoice invoice) =>
         Validate(invoice).OfAtLeast(RuleSeverity.Error).Select(message => message.RuleIdentifier);
 
-    private static ValidationReport Validate(EInvoice invoice)
+    private static ValidationReport Validate(EInvoice invoice) => Validate(invoice, _ => { });
+
+    private static ValidationReport Validate(EInvoice invoice, Action<EInvoicingBuilder> also)
     {
         Assert.SkipWhen(!Directory.Exists(Artefacts), "run build/fetch-specs.sh national");
 
-        EInvoicing library = EInvoicing.Create(croatia => croatia
-            .AddDefaults()
-            .AddCroatia()
-            .AddCroatianRulesFrom(Artefacts));
+        EInvoicing library = Library(croatia =>
+        {
+            croatia.AddCroatianRulesFrom(Artefacts);
+            also(croatia);
+        });
 
         return library.Validate(library.Write(invoice));
     }
+
+    private static EInvoicing Library(Action<EInvoicingBuilder> also) =>
+        EInvoicing.Create(croatia =>
+        {
+            croatia.AddDefaults().AddCroatia();
+            also(croatia);
+        });
 
     private static EInvoice AnInvoice() => EInvoiceBuilder
         .Create(HrProfiles.CiusHrUbl)
@@ -190,5 +256,12 @@ public class CiusHrTests
         }
 
         return directory?.FullName ?? throw new InvalidOperationException("The repository root was not found.");
+    }
+
+    private sealed class FixedClock(DateTimeOffset now) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow() => now;
+
+        public override TimeZoneInfo LocalTimeZone => TimeZoneInfo.Utc;
     }
 }

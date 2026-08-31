@@ -265,7 +265,7 @@ NLCIUS is in the Dutch package too, with its G-account extension, and its own ru
 
 Croatia's *Fiskalizacija 2.0* mandate has been live for domestic B2B since 1 January 2026, and it is the
 first country here where the shortcut covers only part of what the country asks for. Three things happen per
-invoice, and only one of them is a document:
+invoice, and only one of them is a document — that one is done:
 
 ```csharp
 CroatianEInvoicing hrvatska = CroatianEInvoicing.Create();
@@ -279,11 +279,26 @@ hrvatska.Invoice()
 both the legal registration and the electronic address are read from — the mandate requires the OIB of
 **both** parties, which EN 16931 never asks for.
 
+**CIUS-HR 2025** is carried too, with the 74 assertions that judge it, once
+`build/fetch-specs.sh national` has run:
+
+```csharp
+EInvoicing library = EInvoicing.Create(croatia => croatia
+    .AddDefaults()
+    .AddCroatia()
+    .AddCroatianRulesFrom("specs/national/eracun/schematron")
+    .AddCroatianOperator(new HrOperator("Ana Horvat", "69435151530")));
+```
+
+`AddCroatianOperator` writes the three things CIUS-HR asks for that EN 16931 has no business term for — the
+time of issue, and the name and OIB of the operator who issued the invoice — into the document as it is
+produced, so the model stays the norm. With it, an invoice this library writes satisfies all seventy-four.
+Croatia also makes BT-23 mandatory and restricts it to `P1`–`P12` or `P99:` and the buyer's own designation:
+`HrBusinessProcess` checks that before it is written.
+
 The other two things are the **advanced electronic seal** every invoice must carry and the **fiscalisation
 reports** each party sends to the tax administration. This library signs nothing and performs no network
-I/O, so both belong to you. **HR-FISK 2.0**, Croatia's own CIUS, is absent for the same reason as NLCIUS: its
-published identifier is in no artefact this repository can read. See
-[the Croatian page](../standards/country-hr.md).
+I/O, so both belong to you. See [the Croatian page](../standards/country-hr.md).
 
 ## Australia and New Zealand, where Peppol is not the Peppol you know
 

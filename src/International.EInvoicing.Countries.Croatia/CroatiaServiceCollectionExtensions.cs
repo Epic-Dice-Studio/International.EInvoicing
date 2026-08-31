@@ -1,4 +1,5 @@
 using International.EInvoicing.Configuration;
+using International.EInvoicing.Model;
 using International.EInvoicing.Peppol;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation.Schematron;
@@ -68,5 +69,55 @@ public static class CroatiaServiceCollectionExtensions
         }
 
         return builder;
+    }
+
+    /// <summary>
+    /// Writes the time of issue and the operator who issued it into every Croatian invoice.
+    /// </summary>
+    /// <remarks>
+    /// HR-BT-2, HR-BT-4 and HR-BT-5 are demanded by <c>HR-BR-2</c>, <c>HR-BR-37</c> and <c>HR-BR-9</c>, and
+    /// EN 16931 defines none of them, so they are written into the document rather than held in the model.
+    /// One operator for the whole library is the usual case — the operator is the installation, not the
+    /// invoice; take the overload with a delegate when it is not.
+    /// </remarks>
+    /// <param name="builder">The library being assembled.</param>
+    /// <param name="issuer">Who issued the invoices this library writes.</param>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public static EInvoicingBuilder AddCroatianOperator(this EInvoicingBuilder builder, HrOperator issuer)
+    {
+        ArgumentNullException.ThrowIfNull(issuer);
+
+        return builder.AddCroatianOperator(_ => issuer, TimeProvider.System);
+    }
+
+    /// <summary>
+    /// The same, where which operator issued an invoice depends on the invoice.
+    /// </summary>
+    /// <param name="builder">The library being assembled.</param>
+    /// <param name="issuerFor">
+    /// Who issued this invoice. Returning <c>null</c> leaves the document alone, which is what a library
+    /// writing both Croatian and foreign invoices wants.
+    /// </param>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public static EInvoicingBuilder AddCroatianOperator(
+        this EInvoicingBuilder builder,
+        Func<EInvoice, HrOperator?> issuerFor) =>
+        builder.AddCroatianOperator(issuerFor, TimeProvider.System);
+
+    /// <summary>The same, taking the time of issue from a clock of your own.</summary>
+    /// <param name="builder">The library being assembled.</param>
+    /// <param name="issuerFor">Who issued this invoice, or <c>null</c> to leave the document alone.</param>
+    /// <param name="clock">Where the time of issue comes from.</param>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public static EInvoicingBuilder AddCroatianOperator(
+        this EInvoicingBuilder builder,
+        Func<EInvoice, HrOperator?> issuerFor,
+        TimeProvider clock)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(issuerFor);
+        ArgumentNullException.ThrowIfNull(clock);
+
+        return builder.AddWriteStep(new HrOperatorStep(issuerFor, clock));
     }
 }

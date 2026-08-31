@@ -12,9 +12,10 @@ All notable changes to this project are documented here. The format follows
   fetch script already pulled four other national modules from it. Adding `eracun` to that list yielded the
   identifier *and* all 74 assertions from the same file. `HrProfiles.CiusHrUbl` is that identifier — one, not
   two, because CIUS-HR never travels without its extension — and `AddCroatianRulesFrom` runs the rules.
-  An invoice this library writes now satisfies **71 of the 74**. The three left are `cbc:IssueTime` and the
-  operator's name and OIB in `cac:SellerContact`: ordinary UBL elements that EN 16931 does not define, so the
-  model has nowhere to hold them. A test names them one by one and fails the day that changes.
+  An invoice this library writes now satisfies **all 74**. Three of them wanted `cbc:IssueTime` and the
+  operator's name and OIB in `cac:SellerContact` — ordinary UBL elements that EN 16931 does not define, so the
+  model has nowhere to hold them: `AddCroatianOperator` writes them into the document as it is produced, and
+  the canonical model stays the norm. A test still names those three, so the day the set changes it fails.
 - **`HrBusinessProcess`** — BT-23 is mandatory in Croatia and restricted to `P1`–`P12` or `P99:` and the
   buyer's own designation. The shape is checked; what the twelve mean is in a specification no artefact here
   carries, so no labels are invented for them.

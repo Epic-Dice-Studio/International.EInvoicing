@@ -47,3 +47,20 @@ International.EInvoicing.Countries.Croatia.HrBusinessProcess
 static International.EInvoicing.Countries.Croatia.HrBusinessProcess.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Countries.Croatia.HrBusinessProcess.ForBuyer(string! designation) -> string!
 static International.EInvoicing.Countries.Croatia.HrBusinessProcess.IsValid(string? value) -> bool
+International.EInvoicing.Countries.Croatia.HrOperator
+International.EInvoicing.Countries.Croatia.HrOperator.HrOperator(string! Name, International.EInvoicing.Countries.Croatia.Identifiers.HrOib Oib) -> void
+International.EInvoicing.Countries.Croatia.HrOperator.HrOperator(string! name, string! oib) -> void
+International.EInvoicing.Countries.Croatia.HrOperator.Name.get -> string!
+International.EInvoicing.Countries.Croatia.HrOperator.Oib.get -> International.EInvoicing.Countries.Croatia.Identifiers.HrOib
+International.EInvoicing.Countries.Croatia.HrOperator.Oib.init -> void
+International.EInvoicing.Countries.Croatia.HrOperator.Deconstruct(out string! Name, out International.EInvoicing.Countries.Croatia.Identifiers.HrOib Oib) -> void
+International.EInvoicing.Countries.Croatia.HrOperator.Equals(International.EInvoicing.Countries.Croatia.HrOperator? other) -> bool
+International.EInvoicing.Countries.Croatia.HrOperator.<Clone>$() -> International.EInvoicing.Countries.Croatia.HrOperator!
+override International.EInvoicing.Countries.Croatia.HrOperator.Equals(object? obj) -> bool
+override International.EInvoicing.Countries.Croatia.HrOperator.GetHashCode() -> int
+override International.EInvoicing.Countries.Croatia.HrOperator.ToString() -> string!
+static International.EInvoicing.Countries.Croatia.HrOperator.operator !=(International.EInvoicing.Countries.Croatia.HrOperator? left, International.EInvoicing.Countries.Croatia.HrOperator? right) -> bool
+static International.EInvoicing.Countries.Croatia.HrOperator.operator ==(International.EInvoicing.Countries.Croatia.HrOperator? left, International.EInvoicing.Countries.Croatia.HrOperator? right) -> bool
+static International.EInvoicing.Countries.Croatia.CroatiaServiceCollectionExtensions.AddCroatianOperator(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, International.EInvoicing.Countries.Croatia.HrOperator! issuer) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Croatia.CroatiaServiceCollectionExtensions.AddCroatianOperator(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, System.Func<International.EInvoicing.Model.EInvoice!, International.EInvoicing.Countries.Croatia.HrOperator?>! issuerFor) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Croatia.CroatiaServiceCollectionExtensions.AddCroatianOperator(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, System.Func<International.EInvoicing.Model.EInvoice!, International.EInvoicing.Countries.Croatia.HrOperator?>! issuerFor, System.TimeProvider! clock) -> International.EInvoicing.Configuration.EInvoicingBuilder!
