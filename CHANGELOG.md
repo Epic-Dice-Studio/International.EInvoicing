@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The playground converts between syntaxes**, with the loss report beside the result — UBL to CII and back,
+  from a pasted document or any of the samples. What did not cross is listed by name and by where it was,
+  because a silent conversion is the dangerous kind. A Factur-X PDF is opened under *Look inside one* first:
+  the page reads PDFs and writes none. Every sample the site offers is converted both ways on every commit,
+  so a sample that stops crossing fails the build rather than the demo.
 - **The CII schemas, and the eight terms that half lost.** `AddCiiSchema()` puts the UN/CEFACT D22B schemas
   — embedded, offline — beside the UBL ones, and running the official CII corpus through a read-then-write
   found the same disease as on the UBL side: seven of fifteen examples came back in a shape the schema

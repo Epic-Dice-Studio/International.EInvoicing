@@ -1,0 +1,179 @@
+@using International.EInvoicing.Diagnostics
+@using International.EInvoicing.Playground.Services
+@using International.EInvoicing.Profiles
+@inject DocumentInspector Inspector
+
+<section class="panel">
+    <h2>Convert between syntaxes</h2>
+    <p class="muted small">
+        UBL and CII carry the same business terms in different words, and a French recipient must accept
+        both. Converting is easy to do silently and dangerous done that way, so what comes back here is the
+        document <em>and</em> what the crossing cost.
+    </p>
+
+    <textarea @bind="_input" @bind:event="oninput" placeholder="Paste a UBL or CII invoice here…" spellcheck="false"></textarea>
+
+    <div class="row">
+        <label class="inline">Into
+            <select @bind="_target">
+                <option value="ubl">UBL 2.1</option>
+                <option value="cii">UN/CEFACT CII</option>
+            </select>
+        </label>
+        <button class="action" disabled="@(string.IsNullOrWhiteSpace(_input))" @onclick="Convert">Convert it</button>
+        <label class="inline">Or start from
+            <select value="@_sample" @onchange="LoadSample">
+                <option value="">a sample…</option>
+                @foreach ((string key, string label) in Samples.Catalogue)
+                {
+                    <option value="@key">@label</option>
+                }
+            </select>
+        </label>
+        @if (_detected is { } kind)
+        {
+            <span class="muted small">Read as: @Describe(kind)</span>
+        }
+    </div>
+
+    <p class="muted small">
+        A <strong>Factur-X or ZUGFeRD PDF</strong> carries a CII invoice inside it. Open it under
+        <em>Look inside one</em> to pull the XML out, then paste it here — this page never sends a file
+        anywhere, and it does not write PDFs.
+    </p>
+</section>
+
+@if (_failure is { } failure)
+{
+    <section class="panel">
+        <div class="verdict bad"><strong>Nothing to convert</strong><span>@failure</span></div>
+    </section>
+}
+else if (_result is { } result)
+{
+    <section class="panel">
+        <div class="verdict @(result.IsLossless ? "ok" : "partial")">
+            <strong>@(result.IsLossless ? "Converted, losing nothing" : $"Converted, losing {result.Losses.Count} thing(s)")</strong>
+            <span>
+                Now @Describe(_target == "cii" ? DocumentKind.Cii : DocumentKind.Ubl).
+                @if (result.Invoice is { } invoice)
+                {
+                    @($" It reads back as invoice {invoice.Number.Value}, {invoice.Lines.Count} line(s).")
+                }
+            </span>
+        </div>
+
+        @if (result.Losses.Count > 0)
+        {
+            <h3>What did not cross</h3>
+            <p class="muted small">
+                Found rather than predicted: the converted document is read back, and every extension element
+                the source carried is recorded — those are syntax-specific by definition, and there is nowhere
+                in the other syntax for them to go. Every mapped business term survives by construction.
+            </p>
+            <table>
+                <thead>
+                    <tr><th>What</th><th>Where it was</th><th>Kind</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (ConversionLoss loss in result.Losses.Take(40))
+                    {
+                        <tr>
+                            <td class="code">@loss.What</td>
+                            <td class="code muted small">@loss.Where</td>
+                            <td class="muted small">@Describe(loss.Kind)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (result.Losses.Count > 40)
+            {
+                <p class="muted small">…and @(result.Losses.Count - 40) more.</p>
+            }
+        }
+
+        @if (result.Diagnostics.Count > 0)
+        {
+            <h3>What reading the result reported</h3>
+            <table>
+                <thead>
+                    <tr><th class="code">Code</th><th>Severity</th><th>What happened</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (Diagnostic diagnostic in result.Diagnostics.Take(20))
+                    {
+                        <tr>
+                            <td class="code">@diagnostic.Code</td>
+                            <td class="sev @diagnostic.Severity">@diagnostic.Severity</td>
+                            <td>@diagnostic.Message</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <h3>The converted document</h3>
+        <textarea readonly rows="18" spellcheck="false">@result.Xml</textarea>
+    </section>
+}
+
+@code {
+    private string _input = string.Empty;
+    private string _sample = string.Empty;
+    private string _target = "cii";
+    private ConversionResult? _result;
+    private DocumentKind? _detected;
+    private string? _failure;
+
+    private void Convert()
+    {
+        _result = null;
+        _failure = null;
+        _detected = Inspector.Detect(_input);
+
+        if (_detected is not (DocumentKind.Ubl or DocumentKind.Cii))
+        {
+            _failure = "Only an invoice or credit note can cross between syntaxes — a lifecycle status and an "
+                + "e-reporting transmission are documents of their own, and a PDF has to be opened first.";
+            return;
+        }
+
+        DocumentFormat format = _target == "cii" ? DocumentFormat.Cii : DocumentFormat.Ubl;
+        ConversionResult converted = Inspector.Library.Convert(_input, format);
+
+        if (converted.Xml.Length == 0)
+        {
+            _failure = "That document could not be read as an invoice, so there was nothing to convert.";
+            return;
+        }
+
+        _result = converted;
+    }
+
+    private void LoadSample(ChangeEventArgs args)
+    {
+        _sample = args.Value?.ToString() ?? string.Empty;
+
+        if (Samples.Get(_sample) is { } sample)
+        {
+            _input = sample;
+            Convert();
+        }
+    }
+
+    private static string Describe(DocumentKind kind) => kind switch
+    {
+        DocumentKind.Ubl => "UBL 2.1",
+        DocumentKind.Cii => "UN/CEFACT CII",
+        DocumentKind.Cdar => "a lifecycle status message",
+        DocumentKind.EReport => "an e-reporting transmission (flux 10)",
+        DocumentKind.Pdf => "a PDF",
+        _ => "not recognised",
+    };
+
+    private static string Describe(ConversionLossKind kind) => kind switch
+    {
+        ConversionLossKind.SyntaxSpecificContent => "belongs to the source syntax only",
+        _ => "reported when the result was read back",
+    };
+}
