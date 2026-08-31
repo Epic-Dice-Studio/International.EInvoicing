@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Factur-X and Belgian rule sets are wired at last**, closing two cells the support matrix had called
+  *planned* since the beginning. Both are published as compiled XSLT, which is why they sat unused; reading
+  that came later. `AddFacturXRulesFrom` registers one rule set per profile — including MINIMUM and BASIC WL,
+  which say in their own specification that they are not EN 16931 invoices and which therefore nothing
+  judged at all before — and `AddBelgianRulesFrom` registers GLOBALUBL.BE.
+- **A defect that would have had every ZUGFeRD document rejected.** Running the Factur-X rules over our own
+  output showed the CII writer putting `@currencyID` on amounts that forbid it — the tax basis, the
+  calculated tax, and every monetary summation total. CII states the currency only on the tax total, which
+  may also be given in the accounting currency. Fixed, and every Factur-X profile now accepts what this
+  library writes.
+- `BeProfiles.UblBe`. GLOBALUBL.BE refuses a document declaring plain Peppol BIS: Belgium has a conformant
+  profile of its own, and its identifier was in the rule set all along.
 - **Italy, on the Peppol side.** The partita IVA with the check Peppol publishes for scheme 0211 — eleven
   digits, odd positions as themselves, even ones mapped through `0246813579`, the total divisible by ten —
   measured against that rule in both directions, and the full postal address `IT-R-002` to `IT-R-004`

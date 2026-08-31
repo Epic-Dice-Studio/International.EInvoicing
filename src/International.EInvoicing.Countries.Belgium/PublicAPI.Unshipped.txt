@@ -17,6 +17,7 @@ International.EInvoicing.Countries.Belgium.BelgianEInvoicing.Write(International
 International.EInvoicing.Countries.Belgium.BelgianEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
 International.EInvoicing.Countries.Belgium.BelgiumServiceCollectionExtensions
 International.EInvoicing.Countries.Belgium.BeProfiles
+International.EInvoicing.Countries.Belgium.BeRules
 International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber
 International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.BeEnterpriseNumber() -> void
 International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.Equals(International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber other) -> bool
@@ -44,6 +45,8 @@ static International.EInvoicing.Countries.Belgium.BelgiumServiceCollectionExtens
 static International.EInvoicing.Countries.Belgium.BeProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Countries.Belgium.BeProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Countries.Belgium.BeProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Belgium.BeProfiles.UblBe.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Belgium.BeRules.AddBelgianRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.IsValid(string? value) -> bool
 static International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.operator !=(International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber left, International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber right) -> bool
 static International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber.operator ==(International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber left, International.EInvoicing.Countries.Belgium.Identifiers.BeEnterpriseNumber right) -> bool

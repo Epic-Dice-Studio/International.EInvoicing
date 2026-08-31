@@ -199,7 +199,7 @@ BIS 4** as its only domestic format by 2029 — the first national format retire
 | **Property-based tests on rounding** | The `BR-CO` rules comparing totals to sums of lines are exactly where implementations break. Generated cases find what hand-written ones do not. |
 | **German structured *Skonto*** | Early-payment discounts encoded inside BT-20's free text. Two long threads in two ecosystems; free text here today. |
 | **The rest of the hostile corpus** | Declared encoding against actual encoding — the single most discussed issue in the KoSIT tracker — plus attachment zip-bombs, ten-thousand-deep nesting, malformed PDFs. |
-| **Factur-X and Belgian rule sets** | Both say *planned* for validation in the matrix. The engine runs them; they are not wired. |
+| ~~**Factur-X and Belgian rule sets**~~ | ✅ **done.** Both are published as compiled XSLT, which is why they sat unwired — reading that came later. Wiring Factur-X immediately found that this library wrote `@currencyID` on CII amounts that forbid it, which would have had every ZUGFeRD document rejected. |
 
 ---
 
@@ -302,7 +302,7 @@ unfetched.
 | **Malaysia** | MyInvois — PINT MY alongside the national API | ✅ `MalaysianEInvoicing`; phased since 2024, above RM 1 m since **January 2026** |
 | **United Arab Emirates** | PINT AE, five-corner DCTCE model | **not a thin one** — see below. Pilot **July 2026**, mandatory **1 January 2027** above AED 50 m, **1 July 2027** below |
 | **United Kingdom** | PINT UK, expected | mandatory VAT e-invoicing announced for **April 2029**; roadmap due Budget 2026 |
-| **Oman** | PINT OM | artefacts published; mandate rolling out |
+| **Oman** | PINT OM | **not a thin one either** — 34 business terms of its own (`BTOM-001` … `BTOM-034`) across 79 rules, exactly like the UAE. Needs model work first. |
 
 Malaysia and the UAE also need their national submission rules, which are transport — out of scope here —
 but their *documents* are PINT, and the document is what we do.

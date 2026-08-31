@@ -436,7 +436,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         WriteAmount(writer, "ChargeTotalAmount", totals.ChargeTotalAmount);
         WriteAmount(writer, "AllowanceTotalAmount", totals.AllowanceTotalAmount);
         WriteAmount(writer, "TaxBasisTotalAmount", totals.TaxExclusiveAmount);
-        WriteAmount(writer, "TaxTotalAmount", totals.TaxAmount);
+        WriteAmount(writer, "TaxTotalAmount", totals.TaxAmount, withCurrency: true);
         WriteAmount(writer, "RoundingAmount", totals.RoundingAmount);
         WriteAmount(writer, "GrandTotalAmount", totals.TaxInclusiveAmount);
         WriteAmount(writer, "TotalPrepaidAmount", totals.PrepaidAmount);
@@ -689,7 +689,20 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteAmount(XmlWriter writer, string localName, AmountField field)
+    /// <summary>
+    /// An amount.
+    /// </summary>
+    /// <remarks>
+    /// CII takes the document currency for granted on almost every amount, and states it only on the tax
+    /// total, which may be given in the accounting currency as well (BT-110 and BT-111). Writing
+    /// <c>currencyID</c> anywhere else is rejected — "attribute @currencyID marked as not used in the given
+    /// context" — by every Factur-X profile, which is where this came to light.
+    /// </remarks>
+    private static void WriteAmount(
+        XmlWriter writer,
+        string localName,
+        AmountField field,
+        bool withCurrency = false)
     {
         if (!field.IsSet)
         {
@@ -697,7 +710,12 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         writer.WriteStartElement(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName);
-        WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode);
+
+        if (withCurrency)
+        {
+            WriteAttributeIfSet(writer, "currencyID", field.CurrencyCode);
+        }
+
         writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
         writer.WriteEndElement();
     }

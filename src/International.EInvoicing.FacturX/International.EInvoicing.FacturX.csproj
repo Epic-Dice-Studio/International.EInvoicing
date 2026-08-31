@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Validation.Schematron/International.EInvoicing.Validation.Schematron.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,6 +12,20 @@ namespace International.EInvoicing.Countries.Belgium;
 /// </remarks>
 public static class BeProfiles
 {
+    /// <summary>
+    /// <b>UBL.BE</b>, the Belgian conformant extension that <c>GLOBALUBL.BE</c> judges.
+    /// </summary>
+    /// <remarks>
+    /// A document declaring plain Peppol BIS is refused by the Belgian rule set — <c>PEPPOL-EN16931-R004</c>
+    /// there requires this identifier — so the two are not interchangeable, and this one is read from the
+    /// rule set rather than transcribed.
+    /// </remarks>
+    public static Profile UblBe { get; } = new(
+        new ProfileIdentifier("urn:cen.eu:en16931:2017#conformant#urn:UBL.BE:1.0.0.20180214"),
+        "UBL.BE",
+        DocumentSyntax.Ubl,
+        KnownProfiles.En16931Ubl.Id);
+
     /// <summary>Peppol BIS Billing 3.0 in UBL, the syntax Belgium exchanges in.</summary>
     public static Profile PeppolBillingUbl => PeppolProfiles.BillingUbl;
 
@@ -19,5 +33,5 @@ public static class BeProfiles
     public static Profile PeppolBillingCii => PeppolProfiles.BillingCii;
 
     /// <summary>Every profile Belgium uses.</summary>
-    public static IReadOnlyList<Profile> All { get; } = [PeppolBillingUbl, PeppolBillingCii];
+    public static IReadOnlyList<Profile> All { get; } = [UblBe, PeppolBillingUbl, PeppolBillingCii];
 }

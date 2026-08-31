@@ -128,14 +128,14 @@ validation is never presented as a success.
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
 | EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | ✅ | `International.EInvoicing.Validation.En16931` |
-| Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX` |
-| Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | 📋 | `International.EInvoicing.FacturX.PdfSharp` |
+| Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.FacturX` |
+| Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | ⛔ | `International.EInvoicing.FacturX.PdfSharp` |
 | Peppol BIS Billing <sub>3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
 
 > **EN 16931 (core invoice model)** — The published Schematron artefacts are executed as data. Measured against the 23 official example documents and the 80 CIUS documents of the XRechnung test suite: all accepted.
 
-> **Factur-X / ZUGFeRD — MINIMUM → EXTENDED** — All five profiles registered. MINIMUM and BASIC WL are read and reported as not being EN 16931 invoices (EIV4010) rather than silently accepted.
+> **Factur-X / ZUGFeRD — MINIMUM → EXTENDED** — All five profiles, and their rules now run once fetched — including MINIMUM and BASIC WL, which say in their own specification that they are not EN 16931 invoices, and which nothing judged before. Running them found that this library was writing @currencyID on CII amounts that forbid it.
 
 > **Factur-X hybrid PDF** — Embeds the CII payload into a PDF you already produce, and extracts it back, with the Factur-X XMP metadata. Rendering a PDF and converting one to PDF/A-3 are out of scope: those are properties of the document you start from.
 
@@ -171,7 +171,7 @@ validation is never presented as a success.
 | Japan — Peppol PINT, qualified invoice <sub>PINT @jp-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Japan` |
 | Rest of the world | 🔬 | 🔬 | 🔬 | — |
 
-> **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build.
+> **France — invoicing (CIUS FR, Factur-X)** — The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build. The rules for all five profiles now run once fetched — including MINIMUM and BASIC WL, which are not EN 16931 invoices and which nothing judged before.
 
 > **France — lifecycle statuses (CDAR)** — Every status, to a trading partner and to the public portal, measured on each build against the DGFiP's own BR-FR-CDV rules and their eleven sample messages. The artefacts are fetched, not shipped: run build/fetch-specs.sh france.
 
@@ -183,7 +183,7 @@ validation is never presented as a success.
 
 > **Greece — Peppol BIS, AFM, six-segment invoice number** — The AFM with the weighted checksum Peppol enforces on scheme 9933, and the six-segment invoice number GR-R-001 requires — supplier AFM, issue date, branch, myDATA document type, series, number — plus the MARK reference. myDATA reporting itself is a transmission and out of scope.
 
-> **Belgium — Peppol BIS, KBO/BCE, structured communication** — Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and Peppol validation once the artefacts are fetched.
+> **Belgium — Peppol BIS, KBO/BCE, structured communication** — Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and the UBL.BE profile GLOBALUBL.BE judges — whose identifier came out of the rule set itself. The Belgian rules run once fetched; UBL.BE's own document-reference structure is not helped with yet.
 
 > **Norway — EHF 3.0, organisasjonsnummer** — EHF 3.0, the national CIUS of Peppol BIS, and the organisation number whose modulo 11 check is measured against the rule Peppol publishes for scheme 0192. The Norwegian rules travel inside the Peppol rule set.
 

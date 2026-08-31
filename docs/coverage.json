@@ -67,8 +67,8 @@
           "package": "International.EInvoicing.FacturX",
           "read": "done",
           "write": "done",
-          "validate": "planned",
-          "notes": "All five profiles registered. MINIMUM and BASIC WL are read and reported as not being EN 16931 invoices (EIV4010) rather than silently accepted."
+          "validate": "done",
+          "notes": "All five profiles, and their rules now run once fetched — including MINIMUM and BASIC WL, which say in their own specification that they are not EN 16931 invoices, and which nothing judged before. Running them found that this library was writing @currencyID on CII amounts that forbid it."
         },
         {
           "name": "Factur-X hybrid PDF",
@@ -76,7 +76,7 @@
           "package": "International.EInvoicing.FacturX.PdfSharp",
           "read": "done",
           "write": "done",
-          "validate": "planned",
+          "validate": "out-of-scope",
           "notes": "Embeds the CII payload into a PDF you already produce, and extracts it back, with the Factur-X XMP metadata. Rendering a PDF and converting one to PDF/A-3 are out of scope: those are properties of the document you start from."
         },
         {
@@ -109,7 +109,7 @@
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build."
+          "notes": "The conformant extension urn.cpro.gouv.fr:1p0:extended-ctc-fr, the invoicing case (BT-23) and the three mentions French law requires, with the SIREN of both parties checked before it is written. An invoice built with ForFrance() satisfies EN 16931, BR-FR-Flux2 and EXTENDED-CTC-FR in both syntaxes, measured on every build. The rules for all five profiles now run once fetched — including MINIMUM and BASIC WL, which are not EN 16931 invoices and which nothing judged before."
         },
         {
           "name": "France — lifecycle statuses (CDAR)",
@@ -163,7 +163,7 @@
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and Peppol validation once the artefacts are fetched."
+          "notes": "Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and the UBL.BE profile GLOBALUBL.BE judges — whose identifier came out of the rule set itself. The Belgian rules run once fetched; UBL.BE's own document-reference structure is not helped with yet."
         },
         {
           "name": "Norway — EHF 3.0, organisasjonsnummer",

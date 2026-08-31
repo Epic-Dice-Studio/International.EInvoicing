@@ -17,6 +17,6 @@ public static class BelgiumServiceCollectionExtensions
     public static EInvoicingBuilder AddBelgium(this EInvoicingBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        return builder.AddPeppol();
+        return builder.AddPeppol().AddProfiles(BeProfiles.All);
     }
 }
