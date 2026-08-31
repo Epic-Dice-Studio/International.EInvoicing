@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Greece**, which asks for two things nothing else here does. `GR-R-001` makes BT-1 a **compound key of
+  six segments** — supplier AFM, issue date as DD/MM/YYYY, branch, myDATA document type, series, number —
+  each checked against the rest of the document, so an ordinary invoice number is refused outright.
+  `GrInvoiceNumber.For` builds it and names the rule when it refuses a part. And the AFM has a checksum
+  unlike any other here: the first eight digits weighted by descending powers of two, the ninth the sum
+  modulo 11 modulo 10. myDATA reporting stays out of scope — it is a transmission, not a document.
 - **Portugal.** CIUS-PT, whose artefact is the largest here — over two thousand assertions, since it bundles
   the EN 16931 UBL rules with its own. It requires a delivery address, which EN 16931 leaves optional. SAF-T,
   ATCUD and the QR code are separate obligations that leave the document entirely, and stay out of scope.

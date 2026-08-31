@@ -1,0 +1,30 @@
+#nullable enable
+const International.EInvoicing.Countries.Greece.GrInvoiceNumber.Segments = 6 -> int
+const International.EInvoicing.Countries.Greece.GrInvoiceNumber.Separator = '|' -> char
+const International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.Scheme = "9933" -> string!
+International.EInvoicing.Countries.Greece.GreeceServiceCollectionExtensions
+International.EInvoicing.Countries.Greece.GrInvoiceNumber
+International.EInvoicing.Countries.Greece.GrProfiles
+International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier
+International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.Equals(International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier other) -> bool
+International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.GrTaxIdentifier() -> void
+International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.IsSet.get -> bool
+International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.ToField() -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.Value.get -> string!
+International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.VatNumber.get -> string!
+override International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.GetHashCode() -> int
+override International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.ToString() -> string!
+static International.EInvoicing.Countries.Greece.GreeceServiceCollectionExtensions.AddGreece(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Greece.GrInvoiceNumber.For(string! supplierTaxIdentifier, System.DateOnly issueDate, int branch, string! documentType, string! series, string! number) -> string!
+static International.EInvoicing.Countries.Greece.GrInvoiceNumber.IsValid(string? invoiceNumber) -> bool
+static International.EInvoicing.Countries.Greece.GrInvoiceNumber.KnownDocumentTypes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Countries.Greece.GrInvoiceNumber.Split(string? invoiceNumber) -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Countries.Greece.GrProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Greece.GrProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Greece.GrProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.IsValid(string? value) -> bool
+static International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.operator !=(International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier left, International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier right) -> bool
+static International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.operator ==(International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier left, International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier right) -> bool
+static International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.Parse(string! value) -> International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier
+static International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.TryParse(string? value, out International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier identifier) -> bool
+~override International.EInvoicing.Countries.Greece.Identifiers.GrTaxIdentifier.Equals(object obj) -> bool

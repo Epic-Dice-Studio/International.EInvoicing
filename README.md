@@ -152,6 +152,7 @@ validation is never presented as a success.
 | France — legal identifiers (SIREN, SIRET, VAT) | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | France — e-reporting (flux 10) <sub>PPF flux 10 v1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.France` |
 | Germany — XRechnung, ZUGFeRD, Leitweg-ID <sub>XRechnung 3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
+| Greece — Peppol BIS, AFM, six-segment invoice number <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Greece` |
 | Belgium — Peppol BIS, KBO/BCE, structured communication <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Belgium` |
 | Norway — EHF 3.0, organisasjonsnummer <sub>EHF 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Norway` |
 | Sweden — Peppol BIS, organisationsnummer <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Sweden` |
@@ -178,6 +179,8 @@ validation is never presented as a success.
 > **France — e-reporting (flux 10)** — The transactions and payments transmissions, built, written and read back. The DGFiP publishes no sample transmissions, so what is measured is that every document this library builds satisfies the published flux 10 rules.
 
 > **Germany — XRechnung, ZUGFeRD, Leitweg-ID** — XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite.
+
+> **Greece — Peppol BIS, AFM, six-segment invoice number** — The AFM with the weighted checksum Peppol enforces on scheme 9933, and the six-segment invoice number GR-R-001 requires — supplier AFM, issue date, branch, myDATA document type, series, number — plus the MARK reference. myDATA reporting itself is a transmission and out of scope.
 
 > **Belgium — Peppol BIS, KBO/BCE, structured communication** — Built on International.EInvoicing.Peppol, which the 2026 mandate is: the KBO/BCE enterprise number with its modulo 97 check, the structured communication, and Peppol validation once the artefacts are fetched.
 

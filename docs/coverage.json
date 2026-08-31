@@ -148,6 +148,15 @@
           "notes": "XRechnung profiles for both syntaxes, the Leitweg-ID with its check digit, and the published rule sets running against the official test suite."
         },
         {
+          "name": "Greece — Peppol BIS, AFM, six-segment invoice number",
+          "version": "BIS 3.0",
+          "package": "International.EInvoicing.Countries.Greece",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "The AFM with the weighted checksum Peppol enforces on scheme 9933, and the six-segment invoice number GR-R-001 requires — supplier AFM, issue date, branch, myDATA document type, series, number — plus the MARK reference. myDATA reporting itself is a transmission and out of scope."
+        },
+        {
           "name": "Belgium — Peppol BIS, KBO/BCE, structured communication",
           "version": "BIS 3.0",
           "package": "International.EInvoicing.Countries.Belgium",
