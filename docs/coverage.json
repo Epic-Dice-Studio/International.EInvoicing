@@ -238,6 +238,15 @@
           "notes": "Peppol BIS Billing, and the kennitala with its modulo 11 check, written where IS-R-002 and IS-R-004 look for it."
         },
         {
+          "name": "Italy — Peppol BIS, partita IVA",
+          "version": "BIS 3.0",
+          "package": "International.EInvoicing.Countries.Italy",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "What Italy exchanges over Peppol: the partita IVA with the check Peppol publishes for scheme 0211, measured against it in both directions, and the full postal address IT-R-002 to IT-R-004 require. FatturaPA and the SDI are a separate project — their own syntax, and a qualified signature this library does not produce."
+        },
+        {
           "name": "Croatia — Peppol BIS, OIB",
           "version": "BIS 3.0",
           "package": "International.EInvoicing.Countries.Croatia",

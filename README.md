@@ -162,6 +162,7 @@ validation is never presented as a success.
 | Serbia — SRBDT (SEF) <sub>srbdt 2022</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Serbia` |
 | Portugal — CIUS-PT <sub>CIUS-PT 2.1.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Portugal` |
 | Iceland — Peppol BIS, kennitala <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Iceland` |
+| Italy — Peppol BIS, partita IVA <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Italy` |
 | Croatia — Peppol BIS, OIB <sub>BIS 3.0</sub> | ✅ | ✅ | 🚧 | `International.EInvoicing.Countries.Croatia` |
 | Australia — Peppol PINT (A-NZ), ABN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Australia` |
 | New Zealand — Peppol PINT (A-NZ), NZBN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.NewZealand` |
@@ -199,6 +200,8 @@ validation is never presented as a success.
 > **Portugal — CIUS-PT** — The national CIUS, with the largest artefact here — over two thousand assertions, since CIUS-PT bundles the EN 16931 UBL rules with its own. It requires a delivery address, and numbers written to two decimals. Rules fetched, not shipped. SAF-T and ATCUD are separate obligations and out of scope.
 
 > **Iceland — Peppol BIS, kennitala** — Peppol BIS Billing, and the kennitala with its modulo 11 check, written where IS-R-002 and IS-R-004 look for it.
+
+> **Italy — Peppol BIS, partita IVA** — What Italy exchanges over Peppol: the partita IVA with the check Peppol publishes for scheme 0211, measured against it in both directions, and the full postal address IT-R-002 to IT-R-004 require. FatturaPA and the SDI are a separate project — their own syntax, and a qualified signature this library does not produce.
 
 > **Croatia — Peppol BIS, OIB** — The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10. The HR-FISK 2.0 CIUS is not carried — its identifier is published nowhere this repository can read — and neither is the advanced electronic seal or the fiscalisation reporting, which are a signature and a transport.
 

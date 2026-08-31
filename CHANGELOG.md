@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Italy, on the Peppol side.** The partita IVA with the check Peppol publishes for scheme 0211 — eleven
+  digits, odd positions as themselves, even ones mapped through `0246813579`, the total divisible by ten —
+  measured against that rule in both directions, and the full postal address `IT-R-002` to `IT-R-004`
+  require. Worth knowing: Peppol's own function returns *true* for any value that does not begin `IT`, so a
+  bare partita IVA is never verified by the network. This library checks it either way. FatturaPA remains a
+  separate project: its own syntax, and a qualified signature this library does not produce.
 - **Greece**, which asks for two things nothing else here does. `GR-R-001` makes BT-1 a **compound key of
   six segments** — supplier AFM, issue date as DD/MM/YYYY, branch, myDATA document type, series, number —
   each checked against the rest of the document, so an ordinary invoice number is refused outright.

@@ -1,0 +1,43 @@
+#nullable enable
+const International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.Scheme = "0211" -> string!
+International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva
+International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.Equals(International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva other) -> bool
+International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.IsSet.get -> bool
+International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.ItPartitaIva() -> void
+International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.ToField() -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.Value.get -> string!
+International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.VatNumber.get -> string!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.CreditNote(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Describe(International.EInvoicing.Building.PartyBuilder! party, string! identifier, string! name) -> International.EInvoicing.Building.PartyBuilder!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Italy.ItalianEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
+International.EInvoicing.Countries.Italy.ItalyServiceCollectionExtensions
+International.EInvoicing.Countries.Italy.ItProfiles
+override International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.GetHashCode() -> int
+override International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.ToString() -> string!
+static International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.IsValid(string? value) -> bool
+static International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.operator !=(International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva left, International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva right) -> bool
+static International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.operator ==(International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva left, International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva right) -> bool
+static International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.Parse(string! value) -> International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva
+static International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.TryParse(string? value, out International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva partitaIva) -> bool
+static International.EInvoicing.Countries.Italy.ItalianEInvoicing.Create() -> International.EInvoicing.Countries.Italy.ItalianEInvoicing!
+static International.EInvoicing.Countries.Italy.ItalianEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Italy.ItalianEInvoicing!
+static International.EInvoicing.Countries.Italy.ItalianEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Italy.ItalianEInvoicing!
+static International.EInvoicing.Countries.Italy.ItalianEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Italy.ItalianEInvoicing!
+static International.EInvoicing.Countries.Italy.ItalianEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Italy.ItalianEInvoicing!
+static International.EInvoicing.Countries.Italy.ItalyServiceCollectionExtensions.AddItaly(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Italy.ItProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Italy.ItProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Italy.ItProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
+~override International.EInvoicing.Countries.Italy.Identifiers.ItPartitaIva.Equals(object obj) -> bool
