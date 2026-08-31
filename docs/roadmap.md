@@ -379,9 +379,12 @@ canonical model fits worst. That is the open decision below, not a scheduling qu
    unfetched rather than unpublished, and Slovakia has no CIUS at all, only a tax data document.
 3. **Romania and Italy** — the two European formats with the largest installed base that we do not read.
    Italy needs the signature decision first.
-4. **A shared reporting model**, then Hungary and Greece on top of it — and it is now the biggest multiplier
-   left. Three shapes are already in hand: the French flux 10, the Slovak tax data document, and the ViDA,
-   Emirati and Omani ones fetched beside it, which are the same envelope with different terms.
+4. **A shared reporting model** — half done, and the half that was done was cheap. The Peppol tax data
+   document is one document with a jurisdiction attached: Slovakia and **ViDA** are carried by one writer in
+   `.Peppol`, differing by a namespace, an identifier and one assertion out of eighty-eight. The Gulf ones are
+   a second dialect and wait on the Emirati and Omani invoice models. The French flux 10 is a third vocabulary
+   entirely, and merging it with these would be forcing a resemblance that is not there. Hungary and Greece go
+   on top of whichever shape they turn out to share.
 5. **Spain and Poland**, each a project in its own right.
 6. Outside Europe, only after the model question below is answered.
 

@@ -2,15 +2,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Xml;
-using International.EInvoicing.Countries.Slovakia.TaxData.Model;
 using International.EInvoicing.Model;
+using International.EInvoicing.Peppol.TaxData.Model;
 using International.EInvoicing.Values;
 using International.EInvoicing.Xml;
 
-namespace International.EInvoicing.Countries.Slovakia.TaxData.Writing;
+namespace International.EInvoicing.Peppol.TaxData.Writing;
 
 /// <summary>
-/// Writes a Slovak tax data document.
+/// Writes a tax data document, in the jurisdiction it declares.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -30,15 +30,14 @@ namespace International.EInvoicing.Countries.Slovakia.TaxData.Writing;
     "Performance",
     "CA1822:Mark members as static",
     Justification = "An instance API so a caller can replace this writer through the registry.")]
-public sealed class SkTaxDataWriter
+public sealed class PeppolTaxDataWriter
 {
-    private const string Pxs = "urn:peppol:schema:sk-taxdata:1.0";
     private const string Cbc = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
     private const string Cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
 
     /// <summary>Writes <paramref name="document"/> to <paramref name="destination"/>. The stream is left open.</summary>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
-    public void Write(SkTaxData document, Stream destination)
+    public void Write(PeppolTaxData document, Stream destination)
     {
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(destination);
@@ -57,7 +56,7 @@ public sealed class SkTaxDataWriter
 
     /// <summary>Writes <paramref name="document"/> and returns it as XML text.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="document"/> is <c>null</c>.</exception>
-    public string WriteToString(SkTaxData document)
+    public string WriteToString(PeppolTaxData document)
     {
         ArgumentNullException.ThrowIfNull(document);
 
@@ -66,48 +65,50 @@ public sealed class SkTaxDataWriter
         return Encoding.UTF8.GetString(buffer.ToArray());
     }
 
-    private static void Write(SkTaxData document, XmlWriter writer)
+    private static void Write(PeppolTaxData document, XmlWriter writer)
     {
+        string pxs = document.Jurisdiction.Namespace;
+
         writer.WriteStartDocument();
-        writer.WriteStartElement("pxs", "TaxData", Pxs);
+        writer.WriteStartElement("pxs", "TaxData", pxs);
         writer.WriteAttributeString("xmlns", "cbc", null, Cbc);
         writer.WriteAttributeString("xmlns", "cac", null, Cac);
 
-        Cbc_(writer, "CustomizationID", SkTaxData.CustomizationId);
-        Cbc_(writer, "ProfileID", SkTaxData.ProfileId);
+        Cbc_(writer, "CustomizationID", document.Jurisdiction.CustomizationId);
+        Cbc_(writer, "ProfileID", PeppolTaxDataJurisdiction.ProfileId);
         Cbc_(writer, "UUID", document.Uuid);
         Cbc_(writer, "IssueDate", document.IssuedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
         Cbc_(writer, "IssueTime", document.IssuedAt.ToString("HH:mm:sszzz", CultureInfo.InvariantCulture));
-        Pxs_(writer, "TaxDataTypeCode", document.TaxDataTypeCode);
-        Pxs_(writer, "DocumentScope", document.DocumentScope);
+        Pxs_(writer, pxs, "TaxDataTypeCode", document.TaxDataTypeCode);
+        Pxs_(writer, pxs, "DocumentScope", document.DocumentScope);
 
-        WriteAuthority(writer, document.Authority);
+        WriteAuthority(writer, pxs, document.Authority);
 
-        Pxs_(writer, "ReporterRole", document.ReporterRole);
+        Pxs_(writer, pxs, "ReporterRole", document.ReporterRole);
 
-        WriteEndpoint(writer, "ReportingParty", document.ReportingParty);
-        WriteEndpoint(writer, "ReceivingParty", document.ReceivingParty);
-        WriteRepresentative(writer, document.ReportersRepresentative);
+        WriteEndpoint(writer, pxs, "ReportingParty", document.ReportingParty);
+        WriteEndpoint(writer, pxs, "ReceivingParty", document.ReceivingParty);
+        WriteRepresentative(writer, pxs, document.ReportersRepresentative);
 
-        writer.WriteStartElement("pxs", "ReportedTransaction", Pxs);
-        WriteReportedDocument(writer, document);
+        writer.WriteStartElement("pxs", "ReportedTransaction", pxs);
+        WriteReportedDocument(writer, pxs, document);
         writer.WriteEndElement();
 
         writer.WriteEndElement();
         writer.WriteEndDocument();
     }
 
-    private static void WriteAuthority(XmlWriter writer, SkTaxAuthority authority)
+    private static void WriteAuthority(XmlWriter writer, string pxs, PeppolTaxAuthority authority)
     {
-        writer.WriteStartElement("pxs", "TaxAuthority", Pxs);
+        writer.WriteStartElement("pxs", "TaxAuthority", pxs);
         Cbc_(writer, "ID", authority.Id);
         Cbc_(writer, "Name", authority.Name);
         writer.WriteEndElement();
     }
 
-    private static void WriteEndpoint(XmlWriter writer, string element, SkTaxDataEndpoint party)
+    private static void WriteEndpoint(XmlWriter writer, string pxs, string element, PeppolTaxDataEndpoint party)
     {
-        writer.WriteStartElement("pxs", element, Pxs);
+        writer.WriteStartElement("pxs", element, pxs);
         writer.WriteStartElement("cbc", "EndpointID", Cbc);
         WriteAttributeIfSet(writer, "schemeID", party.SchemeId);
         writer.WriteString(XmlCharacters.Sanitize(party.Id));
@@ -115,14 +116,14 @@ public sealed class SkTaxDataWriter
         writer.WriteEndElement();
     }
 
-    private static void WriteRepresentative(XmlWriter writer, SkTaxDataEndpoint? representative)
+    private static void WriteRepresentative(XmlWriter writer, string pxs, PeppolTaxDataEndpoint? representative)
     {
         if (representative is null)
         {
             return;
         }
 
-        writer.WriteStartElement("pxs", "ReportersRepresentative", Pxs);
+        writer.WriteStartElement("pxs", "ReportersRepresentative", pxs);
         writer.WriteStartElement("cac", "PartyIdentification", Cac);
         writer.WriteStartElement("cbc", "ID", Cbc);
         WriteAttributeIfSet(writer, "schemeID", representative.SchemeId);
@@ -132,7 +133,7 @@ public sealed class SkTaxDataWriter
         writer.WriteEndElement();
     }
 
-    private static void WriteReportedDocument(XmlWriter writer, SkTaxData document)
+    private static void WriteReportedDocument(XmlWriter writer, string pxs, PeppolTaxData document)
     {
         if (document.ReportedDocument is not { } invoice)
         {
@@ -141,14 +142,14 @@ public sealed class SkTaxDataWriter
 
         string currency = invoice.CurrencyCode.Value ?? string.Empty;
 
-        writer.WriteStartElement("pxs", "ReportedDocument", Pxs);
+        writer.WriteStartElement("pxs", "ReportedDocument", pxs);
 
         Cbc_(writer, "CustomizationID", invoice.SpecificationIdentifier.Value);
         Cbc_(writer, "ProfileID", invoice.BusinessProcessType.Value);
         Cbc_(writer, "ID", invoice.Number.Value);
         Cbc_(writer, "UUID", document.ReportedDocumentUuid);
         Cbc_(writer, "IssueDate", Date(invoice.IssueDate));
-        Pxs_(writer, "DocumentTypeCode", invoice.TypeCode.Value);
+        Pxs_(writer, pxs, "DocumentTypeCode", invoice.TypeCode.Value);
 
         foreach (InvoiceNote note in invoice.Notes)
         {
@@ -172,11 +173,11 @@ public sealed class SkTaxDataWriter
         }
 
         WriteTaxTotal(writer, invoice, currency);
-        WriteMonetaryTotal(writer, invoice.Totals, currency);
+        WriteMonetaryTotal(writer, pxs, invoice.Totals, currency);
 
         foreach (InvoiceLine line in invoice.Lines)
         {
-            WriteLine(writer, line, currency);
+            WriteLine(writer, pxs, line, currency);
         }
 
         writer.WriteEndElement();
@@ -402,9 +403,9 @@ public sealed class SkTaxDataWriter
         writer.WriteEndElement();
     }
 
-    private static void WriteMonetaryTotal(XmlWriter writer, DocumentTotals totals, string currency)
+    private static void WriteMonetaryTotal(XmlWriter writer, string pxs, DocumentTotals totals, string currency)
     {
-        writer.WriteStartElement("pxs", "MonetaryTotal", Pxs);
+        writer.WriteStartElement("pxs", "MonetaryTotal", pxs);
         WriteAmount(writer, "LineExtensionAmount", totals.LineTotalAmount, currency);
         WriteAmount(writer, "TaxExclusiveAmount", totals.TaxExclusiveAmount, currency);
         WriteAmount(writer, "TaxInclusiveAmount", totals.TaxInclusiveAmount, currency);
@@ -416,9 +417,9 @@ public sealed class SkTaxDataWriter
         writer.WriteEndElement();
     }
 
-    private static void WriteLine(XmlWriter writer, InvoiceLine line, string currency)
+    private static void WriteLine(XmlWriter writer, string pxs, InvoiceLine line, string currency)
     {
-        writer.WriteStartElement("pxs", "DocumentLine", Pxs);
+        writer.WriteStartElement("pxs", "DocumentLine", pxs);
         Cbc_(writer, "ID", line.Identifier.Value);
         Cbc_(writer, "Note", line.Note.Value);
 
@@ -531,11 +532,11 @@ public sealed class SkTaxDataWriter
         }
     }
 
-    private static void Pxs_(XmlWriter writer, string element, string? value)
+    private static void Pxs_(XmlWriter writer, string pxs, string element, string? value)
     {
         if (!string.IsNullOrEmpty(value))
         {
-            writer.WriteElementString("pxs", element, Pxs, XmlCharacters.Sanitize(value));
+            writer.WriteElementString("pxs", element, pxs, XmlCharacters.Sanitize(value));
         }
     }
 }

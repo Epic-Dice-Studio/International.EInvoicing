@@ -1,10 +1,11 @@
 using International.EInvoicing.Building;
 using International.EInvoicing.Configuration;
-using International.EInvoicing.Countries.Slovakia.TaxData.Model;
-using International.EInvoicing.Countries.Slovakia.TaxData.Writing;
 using International.EInvoicing.FacturX.Pdf;
 using International.EInvoicing.Model;
 using International.EInvoicing.Peppol;
+using International.EInvoicing.Peppol.TaxData;
+using International.EInvoicing.Peppol.TaxData.Model;
+using International.EInvoicing.Peppol.TaxData.Writing;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
 
@@ -22,7 +23,7 @@ namespace International.EInvoicing.Countries.Slovakia;
 /// </para>
 /// <para>
 /// Sending it is transport, which this library does not do. Building it correctly is not, and that is what
-/// <see cref="TaxDataFor(EInvoice, string, string)"/> and <see cref="Write(SkTaxData)"/> are for.
+/// <see cref="TaxDataFor(EInvoice, string, string)"/> and <see cref="Write(PeppolTaxData)"/> are for.
 /// </para>
 /// </remarks>
 [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -99,21 +100,22 @@ public sealed class SlovakEInvoicing
     /// <param name="reportedDocumentUuid">The reported document's identifier (TDT-017).</param>
     /// <exception cref="ArgumentNullException"><paramref name="invoice"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">An identifier is empty.</exception>
-    public SkTaxData TaxDataFor(EInvoice invoice, string uuid, string reportedDocumentUuid) =>
+    public PeppolTaxData TaxDataFor(EInvoice invoice, string uuid, string reportedDocumentUuid) =>
         TaxDataFor(invoice, uuid, reportedDocumentUuid, TimeProvider.System);
 
     /// <summary>The same, taking the time of issue from a clock of your own.</summary>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
     /// <exception cref="ArgumentException">An identifier is empty.</exception>
-    public SkTaxData TaxDataFor(EInvoice invoice, string uuid, string reportedDocumentUuid, TimeProvider clock)
+    public PeppolTaxData TaxDataFor(EInvoice invoice, string uuid, string reportedDocumentUuid, TimeProvider clock)
     {
         ArgumentNullException.ThrowIfNull(invoice);
         ArgumentNullException.ThrowIfNull(clock);
         ArgumentException.ThrowIfNullOrWhiteSpace(uuid);
         ArgumentException.ThrowIfNullOrWhiteSpace(reportedDocumentUuid);
 
-        return new SkTaxData
+        return new PeppolTaxData
         {
+            Jurisdiction = PeppolTaxDataJurisdiction.Slovakia,
             Uuid = uuid,
             ReportedDocumentUuid = reportedDocumentUuid,
             IssuedAt = clock.GetLocalNow(),
@@ -150,7 +152,7 @@ public sealed class SlovakEInvoicing
 
     /// <summary>Writes a tax data document.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="taxData"/> is <c>null</c>.</exception>
-    public string Write(SkTaxData taxData) => new SkTaxDataWriter().WriteToString(taxData);
+    public string Write(PeppolTaxData taxData) => new PeppolTaxDataWriter().WriteToString(taxData);
 
     /// <summary>What the registered rules say about a document.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="document"/> is <c>null</c>.</exception>

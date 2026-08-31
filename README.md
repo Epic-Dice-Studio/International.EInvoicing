@@ -132,6 +132,7 @@ validation is never presented as a success.
 | Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | ⛔ | `International.EInvoicing.FacturX.PdfSharp` |
 | Peppol BIS Billing <sub>3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
+| Peppol tax data document (SK, ViDA) <sub>taxdata sk-1, vida-1</sub> | 🚧 | ✅ | ✅ | `International.EInvoicing.Peppol` |
 
 > **EN 16931 (core invoice model)** — The published Schematron artefacts are executed as data. Measured against the 23 official example documents and the 80 CIUS documents of the XRechnung test suite: all accepted.
 
@@ -142,6 +143,8 @@ validation is never presented as a success.
 > **Peppol BIS Billing** — The profiles for both syntaxes, the EN 16931 electronic address scheme list taken from the artefacts this library ships, and participant identifiers. The Peppol rules declare no licence and are therefore fetched, not packaged — one call loads all four once they are: AddPeppolRulesFrom(directory). The engine agrees with every case of Peppol's own unit corpus, 227 of 227 for UBL and 127 of 127 for CII.
 
 > **XRechnung (CIUS + Extension)** — Profiles for both syntaxes and the published rule sets, embedded. Measured against all 86 documents of the official KoSIT test suite.
+
+> **Peppol tax data document (SK, ViDA)** — The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job.
 
 ### Countries
 
@@ -204,7 +207,7 @@ validation is never presented as a success.
 
 > **Italy — Peppol BIS, partita IVA** — What Italy exchanges over Peppol: the partita IVA with the check Peppol publishes for scheme 0211, measured against it in both directions, and the full postal address IT-R-002 to IT-R-004 require. FatturaPA and the SDI are a separate project — their own syntax, and a qualified signature this library does not produce.
 
-> **Slovakia — Peppol BIS, tax data document** — The 2027 mandate has two halves: a Peppol BIS invoice, and a tax data document reported to the financial administration within fifteen minutes. The second is built from the invoice it reports — a projection, not a copy, since its rules forbid every element they do not name — and satisfies all 88 assertions OpenPeppol publishes for it. Reading one back is a receiver's job and is not there yet. There is no Slovak CIUS published, and no publisher's rule for the ICO check digit, so this library invents neither.
+> **Slovakia — Peppol BIS, tax data document** — The 2027 mandate has two halves: a Peppol BIS invoice, and a tax data document reported to the financial administration within fifteen minutes. The second lives in International.EInvoicing.Peppol, since Slovakia's rules and the EU's ViDA ones are the same document; SlovakEInvoicing builds it from the invoice it reports — a projection, not a copy, since its rules forbid every element they do not name — and it satisfies all 88 assertions. Reading one back is a receiver's job and is not there yet. There is no Slovak CIUS published, and no publisher's rule for the ICO check digit, so this library invents neither.
 
 > **Croatia — Peppol BIS, CIUS-HR, OIB** — The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10, and CIUS-HR 2025 with its extension — profile and rules both, once the artefacts are fetched. An invoice this library writes satisfies all 74 Croatian assertions, including the three terms EN 16931 does not define: the time of issue and the operator who issued it, written by AddCroatianOperator. The advanced electronic seal and the fiscalisation reporting stay out: a signature and a transport.
 

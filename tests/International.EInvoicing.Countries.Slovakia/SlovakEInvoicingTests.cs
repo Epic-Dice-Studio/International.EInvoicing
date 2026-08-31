@@ -1,8 +1,8 @@
 using International.EInvoicing.Building;
-using International.EInvoicing.Countries.Slovakia.TaxData.Model;
-using International.EInvoicing.Countries.Slovakia.Validation;
 using International.EInvoicing.Model;
 using International.EInvoicing.Peppol;
+using International.EInvoicing.Peppol.TaxData;
+using International.EInvoicing.Peppol.TaxData.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
 using International.EInvoicing.Validation.Schematron;
@@ -58,7 +58,7 @@ public class SlovakEInvoicingTests
     {
         EInvoice invoice = AnInvoice();
 
-        SkTaxData taxData = Slovensko.TaxDataFor(invoice, "report-1", "document-1");
+        PeppolTaxData taxData = Slovensko.TaxDataFor(invoice, "report-1", "document-1");
 
         taxData.ReportedDocument.ShouldBeSameAs(invoice);
         taxData.Uuid.ShouldBe("report-1");
@@ -66,6 +66,7 @@ public class SlovakEInvoicingTests
         taxData.TaxDataTypeCode.ShouldBe("S");
         taxData.DocumentScope.ShouldBe("D");
         taxData.ReporterRole.ShouldBe("C2");
+        taxData.Jurisdiction.ShouldBe(PeppolTaxDataJurisdiction.Slovakia);
         taxData.Authority.Id.ShouldBeEmpty();
 
         Should.Throw<ArgumentException>(() => Slovensko.TaxDataFor(invoice, " ", "document-1"));
@@ -80,7 +81,7 @@ public class SlovakEInvoicingTests
 
     [Fact]
     public void RulesAskedForWhereThereAreNoneSayWhereToGetThem() =>
-        Should.Throw<DirectoryNotFoundException>(() => SkTaxDataValidator.LoadFrom(
+        Should.Throw<DirectoryNotFoundException>(() => PeppolTaxDataValidator.LoadFrom(
             Path.Combine(Path.GetTempPath(), "no-slovak-rules-here")))
             .Message.ShouldContain("fetch-specs.sh");
 

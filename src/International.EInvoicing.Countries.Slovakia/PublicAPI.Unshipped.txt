@@ -1,7 +1,4 @@
 #nullable enable
-const International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.CustomizationId = "urn:peppol:taxdata:sk-1" -> string!
-const International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint.ServiceProviderScheme = "0242" -> string!
-const International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ProfileId = "urn:peppol:taxreporting" -> string!
 International.EInvoicing.Countries.Slovakia.SkProfiles
 International.EInvoicing.Countries.Slovakia.SlovakEInvoicing
 International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
@@ -13,57 +10,13 @@ International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Read(byte[]! docume
 International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
 International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
 International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
-International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.TaxDataFor(International.EInvoicing.Model.EInvoice! invoice, string! uuid, string! reportedDocumentUuid) -> International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData!
-International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.TaxDataFor(International.EInvoicing.Model.EInvoice! invoice, string! uuid, string! reportedDocumentUuid, System.TimeProvider! clock) -> International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData!
+International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.TaxDataFor(International.EInvoicing.Model.EInvoice! invoice, string! uuid, string! reportedDocumentUuid) -> International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData!
+International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.TaxDataFor(International.EInvoicing.Model.EInvoice! invoice, string! uuid, string! reportedDocumentUuid, System.TimeProvider! clock) -> International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData!
 International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
-International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Write(International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData! taxData) -> string!
 International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
 International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Write(International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData! taxData) -> string!
 International.EInvoicing.Countries.Slovakia.SlovakiaServiceCollectionExtensions
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxAuthority
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxAuthority.Id.get -> string!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxAuthority.Id.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxAuthority.Name.get -> string?
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxAuthority.Name.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxAuthority.SkTaxAuthority() -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.Authority.get -> International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxAuthority!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.Authority.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.DocumentScope.get -> string!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.DocumentScope.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint.Id.get -> string!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint.Id.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint.SchemeId.get -> string!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint.SchemeId.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint.SkTaxDataEndpoint() -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.IssuedAt.get -> System.DateTimeOffset
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.IssuedAt.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReceivingParty.get -> International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReceivingParty.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReportedDocument.get -> International.EInvoicing.Model.EInvoice?
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReportedDocument.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReportedDocumentUuid.get -> string!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReportedDocumentUuid.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReporterRole.get -> string!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReporterRole.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReportersRepresentative.get -> International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint?
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReportersRepresentative.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReportingParty.get -> International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxDataEndpoint!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.ReportingParty.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.SkTaxData() -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.TaxDataTypeCode.get -> string!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.TaxDataTypeCode.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.Uuid.get -> string!
-International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData.Uuid.set -> void
-International.EInvoicing.Countries.Slovakia.TaxData.SkTaxDataCodes
-International.EInvoicing.Countries.Slovakia.TaxData.Writing.SkTaxDataWriter
-International.EInvoicing.Countries.Slovakia.TaxData.Writing.SkTaxDataWriter.SkTaxDataWriter() -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Writing.SkTaxDataWriter.Write(International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData! document, System.IO.Stream! destination) -> void
-International.EInvoicing.Countries.Slovakia.TaxData.Writing.SkTaxDataWriter.WriteToString(International.EInvoicing.Countries.Slovakia.TaxData.Model.SkTaxData! document) -> string!
-International.EInvoicing.Countries.Slovakia.Validation.SkTaxDataValidator
-International.EInvoicing.Countries.Slovakia.Validation.SkTaxDataValidator.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
-International.EInvoicing.Countries.Slovakia.Validation.SkTaxDataValidator.Version.get -> string!
 static International.EInvoicing.Countries.Slovakia.SkProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Countries.Slovakia.SkProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Countries.Slovakia.SkProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
@@ -74,8 +27,3 @@ static International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Create(Syste
 static International.EInvoicing.Countries.Slovakia.SlovakEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Slovakia.SlovakEInvoicing!
 static International.EInvoicing.Countries.Slovakia.SlovakiaServiceCollectionExtensions.AddSlovakia(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Countries.Slovakia.SlovakiaServiceCollectionExtensions.AddSlovakRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
-static International.EInvoicing.Countries.Slovakia.TaxData.SkTaxDataCodes.DocumentScopes.get -> System.Collections.Generic.IReadOnlyList<string!>!
-static International.EInvoicing.Countries.Slovakia.TaxData.SkTaxDataCodes.IsValid(System.Collections.Generic.IReadOnlyList<string!>! list, string? value) -> bool
-static International.EInvoicing.Countries.Slovakia.TaxData.SkTaxDataCodes.ReporterRoles.get -> System.Collections.Generic.IReadOnlyList<string!>!
-static International.EInvoicing.Countries.Slovakia.TaxData.SkTaxDataCodes.TaxDataTypes.get -> System.Collections.Generic.IReadOnlyList<string!>!
-static International.EInvoicing.Countries.Slovakia.Validation.SkTaxDataValidator.LoadFrom(string! directory) -> International.EInvoicing.Countries.Slovakia.Validation.SkTaxDataValidator!

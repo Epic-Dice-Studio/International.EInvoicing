@@ -6,11 +6,21 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The tax data document is Peppol's, not Slovakia's** — so it moved to `International.EInvoicing.Peppol`,
+  and **ViDA came with it**. OpenPeppol publishes one per jurisdiction, and Slovakia's rule set differs from
+  the EU's ViDA one by a single assertion out of eighty-eight, a namespace and an identifier:
+  `PeppolTaxDataJurisdiction` is that difference, as data. One writer serves both, and both are measured
+  against their own published rules. `SlovakEInvoicing.TaxDataFor` is unchanged for callers.
+- **A rule set that matched nothing said the document was valid.** The jurisdictions are the same rules in
+  different namespaces, so the ViDA set finds no context at all in a Slovak document — and an engine that
+  reports what it found reports *nothing found*, which reads exactly like *nothing wrong*. A rule set that
+  claims no node is now reported as **not run**, with the reason, so `IsComplete` is false and a caller can
+  tell "judged and clean" from "never judged". Nothing else in the repository changed behaviour: every
+  shipped and fetched rule set still matches what it is pointed at.
 - **Slovakia, which turned out not to be a CIUS country.** The 2027 mandate has two halves, and the second
   is a document rather than a summary: a **tax data document** each party's service provider sends to the
   financial administration within fifteen minutes of the invoice, with an identifier, a structure and 88
-  published assertions of its own. `SkTaxData`, `SkTaxDataWriter` and `SkTaxDataValidator` build it, write it
-  and judge it; `SlovakEInvoicing.TaxDataFor` fills in what follows from the invoice and leaves the authority
+  published assertions of its own. `PeppolTaxData`, `PeppolTaxDataWriter` and `PeppolTaxDataValidator` build it, write it and judge it; `SlovakEInvoicing.TaxDataFor` fills in what follows from the invoice and leaves the authority
   and the endpoints — the network's business — to the caller. A document this library writes satisfies all 88,
   with four negative controls proving the rules ran. The reported document is a **projection** of the invoice,
   not a copy: its rules forbid every element they do not name, so an invoice you can send is not a report you

@@ -39,14 +39,27 @@ public sealed partial class SchematronValidator
             new XPathContext(document, document, new Dictionary<string, XPathValue>(StringComparer.Ordinal)),
             evaluator);
 
+        int matched = 0;
+
         foreach (SchematronPattern pattern in ruleSet.Patterns)
         {
-            RunPattern(pattern, document, evaluator, ruleSet.Name, globals, messages);
+            matched += RunPattern(pattern, document, evaluator, ruleSet.Name, globals, messages);
         }
 
+        // A rule set none of whose contexts matched has judged nothing, and saying "valid" would be a lie of
+        // the worst kind: it is what a document in the wrong vocabulary looks like — a Slovak tax data
+        // document put in front of the ViDA rules, which are the same rules in another namespace.
         return new ValidationReport(
             messages,
-            [new RuleSetOutcome(ruleSet.Name, ruleSet.Version, Ran: true)]);
+            [
+                matched > 0
+                    ? new RuleSetOutcome(ruleSet.Name, ruleSet.Version, Ran: true)
+                    : new RuleSetOutcome(
+                        ruleSet.Name,
+                        ruleSet.Version,
+                        Ran: false,
+                        "no rule in this set matched anything in the document"),
+            ]);
     }
 
     /// <summary>Validates XML text against <paramref name="ruleSet"/>.</summary>
@@ -101,7 +114,8 @@ public sealed partial class SchematronValidator
         return values;
     }
 
-    private static void RunPattern(
+    /// <summary>Runs one pattern, and answers how many nodes its rules claimed.</summary>
+    private static int RunPattern(
         SchematronPattern pattern,
         XDocument document,
         XPathEvaluator evaluator,
@@ -125,6 +139,8 @@ public sealed partial class SchematronValidator
                 RunRule(rule, node, document, evaluator, ruleSetName, globals, messages);
             }
         }
+
+        return claimed.Count;
     }
 
     private static void RunRule(

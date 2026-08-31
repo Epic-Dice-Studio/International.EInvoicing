@@ -24,7 +24,7 @@ public static class SlovakiaServiceCollectionExtensions
     /// OpenPeppol publishes them beside the tax data rules, as pre-compiled XSLT, which this library reads —
     /// and which is not redistributable, so it is fetched: <c>build/fetch-specs.sh national</c> writes them to
     /// <c>specs/national/peppol-taxdata/schematron/tdd/sk</c>. The tax data document itself is judged by
-    /// <see cref="Validation.SkTaxDataValidator"/>, which takes the same directory.
+    /// <see cref="Peppol.TaxData.PeppolTaxDataValidator"/>, which takes the same directory.
     /// </remarks>
     /// <param name="builder">The library being assembled.</param>
     /// <param name="directory">The version directory the fetch script writes.</param>

@@ -96,6 +96,15 @@
           "write": "done",
           "validate": "done",
           "notes": "Profiles for both syntaxes and the published rule sets, embedded. Measured against all 86 documents of the official KoSIT test suite."
+        },
+        {
+          "name": "Peppol tax data document (SK, ViDA)",
+          "version": "taxdata sk-1, vida-1",
+          "package": "International.EInvoicing.Peppol",
+          "read": "in-progress",
+          "write": "done",
+          "validate": "done",
+          "notes": "The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job."
         }
       ]
     },
@@ -253,7 +262,7 @@
           "read": "in-progress",
           "write": "done",
           "validate": "done",
-          "notes": "The 2027 mandate has two halves: a Peppol BIS invoice, and a tax data document reported to the financial administration within fifteen minutes. The second is built from the invoice it reports — a projection, not a copy, since its rules forbid every element they do not name — and satisfies all 88 assertions OpenPeppol publishes for it. Reading one back is a receiver's job and is not there yet. There is no Slovak CIUS published, and no publisher's rule for the ICO check digit, so this library invents neither."
+          "notes": "The 2027 mandate has two halves: a Peppol BIS invoice, and a tax data document reported to the financial administration within fifteen minutes. The second lives in International.EInvoicing.Peppol, since Slovakia's rules and the EU's ViDA ones are the same document; SlovakEInvoicing builds it from the invoice it reports — a projection, not a copy, since its rules forbid every element they do not name — and it satisfies all 88 assertions. Reading one back is a receiver's job and is not there yet. There is no Slovak CIUS published, and no publisher's rule for the ICO check digit, so this library invents neither."
         },
         {
           "name": "Croatia — Peppol BIS, CIUS-HR, OIB",

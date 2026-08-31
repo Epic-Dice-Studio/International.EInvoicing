@@ -20,24 +20,27 @@ assertions** that judge it.
 | Capability | Package | Status |
 |---|---|---|
 | Peppol BIS Billing 3.0, both syntaxes | `.Peppol` | done |
-| The tax data document, built from the invoice it reports | `.Countries.Slovakia` | done — `SkTaxData`, `SkTaxDataWriter` |
-| The 88 published assertions | `.Countries.Slovakia` | run once fetched — `SkTaxDataValidator` |
+| The tax data document, built from the invoice it reports | `.Peppol` | done — `PeppolTaxData`, `PeppolTaxDataWriter` |
+| The 88 published assertions | `.Peppol` | run once fetched — `PeppolTaxDataValidator` |
 | Reading a tax data document back | — | not yet: a receiver's job, and no caller has needed it |
 | Transmitting either document | — | permanently out of scope: no network I/O |
 | A Slovak CIUS of EN 16931 | — | **there is none published**; this library does not invent identifiers |
 
 ## The tax data document
 
-It is a `pxs:TaxData` envelope in `urn:peppol:schema:sk-taxdata:1.0`, carrying an envelope of its own terms
-(TDT-, TDG-) and then the invoice it reports:
+It is a `pxs:TaxData` envelope in `urn:peppol:schema:sk-taxdata:1.0`, carrying terms of its own (TDT-, TDG-)
+and then the invoice it reports. It is **not a Slovak invention**: the same document is published per
+jurisdiction, and Slovakia's rule set differs from the EU's ViDA one by a single assertion out of 88 — so it
+lives in `International.EInvoicing.Peppol`, and `PeppolTaxDataJurisdiction` is what changes between them. See
+[the tax data page](peppol-taxdata.md).
 
 ```csharp
 SlovakEInvoicing slovensko = SlovakEInvoicing.Create();
 
-SkTaxData report = slovensko.TaxDataFor(invoice, uuid: "…", reportedDocumentUuid: "…");
-report.Authority = new SkTaxAuthority { Id = "SK-FS", Name = "Finančné riaditeľstvo Slovenskej republiky" };
-report.ReportingParty = new SkTaxDataEndpoint { Id = "…", SchemeId = "0158" };
-report.ReceivingParty = new SkTaxDataEndpoint { Id = "…", SchemeId = SkTaxDataEndpoint.ServiceProviderScheme };
+PeppolTaxData report = slovensko.TaxDataFor(invoice, uuid: "…", reportedDocumentUuid: "…");
+report.Authority = new PeppolTaxAuthority { Id = "SK-FS", Name = "Finančné riaditeľstvo Slovenskej republiky" };
+report.ReportingParty = new PeppolTaxDataEndpoint { Id = "…", SchemeId = "0158" };
+report.ReceivingParty = new PeppolTaxDataEndpoint { Id = "…", SchemeId = PeppolTaxDataEndpoint.ServiceProviderScheme };
 
 string xml = slovensko.Write(report);
 ```
