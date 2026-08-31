@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Schema validation, offline** — `International.EInvoicing.Validation.Xsd`. The OASIS UBL 2.1 schemas are
+  embedded and register as a rule set like any other: `builder.AddDefaults().AddUblSchema()`. It judges what
+  no business rule looks at, since element order and cardinality are normative in UBL and no Schematron
+  assertion reads either. Proof it was needed: it rejects the two-accounts-in-one-`cac:PaymentMeans` document
+  this library produced until yesterday, which all 955 EN 16931 assertions and Peppol's had accepted.
+- **And it found a second defect on its first run.** Extension data — an element the model has no field for,
+  kept verbatim so nothing is lost — is written back **at the end of its node**, which in UBL means after
+  elements that must follow it. Six of the twenty-three official EN 16931 examples come out of a read-then-
+  write in an order the schema rejects. Nothing this library *builds* is affected, only what it reads back and
+  rewrites; the fix is to anchor each extension where it was read from, which is the next reliability pass. A
+  test pins exactly this failure and nothing else, so the day it is fixed the test says so.
 - **Reading a PDF could throw, which the rest of this library promises never to do.** An empty file, a file
   that is not a PDF, a bare `%PDF-1.7` header, a truncated document, one byte changed in the trailer — eight
   of fifteen hostile cases came out as an exception rather than as "there is no invoice in this file", and

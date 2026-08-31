@@ -32,6 +32,7 @@
     <Project Path="src/International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
     <Project Path="src/International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
     <Project Path="src/International.EInvoicing.Validation.Schematron/International.EInvoicing.Validation.Schematron.csproj" />
+    <Project Path="src/International.EInvoicing.Validation.Xsd/International.EInvoicing.Validation.Xsd.csproj" />
     <Project Path="src/International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
     <Project Path="src/International.EInvoicing/International.EInvoicing.csproj" />
     <Project Path="src/International.EInvoicing.Cli/International.EInvoicing.Cli.csproj" />
@@ -73,6 +74,7 @@
     <Project Path="tests/International.EInvoicing.Ubl.Tests/International.EInvoicing.Ubl.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Validation.En16931.Tests/International.EInvoicing.Validation.En16931.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Validation.Schematron.Tests/International.EInvoicing.Validation.Schematron.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Validation.Xsd.Tests/International.EInvoicing.Validation.Xsd.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Validation.XRechnung.Tests/International.EInvoicing.Validation.XRechnung.Tests.csproj" />
   </Folder>
   <Folder Name="/web/" />

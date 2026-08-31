@@ -143,13 +143,35 @@ fetch_national() {
     done
 }
 
+# The UBL 2.1 schemas, file by file rather than as the 58 MB OASIS archive: what a validator needs is the
+# xsd folder, and the rest of that zip is documentation and examples. OASIS publishes them individually.
+fetch_ubl_schemas() {
+    local base="https://docs.oasis-open.org/ubl/os-UBL-2.1/xsd"
+    local target="$SPECS_DIR/ubl-2.1/xsd"
+    local name
+
+    log "fetching UBL 2.1 schemas"
+    mkdir -p "$target/maindoc" "$target/common"
+
+    for name in UBL-Invoice-2.1 UBL-CreditNote-2.1 UBL-ApplicationResponse-2.1; do
+        curl -fsS "$base/maindoc/$name.xsd" -o "$target/maindoc/$name.xsd"
+    done
+
+    for name in \
+        UBL-CommonAggregateComponents-2.1 UBL-CommonBasicComponents-2.1 UBL-CommonExtensionComponents-2.1 \
+        UBL-ExtensionContentDataType-2.1 UBL-QualifiedDataTypes-2.1 UBL-UnqualifiedDataTypes-2.1 \
+        UBL-CommonSignatureComponents-2.1 UBL-SignatureAggregateComponents-2.1 UBL-SignatureBasicComponents-2.1 \
+        UBL-XAdESv132-2.1 UBL-XAdESv141-2.1 UBL-xmldsig-core-schema-2.1 CCTS_CCT_SchemaModule-2.1; do
+        curl -fsS "$base/common/$name.xsd" -o "$target/common/$name.xsd"
+    done
+}
+
 fetch_manual() {
     cat >&2 <<'MANUAL'
 
 Redistributable, but published as archives rather than repositories — download and unpack them yourself,
 then commit them:
 
-  UBL 2.1 schemas          https://docs.oasis-open.org/ubl/os-UBL-2.1/            -> specs/ubl-2.1/
   UN/CEFACT CII D22B       https://unece.org/trade/uncefact/xml-schemas           -> specs/cii-d22b/
   UN/CEFACT CDAR           https://unece.org/trade/uncefact/xml-schemas           -> specs/cdar/
   Factur-X schemas/samples https://fnfe-mpe.org                                   -> specs/facturx/
@@ -171,8 +193,9 @@ main() {
         national)  fetch_national ;;
         peppol)    fetch_peppol ;;
         xrechnung) fetch_xrechnung ;;
+        ubl)       fetch_ubl_schemas ;;
         france)    fetch_france ;;
-        all)       fetch_en16931; fetch_peppol; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_manual ;;
+        all)       fetch_en16931; fetch_peppol; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_manual ;;
         *)         warn "unknown target '$target' (en16931 | peppol | pint | national | xrechnung | france | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"

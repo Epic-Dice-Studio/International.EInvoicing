@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Validation.Xsd</PackageId>
+    <Description>
+      Schema validation for electronic invoices: the OASIS UBL 2.1 schemas, embedded and ready to run
+      offline. A document can satisfy every business rule and still be a shape no receiver can parse —
+      element order and cardinality are the schema's business, and no Schematron rule looks at them.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;validation;xsd;schema;ubl;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing.Core/International.EInvoicing.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Redistributed under the OASIS IPR Policy. Element order is normative in UBL: these files are what says so. -->
+  <ItemGroup>
+    <EmbeddedResource Include="../../specs/ubl-2.1/xsd/maindoc/*.xsd" LogicalName="ubl/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../specs/ubl-2.1/xsd/common/*.xsd" LogicalName="ubl/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>
