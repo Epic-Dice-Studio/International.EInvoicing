@@ -286,9 +286,25 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
 
         var payment = new PaymentInstructions { RemittanceInformation = reference };
 
-        if (creditor.IsSet)
+        // BT-89 sits with the payment terms in CII, BT-91 with the payment means, and BT-90 here. Three
+        // places for one instruction, which is how two of the three came to be read by nothing.
+        IdentifierField mandate = values.ReadIdentifier(
+            In(values, In(values, settlement, CiiNames.Ram + "SpecifiedTradePaymentTerms"), CiiNames.Ram + "DirectDebitMandateID"));
+
+        IdentifierField debited = values.ReadIdentifier(
+            In(
+                values,
+                In(values, means, CiiNames.Ram + "PayerPartyDebtorFinancialAccount"),
+                CiiNames.Ram + "IBANID"));
+
+        if (creditor.IsSet || mandate.IsSet || debited.IsSet)
         {
-            payment.DirectDebit = new DirectDebit { CreditorIdentifier = creditor };
+            payment.DirectDebit = new DirectDebit
+            {
+                CreditorIdentifier = creditor,
+                MandateReference = mandate,
+                DebitedAccountIdentifier = debited,
+            };
         }
 
         if (means is not null)
@@ -371,6 +387,15 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         {
             line.OrderLineReference = values.ReadIdentifier(
                 In(values, In(values, agreement, CiiNames.Ram + "BuyerOrderReferencedDocument"), CiiNames.Ram + "LineID"));
+
+            // BT-128, filed on the line as a referenced document typed 130.
+            XElement? referenced = In(values, agreement, CiiNames.Ram + "AdditionalReferencedDocument");
+            if (referenced is not null)
+            {
+                values.Consume(In(values, referenced, CiiNames.Ram + "TypeCode"));
+                line.ObjectIdentifier = values.ReadIdentifier(
+                    In(values, referenced, CiiNames.Ram + "IssuerAssignedID"));
+            }
         }
 
         if (settlement is null)

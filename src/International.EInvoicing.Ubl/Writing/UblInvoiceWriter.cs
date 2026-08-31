@@ -160,24 +160,33 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        if (invoice.ContractReference.IsSet)
-        {
-            StartCac(writer, "ContractDocumentReference");
-            WriteIdentifier(writer, "ID", invoice.ContractReference);
-            writer.WriteEndElement();
-        }
+        // BT-16, BT-15 and BT-17, in the sequence UBL declares: despatch, receipt, then originator. They
+        // were not written at all, so an invoice carrying them — or one converted from CII, which does read
+        // them — arrived at the receiver without them.
+        WriteReference(writer, "DespatchDocumentReference", invoice.DespatchAdviceReference);
+        WriteReference(writer, "ReceiptDocumentReference", invoice.ReceivingAdviceReference);
+        WriteReference(writer, "OriginatorDocumentReference", invoice.TenderOrLotReference);
+        WriteReference(writer, "ContractDocumentReference", invoice.ContractReference);
 
         foreach (AdditionalDocument document in invoice.AdditionalDocuments)
         {
             WriteAdditionalDocument(document, writer);
         }
 
-        if (invoice.ProjectReference.IsSet)
+        WriteReference(writer, "ProjectReference", invoice.ProjectReference);
+    }
+
+    /// <summary>One of the containers that hold a single identifier and nothing else.</summary>
+    private static void WriteReference(XmlWriter writer, string element, IdentifierField identifier)
+    {
+        if (!identifier.IsSet)
         {
-            StartCac(writer, "ProjectReference");
-            WriteIdentifier(writer, "ID", invoice.ProjectReference);
-            writer.WriteEndElement();
+            return;
         }
+
+        StartCac(writer, element);
+        WriteIdentifier(writer, "ID", identifier);
+        writer.WriteEndElement();
     }
 
     private static void WriteAdditionalDocument(AdditionalDocument document, XmlWriter writer)
@@ -409,9 +418,12 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             StartCac(writer, "PaymentMeans");
             WriteCode(writer, "PaymentMeansCode", payment.MeansTypeCode);
             WriteText(writer, "PaymentID", payment.RemittanceInformation);
+            WriteMandate(writer, payment.DirectDebit);
             writer.WriteEndElement();
             return;
         }
+
+        bool first = true;
 
         foreach (CreditTransfer transfer in payment.CreditTransfers)
         {
@@ -431,8 +443,38 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             }
 
             writer.WriteEndElement();
+
+            // The mandate belongs to the instruction, not to each account, so it goes in the first block —
+            // repeating it would say the debit is authorised as many times as there are accounts to pay into.
+            if (first)
+            {
+                WriteMandate(writer, payment.DirectDebit);
+                first = false;
+            }
+
             writer.WriteEndElement();
         }
+    }
+
+    /// <summary>BG-19 — which mandate authorises the debit, and which account it takes from.</summary>
+    private static void WriteMandate(XmlWriter writer, DirectDebit? debit)
+    {
+        if (debit is null || (!debit.MandateReference.IsSet && !debit.DebitedAccountIdentifier.IsSet))
+        {
+            return;
+        }
+
+        StartCac(writer, "PaymentMandate");
+        WriteIdentifier(writer, "ID", debit.MandateReference);
+
+        if (debit.DebitedAccountIdentifier.IsSet)
+        {
+            StartCac(writer, "PayerFinancialAccount");
+            WriteIdentifier(writer, "ID", debit.DebitedAccountIdentifier);
+            writer.WriteEndElement();
+        }
+
+        writer.WriteEndElement();
     }
 
     private static void WriteAllowanceCharge(
@@ -503,6 +545,20 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         writer.WriteEndElement();
+
+        // BT-111, which UBL carries as a second TaxTotal holding one amount: the same tax, in the currency
+        // the seller accounts in. Without it, an invoice in one currency reported in another loses the half
+        // the tax authority reads.
+        if (invoice.Totals.TaxAmountInAccountingCurrency.IsSet)
+        {
+            StartCac(writer, "TaxTotal");
+            WriteAmount(
+                writer,
+                "TaxAmount",
+                invoice.Totals.TaxAmountInAccountingCurrency,
+                invoice.TaxAccountingCurrencyCode.Value ?? currency);
+            writer.WriteEndElement();
+        }
     }
 
     private static void WriteTotals(DocumentTotals totals, XmlWriter writer, string? currency)
@@ -538,6 +594,15 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         {
             StartCac(writer, "OrderLineReference");
             WriteIdentifier(writer, "LineID", line.OrderLineReference);
+            writer.WriteEndElement();
+        }
+
+        // BT-128, which UBL files as a document reference on the line, typed 130.
+        if (line.ObjectIdentifier.IsSet)
+        {
+            StartCac(writer, "DocumentReference");
+            WriteIdentifier(writer, "ID", line.ObjectIdentifier);
+            Cbc(writer, "DocumentTypeCode", "130");
             writer.WriteEndElement();
         }
 

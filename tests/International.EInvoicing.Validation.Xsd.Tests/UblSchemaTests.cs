@@ -101,32 +101,25 @@ public class UblSchemaTests
     }
 
     /// <summary>
-    /// Every official example, read and written back, and the one shape defect that is left.
+    /// Every official example, read and written back, comes back in a shape UBL allows — and carrying
+    /// nothing this library failed to understand.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The widest net available for the writers: twenty-odd documents nobody here wrote, carrying terms our
-    /// own fixtures never use, through the reader and out of the writer again. Seventeen come back in a shape
-    /// UBL allows. Six do not, and all six fail the same way.
+    /// The widest net available for the reader and the writer together: documents nobody here wrote, through
+    /// both, judged by the schema. It began as six failures out of seventeen, all of them the same story —
+    /// terms the reader did not map were kept verbatim and written back at the end of their node, where UBL
+    /// does not allow them. The terms are now mapped, so there is nothing left to misplace.
     /// </para>
     /// <para>
-    /// <b>Extension data is re-emitted at the end of its node</b>, and element order is normative in UBL. A
-    /// document carrying an element this library's model has no field for — a despatch reference, a second
-    /// tax total, a charge indicator on a line — comes back with that element after the ones that must follow
-    /// it. No rule set notices; a receiver's parser does. Nothing this library <em>builds</em> is affected,
-    /// only what it reads back and rewrites.
-    /// </para>
-    /// <para>
-    /// Fixing it means anchoring each extension element to where it was read from, which is a change to the
-    /// reader, the model and both writers — its own pass, not a footnote to this one. Until then this test
-    /// says exactly what is wrong: a failure is allowed only when it is a sequence error <em>and</em> the
-    /// document carried something unmapped. The day it is fixed, or the day a different defect appears, this
-    /// turns red.
+    /// The second assertion is the one that matters most: <b>no unmapped element at all</b>. A term this
+    /// library does not understand is a field a caller reads as empty, and that is worth failing over well
+    /// before it becomes a shape defect.
     /// </para>
     /// </remarks>
     [Theory]
     [MemberData(nameof(OfficialExamples))]
-    public void EveryOfficialExampleSurvivesTheRoundTripExceptForMisplacedExtensionData(string path)
+    public void EveryOfficialExampleSurvivesTheRoundTripWithItsShapeIntact(string path)
     {
         EInvoicing library = EInvoicing.Create(builder => builder.AddDefaults());
 
@@ -136,21 +129,12 @@ public class UblSchemaTests
 
         ValidationReport report = Schema.Validate(library.Write(read.Invoice!, DocumentFormat.Ubl));
 
-        if (report.IsValid)
-        {
-            return;
-        }
+        report.IsValid.ShouldBeTrue($"{Path.GetFileName(path)}{Environment.NewLine}{Describe(report)}");
 
-        bool carriedUnmapped = read.Diagnostics.Any(
-            diagnostic => diagnostic.Code == UblDiagnostics.UnmappedElement.Code);
-
-        carriedUnmapped.ShouldBeTrue(
-            $"{Path.GetFileName(path)} is schema-invalid for a reason that is not extension data:"
-            + Environment.NewLine + Describe(report));
-
-        report.Errors.ShouldAllBe(
-            message => message.RuleIdentifier == "XSD-SEQUENCE",
-            $"{Path.GetFileName(path)}{Environment.NewLine}{Describe(report)}");
+        read.Diagnostics
+            .Where(diagnostic => diagnostic.Code == UblDiagnostics.UnmappedElement.Code)
+            .Select(diagnostic => diagnostic.Found)
+            .ShouldBeEmpty($"{Path.GetFileName(path)} carries terms this library does not map");
     }
 
     public static TheoryData<string> OfficialExamples()

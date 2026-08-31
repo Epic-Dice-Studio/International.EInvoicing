@@ -218,6 +218,16 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
+        // BT-128, which CII files as a referenced document on the line, typed 130 — the object the line is
+        // about, and the term a utility invoice uses to say which meter it is billing.
+        if (line.ObjectIdentifier.IsSet)
+        {
+            StartRam(writer, "AdditionalReferencedDocument");
+            WriteIdentifier(writer, "IssuerAssignedID", line.ObjectIdentifier);
+            WriteCode(writer, "TypeCode", "130");
+            writer.WriteEndElement();
+        }
+
         if (line.Price is { } price)
         {
             if (price.GrossPrice.IsSet || price.Discount.IsSet)
@@ -377,6 +387,14 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             StartRam(writer, "SpecifiedTradePaymentTerms");
             WriteText(writer, "Description", invoice.PaymentTerms);
             WriteDate(writer, "DueDateDateTime", invoice.DueDate);
+
+            // BT-89. CII files the mandate with the payment terms rather than with the payment means, which
+            // is why it was missed on this side while UBL kept it — in neither, as it turned out.
+            if (invoice.Payment?.DirectDebit is { MandateReference.IsSet: true } mandate)
+            {
+                WriteIdentifier(writer, "DirectDebitMandateID", mandate.MandateReference);
+            }
+
             writer.WriteEndElement();
         }
 
@@ -400,6 +418,19 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
+    /// <summary>BT-91 — the account a direct debit takes from, which comes before the payee's.</summary>
+    private static void WriteDebitedAccount(XmlWriter writer, DirectDebit? debit)
+    {
+        if (debit is not { DebitedAccountIdentifier.IsSet: true })
+        {
+            return;
+        }
+
+        StartRam(writer, "PayerPartyDebtorFinancialAccount");
+        WriteIdentifier(writer, "IBANID", debit.DebitedAccountIdentifier);
+        writer.WriteEndElement();
+    }
+
     private static void WritePaymentMeans(PaymentInstructions? payment, XmlWriter writer)
     {
         if (payment is null || (!payment.MeansTypeCode.IsSet && payment.CreditTransfers.Count == 0))
@@ -412,6 +443,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             StartRam(writer, "SpecifiedTradeSettlementPaymentMeans");
             WriteCode(writer, "TypeCode", payment.MeansTypeCode);
             WriteText(writer, "Information", payment.MeansText);
+            WriteDebitedAccount(writer, payment.DirectDebit);
             writer.WriteEndElement();
             return;
         }
@@ -423,6 +455,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             StartRam(writer, "SpecifiedTradeSettlementPaymentMeans");
             WriteCode(writer, "TypeCode", payment.MeansTypeCode);
             WriteText(writer, "Information", payment.MeansText);
+            WriteDebitedAccount(writer, payment.DirectDebit);
 
             StartRam(writer, "PayeePartyCreditorFinancialAccount");
             WriteAccountIdentifier(writer, transfer.AccountIdentifier);

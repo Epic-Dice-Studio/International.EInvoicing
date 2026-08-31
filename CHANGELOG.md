@@ -6,17 +6,31 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Seven EN 16931 terms the UBL side lost, in both directions.** BT-15 and BT-16 (receipt and despatch
+  advice references), BT-17 (tender or lot), BT-89 and BT-91 (the direct debit's mandate and debited
+  account), BT-111 (the tax in the accounting currency) and BT-128 (the line's object identifier) were read
+  by nothing and written by nothing, though the model has held them all along and CII read two of them. A
+  caller who set one got a document without it; a document that carried one was read with the field empty;
+  and converting CII to UBL dropped what CII had understood. **BT-89 and BT-91 were missing on the CII side
+  too**, and BT-128 was written by neither — all now read and written in both syntaxes.
+- **An attachment was written twice.** BT-125 was read into the model *and* kept as extension data, so every
+  rewrite carried the bytes a second time — megabytes for a scanned delivery note, and a cardinality the
+  schema refuses.
+- **The consequence of all of the above**, and how it was found: an element nobody maps is kept verbatim and
+  written back at the end of its node, which UBL does not allow. Six of the seventeen official EN 16931
+  examples came out of a read-then-write schema-invalid. All seventeen now come back valid **and carrying
+  nothing this library failed to understand** — which is what the corpus test now demands.
 - **Schema validation, offline** — `International.EInvoicing.Validation.Xsd`. The OASIS UBL 2.1 schemas are
   embedded and register as a rule set like any other: `builder.AddDefaults().AddUblSchema()`. It judges what
   no business rule looks at, since element order and cardinality are normative in UBL and no Schematron
   assertion reads either. Proof it was needed: it rejects the two-accounts-in-one-`cac:PaymentMeans` document
   this library produced until yesterday, which all 955 EN 16931 assertions and Peppol's had accepted.
-- **And it found a second defect on its first run.** Extension data — an element the model has no field for,
-  kept verbatim so nothing is lost — is written back **at the end of its node**, which in UBL means after
-  elements that must follow it. Six of the twenty-three official EN 16931 examples come out of a read-then-
-  write in an order the schema rejects. Nothing this library *builds* is affected, only what it reads back and
-  rewrites; the fix is to anchor each extension where it was read from, which is the next reliability pass. A
-  test pins exactly this failure and nothing else, so the day it is fixed the test says so.
+- **And it found the mapping gaps above on its first run**, by way of their symptom: extension data is
+  written back at the end of its node, which in UBL means after elements that must follow it. Six official
+  examples came out of a read-then-write in an order the schema rejects — every one of them because a term
+  was unmapped. With the terms mapped there is nothing left to misplace, and the corpus is clean. Anchoring
+  extension data where it was read from is still worth doing for genuinely foreign elements, and is now a
+  small remainder rather than the story.
 - **Reading a PDF could throw, which the rest of this library promises never to do.** An empty file, a file
   that is not a PDF, a bare `%PDF-1.7` header, a truncated document, one byte changed in the trailer — eight
   of fifteen hostile cases came out as an exception rather than as "there is no invoice in this file", and

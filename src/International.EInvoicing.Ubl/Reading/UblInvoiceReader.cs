@@ -130,6 +130,15 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             });
         }
 
+        // BT-16, BT-15 and BT-17. Each is one identifier in its own container, and each was read by the CII
+        // side and by nothing here — so a document carrying them arrived with the fields empty and left with
+        // the elements re-emitted as extension data, after the elements UBL requires them to precede.
+        invoice.DespatchAdviceReference = values.ReadIdentifier(
+            Take(root, UblNames.Cac + "DespatchDocumentReference", mapped)?.Element(UblNames.Cbc + "ID"));
+        invoice.ReceivingAdviceReference = values.ReadIdentifier(
+            Take(root, UblNames.Cac + "ReceiptDocumentReference", mapped)?.Element(UblNames.Cbc + "ID"));
+        invoice.TenderOrLotReference = values.ReadIdentifier(
+            Take(root, UblNames.Cac + "OriginatorDocumentReference", mapped)?.Element(UblNames.Cbc + "ID"));
         invoice.ContractReference = values.ReadIdentifier(
             Take(root, UblNames.Cac + "ContractDocumentReference", mapped)?.Element(UblNames.Cbc + "ID"));
         invoice.ProjectReference = values.ReadIdentifier(
@@ -174,7 +183,17 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             invoice.AllowancesAndCharges.Add(ReadAllowanceCharge(allowance, values));
         }
 
-        ReadTaxTotal(Take(root, UblNames.Cac + "TaxTotal", mapped), invoice, values);
+        // Two TaxTotal elements are allowed, and the second is BT-111: the same tax in the currency the
+        // seller accounts in. Reading only the first left it unmapped, so it was written back out of place.
+        List<XElement> taxTotals = TakeAll(root, UblNames.Cac + "TaxTotal", mapped);
+        ReadTaxTotal(taxTotals.FirstOrDefault(), invoice, values);
+
+        foreach (XElement extra in taxTotals.Skip(1))
+        {
+            invoice.Totals.TaxAmountInAccountingCurrency = values.ReadAmount(
+                Descend(values, extra, UblNames.Cbc + "TaxAmount"),
+                "BT-111");
+        }
         ReadTotals(Take(root, UblNames.Cac + "LegalMonetaryTotal", mapped), invoice.Totals, values);
 
         foreach (XElement line in TakeAll(root, shape.Line, mapped))
@@ -234,7 +253,9 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
         DocumentLimits limits)
     {
         XElement? attachment = Descend(values, element, UblNames.Cac + "Attachment");
-        XElement? embedded = attachment?.Element(UblNames.Cbc + "EmbeddedDocumentBinaryObject");
+        // Descend, not Element: reading it is not enough, it has to be marked as read, or the raw element is
+        // kept as extension data as well and the attachment is written twice — megabytes, duplicated.
+        XElement? embedded = Descend(values, attachment, UblNames.Cbc + "EmbeddedDocumentBinaryObject");
         XElement? external = Descend(values, Descend(values, attachment, UblNames.Cac + "ExternalReference"), UblNames.Cbc + "URI");
 
         var document = new AdditionalDocument
@@ -407,6 +428,21 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             values.Consume(Descend(values, block, UblNames.Cbc + "PaymentID"));
         }
 
+        foreach (XElement mandate in blocks.SelectMany(
+            block => DescendAll(values, block, UblNames.Cac + "PaymentMandate")))
+        {
+            // BT-89 and BT-91. A direct debit says which mandate authorises it and which account it takes
+            // from; neither was read here, though the model has held both since the CII side needed them.
+            payment.DirectDebit ??= new DirectDebit();
+            payment.DirectDebit.MandateReference = values.ReadIdentifier(
+                Descend(values, mandate, UblNames.Cbc + "ID"));
+            payment.DirectDebit.DebitedAccountIdentifier = values.ReadIdentifier(
+                Descend(
+                    values,
+                    Descend(values, mandate, UblNames.Cac + "PayerFinancialAccount"),
+                    UblNames.Cbc + "ID"));
+        }
+
         foreach (XElement account in blocks.SelectMany(
             block => DescendAll(values, block, UblNames.Cac + "PayeeFinancialAccount")))
         {
@@ -511,6 +547,14 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             Period = ReadPeriod(Descend(values, element, UblNames.Cac + "InvoicePeriod"), values),
         };
 
+        // BT-128, which UBL files as a document reference on the line.
+        XElement? lineDocument = Descend(values, element, UblNames.Cac + "DocumentReference");
+        if (lineDocument is not null)
+        {
+            values.Consume(Descend(values, lineDocument, UblNames.Cbc + "DocumentTypeCode"));
+            line.ObjectIdentifier = values.ReadIdentifier(Descend(values, lineDocument, UblNames.Cbc + "ID"));
+        }
+
         foreach (XElement allowance in DescendAll(values, element, UblNames.Cac + "AllowanceCharge"))
         {
             line.AllowancesAndCharges.Add(ReadAllowanceCharge(allowance, values));
@@ -519,6 +563,12 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
         XElement? price = Descend(values, element, UblNames.Cac + "Price");
         if (price is not null)
         {
+            // The discount on a price is written as an allowance, whose indicator says which it is. Reading
+            // the amounts and leaving the indicator behind kept it as extension data on the line, where UBL
+            // does not allow a cbc:ChargeIndicator at all.
+            values.Consume(
+                Descend(values, Descend(values, price, UblNames.Cac + "AllowanceCharge"), UblNames.Cbc + "ChargeIndicator"));
+
             line.Price = new LinePrice
             {
                 NetPrice = values.ReadAmount(price.Element(UblNames.Cbc + "PriceAmount"), "BT-146"),
