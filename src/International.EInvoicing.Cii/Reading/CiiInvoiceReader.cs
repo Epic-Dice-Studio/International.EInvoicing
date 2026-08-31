@@ -271,7 +271,11 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
 
     private static void ReadPaymentMeans(XElement settlement, EInvoice invoice, CiiValueReader values)
     {
-        XElement? means = In(values, settlement, CiiNames.Ram + "SpecifiedTradeSettlementPaymentMeans");
+        // Every block, not the first: one account per payment means is what the schema allows, so an invoice
+        // offering two accounts repeats the block. Reading only the first loses an account the sender meant
+        // you to be able to pay into.
+        List<XElement> blocks = AllIn(values, settlement, CiiNames.Ram + "SpecifiedTradeSettlementPaymentMeans");
+        XElement? means = blocks.FirstOrDefault();
         IdentifierField creditor = values.ReadIdentifier(In(values, settlement, CiiNames.Ram + "CreditorReferenceID"));
         TextField reference = values.ReadText(In(values, settlement, CiiNames.Ram + "PaymentReference"));
 
@@ -291,8 +295,17 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         {
             payment.MeansTypeCode = values.ReadCode(In(values, means, CiiNames.Ram + "TypeCode"));
             payment.MeansText = values.ReadText(In(values, means, CiiNames.Ram + "Information"));
+        }
 
-            XElement? account = In(values, means, CiiNames.Ram + "PayeePartyCreditorFinancialAccount");
+        foreach (XElement block in blocks)
+        {
+            if (!ReferenceEquals(block, means))
+            {
+                values.Consume(In(values, block, CiiNames.Ram + "TypeCode"));
+                values.Consume(In(values, block, CiiNames.Ram + "Information"));
+            }
+
+            XElement? account = In(values, block, CiiNames.Ram + "PayeePartyCreditorFinancialAccount");
             if (account is not null)
             {
                 XElement? iban = In(values, account, CiiNames.Ram + "IBANID");
@@ -308,7 +321,7 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
                     AccountIdentifier = accountIdentifier,
                     AccountName = values.ReadText(In(values, account, CiiNames.Ram + "AccountName")),
                     ServiceProviderIdentifier = values.ReadIdentifier(
-                        In(values, In(values, means, CiiNames.Ram + "PayeeSpecifiedCreditorFinancialInstitution"), CiiNames.Ram + "BICID")),
+                        In(values, In(values, block, CiiNames.Ram + "PayeeSpecifiedCreditorFinancialInstitution"), CiiNames.Ram + "BICID")),
                 });
             }
         }

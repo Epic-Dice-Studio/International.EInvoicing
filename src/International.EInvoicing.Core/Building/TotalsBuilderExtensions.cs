@@ -29,7 +29,7 @@ public static class TotalsBuilderExtensions
         ArgumentNullException.ThrowIfNull(builder);
 
         EInvoice invoice = builder.Build();
-        var bases = new Dictionary<(string Category, decimal Rate), decimal>();
+        var bases = new Dictionary<(string Category, decimal? Rate), decimal>();
 
         foreach (InvoiceLine line in invoice.Lines)
         {
@@ -48,14 +48,14 @@ public static class TotalsBuilderExtensions
 
         invoice.VatBreakdown.Clear();
 
-        foreach (((string category, decimal rate), decimal taxable) in bases.OrderBy(entry => entry.Key.Rate))
+        foreach (((string category, decimal? rate), decimal taxable) in bases.OrderBy(entry => entry.Key.Rate))
         {
             invoice.VatBreakdown.Add(new VatBreakdownEntry
             {
                 CategoryCode = category,
-                Rate = rate,
+                Rate = rate is { } percentage ? percentage : Field<decimal>.Unset,
                 TaxableAmount = builder.Amount(Round(taxable, decimals)),
-                TaxAmount = builder.Amount(Round(taxable * rate / 100m, decimals)),
+                TaxAmount = builder.Amount(Round(taxable * (rate ?? 0m) / 100m, decimals)),
             });
         }
 
@@ -119,13 +119,22 @@ public static class TotalsBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Groups one amount under its category and rate.
+    /// </summary>
+    /// <remarks>
+    /// The rate stays <c>null</c> where the category forbids one — <em>not subject to VAT</em> — because a
+    /// breakdown that writes zero there is rejected by <c>BR-O-06</c>, and a zero written into the key would
+    /// also merge it with a genuinely zero-rated entry, which is a different thing entirely.
+    /// </remarks>
     private static void Add(
-        Dictionary<(string Category, decimal Rate), decimal> bases,
+        Dictionary<(string Category, decimal? Rate), decimal> bases,
         string? category,
         decimal? rate,
         decimal amount)
     {
-        (string, decimal) key = (category ?? "S", rate ?? 0m);
+        string code = category ?? VatCategoryCodes.Standard;
+        (string, decimal?) key = (code, VatCategoryCodes.ForbidsRate(code) ? null : rate ?? 0m);
         bases[key] = bases.TryGetValue(key, out decimal running) ? running + amount : amount;
     }
 

@@ -383,11 +383,17 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
 
     private static PaymentInstructions? ReadPayment(XElement root, UblValueReader values, HashSet<XElement> mapped)
     {
-        XElement? means = Take(root, UblNames.Cac + "PaymentMeans", mapped);
-        if (means is null)
+        // Every block, not the first: UBL allows one account per cac:PaymentMeans, so an invoice offering two
+        // accounts repeats the whole block — which EN 16931's own examples do. Reading only the first loses
+        // an account the sender meant you to be able to pay into.
+        List<XElement> blocks = [.. TakeAll(root, UblNames.Cac + "PaymentMeans", mapped)];
+
+        if (blocks.Count == 0)
         {
             return null;
         }
+
+        XElement means = blocks[0];
 
         var payment = new PaymentInstructions
         {
@@ -395,7 +401,14 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             RemittanceInformation = values.ReadText(Descend(values, means, UblNames.Cbc + "PaymentID")),
         };
 
-        foreach (XElement account in DescendAll(values, means, UblNames.Cac + "PayeeFinancialAccount"))
+        foreach (XElement block in blocks.Skip(1))
+        {
+            values.Consume(Descend(values, block, UblNames.Cbc + "PaymentMeansCode"));
+            values.Consume(Descend(values, block, UblNames.Cbc + "PaymentID"));
+        }
+
+        foreach (XElement account in blocks.SelectMany(
+            block => DescendAll(values, block, UblNames.Cac + "PayeeFinancialAccount")))
         {
             payment.CreditTransfers.Add(new CreditTransfer
             {

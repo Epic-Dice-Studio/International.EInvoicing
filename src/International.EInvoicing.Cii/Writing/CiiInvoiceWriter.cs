@@ -407,12 +407,23 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             return;
         }
 
-        StartRam(writer, "SpecifiedTradeSettlementPaymentMeans");
-        WriteCode(writer, "TypeCode", payment.MeansTypeCode);
-        WriteText(writer, "Information", payment.MeansText);
+        if (payment.CreditTransfers.Count == 0)
+        {
+            StartRam(writer, "SpecifiedTradeSettlementPaymentMeans");
+            WriteCode(writer, "TypeCode", payment.MeansTypeCode);
+            WriteText(writer, "Information", payment.MeansText);
+            writer.WriteEndElement();
+            return;
+        }
 
+        // One account per payment means, and the block repeated — the same binding UBL uses, and the one
+        // EN 16931's own examples carry. Several accounts in one block is not a shape the schema allows.
         foreach (CreditTransfer transfer in payment.CreditTransfers)
         {
+            StartRam(writer, "SpecifiedTradeSettlementPaymentMeans");
+            WriteCode(writer, "TypeCode", payment.MeansTypeCode);
+            WriteText(writer, "Information", payment.MeansText);
+
             StartRam(writer, "PayeePartyCreditorFinancialAccount");
             WriteAccountIdentifier(writer, transfer.AccountIdentifier);
             WriteText(writer, "AccountName", transfer.AccountName);
@@ -424,9 +435,9 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
                 WriteIdentifier(writer, "BICID", transfer.ServiceProviderIdentifier);
                 writer.WriteEndElement();
             }
-        }
 
-        writer.WriteEndElement();
+            writer.WriteEndElement();
+        }
     }
 
     private static void WriteTotals(DocumentTotals totals, XmlWriter writer, string? documentCurrency)

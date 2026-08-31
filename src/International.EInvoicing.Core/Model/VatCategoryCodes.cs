@@ -62,4 +62,15 @@ public static class VatCategoryCodes
     /// </remarks>
     public static bool NeedsExemptionReason(string? code) =>
         code is Exempt or ReverseCharge or Export or IntraCommunitySupply or OutsideScope;
+
+    /// <summary>
+    /// Whether a category forbids a VAT rate altogether, rather than requiring it to be zero.
+    /// </summary>
+    /// <remarks>
+    /// The distinction is easy to miss and fatal when missed. Exempt, zero-rated, reverse-charge,
+    /// intra-community and export invoices carry a rate of <b>0</b>; <em>not subject to VAT</em> carries
+    /// <b>no rate at all</b>, and <c>BR-O-05</c>, <c>BR-O-06</c> and <c>BR-O-07</c> reject a zero written
+    /// there. A helper that always writes a rate cannot produce a valid out-of-scope invoice.
+    /// </remarks>
+    public static bool ForbidsRate(string? code) => code is OutsideScope;
 }

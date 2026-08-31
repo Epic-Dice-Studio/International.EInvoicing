@@ -383,12 +383,42 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             return;
         }
 
-        StartCac(writer, "PaymentMeans");
-        WriteCode(writer, "PaymentMeansCode", payment.MeansTypeCode);
-        WriteText(writer, "PaymentID", payment.RemittanceInformation);
+        WritePaymentMeans(writer, payment);
+
+        if (invoice.PaymentTerms.IsSet)
+        {
+            StartCac(writer, "PaymentTerms");
+            WriteText(writer, "Note", invoice.PaymentTerms);
+            writer.WriteEndElement();
+        }
+    }
+
+    /// <summary>
+    /// Writes BG-16, once per account.
+    /// </summary>
+    /// <remarks>
+    /// UBL allows one <c>cac:PayeeFinancialAccount</c> per <c>cac:PaymentMeans</c>, so an invoice offering
+    /// two accounts repeats the whole block — which is what EN 16931's own examples do
+    /// (<c>ubl-tc434-example1</c> and <c>guide-example1</c> both carry two of each). Writing two accounts
+    /// into one block produces a document no schema accepts and no Schematron rule complains about.
+    /// </remarks>
+    private static void WritePaymentMeans(XmlWriter writer, PaymentInstructions payment)
+    {
+        if (payment.CreditTransfers.Count == 0)
+        {
+            StartCac(writer, "PaymentMeans");
+            WriteCode(writer, "PaymentMeansCode", payment.MeansTypeCode);
+            WriteText(writer, "PaymentID", payment.RemittanceInformation);
+            writer.WriteEndElement();
+            return;
+        }
 
         foreach (CreditTransfer transfer in payment.CreditTransfers)
         {
+            StartCac(writer, "PaymentMeans");
+            WriteCode(writer, "PaymentMeansCode", payment.MeansTypeCode);
+            WriteText(writer, "PaymentID", payment.RemittanceInformation);
+
             StartCac(writer, "PayeeFinancialAccount");
             WriteIdentifier(writer, "ID", transfer.AccountIdentifier);
             WriteText(writer, "Name", transfer.AccountName);
@@ -401,14 +431,6 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             }
 
             writer.WriteEndElement();
-        }
-
-        writer.WriteEndElement();
-
-        if (invoice.PaymentTerms.IsSet)
-        {
-            StartCac(writer, "PaymentTerms");
-            WriteText(writer, "Note", invoice.PaymentTerms);
             writer.WriteEndElement();
         }
     }

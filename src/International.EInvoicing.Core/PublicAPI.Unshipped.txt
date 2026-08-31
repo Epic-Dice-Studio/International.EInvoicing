@@ -1,3 +1,4 @@
+#nullable enable
 const International.EInvoicing.Model.InvoiceTypeCodes.CommercialInvoice = "380" -> string!
 const International.EInvoicing.Model.InvoiceTypeCodes.CorrectedInvoice = "384" -> string!
 const International.EInvoicing.Model.InvoiceTypeCodes.CreditNote = "381" -> string!
@@ -55,6 +56,7 @@ International.EInvoicing.Building.InvoiceLineBuilder.WithNetPrice(decimal price,
 International.EInvoicing.Building.InvoiceLineBuilder.WithNote(string! note) -> International.EInvoicing.Building.InvoiceLineBuilder!
 International.EInvoicing.Building.InvoiceLineBuilder.WithQuantity(decimal quantity, string! unitCode) -> International.EInvoicing.Building.InvoiceLineBuilder!
 International.EInvoicing.Building.InvoiceLineBuilder.WithVat(string! categoryCode, decimal rate) -> International.EInvoicing.Building.InvoiceLineBuilder!
+International.EInvoicing.Building.InvoiceLineBuilder.WithVat(string! categoryCode) -> International.EInvoicing.Building.InvoiceLineBuilder!
 International.EInvoicing.Building.PartyBuilder
 International.EInvoicing.Building.PartyBuilder.Extend(System.Action<International.EInvoicing.Model.Party!>! configure) -> International.EInvoicing.Building.PartyBuilder!
 International.EInvoicing.Building.PartyBuilder.Named(string! name) -> International.EInvoicing.Building.PartyBuilder!
@@ -1104,6 +1106,7 @@ static International.EInvoicing.Model.ItemClassificationSchemeCodes.IsKnown(stri
 static International.EInvoicing.Model.PaymentMeansCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.PaymentMeansCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.VatCategoryCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.VatCategoryCodes.ForbidsRate(string? code) -> bool
 static International.EInvoicing.Model.VatCategoryCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.VatCategoryCodes.NeedsExemptionReason(string? code) -> bool
 static International.EInvoicing.Model.VatExemptionReasonCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!

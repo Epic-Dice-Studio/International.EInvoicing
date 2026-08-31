@@ -61,6 +61,20 @@ public sealed class InvoiceLineBuilder
         return this;
     }
 
+    /// <summary>
+    /// BT-151 without BT-152 — for a category that forbids a rate rather than requiring a zero.
+    /// </summary>
+    /// <remarks>
+    /// <em>Not subject to VAT</em> is the one: <c>BR-O-05</c> rejects a line that carries a rate at all, so a
+    /// zero will not do. See <see cref="VatCategoryCodes.ForbidsRate"/>.
+    /// </remarks>
+    public InvoiceLineBuilder WithVat(string categoryCode)
+    {
+        _line.VatCategoryCode = categoryCode;
+        _line.VatRate = Field<decimal>.Unset;
+        return this;
+    }
+
     /// <summary>BG-31 — what is being invoiced.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="configure"/> is <c>null</c>.</exception>
     public InvoiceLineBuilder WithItem(Action<Item> configure)

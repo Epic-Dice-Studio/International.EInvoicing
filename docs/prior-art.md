@@ -10,6 +10,37 @@ below.** Record what you find here, as a row, whether or not it turns into work.
 For what those projects *do* rather than what breaks in them — and for the gaps that comparison opens — see
 [how this library compares](comparison.md).
 
+There is a third thing to mine, and it is the cheapest of the three: **their test corpora**. A mature
+library's `test/resources` folder is a list of the documents that broke it — sub-invoice lines, gross prices,
+insurance without VAT, two bank accounts on one invoice — and reading the file names takes minutes. What that
+found, on 31 August 2026, is in *What their corpora exercise* below.
+
+## What their corpora exercise, and what it found here
+
+Read on **31 August 2026** from `demodata/`, `documentation/.../Samples/` and `src/test/resources/` in
+ZUGFeRD-csharp, mustangproject and Securibox.FacturX. Their sample sets are business cases, not synthetic
+XML: partial invoices, travel expenses, rent, public transport, a physiotherapist's exempt invoice, insurance
+billed with insurance tax rather than VAT, gross prices, foreign currency, a negative amount due, SEPA
+pre-notification, two bank accounts, sub-invoice lines, and a shelf of malformed PDFs.
+
+Two of those turned into defects here within the hour, and both are the kind no rule set catches:
+
+| What their corpus exercised | What it found here | Outcome |
+|---|---|---|
+| Every VAT category, not only standard rate (`Physiotherapeut`, `Innergemeinschaftliche_Lieferungen`, `Haftpflichtversicherung`, `valid_with_VAT_O`) | **Every invoice this library wrote in its own tests was standard-rated** — one category out of nine. Writing one per category found that *not subject to VAT* could not be produced at all: EN 16931 forbids a rate there rather than requiring zero, and both `WithVat` and the computed breakdown always wrote one. | Fixed: `VatCategoryCodes.ForbidsRate`, a rate-less `WithVat(category)`, and a breakdown that leaves the rate unset. Nine categories are now written and judged in both syntaxes. |
+| `multiple-payment-means.cii.xml` — two accounts on one invoice | Both writers put two accounts inside **one** payment-means block, and both readers took only the first. EN 16931's own examples (`ubl-tc434-example1`, `guide-example1`) repeat the whole block, one account each. A document no schema accepts, that no Schematron rule complains about — and an account silently dropped on the way in. | Fixed in both writers and both readers, pinned by `PaymentMeansTests` including the official example. |
+
+The rest of what their corpora carry, checked and **not** yet ours:
+
+| Case | State here |
+|---|---|
+| **Sub-invoice lines** (`SubInvoiceLine`, EXTENDED) | Not modelled. Factur-X EXTENDED nests lines; EN 16931 does not. On the roadmap. |
+| **Factur-X `XRECHNUNG` and `EREPORTING` profiles** | Not registered — five profiles are, these two are not. Both appear in the ZUGFeRD sample set. |
+| **PDF containers that fight back** (password-protected, no embedded file, too small to be a PDF, XMP stored as attributes, XMP that does not parse) | The hostile corpus covers XML, not PDFs. The attachment reader has never been pointed at any of these. |
+| **ZUGFeRD 1.x documents** | Not read. On the roadmap, low. |
+| **Order-X** | Not carried. On the roadmap. |
+| Gross prices, foreign currency, negative amount due, SEPA pre-notification, partial invoices, prepaid amounts | All expressible today; none pinned by a test of ours. Worth a corpus of our own rather than a rule change. |
+
 ## Where to look
 
 | Ecosystem | Project | Worth mining for |

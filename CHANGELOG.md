@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **An invoice that is not subject to VAT could not be written at all.** EN 16931 forbids a VAT rate on
+  category `O` rather than requiring zero — `BR-O-05`, `BR-O-06`, `BR-O-07` — and both `WithVat` and the
+  computed breakdown always wrote one. `VatCategoryCodes.ForbidsRate` names the distinction, `WithVat(category)`
+  writes a category without a rate, and the breakdown leaves it unset. Found by writing one invoice per VAT
+  category and putting each in front of the official rules: **every invoice this library wrote in its own
+  tests until now was standard-rated**, one category out of nine.
+- **Two bank accounts on one invoice produced a document no schema accepts.** Both writers put every account
+  inside a single payment-means block; UBL and CII each allow one account per block and repeat the block,
+  which is what EN 16931's own examples do. Both readers, symmetrically, took only the first block and
+  silently dropped the rest. Fixed in both directions, and pinned against the official example that carries
+  two. No Schematron rule catches either half of this, which is the argument for the schema validation now on
+  the roadmap.
 - **The tax data document is Peppol's, not Slovakia's** — so it moved to `International.EInvoicing.Peppol`,
   and **ViDA came with it**. OpenPeppol publishes one per jurisdiction, and Slovakia's rule set differs from
   the EU's ViDA one by a single assertion out of eighty-eight, a namespace and an identifier:
