@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Singapore</PackageId>
+    <Description>
+      What Singaporean electronic invoicing adds on top of the norms: the SG Peppol PINT profile InvoiceNow
+      exchanges, its business process, and GST rather than VAT.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;singapore;invoicenow;peppol;pint;gst;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

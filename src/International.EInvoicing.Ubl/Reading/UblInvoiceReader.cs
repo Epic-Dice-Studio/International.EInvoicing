@@ -96,6 +96,7 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             ProfileIdentifier.FromDocument(Take(root, UblNames.Cbc + "CustomizationID", mapped)?.Value);
         invoice.BusinessProcessType = values.ReadIdentifier(Take(root, UblNames.Cbc + "ProfileID", mapped));
         invoice.Number = values.ReadIdentifier(Take(root, UblNames.Cbc + "ID", mapped));
+        invoice.DocumentUuid = values.ReadIdentifier(Take(root, UblNames.Cbc + "UUID", mapped));
         invoice.IssueDate = values.ReadDate(Take(root, UblNames.Cbc + "IssueDate", mapped), "BT-2");
         invoice.DueDate = values.ReadDate(Take(root, UblNames.Cbc + "DueDate", mapped), "BT-9");
         invoice.TypeCode = values.ReadCode(Take(root, shape.TypeCode, mapped));

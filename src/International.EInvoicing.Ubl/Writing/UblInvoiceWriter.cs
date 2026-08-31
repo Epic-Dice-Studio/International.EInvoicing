@@ -116,6 +116,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
         WriteIdentifier(writer, "ProfileID", invoice.BusinessProcessType);
         WriteIdentifier(writer, "ID", invoice.Number);
+        WriteIdentifier(writer, "UUID", invoice.DocumentUuid);
         WriteDate(writer, "IssueDate", invoice.IssueDate);
         WriteDate(writer, "DueDate", invoice.DueDate);
         WriteCode(writer, shape.TypeCode.LocalName, invoice.TypeCode);

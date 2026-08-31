@@ -23,6 +23,16 @@ public sealed class EInvoice : InvoiceNode
     /// <summary>BT-3 — invoice type code (UNTDID 1001). It is what tells an invoice from a credit note.</summary>
     public CodeField TypeCode { get; set; }
 
+    /// <summary>
+    /// A universally unique identifier for the document, when one is required.
+    /// </summary>
+    /// <remarks>
+    /// EN 16931 has no such term — BT-1, the invoice number, is what identifies an invoice. Some
+    /// jurisdictions want a UUID beside it: Singapore's <c>BR-108-GST-SG</c> is fatal without one. It is
+    /// carried here rather than in extension data because it is a document identifier, not an extension.
+    /// </remarks>
+    public IdentifierField DocumentUuid { get; set; }
+
     /// <summary>BT-5 — the currency the invoice is expressed in (ISO 4217).</summary>
     public CodeField CurrencyCode { get; set; }
 

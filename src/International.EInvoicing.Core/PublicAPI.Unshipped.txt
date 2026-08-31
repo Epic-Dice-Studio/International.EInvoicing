@@ -301,6 +301,8 @@ International.EInvoicing.Model.EInvoice.DespatchAdviceReference.get -> Internati
 International.EInvoicing.Model.EInvoice.DespatchAdviceReference.set -> void
 International.EInvoicing.Model.EInvoice.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Diagnostics.Diagnostic!>!
 International.EInvoicing.Model.EInvoice.Diagnostics.set -> void
+International.EInvoicing.Model.EInvoice.DocumentUuid.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.EInvoice.DocumentUuid.set -> void
 International.EInvoicing.Model.EInvoice.DueDate.get -> International.EInvoicing.Values.DateField
 International.EInvoicing.Model.EInvoice.DueDate.set -> void
 International.EInvoicing.Model.EInvoice.EInvoice() -> void

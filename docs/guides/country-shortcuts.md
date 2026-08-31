@@ -20,6 +20,7 @@ Three types hold that knowledge for you:
 | `CroatianEInvoicing` | `International.EInvoicing.Countries.Croatia` |
 | `AustralianEInvoicing` | `International.EInvoicing.Countries.Australia` |
 | `NewZealandEInvoicing` | `International.EInvoicing.Countries.NewZealand` |
+| `SingaporeEInvoicing` | `International.EInvoicing.Countries.Singapore` |
 
 None of them is a wall. Each exposes `.Library`, the fully assembled `EInvoicing` underneath, so anything the
 shortcut does not cover is one property away.
@@ -274,9 +275,34 @@ what differs is the identifier. The **ABN** weights all eleven digits, so a tran
 The **NZBN** is a GS1 location number, so Peppol routes it under the GLN scheme `0088` rather than one of New
 Zealand's own.
 
-**Their rules do not run.** OpenPEPPOL publishes PINT's artefacts as pre-compiled XSLT and this library's
-engine executes Schematron, so `Validate` reports the jurisdiction rules as *unchecked* rather than passed —
-which is the honest answer, and the one the [PINT page](../standards/peppol-pint.md) explains.
+**Their rules do run**, once fetched — `build/fetch-specs.sh pint`, then
+`AddPeppolPintRulesFrom("specs/peppol/pint/schematron")`. OpenPEPPOL publishes them as pre-compiled XSLT
+rather than source Schematron, which this library reads as data; the
+[PINT page](../standards/peppol-pint.md) explains how, and why that is not the same as rewriting them.
+
+Running them over our own output is what found that the tax scheme was hard-coded to `VAT` — Australia and
+New Zealand tax in **GST**, and four fatal rules say so. The shortcuts now set it.
+
+## Singapore, and three fatal surprises
+
+Singapore's InvoiceNow runs on PINT too, and its own rules are unusually opinionated:
+
+```csharp
+SingaporeEInvoicing singapore = SingaporeEInvoicing.Create();
+
+singapore.Invoice()
+    .Extend(document => document.DocumentUuid = Guid.NewGuid().ToString())   // BR-108-GST-SG
+    .From(seller => seller.Named("Supplier Pte Ltd").WithLegalRegistration("201912345A"))  // BR-112-GST-SG
+    .AddLine(line => line.WithItem("Consulting").WithNetAmount(1000m)
+        .WithVat(SgTaxCategory.StandardRated, 9m));                          // BR-CL-17-GST-SG
+```
+
+`S` — the tax category code every European example uses — is **rejected** in Singapore; the standard-rated
+code is `SR`. A document UUID is required, which EN 16931 has no term for. And the supplier needs a legal
+entity registration, not just a name and a tax number.
+
+Singapore has no `Describe`, deliberately: its rules name no identifier scheme, and this library does not
+guess identifiers.
 
 ## Wiring one into a container
 
@@ -291,6 +317,6 @@ builder.Services.AddSingleton(provider =>
 
 ## Somewhere else?
 
-Only these eleven countries have a shortcut today. Every other country is reachable through the general
+Only these twelve countries have a shortcut today. Every other country is reachable through the general
 library — a profile, a rule set fetched from its publisher, and the identifiers it needs. What is planned,
 country by country and in what order, is in the [roadmap](../roadmap.md).

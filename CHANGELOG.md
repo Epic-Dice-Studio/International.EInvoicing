@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Singapore**, the first country validated against a jurisdiction's own PINT rules from the start — and
+  they had three fatal things to say that EN 16931 never hints at. `S`, the tax category code every European
+  example uses, is rejected: Singapore's is `SR`, and `SgTaxCategory` carries the list read out of the rule
+  itself. A document UUID is required, which EN 16931 has no term for, so `EInvoice.DocumentUuid` now carries
+  one. And the supplier needs a legal entity registration, not just a name and a tax number.
+- The Singapore package deliberately has no `Describe`: its rules name no identifier scheme, and this library
+  does not guess identifiers.
 - **The Peppol PINT rules now run.** This was the largest open item and it looked blocked: OpenPEPPOL
   publishes PINT's artefacts as pre-compiled XSLT 2.0, which neither this library's Schematron engine nor
   .NET's own XSLT processor can execute. The way through was that a compiled Schematron still contains every

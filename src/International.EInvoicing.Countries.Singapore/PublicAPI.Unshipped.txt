@@ -1,0 +1,35 @@
+#nullable enable
+const International.EInvoicing.Countries.Singapore.SgTaxCategory.DeemedSupply = "DS" -> string!
+const International.EInvoicing.Countries.Singapore.SgTaxCategory.Exempt33 = "ES33" -> string!
+const International.EInvoicing.Countries.Singapore.SgTaxCategory.NotApplicable = "NA" -> string!
+const International.EInvoicing.Countries.Singapore.SgTaxCategory.OutOfScope = "OS" -> string!
+const International.EInvoicing.Countries.Singapore.SgTaxCategory.StandardRated = "SR" -> string!
+const International.EInvoicing.Countries.Singapore.SgTaxCategory.ZeroRated = "ZR" -> string!
+International.EInvoicing.Countries.Singapore.SgProfiles
+International.EInvoicing.Countries.Singapore.SgTaxCategory
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.CreditNote(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
+International.EInvoicing.Countries.Singapore.SingaporeServiceCollectionExtensions
+static International.EInvoicing.Countries.Singapore.SgProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Singapore.SgProfiles.PintBilling.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Singapore.SgTaxCategory.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Countries.Singapore.SgTaxCategory.IsAllowed(string? code) -> bool
+static International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Create() -> International.EInvoicing.Countries.Singapore.SingaporeEInvoicing!
+static International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Singapore.SingaporeEInvoicing!
+static International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Singapore.SingaporeEInvoicing!
+static International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Singapore.SingaporeEInvoicing!
+static International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Singapore.SingaporeEInvoicing!
+static International.EInvoicing.Countries.Singapore.SingaporeEInvoicing.WhyThereIsNoDescribe.get -> string!
+static International.EInvoicing.Countries.Singapore.SingaporeServiceCollectionExtensions.AddSingapore(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
