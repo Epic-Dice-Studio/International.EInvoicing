@@ -53,13 +53,13 @@
       "title": "Profiles",
       "entries": [
         {
-          "name": "XSD schema validation (UBL 2.1)",
-          "version": "UBL 2.1",
+          "name": "XSD schema validation (UBL 2.1, CII D22B)",
+          "version": "UBL 2.1 · CII D22B",
           "package": "International.EInvoicing.Validation.Xsd",
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "The OASIS schemas, embedded and offline, as a rule set like any other. It judges what no business rule looks at — element order and cardinality are normative in UBL — and it catches the shape this library itself shipped: two bank accounts inside one cac:PaymentMeans, which every rule set accepted. CII is not covered yet: the UN/CEFACT D22B package is published as an archive this repository does not carry."
+          "notes": "The OASIS and UN/CEFACT schemas, embedded and offline, as rule sets like any other. They judge what no business rule looks at — element order and cardinality are normative in both syntaxes — and they earned their keep twice: they caught the shape this library shipped (two bank accounts in one cac:PaymentMeans) and then, on the official corpora, fifteen EN 16931 terms that were read by nothing and written by nothing. Both corpora now round-trip with their shape intact and nothing unmapped."
         },
         {
           "name": "EN 16931 (core invoice model)",

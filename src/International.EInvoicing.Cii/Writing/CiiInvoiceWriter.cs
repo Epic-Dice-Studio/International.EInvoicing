@@ -218,15 +218,6 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        // BT-128, which CII files as a referenced document on the line, typed 130 — the object the line is
-        // about, and the term a utility invoice uses to say which meter it is billing.
-        if (line.ObjectIdentifier.IsSet)
-        {
-            StartRam(writer, "AdditionalReferencedDocument");
-            WriteIdentifier(writer, "IssuerAssignedID", line.ObjectIdentifier);
-            WriteCode(writer, "TypeCode", "130");
-            writer.WriteEndElement();
-        }
 
         if (line.Price is { } price)
         {
@@ -283,6 +274,22 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         WriteAmount(writer, "LineTotalAmount", line.NetAmount);
         writer.WriteEndElement();
 
+        // BT-128 — the object the line is about, typed 130, which CII files with the line's settlement. Its
+        // scheme is a sibling element here, where UBL makes it an attribute.
+        if (line.ObjectIdentifier.IsSet)
+        {
+            StartRam(writer, "AdditionalReferencedDocument");
+            WriteIdentifier(writer, "IssuerAssignedID", line.ObjectIdentifier with { SchemeId = null });
+            Ram(writer, "TypeCode", "130");
+
+            if (!string.IsNullOrEmpty(line.ObjectIdentifier.SchemeId))
+            {
+                Ram(writer, "ReferenceTypeCode", line.ObjectIdentifier.SchemeId);
+            }
+
+            writer.WriteEndElement();
+        }
+
         if (line.BuyerAccountingReference.IsSet)
         {
             StartRam(writer, "ReceivableSpecifiedTradeAccountingAccount");
@@ -300,8 +307,11 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         WriteParty(writer, "SellerTradeParty", invoice.Seller);
         WriteParty(writer, "BuyerTradeParty", invoice.Buyer);
         WriteParty(writer, "SellerTaxRepresentativeTradeParty", invoice.SellerTaxRepresentative);
-        WriteReferencedDocument(writer, "BuyerOrderReferencedDocument", invoice.PurchaseOrderReference);
+        // BT-14 before BT-13: the seller's order reference comes first in the schema's sequence, whatever the
+        // numbering suggests. Written the other way round, a document carrying both is refused — and no
+        // business rule looks at the order.
         WriteReferencedDocument(writer, "SellerOrderReferencedDocument", invoice.SalesOrderReference);
+        WriteReferencedDocument(writer, "BuyerOrderReferencedDocument", invoice.PurchaseOrderReference);
         WriteReferencedDocument(writer, "ContractReferencedDocument", invoice.ContractReference);
 
         foreach (AdditionalDocument document in invoice.AdditionalDocuments)
@@ -309,10 +319,32 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             WriteAdditionalDocument(document, writer);
         }
 
+        // BT-18 — what this invoice is about, which CII files as a referenced document typed 130, with the
+        // identifier's scheme in a sibling element where UBL makes it an attribute.
+        if (invoice.InvoicedObjectIdentifier.IsSet)
+        {
+            StartRam(writer, "AdditionalReferencedDocument");
+            WriteIdentifier(writer, "IssuerAssignedID", invoice.InvoicedObjectIdentifier with { SchemeId = null });
+            Ram(writer, "TypeCode", "130");
+
+            if (!string.IsNullOrEmpty(invoice.InvoicedObjectIdentifier.SchemeId))
+            {
+                Ram(writer, "ReferenceTypeCode", invoice.InvoicedObjectIdentifier.SchemeId);
+            }
+
+            writer.WriteEndElement();
+        }
+
         if (invoice.ProjectReference.IsSet)
         {
             StartRam(writer, "SpecifiedProcuringProject");
             WriteIdentifier(writer, "ID", invoice.ProjectReference);
+
+            // D22B makes the name mandatory here while EN 16931 defines only the identifier (BT-11), so a
+            // document with a project reference and no name is refused by the schema and by no rule. The
+            // identifier stands in: it says the same thing, and inventing a description would say more than
+            // the invoice does.
+            Ram(writer, "Name", invoice.ProjectReference.Value ?? invoice.ProjectReference.Raw ?? string.Empty);
             writer.WriteEndElement();
         }
 
@@ -328,7 +360,11 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             if (delivery.Name.IsSet || delivery.LocationIdentifier.IsSet || delivery.Address is not null)
             {
                 StartRam(writer, "ShipToTradeParty");
-                WriteIdentifier(writer, "ID", delivery.LocationIdentifier);
+                // BT-71 keeps the shape it arrived in: a bare ID, or a GlobalID when it names its scheme.
+                WriteIdentifier(
+                    writer,
+                    delivery.LocationIdentifier.SchemeId is null ? "ID" : "GlobalID",
+                    delivery.LocationIdentifier);
                 WriteText(writer, "Name", delivery.Name);
                 WriteAddress(writer, "PostalTradeAddress", delivery.Address);
                 writer.WriteEndElement();
@@ -362,6 +398,8 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         WriteParty(writer, "PayeeTradeParty", invoice.Payee);
         WritePaymentMeans(invoice.Payment, writer);
 
+        bool first = true;
+
         foreach (VatBreakdownEntry entry in invoice.VatBreakdown)
         {
             StartRam(writer, "ApplicableTradeTax");
@@ -371,6 +409,16 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             WriteAmount(writer, "BasisAmount", entry.TaxableAmount);
             WriteCode(writer, "CategoryCode", entry.CategoryCode);
             WriteCode(writer, "ExemptionReasonCode", entry.ExemptionReasonCode);
+
+            // BT-7 lives inside the breakdown in CII, and before the rate: the schema puts TaxPointDate ahead
+            // of RateApplicablePercent, whichever order the two are read in. One date for the document, so it
+            // goes on the first entry — which is where the reader looks for it.
+            if (first)
+            {
+                WriteDate(writer, "TaxPointDate", invoice.TaxPointDate, child: "DateString");
+                first = false;
+            }
+
             WriteDecimal(writer, "RateApplicablePercent", entry.Rate);
             writer.WriteEndElement();
         }
@@ -398,7 +446,11 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        WriteTotals(invoice.Totals, writer, invoice.CurrencyCode.Value ?? invoice.CurrencyCode.Raw);
+        WriteTotals(
+            invoice.Totals,
+            writer,
+            invoice.CurrencyCode.Value ?? invoice.CurrencyCode.Raw,
+            invoice.TaxAccountingCurrencyCode.Value);
 
         foreach (DocumentReference preceding in invoice.PrecedingInvoices)
         {
@@ -473,7 +525,11 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         }
     }
 
-    private static void WriteTotals(DocumentTotals totals, XmlWriter writer, string? documentCurrency)
+    private static void WriteTotals(
+        DocumentTotals totals,
+        XmlWriter writer,
+        string? documentCurrency,
+        string? accountingCurrency)
     {
         StartRam(writer, "SpecifiedTradeSettlementHeaderMonetarySummation");
         WriteAmount(writer, "LineTotalAmount", totals.LineTotalAmount);
@@ -481,6 +537,16 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         WriteAmount(writer, "AllowanceTotalAmount", totals.AllowanceTotalAmount);
         WriteAmount(writer, "TaxBasisTotalAmount", totals.TaxExclusiveAmount);
         WriteAmount(writer, "TaxTotalAmount", totals.TaxAmount, withCurrency: true, documentCurrency);
+
+        // BT-111, the same tax in the currency the seller accounts in — the second amount, with its own
+        // currency, which is exactly why this element is the one that carries the attribute at all.
+        WriteAmount(
+            writer,
+            "TaxTotalAmount",
+            totals.TaxAmountInAccountingCurrency,
+            withCurrency: true,
+            accountingCurrency ?? documentCurrency);
+
         WriteAmount(writer, "RoundingAmount", totals.RoundingAmount);
         WriteAmount(writer, "GrandTotalAmount", totals.TaxInclusiveAmount);
         WriteAmount(writer, "TotalPrepaidAmount", totals.PrepaidAmount);
@@ -516,7 +582,14 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         WriteIdentifier(writer, "IssuerAssignedID", document.Identifier);
         WriteText(writer, "URIID", document.ExternalLocation);
 
-        // The CII type code of a supporting document has no business term, so it travels as extension data.
+        // 916 — "a supporting document", which the schema requires here and no business term carries. What
+        // the source said instead, when it said something else, travels as extension data and is written
+        // here rather than at the end, because this is where the schema allows it.
+        if (!document.Extensions.Any(extension => extension.LocalName == "TypeCode"))
+        {
+            Ram(writer, "TypeCode", "916");
+        }
+
         WriteExtensions(document.Extensions, writer);
         WriteText(writer, "Name", document.Description);
 
@@ -828,7 +901,8 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         string localName,
         DateField field,
         string prefix = CiiNames.UdtPrefix,
-        string? namespaceName = null)
+        string? namespaceName = null,
+        string child = "DateTimeString")
     {
         if (!field.IsSet)
         {
@@ -836,7 +910,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         StartRam(writer, localName);
-        writer.WriteStartElement(prefix, "DateTimeString", namespaceName ?? CiiNames.Udt.NamespaceName);
+        writer.WriteStartElement(prefix, child, namespaceName ?? CiiNames.Udt.NamespaceName);
         writer.WriteAttributeString("format", XmlCharacters.Sanitize(field.FormatCode ?? DateField.FormatCcyyMmDd));
         writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value?.ToString("yyyyMMdd", CultureInfo.InvariantCulture) ?? string.Empty));
         writer.WriteEndElement();

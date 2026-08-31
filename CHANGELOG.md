@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The CII schemas, and the eight terms that half lost.** `AddCiiSchema()` puts the UN/CEFACT D22B schemas
+  — embedded, offline — beside the UBL ones, and running the official CII corpus through a read-then-write
+  found the same disease as on the UBL side: seven of fifteen examples came back in a shape the schema
+  refuses, each because a term was unmapped. **BT-7** was read only at document level while CII files it
+  inside the VAT breakdown, and as a `DateString` rather than a `DateTimeString`. **BT-18** was read as an
+  attachment instead of the object the invoice is about. **BT-71** was lost when the delivery location was
+  identified by GLN. **BT-111**, **BT-128** and its scheme, the basis quantity stated on both prices, and the
+  tax scheme on a document-level allowance — all now read and written.
+- **Two shape defects of our own on the CII side**: `SellerOrderReferencedDocument` was written after
+  `BuyerOrderReferencedDocument` where the schema declares the reverse, and `SpecifiedProcuringProject` was
+  written without the name D22B requires — so any invoice carrying BT-11 was refused by a schema and by no
+  rule.
 - **Seven EN 16931 terms the UBL side lost, in both directions.** BT-15 and BT-16 (receipt and despatch
   advice references), BT-17 (tender or lot), BT-89 and BT-91 (the direct debit's mandate and debited
   account), BT-111 (the tax in the accounting currency) and BT-128 (the line's object identifier) were read

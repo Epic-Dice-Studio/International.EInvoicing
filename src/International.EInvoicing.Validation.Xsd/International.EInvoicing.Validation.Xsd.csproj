@@ -4,11 +4,12 @@
     <IsPackable>true</IsPackable>
     <PackageId>International.EInvoicing.Validation.Xsd</PackageId>
     <Description>
-      Schema validation for electronic invoices: the OASIS UBL 2.1 schemas, embedded and ready to run
-      offline. A document can satisfy every business rule and still be a shape no receiver can parse —
-      element order and cardinality are the schema's business, and no Schematron rule looks at them.
+      Schema validation for electronic invoices: the OASIS UBL 2.1 and UN/CEFACT CII D22B schemas, embedded
+      and ready to run offline. A document can satisfy every business rule and still be a shape no receiver
+      can parse — element order and cardinality are the schema's business, and no Schematron rule looks at
+      them.
     </Description>
-    <PackageTags>e-invoicing;einvoice;validation;xsd;schema;ubl;invoice</PackageTags>
+    <PackageTags>e-invoicing;einvoice;validation;xsd;schema;ubl;cii;invoice</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +20,11 @@
   <ItemGroup>
     <EmbeddedResource Include="../../specs/ubl-2.1/xsd/maindoc/*.xsd" LogicalName="ubl/%(Filename)%(Extension)" />
     <EmbeddedResource Include="../../specs/ubl-2.1/xsd/common/*.xsd" LogicalName="ubl/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Redistributed under UN/CEFACT's terms, which allow it. Element order is normative in CII as well. -->
+  <ItemGroup>
+    <EmbeddedResource Include="../../specs/cii-d22b/xsd/*.xsd" LogicalName="cii/%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

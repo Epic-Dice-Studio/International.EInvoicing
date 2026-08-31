@@ -166,13 +166,31 @@ fetch_ubl_schemas() {
     done
 }
 
+# The UN/CEFACT CII D22B schemas. UNECE publishes them as an archive; phax/ph-cii carries the same files
+# unpacked, which is what makes them fetchable one by one. Free to use and redistribute, per UN/CEFACT.
+fetch_cii_schemas() {
+    local base="https://raw.githubusercontent.com/phax/ph-cii/master/ph-cii-d22b/src/main/resources/external/schemas/d22b/cii"
+    local target="$SPECS_DIR/cii-d22b/xsd"
+    local listing="$WORK_DIR/ph-cii.json"
+    local path name
+
+    log "fetching UN/CEFACT CII D22B schemas"
+    mkdir -p "$target"
+
+    curl -fsS "https://api.github.com/repos/phax/ph-cii/git/trees/HEAD?recursive=1" -o "$listing"
+
+    while read -r path; do
+        name="$(basename "$path")"
+        curl -fsS "$base/$name" -o "$target/$name"
+    done < <(grep -o '"path": "[^"]*/d22b/cii/[^"]*\.xsd"' "$listing" | cut -d'"' -f4)
+}
+
 fetch_manual() {
     cat >&2 <<'MANUAL'
 
 Redistributable, but published as archives rather than repositories — download and unpack them yourself,
 then commit them:
 
-  UN/CEFACT CII D22B       https://unece.org/trade/uncefact/xml-schemas           -> specs/cii-d22b/
   UN/CEFACT CDAR           https://unece.org/trade/uncefact/xml-schemas           -> specs/cdar/
   Factur-X schemas/samples https://fnfe-mpe.org                                   -> specs/facturx/
 
@@ -194,8 +212,9 @@ main() {
         peppol)    fetch_peppol ;;
         xrechnung) fetch_xrechnung ;;
         ubl)       fetch_ubl_schemas ;;
+        cii)       fetch_cii_schemas ;;
         france)    fetch_france ;;
-        all)       fetch_en16931; fetch_peppol; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_manual ;;
+        all)       fetch_en16931; fetch_peppol; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_cii_schemas; fetch_manual ;;
         *)         warn "unknown target '$target' (en16931 | peppol | pint | national | xrechnung | france | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"

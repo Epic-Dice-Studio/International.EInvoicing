@@ -36,6 +36,22 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
         return true;
     }
 
+    /// <summary>
+    /// Un-marks an element, so it travels as extension data after all.
+    /// </summary>
+    /// <remarks>
+    /// Reading sometimes means looking at a value to decide what a thing is, and then deciding the model has
+    /// no place for it. Looking is not keeping: an element the writer does not state itself has to go back
+    /// where it came from, or it is lost.
+    /// </remarks>
+    public void Release(XElement? element)
+    {
+        if (element is not null)
+        {
+            mapped.Remove(element);
+        }
+    }
+
     public TextField ReadText(XElement? element) =>
         Consume(element)
             ? new TextField(element.Value, Attribute(element, "languageID"), Source(element))
@@ -130,8 +146,13 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
             return DateField.Unset;
         }
 
+        // Most dates in CII are a DateTimeString; the tax point date inside the breakdown is a DateString,
+        // which is the same value in the same format and a different element name. Reading only the first
+        // meant BT-7 arrived unset and left as extension data.
         XElement? element = Child(parent, CiiNames.Udt + "DateTimeString")
-            ?? Child(parent, CiiNames.Qdt + "DateTimeString");
+            ?? Child(parent, CiiNames.Qdt + "DateTimeString")
+            ?? Child(parent, CiiNames.Udt + "DateString")
+            ?? Child(parent, CiiNames.Qdt + "DateString");
         if (!Consume(element))
         {
             return DateField.Unset;

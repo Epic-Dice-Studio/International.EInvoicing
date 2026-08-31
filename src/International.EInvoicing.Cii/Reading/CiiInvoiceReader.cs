@@ -178,12 +178,37 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         invoice.ProjectReference = values.ReadIdentifier(
             In(values, In(values, agreement, CiiNames.Ram + "SpecifiedProcuringProject"), CiiNames.Ram + "ID"));
 
+        // BT-11 is an identifier here and the project's name travels beside it; the model holds the
+        // identifier, and the name has to be marked as read or it comes back where nothing may sit.
+        values.Consume(
+            In(values, In(values, agreement, CiiNames.Ram + "SpecifiedProcuringProject"), CiiNames.Ram + "Name"));
+
         foreach (XElement document in AllIn(values, agreement, CiiNames.Ram + "AdditionalReferencedDocument"))
         {
             if (Limits.Exceeded(invoice.AdditionalDocuments.Count, values.Limits.MaxAttachmentCount))
             {
                 values.Diagnostics.Add(Limits.TooMany(values.Limits.MaxAttachmentCount, "attached documents"));
                 break;
+            }
+
+            // A referenced document typed 130 is BT-18, the object this invoice is about, not a supporting
+            // document. Reading every one of them as an attachment left the type code behind and the object
+            // identifier unread.
+            XElement? typeCode = In(values, document, CiiNames.Ram + "TypeCode");
+
+            // The first one is BT-18; a document that carries several keeps the rest as supporting documents
+            // rather than losing them to a field that holds one.
+            if (typeCode?.Value.Trim() == InvoicedObjectTypeCode && !invoice.InvoicedObjectIdentifier.IsSet)
+            {
+                IdentifierField scheme = values.ReadIdentifier(
+                    In(values, document, CiiNames.Ram + "ReferenceTypeCode"));
+
+                invoice.InvoicedObjectIdentifier =
+                    values.ReadIdentifier(In(values, document, CiiNames.Ram + "IssuerAssignedID"))
+                    with
+                    { SchemeId = scheme.Value };
+
+                continue;
             }
 
             AdditionalDocument mappedDocument = ReadAdditionalDocument(document, values);
@@ -205,7 +230,10 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         var information = new DeliveryInformation
         {
             Name = values.ReadText(In(values, shipTo, CiiNames.Ram + "Name")),
-            LocationIdentifier = values.ReadIdentifier(In(values, shipTo, CiiNames.Ram + "ID")),
+            // BT-71 is written either as a plain ID or as a GlobalID carrying its scheme, and only the first
+            // was read — so a delivery location identified the usual way, by GLN, was lost.
+            LocationIdentifier = values.ReadIdentifier(
+                In(values, shipTo, CiiNames.Ram + "ID") ?? In(values, shipTo, CiiNames.Ram + "GlobalID")),
             ActualDeliveryDate = values.ReadDate(
                 In(values, occurrence, CiiNames.Ram + "OccurrenceDateTime"), "BT-72"),
             Address = ReadAddress(In(values, shipTo, CiiNames.Ram + "PostalTradeAddress"), values),
@@ -246,6 +274,17 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
             });
 
             values.Consume(In(values, tax, CiiNames.Ram + "TypeCode"));
+
+            // BT-7. CII files the tax point date inside the breakdown rather than beside the issue date, so
+            // reading it only at document level left it behind — and wrote it back out of place.
+            if (!invoice.TaxPointDate.IsSet)
+            {
+                invoice.TaxPointDate = values.ReadDate(In(values, tax, CiiNames.Ram + "TaxPointDate"), "BT-7");
+            }
+            else
+            {
+                values.Consume(In(values, tax, CiiNames.Ram + "TaxPointDate"));
+            }
         }
 
         foreach (XElement allowance in AllIn(values, settlement, CiiNames.Ram + "SpecifiedTradeAllowanceCharge"))
@@ -356,7 +395,15 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         totals.AllowanceTotalAmount = values.ReadAmount(In(values, summation, CiiNames.Ram + "AllowanceTotalAmount"), "BT-107");
         totals.ChargeTotalAmount = values.ReadAmount(In(values, summation, CiiNames.Ram + "ChargeTotalAmount"), "BT-108");
         totals.TaxExclusiveAmount = values.ReadAmount(In(values, summation, CiiNames.Ram + "TaxBasisTotalAmount"), "BT-109");
-        totals.TaxAmount = values.ReadAmount(In(values, summation, CiiNames.Ram + "TaxTotalAmount"), "BT-110");
+        List<XElement> taxTotals = AllIn(values, summation, CiiNames.Ram + "TaxTotalAmount");
+        totals.TaxAmount = values.ReadAmount(taxTotals.FirstOrDefault(), "BT-110");
+
+        // BT-111: the same tax, in the currency the seller accounts in, written as a second amount with its
+        // own currencyID. Reading only the first left it unmapped.
+        foreach (XElement extra in taxTotals.Skip(1))
+        {
+            totals.TaxAmountInAccountingCurrency = values.ReadAmount(extra, "BT-111");
+        }
         totals.TaxInclusiveAmount = values.ReadAmount(In(values, summation, CiiNames.Ram + "GrandTotalAmount"), "BT-112");
         totals.PrepaidAmount = values.ReadAmount(In(values, summation, CiiNames.Ram + "TotalPrepaidAmount"), "BT-113");
         totals.RoundingAmount = values.ReadAmount(In(values, summation, CiiNames.Ram + "RoundingAmount"), "BT-114");
@@ -388,19 +435,28 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
             line.OrderLineReference = values.ReadIdentifier(
                 In(values, In(values, agreement, CiiNames.Ram + "BuyerOrderReferencedDocument"), CiiNames.Ram + "LineID"));
 
-            // BT-128, filed on the line as a referenced document typed 130.
-            XElement? referenced = In(values, agreement, CiiNames.Ram + "AdditionalReferencedDocument");
-            if (referenced is not null)
-            {
-                values.Consume(In(values, referenced, CiiNames.Ram + "TypeCode"));
-                line.ObjectIdentifier = values.ReadIdentifier(
-                    In(values, referenced, CiiNames.Ram + "IssuerAssignedID"));
-            }
         }
 
         if (settlement is null)
         {
             return line;
+        }
+
+        // BT-128, which CII files with the line's settlement — the object the line is about, and the term a
+        // utility invoice uses to say which meter it is billing.
+        XElement? referenced = In(values, settlement, CiiNames.Ram + "AdditionalReferencedDocument");
+        if (referenced is not null)
+        {
+            values.Consume(In(values, referenced, CiiNames.Ram + "TypeCode"));
+
+            // BT-128-1. CII states the identifier's scheme in a sibling element rather than an attribute,
+            // which is where UBL puts it — same term, two shapes, one field.
+            IdentifierField scheme = values.ReadIdentifier(
+                In(values, referenced, CiiNames.Ram + "ReferenceTypeCode"));
+
+            line.ObjectIdentifier = values.ReadIdentifier(In(values, referenced, CiiNames.Ram + "IssuerAssignedID"))
+                with
+            { SchemeId = scheme.Value };
         }
 
         XElement? tax = In(values, settlement, CiiNames.Ram + "ApplicableTradeTax");
@@ -436,11 +492,15 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         var price = new LinePrice
         {
             NetPrice = values.ReadAmount(In(values, net, CiiNames.Ram + "ChargeAmount"), "BT-146"),
+            // BT-149 may be stated on both prices, and the norm says they agree. Reading one and ignoring the
+            // other kept the loser as extension data, inside an element that allows no such child.
             BaseQuantity = values.ReadQuantity(
                 In(values, net, CiiNames.Ram + "BasisQuantity") ?? In(values, gross, CiiNames.Ram + "BasisQuantity"),
                 "BT-149"),
             GrossPrice = values.ReadAmount(In(values, gross, CiiNames.Ram + "ChargeAmount"), "BT-148"),
         };
+
+        values.Consume(In(values, gross, CiiNames.Ram + "BasisQuantity"));
 
         XElement? discount = In(values, gross, CiiNames.Ram + "AppliedTradeAllowanceCharge");
         price.Discount = values.ReadAmount(In(values, discount, CiiNames.Ram + "ActualAmount"), "BT-147");
@@ -579,7 +639,7 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
     {
         XElement? indicator = In(values, element, CiiNames.Ram + "ChargeIndicator");
 
-        return new AllowanceCharge
+        var allowanceCharge = new AllowanceCharge
         {
             IsCharge = values.ReadIndicator(indicator).Value ?? false,
             Amount = values.ReadAmount(In(values, element, CiiNames.Ram + "ActualAmount")),
@@ -592,7 +652,19 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
             VatRate = values.ReadDecimal(
                 In(values, In(values, element, CiiNames.Ram + "CategoryTradeTax"), CiiNames.Ram + "RateApplicablePercent")),
         };
+
+        // The scheme is always VAT and is written back from nothing, so it has to be marked as read or it
+        // returns as extension data — inside an element that allows no such child.
+        values.Consume(In(values, In(values, element, CiiNames.Ram + "CategoryTradeTax"), CiiNames.Ram + "TypeCode"));
+
+        return allowanceCharge;
     }
+
+    /// <summary>The code CII gives a referenced document that identifies what the invoice is about (BT-18).</summary>
+    private const string InvoicedObjectTypeCode = "130";
+
+    /// <summary>The code it gives a supporting document (BT-122 to BT-125), which the writer states itself.</summary>
+    private const string SupportingDocumentTypeCode = "916";
 
     private static AdditionalDocument ReadAdditionalDocument(XElement element, CiiValueReader values)
     {
@@ -609,6 +681,14 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         {
             document.Attachment = ReadBinary(binary, values);
             values.Consume(binary);
+        }
+
+        // 916 says "a supporting document", which is what this is, and the writer states it from nothing.
+        // Anything else is kept as extension data, where the writer puts it back in the right place.
+        XElement? typeCode = In(values, element, CiiNames.Ram + "TypeCode");
+        if (typeCode?.Value.Trim() != SupportingDocumentTypeCode)
+        {
+            values.Release(typeCode);
         }
 
         return document;

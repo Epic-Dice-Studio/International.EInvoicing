@@ -1,4 +1,10 @@
 #nullable enable
+International.EInvoicing.Validation.Xsd.CiiSchemaRuleSet
+International.EInvoicing.Validation.Xsd.CiiSchemaRuleSet.AppliesTo(International.EInvoicing.Profiles.DocumentSyntax syntax, International.EInvoicing.Profiles.ProfileIdentifier specification) -> bool
+International.EInvoicing.Validation.Xsd.CiiSchemaRuleSet.CiiSchemaRuleSet() -> void
+International.EInvoicing.Validation.Xsd.CiiSchemaRuleSet.Name.get -> string!
+International.EInvoicing.Validation.Xsd.CiiSchemaRuleSet.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Validation.Xsd.CiiSchemaRuleSet.Version.get -> string!
 International.EInvoicing.Validation.Xsd.UblSchemaRuleSet
 International.EInvoicing.Validation.Xsd.UblSchemaRuleSet.AppliesTo(International.EInvoicing.Profiles.DocumentSyntax syntax, International.EInvoicing.Profiles.ProfileIdentifier specification) -> bool
 International.EInvoicing.Validation.Xsd.UblSchemaRuleSet.Name.get -> string!
@@ -6,4 +12,6 @@ International.EInvoicing.Validation.Xsd.UblSchemaRuleSet.UblSchemaRuleSet() -> v
 International.EInvoicing.Validation.Xsd.UblSchemaRuleSet.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
 International.EInvoicing.Validation.Xsd.UblSchemaRuleSet.Version.get -> string!
 International.EInvoicing.Validation.Xsd.XsdBuilderExtensions
+static International.EInvoicing.Validation.Xsd.XsdBuilderExtensions.AddCiiSchema(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Validation.Xsd.XsdBuilderExtensions.AddSchemas(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Validation.Xsd.XsdBuilderExtensions.AddUblSchema(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!

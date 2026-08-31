@@ -20,4 +20,24 @@ public static class XsdBuilderExtensions
 
         return builder.AddRules(new UblSchemaRuleSet());
     }
+
+    /// <summary>Adds the UN/CEFACT CII D22B schemas to what <c>Validate</c> runs.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
+    public static EInvoicingBuilder AddCiiSchema(this EInvoicingBuilder builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        return builder.AddRules(new CiiSchemaRuleSet());
+    }
+
+    /// <summary>
+    /// Adds both, which is what a library reading whatever arrives wants.
+    /// </summary>
+    /// <remarks>
+    /// Each applies to its own syntax, so a document is judged by one of them and the other says it did not
+    /// run — the report keeps "clean" and "never looked at" apart on purpose.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
+    public static EInvoicingBuilder AddSchemas(this EInvoicingBuilder builder) =>
+        builder.AddUblSchema().AddCiiSchema();
 }

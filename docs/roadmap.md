@@ -388,11 +388,12 @@ that every other library has, and the Peppol documents that are not invoices. A 
 neither of those less true, and both of them make every country after it cheaper. So:
 
 0. **Close the gaps** — in this order, and before any new country:
-   1. ~~**XSD schema validation.**~~ ✅ done for UBL — and it immediately found that rewriting a document
-      carrying unmapped elements produces an order UBL forbids, which is now item 1a.
-   1a. ~~**The terms the UBL side lost**~~ ✅ done — BT-15, BT-16, BT-17, BT-89, BT-91, BT-111 and BT-128 are
-      read and written in both syntaxes, and an attachment is no longer written twice. The official corpus now
-      round-trips schema-valid with nothing unmapped.
+   1. ~~**XSD schema validation.**~~ ✅ done for **both syntaxes** — the OASIS UBL 2.1 and UN/CEFACT D22B
+      schemas, embedded and offline. Between them they found fifteen EN 16931 terms that were read by nothing
+      and written by nothing, and three shape defects of our own.
+   1a. ~~**The terms the two syntaxes lost**~~ ✅ done — BT-7, BT-15, BT-16, BT-17, BT-18, BT-71, BT-89,
+      BT-91, BT-111 and BT-128, plus an attachment written twice and a project reference the schema refused.
+      Both official corpora now round-trip with their shape intact and nothing unmapped.
    2. **The Peppol documents that are not invoices** — `ApplicationResponse` first, since an Invoice Response
       is what a Peppol receiver owes a sender, then Ordering and Despatch Advice.
    3. **The Factur-X container checks that are ours** — the XMP agreeing with the XML, not PDF/A conformance.

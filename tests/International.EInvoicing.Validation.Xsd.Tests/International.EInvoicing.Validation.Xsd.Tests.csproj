@@ -21,6 +21,7 @@
     <ProjectReference Include="../../src/International.EInvoicing.Validation.Xsd/International.EInvoicing.Validation.Xsd.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing/International.EInvoicing.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Ubl/International.EInvoicing.Ubl.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Cii/International.EInvoicing.Cii.csproj" />
   </ItemGroup>
 
 </Project>
