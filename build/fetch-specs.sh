@@ -127,6 +127,22 @@ fetch_pint() {
         "$SPECS_DIR/en16931/compiled"
 }
 
+# National rule sets that their publishers ship only as compiled XSLT, aggregated by phive-rules. This
+# library reads the compiled form (see docs/standards/peppol-pint.md), so these run like any other rule set.
+# None of them is redistributable, so they are fetched into a git-ignored folder.
+fetch_national() {
+    local src="$WORK_DIR/national"
+    clone_at https://github.com/phax/phive-rules.git "$PHIVE_RULES_REF" "$src"
+
+    rm -rf "$SPECS_DIR/national"
+
+    local module
+    for module in simplerinvoicing cius-ro serbia turkey isdoc cius-pt; do
+        sync_into "$src/phive-rules-$module/src/main/resources/external/schematron" \
+            "$SPECS_DIR/national/$module"
+    done
+}
+
 fetch_manual() {
     cat >&2 <<'MANUAL'
 
@@ -152,11 +168,12 @@ main() {
     case "$target" in
         en16931)   fetch_en16931 ;;
         pint)      fetch_pint ;;
+        national)  fetch_national ;;
         peppol)    fetch_peppol ;;
         xrechnung) fetch_xrechnung ;;
         france)    fetch_france ;;
-        all)       fetch_en16931; fetch_peppol; fetch_pint; fetch_xrechnung; fetch_france; fetch_manual ;;
-        *)         warn "unknown target '$target' (en16931 | peppol | pint | xrechnung | france | all)"; exit 2 ;;
+        all)       fetch_en16931; fetch_peppol; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_manual ;;
+        *)         warn "unknown target '$target' (en16931 | peppol | pint | national | xrechnung | france | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"
 }

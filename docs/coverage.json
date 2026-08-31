@@ -184,13 +184,13 @@
           "notes": "Peppol BIS Billing over NemHandel, the CVR number in the schemes Peppol reserves for it, and the payment means codes DK-R-005 allows — code 30 is valid EN 16931 and refused in Denmark. OIOUBL and NemHandel BIS 4 are not carried; see the roadmap."
         },
         {
-          "name": "Netherlands — Peppol BIS, KvK and OIN",
-          "version": "BIS 3.0",
+          "name": "Netherlands — NLCIUS and Peppol BIS, KvK and OIN",
+          "version": "NLCIUS v1.0",
           "package": "International.EInvoicing.Countries.Netherlands",
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "Peppol BIS Billing, and the legal entity identifier NL-R-003 and NL-R-005 reject an invoice for omitting — scheme 0106 or 0190 on both parties. NLCIUS is not carried: its published identifier is not in any artefact this repository holds."
+          "notes": "NLCIUS and its G-account extension, with the Dutch rules that judge them; Peppol BIS with the Dutch rules inside it; and the legal entity identifier NL-R-003 and NL-R-005 reject an invoice for omitting — scheme 0106 or 0190 on both parties."
         },
         {
           "name": "Iceland — Peppol BIS, kennitala",

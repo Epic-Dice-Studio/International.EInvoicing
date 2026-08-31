@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **NLCIUS, which this library had said it could not carry.** It was left out because its specification
+  identifier was in no artefact the repository held — a statement about the fetch list rather than about the
+  world. The identifier is in the Dutch rule set itself. `build/fetch-specs.sh national` now fetches the
+  national rule modules, `NlProfiles` carries NLCIUS and its G-account extension, and `AddNlciusRulesFrom`
+  runs the rules that come with them. The same source turned out to carry Romania's, Serbia's and Portugal's
+  identifiers too.
 - **Japan**, whose PINT rules are light but not empty: `aligned-ibrp-052` requires an invoice period or a
   line period, and EN 16931 leaves both optional — so an invoice valid everywhere else is refused there.
   Japan's rules also accept the older `urn:fdc:peppol:jp:billing:3.0` and either family's business process,

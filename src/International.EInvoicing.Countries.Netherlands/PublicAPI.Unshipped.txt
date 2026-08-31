@@ -20,6 +20,7 @@ International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Write(Internation
 International.EInvoicing.Countries.Netherlands.Identifiers.NlLegalIdentifier
 International.EInvoicing.Countries.Netherlands.NetherlandsServiceCollectionExtensions
 International.EInvoicing.Countries.Netherlands.NlProfiles
+International.EInvoicing.Countries.Netherlands.NlRules
 static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Create() -> International.EInvoicing.Countries.Netherlands.DutchEInvoicing!
 static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Netherlands.DutchEInvoicing!
 static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Netherlands.DutchEInvoicing!
@@ -28,5 +29,9 @@ static International.EInvoicing.Countries.Netherlands.DutchEInvoicing.Over(Inter
 static International.EInvoicing.Countries.Netherlands.Identifiers.NlLegalIdentifier.IsAccepted(string? scheme) -> bool
 static International.EInvoicing.Countries.Netherlands.NetherlandsServiceCollectionExtensions.AddNetherlands(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Countries.Netherlands.NlProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Netherlands.NlProfiles.NlciusCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Netherlands.NlProfiles.NlciusGAccountUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Netherlands.NlProfiles.NlciusUbl.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Countries.Netherlands.NlProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Countries.Netherlands.NlProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Netherlands.NlRules.AddNlciusRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!

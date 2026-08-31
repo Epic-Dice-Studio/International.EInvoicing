@@ -17,14 +17,22 @@ set apply to.
 | Peppol BIS Billing 3.0 | `.Peppol` | done |
 | Dutch national rules (`NL-R-001` … `NL-R-009`) | inside the Peppol rule set | done |
 | KvK and OIN legal entity schemes (0106, 0190) | `.Countries.Netherlands` | done |
-| NLCIUS / SI-UBL 2.0 | — | **not carried** — see below |
+| NLCIUS and its G-account extension | `.Countries.Netherlands` | done |
+| NLCIUS rules (SI-UBL, nlcius-cii) | fetched — `AddNlciusRulesFrom` | done |
 | Peppol transmission, Digipoort | — | permanently out of scope |
 
-**Why NLCIUS is absent.** Its published specification identifier is not in any artefact this repository
-holds, and this library does not guess identifiers: a wrong one in BT-24 makes every document it writes
-wrong, and makes documents it should read look unknown. Registering it from your own code takes a few lines
-and wins over anything built in — see [add a profile](../recipes/add-a-profile.md). It goes in here the day
-the identifier can be read from something authoritative.
+**NLCIUS was absent, and now is not.** It was left out on the grounds that its specification identifier was
+in no artefact this repository held — which was true of the artefacts it held then. The identifier is in the
+Dutch rule set itself, which `build/fetch-specs.sh national` now fetches, so it is read from there:
+
+```
+urn:cen.eu:en16931:2017#compliant#urn:fdc:nen.nl:nlcius:v1.0
+urn:cen.eu:en16931:2017#compliant#urn:fdc:nen.nl:nlcius:v1.0#conformant#urn:fdc:nen.nl:gaccount:v1.0
+```
+
+The lesson is worth keeping: *"not in any artefact we hold"* is a statement about the fetch list, not about
+the world. The rules are published as pre-compiled XSLT, which this library reads as data — see
+[Peppol PINT](peppol-pint.md) for how.
 
 ## What is specifically Dutch
 

@@ -222,9 +222,8 @@ IcelandicEInvoicing island = IcelandicEInvoicing.Create();
 island.Invoice().From(seller => island.Describe(seller, "120000-0350", "Seljandi ehf"));
 ```
 
-NLCIUS is deliberately absent from the Dutch package: its published specification identifier is not in any
-artefact this repository holds, and guessing one is how a library starts rejecting valid documents. Register
-it yourself and it wins.
+NLCIUS is in the Dutch package too, with its G-account extension, and its own rules run once fetched —
+`build/fetch-specs.sh national`, then `AddNlciusRulesFrom(...)`.
 
 ## Croatia, and what a shortcut cannot do
 

@@ -156,7 +156,7 @@ validation is never presented as a success.
 | Norway — EHF 3.0, organisasjonsnummer <sub>EHF 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Norway` |
 | Sweden — Peppol BIS, organisationsnummer <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Sweden` |
 | Denmark — Peppol BIS, CVR, allowed payment means <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Denmark` |
-| Netherlands — Peppol BIS, KvK and OIN <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Netherlands` |
+| Netherlands — NLCIUS and Peppol BIS, KvK and OIN <sub>NLCIUS v1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Netherlands` |
 | Iceland — Peppol BIS, kennitala <sub>BIS 3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Iceland` |
 | Croatia — Peppol BIS, OIB <sub>BIS 3.0</sub> | ✅ | ✅ | 🚧 | `International.EInvoicing.Countries.Croatia` |
 | Australia — Peppol PINT (A-NZ), ABN <sub>PINT @aunz-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Australia` |
@@ -184,7 +184,7 @@ validation is never presented as a success.
 
 > **Denmark — Peppol BIS, CVR, allowed payment means** — Peppol BIS Billing over NemHandel, the CVR number in the schemes Peppol reserves for it, and the payment means codes DK-R-005 allows — code 30 is valid EN 16931 and refused in Denmark. OIOUBL and NemHandel BIS 4 are not carried; see the roadmap.
 
-> **Netherlands — Peppol BIS, KvK and OIN** — Peppol BIS Billing, and the legal entity identifier NL-R-003 and NL-R-005 reject an invoice for omitting — scheme 0106 or 0190 on both parties. NLCIUS is not carried: its published identifier is not in any artefact this repository holds.
+> **Netherlands — NLCIUS and Peppol BIS, KvK and OIN** — NLCIUS and its G-account extension, with the Dutch rules that judge them; Peppol BIS with the Dutch rules inside it; and the legal entity identifier NL-R-003 and NL-R-005 reject an invoice for omitting — scheme 0106 or 0190 on both parties.
 
 > **Iceland — Peppol BIS, kennitala** — Peppol BIS Billing, and the kennitala with its modulo 11 check, written where IS-R-002 and IS-R-004 look for it.
 

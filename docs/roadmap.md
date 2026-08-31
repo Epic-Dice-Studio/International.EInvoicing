@@ -226,7 +226,7 @@ The three done ones are at the top so the tiers read as one list.
 | **Norway** | EHF 3.0, organisasjonsnummer (mod 11), national rules inside Peppol | ✅ complete, `NorwegianEInvoicing` |
 | **Sweden** | Peppol BIS Billing, organisationsnummer (Luhn), national rules inside Peppol | ✅ complete, `SwedishEInvoicing` |
 | **Denmark** | Peppol BIS Billing, CVR, the payment means `DK-R-005` allows | ✅ complete, `DanishEInvoicing` |
-| **Netherlands** | Peppol BIS Billing, the KvK/OIN scheme `NL-R-003` demands | ✅ complete, `DutchEInvoicing` — NLCIUS still open, below |
+| **Netherlands** | NLCIUS and Peppol BIS, the KvK/OIN scheme `NL-R-003` demands | ✅ complete, `DutchEInvoicing` |
 | **Iceland** | Peppol BIS Billing, kennitala in the scheme `IS-R-002` demands | ✅ complete, `IcelandicEInvoicing` |
 | **Croatia** | Peppol BIS Billing, OIB on both parties | 🚧 the invoice, `CroatianEInvoicing` — the seal and the fiscalisation reporting are not ours to do |
 | **Australia** | Peppol PINT (A-NZ), ABN, GST | ✅ `AustralianEInvoicing`, validated against the real PINT rules |
@@ -265,10 +265,11 @@ rules travel inside the Peppol rule set this library loads, and Peppol publishes
 legal identifiers, so each country could be measured rather than asserted. That is the template for the rest
 of the tier, and it is also the filter: a country whose facts are not in an artefact we hold waits.
 
-Two things are still open in what is otherwise finished. **NLCIUS** — the Dutch national CIUS — is absent
-because its published specification identifier is in no artefact this repository carries, and a guessed
-identifier in BT-24 makes every document written with it wrong. One confirmed fact closes it. Denmark's
-**OIOUBL 2.1** is a syntax of its own, and a separate project.
+**NLCIUS is done**, and how it got done is worth recording. It had been left out because its specification
+identifier was "in no artefact this repository carries" — which was a statement about the fetch list, not
+about the world. The identifier is in the Dutch rule set itself, which is now fetched. The same source
+carries Romania's, Serbia's and Portugal's. Denmark's **OIOUBL 2.1** remains a syntax of its own, and a
+separate project.
 
 **Croatia turned out not to belong in this tier at all**, and finding out is worth recording. From the
 outside it looked like the cheapest kind of country — Peppol, EN 16931, a national CIUS. In fact
@@ -283,12 +284,12 @@ question it raises is the same one Italy and Spain raise, still open below.
 **1 January 2027**, plus an SK tax data document sent to the financial administration within fifteen minutes
 — again transport, not document.
 
-Which leaves a pattern worth naming. **Three countries in a row are blocked on the same thing**: NLCIUS,
-HR-FISK 2.0 and the Slovak CIUS all publish a specification identifier that is in no artefact this repository
-can read, and this library will not guess one — a wrong value in BT-24 makes every document written with it
-wrong. That is not effort, it is a fact each needs. Until then each country's package covers the Peppol layer
-underneath its CIUS, which is most of the work, and registering the CIUS from your own code wins over
-anything built in.
+A pattern that looked like a wall turned out to be a fetch list. NLCIUS, HR-FISK 2.0 and the Slovak CIUS were
+all recorded as "blocked on an identifier no artefact we hold publishes". For NLCIUS that was wrong: the
+identifier is in the Dutch rule set, and once the national rule modules were fetched it fell out immediately —
+along with Romania's, Serbia's and Portugal's. **HR-FISK 2.0 and the Slovak CIUS are still genuinely
+missing**, but the lesson stands: before declaring a fact unobtainable, check whether it is merely
+unfetched.
 
 ### Tier 2 — Peppol **PINT** jurisdictions · *the profiles exist now; each needs its identifiers and rules*
 

@@ -27,8 +27,18 @@ EInvoice invoice = nederland.Invoice()                   // Peppol BIS Billing, 
 
 `NL-R-002` and `NL-R-004` also want a street, a city and a postcode on both Dutch parties.
 
-**NLCIUS is deliberately absent.** Its published specification identifier is not in any artefact this
-repository carries, and a guessed identifier is how a library starts rejecting valid documents. Register it
-from your own code when you have it — a registered profile wins over anything built in.
+**NLCIUS is here too**, with its G-account extension — `NlProfiles.NlciusUbl`, `NlciusCii`,
+`NlciusGAccountUbl`. Its identifier is read from the published Dutch rule set rather than transcribed, and
+those rules run:
+
+```csharp
+DutchEInvoicing nederland = DutchEInvoicing.Create(library => library
+    .AddDefaults()
+    .AddNetherlands()
+    .AddNlciusRulesFrom("specs/national/simplerinvoicing/schematron"));   // build/fetch-specs.sh national
+```
+
+Two rule sets apply in the Netherlands and both are fetched, not shipped: the Dutch rules inside the Peppol
+rule set judge Peppol BIS documents, and the NLCIUS rules judge NLCIUS ones.
 
 Full documentation: <https://github.com/Epic-Dice-Studio/International.EInvoicing>
