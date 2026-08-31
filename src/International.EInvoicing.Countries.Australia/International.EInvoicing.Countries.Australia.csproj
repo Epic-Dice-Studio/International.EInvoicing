@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Australia</PackageId>
+    <Description>
+      What Australian electronic invoicing adds on top of the norms: the A-NZ Peppol PINT profile, and the
+      Australian Business Number with the modulo 89 check Peppol enforces on it.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;australia;peppol;pint;abn;einvoicing;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

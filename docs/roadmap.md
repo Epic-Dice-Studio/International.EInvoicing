@@ -224,6 +224,7 @@ The three done ones are at the top so the tiers read as one list.
 | **Netherlands** | Peppol BIS Billing, the KvK/OIN scheme `NL-R-003` demands | ✅ complete, `DutchEInvoicing` — NLCIUS still open, below |
 | **Iceland** | Peppol BIS Billing, kennitala in the scheme `IS-R-002` demands | ✅ complete, `IcelandicEInvoicing` |
 | **Croatia** | Peppol BIS Billing, OIB on both parties | 🚧 the invoice, `CroatianEInvoicing` — the seal and the fiscalisation reporting are not ours to do |
+| **Australia** | Peppol PINT (A-NZ), ABN | 🚧 the invoice, `AustralianEInvoicing` — the PINT rules cannot run yet |
 
 France's own calendar: reception for everyone and issuing for large and mid-sized companies on
 **1 September 2026**, issuing for the rest on **1 September 2027**. Belgium's B2B mandate started
@@ -284,7 +285,8 @@ anything built in.
 
 | Country | Specialisation | Mandate state |
 |---|---|---|
-| **Australia / New Zealand** | A-NZ PINT | B2G mandatory; B2B voluntary, strongly adopted |
+| **Australia** | A-NZ PINT | ✅ `AustralianEInvoicing` — B2G mandatory; B2B voluntary, strongly adopted |
+| **New Zealand** | the same A-NZ PINT specialisation | next: the profile exists, the NZBN is what differs |
 | **Singapore** | InvoiceNow (SG PINT) | phased GST-registered mandate under way |
 | **Japan** | JP PINT | qualified-invoice system since 2023 |
 | **Malaysia** | MyInvois — PINT MY alongside the national API | phased since 2024; above RM 1 m since **January 2026** |

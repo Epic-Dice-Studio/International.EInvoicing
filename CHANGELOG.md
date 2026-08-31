@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Australia**, the first country here on PINT rather than BIS Billing — which is the point of the package,
+  since the two disagree about the profile identifier *and* the business process, and an invoice with one
+  right and the other wrong looks correct. `AustralianEInvoicing` declares both, in AUD, and checks the ABN
+  before writing it in scheme 0151: all eleven digits are weighted and the sum must divide by 89, so a
+  transposition anywhere is caught. Measured against Peppol's own `PEPPOL-COMMON-R050`, and against the ABN
+  the Australian Taxation Office publishes in its developer documentation — an algorithm checked only
+  against numbers it generated itself proves nothing.
 - **A rule set no longer judges a document it does not govern.** `AddEn16931Rules()` registered the EN 16931
   rules for *every* UBL and CII document, which was invisible while everything this library wrote was an
   EN 16931 invoice and became wrong the moment PINT arrived — its whole purpose is tax systems EN 16931 was

@@ -211,6 +211,15 @@
           "notes": "The OIB both parties must carry under the Fiskalizacija 2.0 mandate, checked against ISO/IEC 7064 MOD 11,10. The HR-FISK 2.0 CIUS is not carried — its identifier is published nowhere this repository can read — and neither is the advanced electronic seal or the fiscalisation reporting, which are a signature and a transport."
         },
         {
+          "name": "Australia — Peppol PINT (A-NZ), ABN",
+          "version": "PINT @aunz-1",
+          "package": "International.EInvoicing.Countries.Australia",
+          "read": "done",
+          "write": "done",
+          "validate": "in-progress",
+          "notes": "The A-NZ PINT profile and business process — both different strings from Peppol BIS — and the ABN with the modulo 89 check, measured against the rule Peppol publishes for scheme 0151. The jurisdiction rules are published as pre-compiled XSLT, which this library's Schematron engine cannot run, so they are reported as unchecked."
+        },
+        {
           "name": "Rest of the world",
           "version": "—",
           "package": "—",
