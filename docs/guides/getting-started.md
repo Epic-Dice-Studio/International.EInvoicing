@@ -175,7 +175,7 @@ dotnet run --project samples/International.EInvoicing.Samples
 It builds an invoice that passes EN 16931, writes it in both syntaxes, reads it back, validates it, feeds
 itself documents it cannot fully read, registers a profile and a rule of its own, puts an invoice inside a
 PDF, and reports French lifecycle statuses and e-reporting. See
-[samples/README.md](../../samples/README.md) for the chapter list.
+[samples/README.md](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/README.md) for the chapter list.
 
 ## Where to go next
 
@@ -187,5 +187,5 @@ PDF, and reports French lifecycle statuses and e-reporting. See
 | [Lifecycle statuses](lifecycle.md) | French statuses, partner against public portal |
 | [Validation](validation.md) | Rule sets, coverage, your own rules |
 | [Raw values](raw-values.md) | Reaching the text behind any field |
-| [The runnable sample](../../samples/README.md) | Every feature, one chapter at a time |
+| [The runnable sample](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/README.md) | Every feature, one chapter at a time |
 | [Try it in the browser](https://epic-dice-studio.github.io/International.EInvoicing/demo/) | No install, nothing uploaded |

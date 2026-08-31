@@ -245,7 +245,7 @@ string xml = einvoicing.LifecycleWriter.WriteToString(message);
 
 ## Run it
 
-[`samples/International.EInvoicing.Samples/Chapters/FrenchLifecycle.cs`](../../samples/International.EInvoicing.Samples/Chapters/FrenchLifecycle.cs) is this page as code — every status, and the direction that decides who reports it.
+[`samples/International.EInvoicing.Samples/Chapters/FrenchLifecycle.cs`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/International.EInvoicing.Samples/Chapters/FrenchLifecycle.cs) is this page as code — every status, and the direction that decides who reports it.
 
 ```bash
 dotnet run --project samples/International.EInvoicing.Samples

@@ -163,7 +163,7 @@ published rules remain the authority.
 
 ## Run it
 
-[`samples/International.EInvoicing.Samples/Chapters/FrenchEReporting.cs`](../../samples/International.EInvoicing.Samples/Chapters/FrenchEReporting.cs) is this page as code — transactions and payments, both flux.
+[`samples/International.EInvoicing.Samples/Chapters/FrenchEReporting.cs`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/International.EInvoicing.Samples/Chapters/FrenchEReporting.cs) is this page as code — transactions and payments, both flux.
 
 ```bash
 dotnet run --project samples/International.EInvoicing.Samples

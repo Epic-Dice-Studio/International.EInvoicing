@@ -72,7 +72,7 @@ attributes and text on the `svrl:failed-assert` the compiler emits for it. `Comp
 which is not translating rules but reading the same rules out of a different serialisation.
 
 That claim is proved rather than asserted: EN 16931 1.3.16 exists in both forms from the same publisher, and
-[`CompiledSchematronTests`](../../tests/International.EInvoicing.Validation.Schematron.Tests/CompiledSchematronTests.cs)
+[`CompiledSchematronTests`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/tests/International.EInvoicing.Validation.Schematron.Tests/CompiledSchematronTests.cs)
 requires the compiled artefact to yield exactly the assertions this library parses from the source — every
 identifier, test, severity and message, plus the rule contexts, plus identical verdicts over the official
 example documents.

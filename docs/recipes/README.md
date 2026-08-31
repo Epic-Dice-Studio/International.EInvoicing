@@ -9,7 +9,7 @@ the abstractions to implement and the tests that make the work complete.
 - [add-a-rule.md](add-a-rule.md) — a validation rule, or suppressing one
 
 Two of them have a worked example that compiles:
-[`Extending.cs`](../../samples/International.EInvoicing.Samples/Chapters/Extending.cs) registers a profile and
+[`Extending.cs`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/International.EInvoicing.Samples/Chapters/Extending.cs) registers a profile and
 a rule from outside the library, both of which then take part in reading and validation exactly as the
 shipped ones do.
 

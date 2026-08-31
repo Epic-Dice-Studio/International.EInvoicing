@@ -176,7 +176,7 @@ considered and rejected.
 
 ## Run it
 
-[`samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs`](../../samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs) is this page as code — reading, and what happens when a document fights back.
+[`samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs) is this page as code — reading, and what happens when a document fights back.
 
 ```bash
 dotnet run --project samples/International.EInvoicing.Samples

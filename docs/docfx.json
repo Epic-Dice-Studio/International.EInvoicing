@@ -4,7 +4,9 @@
       "src": [
         {
           "src": "../src",
-          "files": ["**/*.csproj"]
+          "files": ["**/*.csproj"],
+          "//": "The CLI is a dotnet tool, single-target net8.0; the TargetFramework forced below is a library concern and resolves none of its references.",
+          "exclude": ["International.EInvoicing.Cli/**"]
         }
       ],
       "dest": "api",

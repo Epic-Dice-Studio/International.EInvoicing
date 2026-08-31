@@ -88,7 +88,7 @@ against numbers this library made up. When a rule could not be verified, the cod
 
 ## Run it
 
-[`samples/International.EInvoicing.Samples/Chapters/NationalIdentifiers.cs`](../../samples/International.EInvoicing.Samples/Chapters/NationalIdentifiers.cs) is this page as code — the check digits, and what a typo does.
+[`samples/International.EInvoicing.Samples/Chapters/NationalIdentifiers.cs`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/International.EInvoicing.Samples/Chapters/NationalIdentifiers.cs) is this page as code — the check digits, and what a typo does.
 
 ```bash
 dotnet run --project samples/International.EInvoicing.Samples

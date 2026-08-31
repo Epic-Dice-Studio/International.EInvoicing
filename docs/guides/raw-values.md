@@ -73,7 +73,7 @@ system without silently reformatting them.
 
 ## Run it
 
-[`samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs`](../../samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs) is this page as code — a value kept as raw text because it could not be read.
+[`samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/International.EInvoicing.Samples/Chapters/HostileDocuments.cs) is this page as code — a value kept as raw text because it could not be read.
 
 ```bash
 dotnet run --project samples/International.EInvoicing.Samples

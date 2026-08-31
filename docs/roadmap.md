@@ -1,7 +1,7 @@
 # Roadmap
 
 What is next, why it is next, and what would make it done. The support matrix in the
-[README](../README.md) says what works **today**; this page says where the work goes from here.
+[README](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/README.md) says what works **today**; this page says where the work goes from here.
 
 > Regulatory dates move, and this page will go stale before the code does. Each date below is marked with
 > where to check it. Recorded state: August 2026.
@@ -393,5 +393,5 @@ correctness gap, the public API locked, and one country complete end to end. Fra
 ## Not doing, on purpose
 
 Sending documents — no AS4 client, no access point API, no Chorus Pro connector. Producing the PDF a human
-reads. Both are stated in the [README](../README.md) and neither is a maybe: the library performs no network
+reads. Both are stated in the [README](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/README.md) and neither is a maybe: the library performs no network
 I/O at all, which is what lets it run in a browser and makes it auditable.

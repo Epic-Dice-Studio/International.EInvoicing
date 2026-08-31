@@ -206,7 +206,7 @@ written exactly as given. `XmlCharacters.Sanitize` is the same helper, should yo
 
 ## Run it
 
-[`samples/International.EInvoicing.Samples/Chapters/Invoices.cs`](../../samples/International.EInvoicing.Samples/Chapters/Invoices.cs) is this page as code — building, writing and choosing a syntax.
+[`samples/International.EInvoicing.Samples/Chapters/Invoices.cs`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/International.EInvoicing.Samples/Chapters/Invoices.cs) is this page as code — building, writing and choosing a syntax.
 
 ```bash
 dotnet run --project samples/International.EInvoicing.Samples

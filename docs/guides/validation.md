@@ -191,7 +191,7 @@ this library has no typed support for. Look at both.
 
 ## Run it
 
-[`samples/International.EInvoicing.Samples/Chapters/NationalRuleSets.cs`](../../samples/International.EInvoicing.Samples/Chapters/NationalRuleSets.cs) is this page as code — rule sets shipped and fetched.
+[`samples/International.EInvoicing.Samples/Chapters/NationalRuleSets.cs`](https://github.com/Epic-Dice-Studio/International.EInvoicing/blob/main/samples/International.EInvoicing.Samples/Chapters/NationalRuleSets.cs) is this page as code — rule sets shipped and fetched.
 
 ```bash
 dotnet run --project samples/International.EInvoicing.Samples
