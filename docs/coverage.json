@@ -202,6 +202,15 @@
           "notes": "The national CIUS the e-Factura mandate exchanges, with the 244 assertions Romania publishes on top of EN 16931 — including BR-RO-100, which requires a Bucharest address to name its sector rather than the city. Rules fetched, not shipped."
         },
         {
+          "name": "Serbia — SRBDT (SEF)",
+          "version": "srbdt 2022",
+          "package": "International.EInvoicing.Countries.Serbia",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "The SRBDT CIUS and its conformant extension, with the 134 assertions Serbia publishes — including RSR-05, which requires the tax point date code EN 16931 leaves optional. Rules fetched, not shipped."
+        },
+        {
           "name": "Iceland — Peppol BIS, kennitala",
           "version": "BIS 3.0",
           "package": "International.EInvoicing.Countries.Iceland",

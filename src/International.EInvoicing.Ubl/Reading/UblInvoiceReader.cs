@@ -112,7 +112,10 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             invoice.Notes.Add(values.ReadNote(note));
         }
 
-        invoice.Period = ReadPeriod(Take(root, UblNames.Cac + "InvoicePeriod", mapped), values);
+        XElement? period = Take(root, UblNames.Cac + "InvoicePeriod", mapped);
+        invoice.Period = ReadPeriod(period, values);
+        invoice.TaxPointDateCode = values.ReadCode(
+            Descend(values, period, UblNames.Cbc + "DescriptionCode"));
         invoice.PurchaseOrderReference = ReadOrderReference(root, values, mapped, "ID");
         invoice.SalesOrderReference = ReadOrderReference(root, values, mapped, "SalesOrderID");
 

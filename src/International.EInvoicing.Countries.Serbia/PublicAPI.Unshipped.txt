@@ -1,0 +1,8 @@
+#nullable enable
+International.EInvoicing.Countries.Serbia.RsProfiles
+International.EInvoicing.Countries.Serbia.SerbiaServiceCollectionExtensions
+static International.EInvoicing.Countries.Serbia.RsProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Serbia.RsProfiles.SrbdtExtensionUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Serbia.RsProfiles.SrbdtUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Serbia.SerbiaServiceCollectionExtensions.AddSerbia(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Serbia.SerbiaServiceCollectionExtensions.AddSerbianRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!

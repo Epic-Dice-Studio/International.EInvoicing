@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>International.EInvoicing.Countries.Serbia</PackageId>
+    <Description>
+      What Serbian electronic invoicing adds on top of the norms: the SRBDT CIUS the SEF exchanges, its
+      extension, and the rules that judge them.
+    </Description>
+    <PackageTags>e-invoicing;einvoice;serbia;srbdt;sef;efaktura;invoice</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../International.EInvoicing/International.EInvoicing.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
+  </ItemGroup>
+
+</Project>

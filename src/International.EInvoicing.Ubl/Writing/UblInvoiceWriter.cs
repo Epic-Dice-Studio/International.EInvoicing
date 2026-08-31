@@ -139,7 +139,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
     private static void WriteReferences(EInvoice invoice, XmlWriter writer)
     {
-        WritePeriod(writer, "InvoicePeriod", invoice.Period);
+        WritePeriod(writer, "InvoicePeriod", invoice.Period, invoice.TaxPointDateCode);
 
         if (invoice.PurchaseOrderReference.IsSet || invoice.SalesOrderReference.IsSet)
         {
@@ -613,16 +613,36 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WritePeriod(XmlWriter writer, string elementName, InvoicingPeriod? period)
+    /// <summary>
+    /// The invoicing period, and BT-8 with it.
+    /// </summary>
+    /// <remarks>
+    /// UBL puts the tax point date code (BT-8) inside <c>cac:InvoicePeriod</c> as its description code,
+    /// sharing the element with BG-14 — so a document may carry the code with no dates at all. Serbia's
+    /// <c>RSR-05</c> requires exactly that, which is how the omission came to light.
+    /// </remarks>
+    private static void WritePeriod(
+        XmlWriter writer,
+        string elementName,
+        InvoicingPeriod? period,
+        CodeField taxPointDateCode = default)
     {
-        if (period is null || (!period.StartDate.IsSet && !period.EndDate.IsSet))
+        bool hasDates = period is not null && (period.StartDate.IsSet || period.EndDate.IsSet);
+
+        if (!hasDates && !taxPointDateCode.IsSet)
         {
             return;
         }
 
         StartCac(writer, elementName);
-        WriteDate(writer, "StartDate", period.StartDate);
-        WriteDate(writer, "EndDate", period.EndDate);
+
+        if (period is not null)
+        {
+            WriteDate(writer, "StartDate", period.StartDate);
+            WriteDate(writer, "EndDate", period.EndDate);
+        }
+
+        WriteCode(writer, "DescriptionCode", taxPointDateCode);
         writer.WriteEndElement();
     }
 

@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Serbia.** SRBDT, the CIUS the SEF exchanges since 2023, with its conformant extension and the 134
+  assertions Serbia publishes. `RSR-05` required the **tax point date code** (BT-8) — which the model carried
+  and the UBL writer silently dropped, and the reader never read. UBL keeps it inside `cac:InvoicePeriod` as
+  a description code, so a document may carry it with no period dates at all; both directions are fixed.
 - **Romania.** CIUS-RO, the national CIUS the e-Factura mandate exchanges, with the 244 assertions Romania
   publishes on top of EN 16931 — the largest national rule set here after Germany's. The identifier is read
   from the artefact, which matters: it carries the *CIUS* version, 1.0.1, which is not the 1.0.9 of the rule

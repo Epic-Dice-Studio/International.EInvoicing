@@ -18,6 +18,7 @@
     <Project Path="src/International.EInvoicing.Countries.Malaysia/International.EInvoicing.Countries.Malaysia.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Japan/International.EInvoicing.Countries.Japan.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Romania/International.EInvoicing.Countries.Romania.csproj" />
+    <Project Path="src/International.EInvoicing.Countries.Serbia/International.EInvoicing.Countries.Serbia.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
     <Project Path="src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
@@ -50,6 +51,7 @@
     <Project Path="tests/International.EInvoicing.Countries.Malaysia.Tests/International.EInvoicing.Countries.Malaysia.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Japan.Tests/International.EInvoicing.Countries.Japan.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Romania.Tests/International.EInvoicing.Countries.Romania.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Countries.Serbia.Tests/International.EInvoicing.Countries.Serbia.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Belgium.Tests/International.EInvoicing.Countries.Belgium.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.France.Tests/International.EInvoicing.Countries.France.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Germany.Tests/International.EInvoicing.Countries.Germany.Tests.csproj" />

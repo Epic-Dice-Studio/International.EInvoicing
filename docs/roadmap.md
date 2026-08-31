@@ -327,7 +327,7 @@ Our model fits; the syntax or the rules do not, quite.
 | **Italy** | FatturaPA, via SDI | the model maps to EN 16931 | its own XML tree, `Fattura` type codes, **and a qualified signature** — see below. Spec **v1.9.1** in force since May 2026, with rejections where earlier versions warned |
 | **Spain** | Facturae 3.2.x | close to EN 16931 | plus **VeriFactu** (software certification and invoice chaining, from **1 January 2026** for corporates, **1 July 2026** for the self-employed) and **TicketBAI** in the Basque Country — three regimes at once |
 | **Poland** | KSeF, FA(3) | little — FA(3) is far from EN 16931 | clearance model; live for large taxpayers **February 2026**, most others **April 2026**, micro **January 2027** |
-| **Serbia** | SEF, national UBL CIUS | the model and the syntax | its own rules; mandatory since 2023 |
+| **Serbia** | ✅ **done** — `RsProfiles`, 134 assertions running | — | — |
 | **Czechia** | ISDOC, Peppol growing | the model | ISDOC is its own schema; no B2B mandate yet |
 | **Türkiye** | e-Fatura, **UBL-TR 1.2.1** since February 2026 | the syntax | its own CIUS and portal rules |
 
