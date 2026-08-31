@@ -24,7 +24,8 @@ public static class PeppolServiceCollectionExtensions
         return builder
             .AddUbl()
             .AddCii()
-            .AddProfiles(PeppolProfiles.All);
+            .AddProfiles(PeppolProfiles.All)
+            .AddProfiles(PeppolPintProfiles.All);
     }
 
     /// <summary>

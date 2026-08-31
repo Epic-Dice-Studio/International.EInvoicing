@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **A rule set no longer judges a document it does not govern.** `AddEn16931Rules()` registered the EN 16931
+  rules for *every* UBL and CII document, which was invisible while everything this library wrote was an
+  EN 16931 invoice and became wrong the moment PINT arrived — its whole purpose is tax systems EN 16931 was
+  never written for. Factur-X MINIMUM and BASIC WL were already affected: their own specification says they
+  are not EN 16931 invoices. Such a document is now reported as **not checked** rather than failed, which is
+  the difference between a caller knowing they have no coverage and believing they have a broken invoice.
+  Asking for the rules explicitly still works.
 - **Peppol PINT.** The package knew BIS Billing 3.0 and nothing else, so every jurisdiction that adopted
   Peppol outside Europe — the UAE, Malaysia, Singapore, Japan, Australia and New Zealand, Oman — *looked*
   covered and was not. `PeppolPintProfiles` now carries the common core and every published specialisation,
