@@ -424,6 +424,9 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
         {
             Identifier = values.ReadIdentifier(In(values, document, CiiNames.Ram + "LineID")),
             Note = values.ReadText(In(values, In(values, document, CiiNames.Ram + "IncludedNote"), CiiNames.Ram + "Content")),
+            ParentLineIdentifier = values.ReadIdentifier(In(values, document, CiiNames.Ram + "ParentLineID")),
+            LineStatusCode = values.ReadCode(In(values, document, CiiNames.Ram + "LineStatusCode")),
+            LineStatusReasonCode = values.ReadCode(In(values, document, CiiNames.Ram + "LineStatusReasonCode")),
             Quantity = values.ReadQuantity(In(values, delivery, CiiNames.Ram + "BilledQuantity"), "BT-129"),
             Item = ReadItem(In(values, element, CiiNames.Ram + "SpecifiedTradeProduct"), values, owners),
             Price = ReadPrice(agreement, values),

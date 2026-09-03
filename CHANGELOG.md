@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Grouped invoice lines** — `ParentLineIdentifier`, `LineStatusReasonCode` and `LineStatusCode` on
+  `InvoiceLine`, read and written on the CII side. EN 16931 has no term for a line hierarchy and Factur-X
+  EXTENDED does, and it is expressed by **reference rather than by nesting**: the lines stay a flat list and
+  each child names its parent's line number. Reading one without those terms gives every line and no
+  structure — and because a `GROUP` heading's amount is already the sum of the lines beneath it, totalling
+  every line counts those amounts twice. `LineStatusReasonCodes.IsCharged` says which lines to add up, and
+  treats a line that says nothing as one to charge for, which is what every EN 16931 invoice means.
+
 - **A hybrid XRechnung now says `XRECHNUNG`**, and used to say `EN 16931`. The Factur-X conformance level
   was answered by falling through to EN 16931 for anything that was not MINIMUM, BASIC WL, BASIC or
   EXTENDED — so a German hybrid invoice was stamped with a profile it is not written against, and a receiver

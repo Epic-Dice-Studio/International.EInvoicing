@@ -146,6 +146,9 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
 
         StartRam(writer, "AssociatedDocumentLineDocument");
         WriteIdentifier(writer, "LineID", line.Identifier);
+        WriteIdentifier(writer, "ParentLineID", line.ParentLineIdentifier);
+        WriteCode(writer, "LineStatusCode", line.LineStatusCode);
+        WriteCode(writer, "LineStatusReasonCode", line.LineStatusReasonCode);
         if (line.Note.IsSet)
         {
             StartRam(writer, "IncludedNote");

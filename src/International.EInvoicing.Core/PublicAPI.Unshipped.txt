@@ -564,6 +564,10 @@ International.EInvoicing.Model.InvoiceLine.Identifier.set -> void
 International.EInvoicing.Model.InvoiceLine.InvoiceLine() -> void
 International.EInvoicing.Model.InvoiceLine.Item.get -> International.EInvoicing.Model.Item?
 International.EInvoicing.Model.InvoiceLine.Item.set -> void
+International.EInvoicing.Model.InvoiceLine.LineStatusCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.InvoiceLine.LineStatusCode.set -> void
+International.EInvoicing.Model.InvoiceLine.LineStatusReasonCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.InvoiceLine.LineStatusReasonCode.set -> void
 International.EInvoicing.Model.InvoiceLine.NetAmount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Model.InvoiceLine.NetAmount.set -> void
 International.EInvoicing.Model.InvoiceLine.Note.get -> International.EInvoicing.Values.TextField
@@ -572,6 +576,8 @@ International.EInvoicing.Model.InvoiceLine.ObjectIdentifier.get -> International
 International.EInvoicing.Model.InvoiceLine.ObjectIdentifier.set -> void
 International.EInvoicing.Model.InvoiceLine.OrderLineReference.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.InvoiceLine.OrderLineReference.set -> void
+International.EInvoicing.Model.InvoiceLine.ParentLineIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.InvoiceLine.ParentLineIdentifier.set -> void
 International.EInvoicing.Model.InvoiceLine.Period.get -> International.EInvoicing.Model.InvoicingPeriod?
 International.EInvoicing.Model.InvoiceLine.Period.set -> void
 International.EInvoicing.Model.InvoiceLine.Price.get -> International.EInvoicing.Model.LinePrice?
@@ -677,6 +683,7 @@ International.EInvoicing.Model.LinePrice.GrossPrice.set -> void
 International.EInvoicing.Model.LinePrice.LinePrice() -> void
 International.EInvoicing.Model.LinePrice.NetPrice.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Model.LinePrice.NetPrice.set -> void
+International.EInvoicing.Model.LineStatusReasonCodes
 International.EInvoicing.Model.Package
 International.EInvoicing.Model.Package.Identifier.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.Package.Identifier.set -> void
@@ -1241,6 +1248,9 @@ const International.EInvoicing.Model.InvoiceTypeCodes.CreditNote = "381" -> stri
 const International.EInvoicing.Model.InvoiceTypeCodes.PrepaymentInvoice = "386" -> string!
 const International.EInvoicing.Model.InvoiceTypeCodes.SelfBilledCreditNote = "261" -> string!
 const International.EInvoicing.Model.InvoiceTypeCodes.SelfBilledInvoice = "389" -> string!
+const International.EInvoicing.Model.LineStatusReasonCodes.Detail = "DETAIL" -> string!
+const International.EInvoicing.Model.LineStatusReasonCodes.Group = "GROUP" -> string!
+const International.EInvoicing.Model.LineStatusReasonCodes.Information = "INFORMATION" -> string!
 const International.EInvoicing.Model.PaymentMeansCodes.Cash = "10" -> string!
 const International.EInvoicing.Model.PaymentMeansCodes.CreditTransfer = "30" -> string!
 const International.EInvoicing.Model.PaymentMeansCodes.DirectDebit = "49" -> string!
@@ -1404,6 +1414,8 @@ static International.EInvoicing.Model.InvoiceTypeCodes.IsInvoice(string? typeCod
 static International.EInvoicing.Model.InvoiceTypeCodes.IsKnown(string? typeCode) -> bool
 static International.EInvoicing.Model.ItemClassificationSchemeCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.ItemClassificationSchemeCodes.IsKnown(string? code) -> bool
+static International.EInvoicing.Model.LineStatusReasonCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Model.LineStatusReasonCodes.IsCharged(string? code) -> bool
 static International.EInvoicing.Model.PaymentMeansCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.PaymentMeansCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.VatCategoryCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
