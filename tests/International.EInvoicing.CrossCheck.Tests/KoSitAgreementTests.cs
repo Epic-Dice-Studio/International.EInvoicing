@@ -30,50 +30,47 @@ public class KoSitAgreementTests : IClassFixture<Comparison>
     public KoSitAgreementTests(Comparison comparison) => _comparison = comparison;
 
     /// <summary>
-    /// Every document the two engines disagree about, and only those, are the four already known.
+    /// Every rule the reference rejects a document for, this library rejects it for too — and the other way
+    /// round.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// On four of the eighty-six documents this library rejects what the reference accepts, and every one of
-    /// them is an EN 16931 rule rather than a German one: <c>BR-CL-13</c> twice, <c>BR-CL-10</c> with
-    /// <c>BR-CL-21</c>, and <c>BR-CO-16</c>. Three of the four are code-list rules, so the likeliest
-    /// explanation is that the code lists bundled with KoSIT's artefacts and the ones this library embeds are
-    /// of different vintages — <strong>likeliest, not established</strong>. Nobody has traced them yet.
+    /// Not "both engines accept the same documents", which is the comparison this started as and which
+    /// compares two different questions. KoSIT's acceptance is decided by its scenario's own
+    /// <c>acceptMatch</c>, and the XRechnung scenarios accept a document that broke EN 16931 rules:
+    /// <c>05.01a-INVOICE_ubl</c> violates BR-CO-16 — its payable amount is thirty euros more than its total
+    /// — and the reference reports the error and accepts the document anyway. This library's
+    /// <c>IsValid</c> means "nothing was reported as an error", which is a different thing, and comparing
+    /// the two made four documents look like disagreements when the two engines had in fact reported
+    /// exactly the same rules.
     /// </para>
     /// <para>
-    /// They are listed rather than tolerated. The test still fails on a disagreement that is not one of
-    /// these, which is what makes it worth running: rejecting a document the reference accepts is the
-    /// expensive direction of wrong, and a new one appearing should stop the build.
+    /// What is comparable is the findings, and both directions matter: a rule the reference fires and this
+    /// library does not is one read too permissively, and a rule this library fires and the reference does
+    /// not is a document rejected for something the authorities would have passed.
     /// </para>
     /// </remarks>
     [Fact]
-    public void TheOnlyDocumentsTheTwoEnginesDisagreeAboutAreTheOnesAlreadyKnown()
+    public void TheTwoEnginesRejectDocumentsForTheSameRules()
     {
         Assert.SkipUnless(_comparison.Ran, _comparison.WhyNot);
 
-        string[] known =
-        [
-            "02.01a-cvd_INVOICE_ubl",
-            "02.01a-cvd_INVOICE_uncefact",
-            "04.05a-INVOICE_uncefact",
-            "05.01a-INVOICE_ubl",
-        ];
-
-        string[] disagreed =
+        string[] differences =
         [
             .. _comparison.Results
-                .Where(result => result.KoSitAccepted != result.WeAccepted)
-                .Select(result => result.Name)
+                .SelectMany(result => result.KoSitErrors
+                    .Except(result.WeErrors)
+                    .Select(code => $"{result.Name}: {code} — the reference errors, we do not")
+                    .Concat(result.WeErrors
+                        .Except(result.KoSitErrors)
+                        .Select(code => $"{result.Name}: {code} — we error, the reference does not")))
                 .Order(StringComparer.Ordinal),
         ];
 
-        string[] unexpected = [.. disagreed.Except(known, StringComparer.Ordinal)];
-
-        unexpected.ShouldBeEmpty(
-            "the two engines now disagree about a document they used to agree on: "
-            + string.Join(", ", unexpected));
-
-        disagreed.ShouldBe(known, "a known disagreement has gone away — take it off the list");
+        differences.ShouldBeEmpty(
+            $"{differences.Length} error-level disagreements:"
+            + Environment.NewLine
+            + string.Join(Environment.NewLine, differences.Take(30)));
     }
 
     /// <summary>
@@ -162,10 +159,10 @@ public sealed class Comparison
 
             results.Add(new Result(
                 name,
-                verdict.Accepted,
-                ours.IsValid,
                 verdict.Fired,
-                ours.Messages.Select(message => message.RuleIdentifier).ToHashSet(StringComparer.Ordinal)));
+                verdict.Errors,
+                ours.Messages.Select(message => message.RuleIdentifier).ToHashSet(StringComparer.Ordinal),
+                ours.Errors.Select(message => message.RuleIdentifier).ToHashSet(StringComparer.Ordinal)));
         }
 
         Results = results;
@@ -183,7 +180,7 @@ public sealed class Comparison
 /// <remarks>Named apart from the test class so the analyzer's rule about nested types is satisfied.</remarks>
 public sealed record Result(
     string Name,
-    bool KoSitAccepted,
-    bool WeAccepted,
     IReadOnlySet<string> KoSitFired,
-    IReadOnlySet<string> WeFired);
+    IReadOnlySet<string> KoSitErrors,
+    IReadOnlySet<string> WeFired,
+    IReadOnlySet<string> WeErrors);

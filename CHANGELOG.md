@@ -15,8 +15,11 @@ All notable changes to this project are documented here. The format follows
   validator — the reference implementation German authorities run — and the cross-check tests compare
   acceptance and rule-by-rule findings over the official XRechnung corpus. That is what found the schema
   defect above; no corpus of expected results could have.
-- Four documents remain where this library rejects what the reference accepts, all EN 16931 code-list or
-  calculation rules. They are listed by name in the test so a new disagreement still fails the build.
+- The comparison is rule-by-rule and runs both ways: every rule the reference reports as an error this
+  library reports too, and the reverse. **Not** acceptance — KoSIT's is decided by its scenario's own
+  `acceptMatch`, and the XRechnung scenarios accept documents that broke EN 16931 rules, so comparing it
+  against `IsValid` compares two different questions. On the eighty-six official documents the two engines
+  agree exactly.
 
 - **ZUGFeRD 1.0, for reading** — `International.EInvoicing.Zugferd1`. The 2013 German hybrid invoice,
   replaced in 2019 and still sitting in archives. CII from before CII settled: FeRD's own document namespace

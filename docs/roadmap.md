@@ -85,11 +85,16 @@ allows: a conforming XRechnung invoice with an allowance reason code of `TAC` ca
 could have caught it, because our CII corpus and our CII schema were never run against each other. `D16B` is
 now the default, `AddCiiSchema(CiiSchemaVersion.D22B)` is there for a document that needs it.
 
-**What is still open:** four documents of the eighty-six where this library rejects what the reference
-accepts — `BR-CL-13` twice, `BR-CL-10` with `BR-CL-21`, and `BR-CO-16`. All four are EN 16931 rules rather
-than German ones, and three are code-list rules, so a difference in code-list vintage is the likeliest
-explanation — likeliest, not established. They are listed in the test by name, so a *new* disagreement still
-fails the build.
+**The four disagreements it first reported were the comparison's fault, not the engine's.** KoSIT's
+acceptance is decided by its scenario's own `acceptMatch`, and the XRechnung scenarios accept a document that
+broke EN 16931 rules: `05.01a-INVOICE_ubl` states a payable amount thirty euros above its total, and the
+reference reports `BR-CO-16` as an error *and accepts the document*. Comparing that against this library's
+`IsValid` — "nothing was reported as an error" — compared two different questions.
+
+Compared on what is comparable, the two engines agree completely: **over all eighty-six documents they report
+exactly the same rules at error level, and every rule the reference fires this library fires too.** Both
+directions are checked, because a rule we fire and the reference does not is a document rejected for
+something the authorities would have passed.
 
 ### 4. Locking the public API ✅ *done, August 2026*
 

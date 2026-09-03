@@ -98,15 +98,26 @@ internal static class KoSitValidator
 
         // Every rule the validator fired, at whatever level: an information-level rule it fires and this
         // library does not is the same kind of disagreement as a rejection, only quieter.
+        List<XElement> messages = [.. root.Descendants(Report + "message")];
+
         HashSet<string> fired =
         [
-            .. root.Descendants(Report + "message")
+            .. messages
                 .Select(message => message.Attribute("code")?.Value)
                 .Where(code => !string.IsNullOrEmpty(code))
                 .Select(code => code!),
         ];
 
-        return (name, new KoSitVerdict(accepted, fired));
+        HashSet<string> errors =
+        [
+            .. messages
+                .Where(message => message.Attribute("level")?.Value == "error")
+                .Select(message => message.Attribute("code")?.Value)
+                .Where(code => !string.IsNullOrEmpty(code))
+                .Select(code => code!),
+        ];
+
+        return (name, new KoSitVerdict(accepted, fired, errors));
     }
 
     private static string? Java()
@@ -143,7 +154,16 @@ internal static class KoSitValidator
     private static string Root() => Path.Combine(Corpus.RepositoryRoot(), "specs", "kosit");
 }
 
-/// <summary>What the KoSIT validator said about one document.</summary>
-/// <param name="Accepted">Whether it would accept the document.</param>
+/// <summary>
+/// What the KoSIT validator said about one document.
+/// </summary>
+/// <remarks>
+/// <see cref="Accepted"/> is not "found nothing wrong". Acceptance is decided by the scenario's own
+/// <c>acceptMatch</c>, and the XRechnung scenarios accept a document that broke EN 16931 rules — this
+/// library's <c>IsValid</c> asks a different question, so the two are not comparable and only
+/// <see cref="Errors"/> and <see cref="Fired"/> are.
+/// </remarks>
+/// <param name="Accepted">Whether the scenario's acceptance rule matched.</param>
 /// <param name="Fired">Every rule it reported, at any level.</param>
-internal sealed record KoSitVerdict(bool Accepted, IReadOnlySet<string> Fired);
+/// <param name="Errors">Those it reported at error level.</param>
+internal sealed record KoSitVerdict(bool Accepted, IReadOnlySet<string> Fired, IReadOnlySet<string> Errors);
