@@ -89,8 +89,8 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
         // A credit note is the same document under another root, with three elements renamed.
         UblDocumentShape shape = UblDocumentShape.Of(root);
         var mapped = new HashSet<XElement>();
-        var owners = new Dictionary<XElement, InvoiceNode>();
         var values = new UblValueReader(diagnostics, mapped);
+        Dictionary<XElement, InvoiceNode> owners = values.Owners;
         var invoice = new EInvoice();
 
         invoice.SpecificationIdentifier =
@@ -305,12 +305,12 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
         }
 
         // BT-28 is the name a party trades under; BT-27, its legal name, lives in the legal entity below.
-        var party = new Party
+        var party = values.Own(element, new Party
         {
             TradingName = values.ReadText(
                 Descend(values, Descend(values, element, UblNames.Cac + "PartyName"), UblNames.Cbc + "Name")),
             ElectronicAddress = values.ReadIdentifier(element.Element(UblNames.Cbc + "EndpointID")),
-        };
+        });
 
         foreach (XElement identification in DescendAll(values, element, UblNames.Cac + "PartyIdentification"))
         {
@@ -360,7 +360,7 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
     private static PostalAddress? ReadAddress(XElement? element, UblValueReader values) =>
         element is null
             ? null
-            : new PostalAddress
+            : values.Own(element, new PostalAddress
             {
                 Line1 = values.ReadText(element.Element(UblNames.Cbc + "StreetName")),
                 Line2 = values.ReadText(element.Element(UblNames.Cbc + "AdditionalStreetName")),
@@ -371,17 +371,17 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
                 CountrySubdivision = values.ReadText(element.Element(UblNames.Cbc + "CountrySubentity")),
                 CountryCode = values.ReadCode(
                     Descend(values, Descend(values, element, UblNames.Cac + "Country"), UblNames.Cbc + "IdentificationCode")),
-            };
+            });
 
     private static Contact? ReadContact(XElement? element, UblValueReader values) =>
         element is null
             ? null
-            : new Contact
+            : values.Own(element, new Contact
             {
                 Name = values.ReadText(element.Element(UblNames.Cbc + "Name")),
                 Telephone = values.ReadText(element.Element(UblNames.Cbc + "Telephone")),
                 Email = values.ReadText(element.Element(UblNames.Cbc + "ElectronicMail")),
-            };
+            });
 
     private static DeliveryInformation? ReadDelivery(XElement? element, UblValueReader values)
     {
@@ -392,14 +392,14 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
 
         XElement? location = Descend(values, element, UblNames.Cac + "DeliveryLocation");
 
-        return new DeliveryInformation
+        return values.Own(element, new DeliveryInformation
         {
             ActualDeliveryDate = values.ReadDate(element.Element(UblNames.Cbc + "ActualDeliveryDate"), "BT-72"),
             LocationIdentifier = values.ReadIdentifier(location?.Element(UblNames.Cbc + "ID")),
             Name = values.ReadText(
                 Descend(values, Descend(values, Descend(values, element, UblNames.Cac + "DeliveryParty"), UblNames.Cac + "PartyName"), UblNames.Cbc + "Name")),
             Address = ReadAddress(Descend(values, location, UblNames.Cac + "Address"), values),
-        };
+        });
     }
 
     private static PaymentInstructions? ReadPayment(XElement root, UblValueReader values, HashSet<XElement> mapped)
@@ -472,7 +472,7 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
         values.Consume(Descend(values, category, UblNames.Cac + "TaxScheme"));
         values.Consume(Descend(values, Descend(values, category, UblNames.Cac + "TaxScheme"), UblNames.Cbc + "ID"));
 
-        return new AllowanceCharge
+        return values.Own(element, new AllowanceCharge
         {
             IsCharge = string.Equals(indicator?.Value.Trim(), "true", StringComparison.OrdinalIgnoreCase),
             Amount = values.ReadAmount(element.Element(UblNames.Cbc + "Amount")),
@@ -482,7 +482,7 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             ReasonCode = values.ReadCode(element.Element(UblNames.Cbc + "AllowanceChargeReasonCode")),
             VatCategoryCode = values.ReadCode(category?.Element(UblNames.Cbc + "ID")),
             VatRate = values.ReadDecimal(category?.Element(UblNames.Cbc + "Percent")),
-        };
+        });
     }
 
     private static void ReadTaxTotal(XElement? element, EInvoice invoice, UblValueReader values)

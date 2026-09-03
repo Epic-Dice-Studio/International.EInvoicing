@@ -63,6 +63,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
     private static void Write(Order order, UblDocument writer, UblOrderShape shape)
     {
+        writer.Node(order.Extensions);
         string? currency = order.CurrencyCode.Value ?? order.CurrencyCode.Raw;
 
         if (order.SpecificationIdentifier.IsDeclared)
@@ -148,7 +149,6 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             WriteLine(line, writer, currency);
         }
 
-        writer.Extensions(order.Extensions);
     }
 
     internal static void WriteReference(string localName, IdentifierField identifier, UblDocument writer)
@@ -169,7 +169,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         string localName = "AdditionalDocumentReference",
         bool withTypeCode = false)
     {
-        writer.StartCac(localName);
+        writer.StartCac(localName, document.Extensions);
         writer.Identifier("ID", document.Identifier);
 
         if (withTypeCode)
@@ -194,7 +194,6 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             writer.End();
         }
 
-        writer.Extensions(document.Extensions);
         writer.End();
     }
 
@@ -212,7 +211,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
     internal static void WriteParty(Party party, UblDocument writer, bool contactBesideParty = false)
     {
-        writer.StartCac("Party");
+        writer.StartCac("Party", party.Extensions);
         writer.Identifier("EndpointID", party.ElectronicAddress);
 
         foreach (IdentifierField identifier in party.Identifiers)
@@ -253,7 +252,6 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             WriteContact(party.Contact, writer);
         }
 
-        writer.Extensions(party.Extensions);
         writer.End();
     }
 
@@ -279,11 +277,10 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             return;
         }
 
-        writer.StartCac("Contact");
+        writer.StartCac("Contact", contact.Extensions);
         writer.Text("Name", contact.Name);
         writer.Text("Telephone", contact.Telephone);
         writer.Text("ElectronicMail", contact.Email);
-        writer.Extensions(contact.Extensions);
         writer.End();
     }
 
@@ -294,7 +291,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             return;
         }
 
-        writer.StartCac(localName);
+        writer.StartCac(localName, address.Extensions);
         writer.Text("StreetName", address.Line1);
         writer.Text("AdditionalStreetName", address.Line2);
         writer.Text("CityName", address.City);
@@ -315,7 +312,6 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             writer.End();
         }
 
-        writer.Extensions(address.Extensions);
         writer.End();
     }
 
@@ -326,10 +322,9 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             return;
         }
 
-        writer.StartCac(localName);
+        writer.StartCac(localName, period.Extensions);
         writer.Date("StartDate", period.StartDate);
         writer.Date("EndDate", period.EndDate);
-        writer.Extensions(period.Extensions);
         writer.End();
     }
 
@@ -340,7 +335,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             return;
         }
 
-        writer.StartCac("Delivery");
+        writer.StartCac("Delivery", delivery.Extensions);
         writer.Identifier("ID", delivery.Identifier);
         writer.Quantity("Quantity", delivery.Quantity);
 
@@ -363,7 +358,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
         if (delivery.Recipient is { } recipient)
         {
-            writer.StartCac("DeliveryParty");
+            writer.StartCac("DeliveryParty", recipient.Extensions);
             WriteInnerParty(recipient, writer);
             writer.End();
         }
@@ -391,7 +386,6 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             writer.End();
         }
 
-        writer.Extensions(delivery.Extensions);
         writer.End();
     }
 
@@ -414,7 +408,6 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
         WriteAddress(party.Address, "PostalAddress", writer);
         WriteContact(party.Contact, writer);
-        writer.Extensions(party.Extensions);
     }
 
     private static void WriteDeliveryTerms(Order order, UblDocument writer)
@@ -444,7 +437,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         string? currency,
         bool withTaxCategory)
     {
-        writer.StartCac("AllowanceCharge");
+        writer.StartCac("AllowanceCharge", allowanceCharge.Extensions);
         writer.Cbc("ChargeIndicator", allowanceCharge.IsCharge ? "true" : "false");
         writer.Code("AllowanceChargeReasonCode", allowanceCharge.ReasonCode);
         writer.Text("AllowanceChargeReason", allowanceCharge.Reason);
@@ -463,13 +456,12 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             writer.End();
         }
 
-        writer.Extensions(allowanceCharge.Extensions);
         writer.End();
     }
 
     internal static void WriteTotals(string localName, DocumentTotals totals, UblDocument writer, string? currency)
     {
-        writer.StartCac(localName);
+        writer.StartCac(localName, totals.Extensions);
         writer.Amount("LineExtensionAmount", totals.LineTotalAmount, currency);
         writer.Amount("TaxExclusiveAmount", totals.TaxExclusiveAmount, currency);
         writer.Amount("TaxInclusiveAmount", totals.TaxInclusiveAmount, currency);
@@ -478,13 +470,12 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.Amount("PrepaidAmount", totals.PrepaidAmount, currency);
         writer.Amount("PayableRoundingAmount", totals.RoundingAmount, currency);
         writer.Amount("PayableAmount", totals.DuePayableAmount, currency);
-        writer.Extensions(totals.Extensions);
         writer.End();
     }
 
     private static void WriteLine(OrderLine line, UblDocument writer, string? currency)
     {
-        writer.StartCac("OrderLine");
+        writer.StartCac("OrderLine", line.Extensions);
         writer.Text("Note", line.Note);
 
         writer.StartCac("LineItem");
@@ -499,7 +490,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
         if (line.Originator is { } originator)
         {
-            writer.StartCac("OriginatorParty");
+            writer.StartCac("OriginatorParty", originator.Extensions);
             WriteInnerParty(originator, writer);
             writer.End();
         }
@@ -514,7 +505,6 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
         writer.End();
 
-        writer.Extensions(line.Extensions);
         writer.End();
     }
 
@@ -525,7 +515,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             return;
         }
 
-        writer.StartCac("Price");
+        writer.StartCac("Price", price.Extensions);
         writer.Amount("PriceAmount", price.NetPrice, currency);
         writer.Quantity("BaseQuantity", price.BaseQuantity);
         writer.Code("PriceType", price.PriceTypeCode);
@@ -540,7 +530,6 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             writer.End();
         }
 
-        writer.Extensions(price.Extensions);
         writer.End();
     }
 
@@ -551,7 +540,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             return;
         }
 
-        writer.StartCac("Item");
+        writer.StartCac("Item", item.Extensions);
         writer.Text("Description", item.Description);
         writer.Text("Name", item.Name);
 
@@ -595,20 +584,19 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
         foreach (OrderItemProperty property in item.Characteristics)
         {
-            writer.StartCac("AdditionalItemProperty");
+            writer.StartCac("AdditionalItemProperty", property.Extensions);
             writer.Identifier("ID", property.Identifier);
             writer.Text("Name", property.Name);
             writer.Code("NameCode", property.NameCode);
             writer.Text("Value", property.Value);
             writer.Quantity("ValueQuantity", property.ValueQuantity);
             writer.Text("ValueQualifier", property.ValueQualifier);
-            writer.Extensions(property.Extensions);
             writer.End();
         }
 
         foreach (OrderItemCertificate certificate in item.Certificates)
         {
-            writer.StartCac("Certificate");
+            writer.StartCac("Certificate", certificate.Extensions);
             writer.Identifier("ID", certificate.Identifier);
             writer.Code("CertificateTypeCode", certificate.TypeCode);
             writer.Text("CertificateType", certificate.Type);
@@ -616,7 +604,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
             if (certificate.Issuer is { } issuer)
             {
-                writer.StartCac("IssuerParty");
+                writer.StartCac("IssuerParty", issuer.Extensions);
                 WriteInnerParty(issuer, writer);
                 writer.End();
             }
@@ -628,13 +616,12 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
                 writer.End();
             }
 
-            writer.Extensions(certificate.Extensions);
             writer.End();
         }
 
         foreach (ItemInstance instance in item.Instances)
         {
-            writer.StartCac("ItemInstance");
+            writer.StartCac("ItemInstance", instance.Extensions);
             writer.Identifier("SerialID", instance.SerialIdentifier);
 
             if (instance.LotIdentifier.IsSet)
@@ -644,11 +631,9 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
                 writer.End();
             }
 
-            writer.Extensions(instance.Extensions);
             writer.End();
         }
 
-        writer.Extensions(item.Extensions);
         writer.End();
     }
 

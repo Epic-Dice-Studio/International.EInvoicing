@@ -544,15 +544,17 @@ International.EInvoicing.Model.ExtensionData.Named(string! namespaceUri, string!
 International.EInvoicing.Model.ExtensionData.this[int index].get -> International.EInvoicing.Model.ExtensionElement!
 International.EInvoicing.Model.ExtensionElement
 International.EInvoicing.Model.ExtensionElement.<Clone>$() -> International.EInvoicing.Model.ExtensionElement!
-International.EInvoicing.Model.ExtensionElement.Deconstruct(out string! NamespaceUri, out string! LocalName, out string! Xml, out International.EInvoicing.Diagnostics.SourceLocation Location) -> void
+International.EInvoicing.Model.ExtensionElement.Deconstruct(out string! NamespaceUri, out string! LocalName, out string! Xml, out International.EInvoicing.Diagnostics.SourceLocation Location, out string? PrecedingSibling) -> void
 International.EInvoicing.Model.ExtensionElement.Equals(International.EInvoicing.Model.ExtensionElement? other) -> bool
-International.EInvoicing.Model.ExtensionElement.ExtensionElement(string! NamespaceUri, string! LocalName, string! Xml, International.EInvoicing.Diagnostics.SourceLocation Location = default(International.EInvoicing.Diagnostics.SourceLocation)) -> void
+International.EInvoicing.Model.ExtensionElement.ExtensionElement(string! NamespaceUri, string! LocalName, string! Xml, International.EInvoicing.Diagnostics.SourceLocation Location = default(International.EInvoicing.Diagnostics.SourceLocation), string? PrecedingSibling = null) -> void
 International.EInvoicing.Model.ExtensionElement.LocalName.get -> string!
 International.EInvoicing.Model.ExtensionElement.LocalName.init -> void
 International.EInvoicing.Model.ExtensionElement.Location.get -> International.EInvoicing.Diagnostics.SourceLocation
 International.EInvoicing.Model.ExtensionElement.Location.init -> void
 International.EInvoicing.Model.ExtensionElement.NamespaceUri.get -> string!
 International.EInvoicing.Model.ExtensionElement.NamespaceUri.init -> void
+International.EInvoicing.Model.ExtensionElement.PrecedingSibling.get -> string?
+International.EInvoicing.Model.ExtensionElement.PrecedingSibling.init -> void
 International.EInvoicing.Model.ExtensionElement.QualifiedName.get -> string!
 International.EInvoicing.Model.ExtensionElement.Xml.get -> string!
 International.EInvoicing.Model.ExtensionElement.Xml.init -> void

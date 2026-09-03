@@ -47,8 +47,11 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             CloseOutput = false,
         };
 
-        using XmlWriter writer = XmlWriter.Create(destination, settings);
+        using XmlWriter xml = XmlWriter.Create(destination, settings);
+        using UblDocument writer = UblDocument.Wrap(xml);
+
         Write(document, writer);
+        xml.Flush();
     }
 
     /// <summary>Writes <paramref name="document"/> and returns it as XML text.</summary>
@@ -71,7 +74,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         return DocumentStreams.WriteAllAsync(WriteToString(document), destination, cancellationToken);
     }
 
-    private static void Write(EInvoice invoice, XmlWriter writer)
+    private static void Write(EInvoice invoice, UblDocument writer)
     {
         // A credit note is not an invoice with a different code in UBL: it is its own root element.
         UblDocumentShape shape = UblDocumentShape.For(invoice);
@@ -80,6 +83,10 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteStartElement(shape.Root.LocalName, shape.Root.NamespaceName);
         writer.WriteAttributeString("xmlns", UblNames.CacPrefix, null, UblNames.Cac.NamespaceName);
         writer.WriteAttributeString("xmlns", UblNames.CbcPrefix, null, UblNames.Cbc.NamespaceName);
+
+        // After the namespace declarations: scoping the node may emit content, and content closes the
+        // element's attribute list.
+        writer.Node(invoice.Extensions);
 
         WriteDocumentLevel(invoice, shape, writer);
         WriteReferences(invoice, writer);
@@ -102,13 +109,12 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             WriteLine(line, shape, writer, taxScheme, currency);
         }
 
-        WriteExtensions(invoice.Extensions, writer);
 
         writer.WriteEndElement();
         writer.WriteEndDocument();
     }
 
-    private static void WriteDocumentLevel(EInvoice invoice, UblDocumentShape shape, XmlWriter writer)
+    private static void WriteDocumentLevel(EInvoice invoice, UblDocumentShape shape, UblDocument writer)
     {
         if (invoice.SpecificationIdentifier.IsDeclared)
         {
@@ -138,7 +144,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         WriteText(writer, "BuyerReference", invoice.BuyerReference);
     }
 
-    private static void WriteReferences(EInvoice invoice, XmlWriter writer)
+    private static void WriteReferences(EInvoice invoice, UblDocument writer)
     {
         WritePeriod(writer, "InvoicePeriod", invoice.Period, invoice.TaxPointDateCode);
 
@@ -177,7 +183,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     }
 
     /// <summary>One of the containers that hold a single identifier and nothing else.</summary>
-    private static void WriteReference(XmlWriter writer, string element, IdentifierField identifier)
+    private static void WriteReference(UblDocument writer, string element, IdentifierField identifier)
     {
         if (!identifier.IsSet)
         {
@@ -189,9 +195,10 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteAdditionalDocument(AdditionalDocument document, XmlWriter writer)
+    private static void WriteAdditionalDocument(AdditionalDocument document, UblDocument writer)
     {
         StartCac(writer, "AdditionalDocumentReference");
+        writer.Node(document.Extensions);
         WriteIdentifier(writer, "ID", document.Identifier);
         WriteText(writer, "DocumentDescription", document.Description);
 
@@ -218,11 +225,10 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        WriteExtensions(document.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WriteParties(EInvoice invoice, XmlWriter writer)
+    private static void WriteParties(EInvoice invoice, UblDocument writer)
     {
         string taxScheme = TaxSchemeOf(invoice);
 
@@ -232,7 +238,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         WriteParty(writer, "TaxRepresentativeParty", invoice.SellerTaxRepresentative, wrapped: false, taxScheme);
     }
 
-    private static void WriteParty(XmlWriter writer, string elementName, Party? party, bool wrapped, string taxScheme)
+    private static void WriteParty(UblDocument writer, string elementName, Party? party, bool wrapped, string taxScheme)
     {
         if (party is null)
         {
@@ -245,6 +251,10 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         {
             StartCac(writer, "Party");
         }
+
+        // A party the reader found wrapped was read from cac:Party, so that is the element its extensions
+        // belong inside; one it found bare was read from the outer element.
+        writer.Node(party.Extensions);
 
         WriteIdentifier(writer, "EndpointID", party.ElectronicAddress);
 
@@ -276,7 +286,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteTaxScheme(XmlWriter writer, Party party, string taxScheme)
+    private static void WriteTaxScheme(UblDocument writer, Party party, string taxScheme)
     {
         if (party.VatIdentifier.IsSet)
         {
@@ -301,7 +311,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteLegalEntity(XmlWriter writer, Party party)
+    private static void WriteLegalEntity(UblDocument writer, Party party)
     {
         if (!party.Name.IsSet && !party.LegalRegistrationIdentifier.IsSet)
         {
@@ -315,7 +325,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteContact(XmlWriter writer, Contact? contact)
+    private static void WriteContact(UblDocument writer, Contact? contact)
     {
         if (contact is null)
         {
@@ -323,13 +333,14 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         StartCac(writer, "Contact");
+        writer.Node(contact.Extensions);
         WriteText(writer, "Name", contact.Name);
         WriteText(writer, "Telephone", contact.Telephone);
         WriteText(writer, "ElectronicMail", contact.Email);
         writer.WriteEndElement();
     }
 
-    private static void WriteAddress(XmlWriter writer, string elementName, PostalAddress? address)
+    private static void WriteAddress(UblDocument writer, string elementName, PostalAddress? address)
     {
         if (address is null)
         {
@@ -337,6 +348,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         StartCac(writer, elementName);
+        writer.Node(address.Extensions);
         WriteText(writer, "StreetName", address.Line1);
         WriteText(writer, "AdditionalStreetName", address.Line2);
         WriteText(writer, "CityName", address.City);
@@ -360,11 +372,12 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteDeliveryAndPayment(EInvoice invoice, XmlWriter writer)
+    private static void WriteDeliveryAndPayment(EInvoice invoice, UblDocument writer)
     {
         if (invoice.Delivery is { } delivery)
         {
             StartCac(writer, "Delivery");
+            writer.Node(delivery.Extensions);
             WriteDate(writer, "ActualDeliveryDate", delivery.ActualDeliveryDate);
 
             if (delivery.LocationIdentifier.IsSet || delivery.Address is not null)
@@ -411,7 +424,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     /// (<c>ubl-tc434-example1</c> and <c>guide-example1</c> both carry two of each). Writing two accounts
     /// into one block produces a document no schema accepts and no Schematron rule complains about.
     /// </remarks>
-    private static void WritePaymentMeans(XmlWriter writer, PaymentInstructions payment)
+    private static void WritePaymentMeans(UblDocument writer, PaymentInstructions payment)
     {
         if (payment.CreditTransfers.Count == 0)
         {
@@ -457,7 +470,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     }
 
     /// <summary>BG-19 — which mandate authorises the debit, and which account it takes from.</summary>
-    private static void WriteMandate(XmlWriter writer, DirectDebit? debit)
+    private static void WriteMandate(UblDocument writer, DirectDebit? debit)
     {
         if (debit is null || (!debit.MandateReference.IsSet && !debit.DebitedAccountIdentifier.IsSet))
         {
@@ -479,11 +492,12 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
 
     private static void WriteAllowanceCharge(
         AllowanceCharge allowanceCharge,
-        XmlWriter writer,
+        UblDocument writer,
         string taxScheme,
         string? currency)
     {
         StartCac(writer, "AllowanceCharge");
+        writer.Node(allowanceCharge.Extensions);
         Cbc(writer, "ChargeIndicator", allowanceCharge.IsCharge ? "true" : "false");
         WriteCode(writer, "AllowanceChargeReasonCode", allowanceCharge.ReasonCode);
         WriteText(writer, "AllowanceChargeReason", allowanceCharge.Reason);
@@ -515,7 +529,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     private static string TaxSchemeOf(EInvoice invoice) =>
         invoice.TaxSchemeIdentifier.Value is { Length: > 0 } scheme ? scheme : "VAT";
 
-    private static void WriteTaxTotal(EInvoice invoice, XmlWriter writer, string? currency)
+    private static void WriteTaxTotal(EInvoice invoice, UblDocument writer, string? currency)
     {
         string taxScheme = TaxSchemeOf(invoice);
 
@@ -561,7 +575,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
     }
 
-    private static void WriteTotals(DocumentTotals totals, XmlWriter writer, string? currency)
+    private static void WriteTotals(DocumentTotals totals, UblDocument writer, string? currency)
     {
         StartCac(writer, "LegalMonetaryTotal");
         WriteAmount(writer, "LineExtensionAmount", totals.LineTotalAmount, currency);
@@ -578,11 +592,12 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     private static void WriteLine(
         InvoiceLine line,
         UblDocumentShape shape,
-        XmlWriter writer,
+        UblDocument writer,
         string taxScheme,
         string? currency)
     {
         StartCac(writer, shape.Line.LocalName);
+        writer.Node(line.Extensions);
         WriteIdentifier(writer, "ID", line.Identifier);
         WriteText(writer, "Note", line.Note);
         WriteQuantity(writer, shape.Quantity.LocalName, line.Quantity);
@@ -614,11 +629,10 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         WriteItem(line, writer, taxScheme);
         WritePrice(line, writer, currency);
 
-        WriteExtensions(line.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WriteItem(InvoiceLine line, XmlWriter writer, string taxScheme)
+    private static void WriteItem(InvoiceLine line, UblDocument writer, string taxScheme)
     {
         if (line.Item is not { } item)
         {
@@ -626,6 +640,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         StartCac(writer, "Item");
+        writer.Node(item.Extensions);
         WriteText(writer, "Description", item.Description);
         WriteText(writer, "Name", item.Name);
 
@@ -683,11 +698,10 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        WriteExtensions(item.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WritePrice(InvoiceLine line, XmlWriter writer, string? currency)
+    private static void WritePrice(InvoiceLine line, UblDocument writer, string? currency)
     {
         if (line.Price is not { } price)
         {
@@ -719,7 +733,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     /// <c>RSR-05</c> requires exactly that, which is how the omission came to light.
     /// </remarks>
     private static void WritePeriod(
-        XmlWriter writer,
+        UblDocument writer,
         string elementName,
         InvoicingPeriod? period,
         CodeField taxPointDateCode = default)
@@ -752,26 +766,14 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     /// something no receiver will accept. They do not cross; <c>EInvoicing.Convert</c> reports them as the
     /// cost of the conversion.
     /// </remarks>
-    private static void WriteExtensions(ExtensionData extensions, XmlWriter writer)
-    {
-        foreach (ExtensionElement element in extensions)
-        {
-            if (SyntaxNamespaces.BelongsTo(element.NamespaceUri, DocumentSyntax.Cii))
-            {
-                continue;
-            }
 
-            writer.WriteRaw(element.Xml);
-        }
-    }
-
-    private static void StartCac(XmlWriter writer, string localName) =>
+    private static void StartCac(UblDocument writer, string localName) =>
         writer.WriteStartElement(UblNames.CacPrefix, localName, UblNames.Cac.NamespaceName);
 
-    private static void Cbc(XmlWriter writer, string localName, string value) =>
+    private static void Cbc(UblDocument writer, string localName, string value) =>
         writer.WriteElementString(UblNames.CbcPrefix, localName, UblNames.Cbc.NamespaceName, XmlCharacters.Sanitize(value));
 
-    private static void WriteText(XmlWriter writer, string localName, TextField field)
+    private static void WriteText(UblDocument writer, string localName, TextField field)
     {
         if (!field.IsSet)
         {
@@ -784,7 +786,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteCode(XmlWriter writer, string localName, CodeField field)
+    private static void WriteCode(UblDocument writer, string localName, CodeField field)
     {
         if (!field.IsSet)
         {
@@ -799,7 +801,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteIdentifier(XmlWriter writer, string localName, IdentifierField field)
+    private static void WriteIdentifier(UblDocument writer, string localName, IdentifierField field)
     {
         if (!field.IsSet)
         {
@@ -824,7 +826,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     /// (BT-5) is the right answer for every amount except the ones in the accounting currency, which carry
     /// their own.
     /// </remarks>
-    private static void WriteAmount(XmlWriter writer, string localName, AmountField field, string? documentCurrency)
+    private static void WriteAmount(UblDocument writer, string localName, AmountField field, string? documentCurrency)
     {
         if (!field.IsSet)
         {
@@ -837,7 +839,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteQuantity(XmlWriter writer, string localName, QuantityField field)
+    private static void WriteQuantity(UblDocument writer, string localName, QuantityField field)
     {
         if (!field.IsSet)
         {
@@ -852,7 +854,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
     }
 
     private static void WriteDecimal(
-        XmlWriter writer,
+        UblDocument writer,
         string localName,
         Field<decimal> field,
         bool twoDecimalsAtLeast = false)
@@ -863,7 +865,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         }
     }
 
-    private static void WriteDate(XmlWriter writer, string localName, DateField field)
+    private static void WriteDate(UblDocument writer, string localName, DateField field)
     {
         if (!field.IsSet)
         {
@@ -873,7 +875,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         Cbc(writer, localName, field.Raw ?? field.Value?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty);
     }
 
-    private static void WriteAttributeIfSet(XmlWriter writer, string name, string? value)
+    private static void WriteAttributeIfSet(UblDocument writer, string name, string? value)
     {
         if (!string.IsNullOrEmpty(value))
         {

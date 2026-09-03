@@ -19,6 +19,27 @@ namespace International.EInvoicing.Ubl.Reading;
 /// </remarks>
 internal sealed class UblValueReader(DiagnosticCollector diagnostics, HashSet<XElement> mapped)
 {
+    /// <summary>Which model node each element's content belongs to.</summary>
+    /// <remarks>
+    /// An element nobody mapped is kept on the node that owns the element containing it, so it can be
+    /// written back inside that element rather than at the end of the document. Recording ownership here,
+    /// rather than passing a dictionary through every reader, is what keeps the mapping methods about
+    /// mapping.
+    /// </remarks>
+    public Dictionary<XElement, InvoiceNode> Owners { get; } = [];
+
+    /// <summary>Records that an element's content belongs to a node, and answers the node.</summary>
+    public TNode Own<TNode>(XElement? element, TNode node)
+        where TNode : InvoiceNode
+    {
+        if (element is not null)
+        {
+            Owners[element] = node;
+        }
+
+        return node;
+    }
+
     /// <summary>Where anything this reader could not do is reported.</summary>
     public DiagnosticCollector Diagnostics => diagnostics;
 

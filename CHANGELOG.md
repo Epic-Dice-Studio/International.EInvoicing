@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Unmapped content is written back where it was read from, in UBL.** An element nobody maps used to be kept
+  verbatim and flushed at the end of the node holding it. UBL's element order is normative, so content in the
+  wrong place is content a receiver's parser rejects: keeping it was only half of not losing it. Each
+  extension now remembers the mapped sibling it followed, and the writer puts it back after that sibling.
+- The reader is the half that makes it work. An extension can only follow a sibling if it is held by the node
+  that sibling belongs to, and everything unmapped used to bubble up to the invoice — so a national extension
+  written inside a party came back outside it. `UblValueReader` now records which node each element's content
+  belongs to, and parties, addresses, contacts, deliveries and allowance charges keep their own.
+- Nothing changed in the writers' shape: `UblDocument` grew the `XmlWriter` members the writers were already
+  calling, so 163 call sites stayed as they were and 33 signatures changed type.
+- **CII is not covered.** Its order is normative too and its writers still flush at end-of-node; the reader
+  half there has more nesting to attribute and is tracked separately on the roadmap.
+
 - **The Peppol Order Change, and with it the whole post-award family.** All nine transactions — Order, Order
   Change, Order Cancellation, Order Response (simple, advanced and agreement), Despatch Advice, Invoice
   Response and Message Level Response — are read, written, round-tripped element for element and judged by

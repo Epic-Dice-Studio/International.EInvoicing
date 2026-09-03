@@ -62,6 +62,7 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
 
     private static void Write(OrderResponse response, UblDocument writer)
     {
+        writer.Node(response.Extensions);
         string? currency = response.CurrencyCode.Value ?? response.CurrencyCode.Raw;
 
         if (response.SpecificationIdentifier.IsDeclared)
@@ -125,7 +126,6 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
             WriteLine(line, writer, currency);
         }
 
-        writer.Extensions(response.Extensions);
     }
 
     /// <summary>The buyer's role element, whose contact sits beside the party rather than inside it.</summary>
@@ -163,7 +163,7 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
 
         foreach (VatBreakdownEntry entry in response.VatBreakdown)
         {
-            writer.StartCac("TaxSubtotal");
+            writer.StartCac("TaxSubtotal", entry.Extensions);
             writer.Amount("TaxableAmount", entry.TaxableAmount, currency);
             writer.Amount("TaxAmount", entry.TaxAmount, currency);
             writer.StartCac("TaxCategory");
@@ -173,7 +173,6 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
             writer.Cbc("ID", "VAT");
             writer.End();
             writer.End();
-            writer.Extensions(entry.Extensions);
             writer.End();
         }
 
@@ -182,7 +181,7 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
 
     private static void WriteLine(OrderResponseLine line, UblDocument writer, string? currency)
     {
-        writer.StartCac("OrderLine");
+        writer.StartCac("OrderLine", line.Extensions);
 
         writer.StartCac("LineItem");
         writer.Identifier("ID", line.Identifier);
@@ -211,7 +210,6 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
             writer.End();
         }
 
-        writer.Extensions(line.Extensions);
         writer.End();
     }
 }

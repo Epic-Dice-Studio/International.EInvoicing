@@ -62,6 +62,7 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
 
     private static void Write(DespatchAdvice advice, UblDocument writer)
     {
+        writer.Node(advice.Extensions);
         if (advice.SpecificationIdentifier.IsDeclared)
         {
             writer.Cbc("CustomizationID", advice.SpecificationIdentifier.Value);
@@ -98,7 +99,6 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             WriteLine(line, writer);
         }
 
-        writer.Extensions(advice.Extensions);
     }
 
     /// <remarks>
@@ -119,7 +119,7 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
 
     private static void WriteParty(Party party, UblDocument writer, bool contactBesideParty = false)
     {
-        writer.StartCac("Party");
+        writer.StartCac("Party", party.Extensions);
         writer.Identifier("EndpointID", party.ElectronicAddress);
 
         foreach (IdentifierField identifier in party.Identifiers)
@@ -151,7 +151,6 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             WriteContact(party.Contact, "Contact", writer);
         }
 
-        writer.Extensions(party.Extensions);
         writer.End();
 
         if (contactBesideParty)
@@ -167,11 +166,10 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             return;
         }
 
-        writer.StartCac(localName);
+        writer.StartCac(localName, contact.Extensions);
         writer.Text("Name", contact.Name);
         writer.Text("Telephone", contact.Telephone);
         writer.Text("ElectronicMail", contact.Email);
-        writer.Extensions(contact.Extensions);
         writer.End();
     }
 
@@ -182,7 +180,7 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             return;
         }
 
-        writer.StartCac(localName);
+        writer.StartCac(localName, address.Extensions);
         writer.Text("StreetName", address.Line1);
         writer.Text("AdditionalStreetName", address.Line2);
         writer.Text("CityName", address.City);
@@ -203,7 +201,6 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             writer.End();
         }
 
-        writer.Extensions(address.Extensions);
         writer.End();
     }
 
@@ -214,7 +211,7 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             return;
         }
 
-        writer.StartCac("Shipment");
+        writer.StartCac("Shipment", shipment.Extensions);
         writer.Identifier("ID", shipment.Identifier);
         writer.Text("Information", shipment.Information);
         writer.Quantity("GrossWeightMeasure", shipment.GrossWeight);
@@ -229,7 +226,7 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
 
             if (shipment.Carrier is { } carrier)
             {
-                writer.StartCac("CarrierParty");
+                writer.StartCac("CarrierParty", carrier.Extensions);
                 WriteInnerParty(carrier, writer);
                 writer.End();
             }
@@ -279,13 +276,12 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             WriteHandlingUnit(unit, writer);
         }
 
-        writer.Extensions(shipment.Extensions);
         writer.End();
     }
 
     private static void WriteDocument(string localName, AdditionalDocument document, UblDocument writer)
     {
-        writer.StartCac(localName);
+        writer.StartCac(localName, document.Extensions);
         writer.Identifier("ID", document.Identifier);
         writer.Text("DocumentType", document.Description);
 
@@ -304,7 +300,6 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             writer.End();
         }
 
-        writer.Extensions(document.Extensions);
         writer.End();
     }
 
@@ -326,12 +321,11 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
         }
 
         WriteAddress(party.Address, "PostalAddress", writer);
-        writer.Extensions(party.Extensions);
     }
 
     private static void WriteLine(DespatchLine line, UblDocument writer)
     {
-        writer.StartCac("DespatchLine");
+        writer.StartCac("DespatchLine", line.Extensions);
         writer.Identifier("ID", line.Identifier);
         writer.Text("Note", line.Note);
         writer.Quantity("DeliveredQuantity", line.DeliveredQuantity);
@@ -362,7 +356,6 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
         WriteItem(line.Item, writer);
         WriteShipment(line.Packaging, writer);
 
-        writer.Extensions(line.Extensions);
         writer.End();
     }
 
@@ -373,7 +366,7 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             return;
         }
 
-        writer.StartCac("Item");
+        writer.StartCac("Item", item.Extensions);
         writer.Text("Description", item.Description);
         writer.Text("Name", item.Name);
 
@@ -406,16 +399,14 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             WriteInstance(instance, writer);
         }
 
-        writer.Extensions(item.Extensions);
         writer.End();
     }
 
     private static void WriteCharacteristic(ItemCharacteristic characteristic, UblDocument writer)
     {
-        writer.StartCac("AdditionalItemProperty");
+        writer.StartCac("AdditionalItemProperty", characteristic.Extensions);
         writer.Text("Name", characteristic.Name);
         writer.Text("Value", characteristic.Value);
-        writer.Extensions(characteristic.Extensions);
         writer.End();
     }
 
@@ -438,7 +429,7 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
 
     private static void WriteInstance(ItemInstance instance, UblDocument writer)
     {
-        writer.StartCac("ItemInstance");
+        writer.StartCac("ItemInstance", instance.Extensions);
         writer.Identifier("ProductTraceID", instance.ProductTraceIdentifier);
         writer.Date("ManufactureDate", instance.ManufactureDate);
         writer.Date("BestBeforeDate", instance.BestBeforeDate);
@@ -457,13 +448,12 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             writer.End();
         }
 
-        writer.Extensions(instance.Extensions);
         writer.End();
     }
 
     private static void WriteHandlingUnit(TransportHandlingUnit unit, UblDocument writer)
     {
-        writer.StartCac("TransportHandlingUnit");
+        writer.StartCac("TransportHandlingUnit", unit.Extensions);
         writer.Identifier("ID", unit.Identifier);
         writer.Code("TransportHandlingUnitTypeCode", unit.TypeCode);
         writer.Indicator("HazardousRiskIndicator", unit.Hazardous);
@@ -479,14 +469,12 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
 
         foreach (Package package in unit.Packages)
         {
-            writer.StartCac("Package");
+            writer.StartCac("Package", package.Extensions);
             writer.Identifier("ID", package.Identifier);
             writer.Code("PackagingTypeCode", package.PackagingTypeCode);
-            writer.Extensions(package.Extensions);
             writer.End();
         }
 
-        writer.Extensions(unit.Extensions);
         writer.End();
     }
 }

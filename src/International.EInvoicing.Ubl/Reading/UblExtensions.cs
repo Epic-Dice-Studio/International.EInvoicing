@@ -12,8 +12,14 @@ internal static class UblExtensions
     /// it.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Doing this once at the end, rather than inside each mapping method, is what makes the guarantee
     /// total: an element nobody thought about is still kept, wherever it sits.
+    /// </para>
+    /// <para>
+    /// Each one also remembers the mapped sibling it followed, so a writer can put it back there rather than
+    /// at the end of the node. Element order is normative, so where it goes is part of not losing it.
+    /// </para>
     /// </remarks>
     public static void KeepEverythingElse(
         XElement source,
@@ -22,10 +28,14 @@ internal static class UblExtensions
         IReadOnlyDictionary<XElement, InvoiceNode> owners,
         DiagnosticCollector diagnostics)
     {
+        string? preceding = null;
+
         foreach (XElement element in source.Elements())
         {
             if (mapped.Contains(element))
             {
+                preceding = element.Name.ToString();
+
                 // Descend with the node that owns this element, when one exists, so what it contains is kept
                 // where it belongs and can be written back inside it.
                 KeepEverythingElse(
@@ -41,7 +51,8 @@ internal static class UblExtensions
                 element.Name.NamespaceName,
                 element.Name.LocalName,
                 element.ToString(SaveOptions.DisableFormatting),
-                UblValueReader.LocationOf(element)));
+                UblValueReader.LocationOf(element),
+                preceding));
 
             diagnostics.Add(Diagnostic.Create(UblDiagnostics.UnmappedElement, element.Name.LocalName) with
             {

@@ -58,6 +58,7 @@ public sealed class UblOrderCancellationWriter : IDocumentWriter<OrderCancellati
 
     private static void Write(OrderCancellation cancellation, UblDocument writer)
     {
+        writer.Node(cancellation.Extensions);
         if (cancellation.SpecificationIdentifier.IsDeclared)
         {
             writer.Cbc("CustomizationID", cancellation.SpecificationIdentifier.Value);
@@ -85,10 +86,9 @@ public sealed class UblOrderCancellationWriter : IDocumentWriter<OrderCancellati
 
         foreach (AdditionalDocument document in cancellation.AdditionalDocuments)
         {
-            writer.StartCac("AdditionalDocumentReference");
+            writer.StartCac("AdditionalDocumentReference", document.Extensions);
             writer.Identifier("ID", document.Identifier);
             writer.Text("DocumentType", document.Description);
-            writer.Extensions(document.Extensions);
             writer.End();
         }
 
@@ -103,6 +103,5 @@ public sealed class UblOrderCancellationWriter : IDocumentWriter<OrderCancellati
         UblOrderWriter.WriteWrappedParty(cancellation.Seller, "SellerSupplierParty", writer);
         UblOrderWriter.WriteWrappedParty(cancellation.Originator, "OriginatorCustomerParty", writer);
 
-        writer.Extensions(cancellation.Extensions);
     }
 }
