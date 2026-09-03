@@ -164,6 +164,14 @@ public sealed class EInvoicing
     public IDocumentWriter<OrderResponse> UblOrderResponseWriter =>
         Required(Handlers.OrderResponseWriterFor(DocumentSyntax.Ubl), "write UBL order responses");
 
+    /// <summary>The reader for a UBL <c>OrderCancellation</c>.</summary>
+    public IDocumentReader<OrderCancellation> UblOrderCancellation =>
+        Required(Handlers.OrderCancellationReaderFor(DocumentSyntax.Ubl), "read UBL order cancellations");
+
+    /// <summary>The writer for a UBL <c>OrderCancellation</c>.</summary>
+    public IDocumentWriter<OrderCancellation> UblOrderCancellationWriter =>
+        Required(Handlers.OrderCancellationWriterFor(DocumentSyntax.Ubl), "write UBL order cancellations");
+
     private static THandler Required<THandler>(THandler? handler, string what)
         where THandler : class =>
         handler ?? throw new InvalidOperationException(
@@ -300,6 +308,7 @@ public sealed class EInvoicing
             DocumentKind.UblDespatchAdvice => FromDespatchAdvice(UblDespatchAdvice.Read(text)),
             DocumentKind.UblOrder => FromOrder(UblOrder.Read(text)),
             DocumentKind.UblOrderResponse => FromOrderResponse(UblOrderResponse.Read(text)),
+            DocumentKind.UblOrderCancellation => FromOrderCancellation(UblOrderCancellation.Read(text)),
             _ => new DocumentResult
             {
                 Kind = DocumentKind.Unknown,
@@ -413,6 +422,11 @@ public sealed class EInvoicing
         if (root.Namespace == UblOrderResponseNames.OrderResponse)
         {
             return DocumentKind.UblOrderResponse;
+        }
+
+        if (root.Namespace == UblOrderCancellationNames.OrderCancellation)
+        {
+            return DocumentKind.UblOrderCancellation;
         }
 
         return root.Namespace == UblNames.Invoice ? DocumentKind.Ubl : DocumentKind.Unknown;
@@ -571,6 +585,14 @@ public sealed class EInvoicing
         return writer.WriteAsync(invoice, destination, cancellationToken);
     }
 
+    /// <summary>Writes an order cancellation as UBL.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="cancellation"/> is <c>null</c>.</exception>
+    public string Write(OrderCancellation cancellation)
+    {
+        ArgumentNullException.ThrowIfNull(cancellation);
+        return UblOrderCancellationWriter.WriteToString(cancellation);
+    }
+
     /// <summary>Writes an order response as UBL.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="response"/> is <c>null</c>.</exception>
     public string Write(OrderResponse response)
@@ -704,7 +726,8 @@ public sealed class EInvoicing
             or DocumentKind.UblApplicationResponse
             or DocumentKind.UblDespatchAdvice
             or DocumentKind.UblOrder
-            or DocumentKind.UblOrderResponse => DocumentSyntax.Ubl,
+            or DocumentKind.UblOrderResponse
+            or DocumentKind.UblOrderCancellation => DocumentSyntax.Ubl,
         DocumentKind.Cii => DocumentSyntax.Cii,
         DocumentKind.Cdar => DocumentSyntax.Cdar,
         _ => null,
@@ -754,6 +777,14 @@ public sealed class EInvoicing
     {
         Kind = kind,
         Invoice = result.Value,
+        Diagnostics = result.Diagnostics,
+        Profile = result.Value?.Profile,
+    };
+
+    private static DocumentResult FromOrderCancellation(ParseResult<OrderCancellation> result) => new()
+    {
+        Kind = DocumentKind.UblOrderCancellation,
+        OrderCancellation = result.Value,
         Diagnostics = result.Diagnostics,
         Profile = result.Value?.Profile,
     };

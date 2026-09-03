@@ -118,6 +118,13 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
                 UblOrderReader.Take(order, UblNames.Cbc + "ID", mapped));
         }
 
+        if (UblOrderReader.Take(root, UblNames.Cac + "OrderChangeDocumentReference", mapped) is { } change)
+        {
+            owners[change] = response;
+            response.OrderChangeReference = values.ReadIdentifier(
+                UblOrderReader.Take(change, UblNames.Cbc + "ID", mapped));
+        }
+
         response.Seller = UblOrderReader.WrappedParty(root, "SellerSupplierParty", values, mapped, owners);
         response.Buyer = UblOrderReader.WrappedParty(root, "BuyerCustomerParty", values, mapped, owners);
         response.Delivery = UblOrderReader.ReadDelivery(

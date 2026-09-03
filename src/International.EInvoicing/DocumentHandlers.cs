@@ -37,6 +37,8 @@ public sealed class DocumentHandlers
     private readonly IReadOnlyList<IDocumentWriter<Order>> _orderWriters;
     private readonly IReadOnlyList<IDocumentReader<OrderResponse>> _orderResponseReaders;
     private readonly IReadOnlyList<IDocumentWriter<OrderResponse>> _orderResponseWriters;
+    private readonly IReadOnlyList<IDocumentReader<OrderCancellation>> _cancellationReaders;
+    private readonly IReadOnlyList<IDocumentWriter<OrderCancellation>> _cancellationWriters;
     private readonly IReadOnlyList<IWritePipelineStep> _writeSteps;
 
     /// <summary>Collects the handlers a container has registered.</summary>
@@ -108,6 +110,28 @@ public sealed class DocumentHandlers
         IEnumerable<IDocumentReader<OrderResponse>> orderResponseReaders,
         IEnumerable<IDocumentWriter<OrderResponse>> orderResponseWriters,
         IEnumerable<IWritePipelineStep> writeSteps)
+        : this(invoiceReaders, invoiceWriters, lifecycleReaders, lifecycleWriters, despatchReaders,
+            despatchWriters, orderReaders, orderWriters, orderResponseReaders, orderResponseWriters,
+            [], [], writeSteps)
+    {
+    }
+
+    /// <summary>The same, with the order cancellation handlers as well.</summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public DocumentHandlers(
+        IEnumerable<IDocumentReader<EInvoice>> invoiceReaders,
+        IEnumerable<IDocumentWriter<EInvoice>> invoiceWriters,
+        IEnumerable<IDocumentReader<LifecycleStatusMessage>> lifecycleReaders,
+        IEnumerable<IDocumentWriter<LifecycleStatusMessage>> lifecycleWriters,
+        IEnumerable<IDocumentReader<DespatchAdvice>> despatchReaders,
+        IEnumerable<IDocumentWriter<DespatchAdvice>> despatchWriters,
+        IEnumerable<IDocumentReader<Order>> orderReaders,
+        IEnumerable<IDocumentWriter<Order>> orderWriters,
+        IEnumerable<IDocumentReader<OrderResponse>> orderResponseReaders,
+        IEnumerable<IDocumentWriter<OrderResponse>> orderResponseWriters,
+        IEnumerable<IDocumentReader<OrderCancellation>> cancellationReaders,
+        IEnumerable<IDocumentWriter<OrderCancellation>> cancellationWriters,
+        IEnumerable<IWritePipelineStep> writeSteps)
     {
         ArgumentNullException.ThrowIfNull(invoiceReaders);
         ArgumentNullException.ThrowIfNull(invoiceWriters);
@@ -119,6 +143,8 @@ public sealed class DocumentHandlers
         ArgumentNullException.ThrowIfNull(orderWriters);
         ArgumentNullException.ThrowIfNull(orderResponseReaders);
         ArgumentNullException.ThrowIfNull(orderResponseWriters);
+        ArgumentNullException.ThrowIfNull(cancellationReaders);
+        ArgumentNullException.ThrowIfNull(cancellationWriters);
         ArgumentNullException.ThrowIfNull(writeSteps);
 
         _invoiceReaders = [.. invoiceReaders];
@@ -131,6 +157,8 @@ public sealed class DocumentHandlers
         _orderWriters = [.. orderWriters];
         _orderResponseReaders = [.. orderResponseReaders];
         _orderResponseWriters = [.. orderResponseWriters];
+        _cancellationReaders = [.. cancellationReaders];
+        _cancellationWriters = [.. cancellationWriters];
         _writeSteps = [.. writeSteps];
     }
 
@@ -161,6 +189,8 @@ public sealed class DocumentHandlers
             [new UblOrderWriter()],
             [new UblOrderResponseReader(options, profiles)],
             [new UblOrderResponseWriter()],
+            [new UblOrderCancellationReader(options, profiles)],
+            [new UblOrderCancellationWriter()],
             writeSteps);
     }
 
@@ -226,6 +256,14 @@ public sealed class DocumentHandlers
     public IDocumentWriter<OrderResponse>? OrderResponseWriterFor(DocumentSyntax syntax) =>
         Last(_orderResponseWriters, syntax);
 
+    /// <summary>The order cancellation reader for a syntax, or <c>null</c> when nothing handles it.</summary>
+    public IDocumentReader<OrderCancellation>? OrderCancellationReaderFor(DocumentSyntax syntax) =>
+        Last(_cancellationReaders, syntax);
+
+    /// <summary>The order cancellation writer for a syntax, or <c>null</c> when nothing handles it.</summary>
+    public IDocumentWriter<OrderCancellation>? OrderCancellationWriterFor(DocumentSyntax syntax) =>
+        Last(_cancellationWriters, syntax);
+
     private static THandler? Last<THandler>(IReadOnlyList<THandler> handlers, DocumentSyntax syntax)
         where THandler : class
     {
@@ -243,6 +281,8 @@ public sealed class DocumentHandlers
                 IDocumentWriter<Order> writer => writer.Syntax,
                 IDocumentReader<OrderResponse> reader => reader.Syntax,
                 IDocumentWriter<OrderResponse> writer => writer.Syntax,
+                IDocumentReader<OrderCancellation> reader => reader.Syntax,
+                IDocumentWriter<OrderCancellation> writer => writer.Syntax,
                 _ => default,
             };
 

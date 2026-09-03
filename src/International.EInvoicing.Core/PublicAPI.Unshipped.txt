@@ -748,6 +748,37 @@ International.EInvoicing.Model.Order.TypeCode.get -> International.EInvoicing.Va
 International.EInvoicing.Model.Order.TypeCode.set -> void
 International.EInvoicing.Model.Order.ValidityPeriod.get -> International.EInvoicing.Model.InvoicingPeriod?
 International.EInvoicing.Model.Order.ValidityPeriod.set -> void
+International.EInvoicing.Model.OrderCancellation
+International.EInvoicing.Model.OrderCancellation.AdditionalDocuments.get -> System.Collections.Generic.List<International.EInvoicing.Model.AdditionalDocument!>!
+International.EInvoicing.Model.OrderCancellation.BusinessProcessType.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.OrderCancellation.BusinessProcessType.set -> void
+International.EInvoicing.Model.OrderCancellation.Buyer.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.OrderCancellation.Buyer.set -> void
+International.EInvoicing.Model.OrderCancellation.ContractReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.OrderCancellation.ContractReference.set -> void
+International.EInvoicing.Model.OrderCancellation.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Diagnostics.Diagnostic!>!
+International.EInvoicing.Model.OrderCancellation.Diagnostics.set -> void
+International.EInvoicing.Model.OrderCancellation.IssuedAt.get -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Model.OrderCancellation.IssuedAt.set -> void
+International.EInvoicing.Model.OrderCancellation.Note.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.OrderCancellation.Note.set -> void
+International.EInvoicing.Model.OrderCancellation.Number.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.OrderCancellation.Number.set -> void
+International.EInvoicing.Model.OrderCancellation.OrderCancellation() -> void
+International.EInvoicing.Model.OrderCancellation.OrderReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.OrderCancellation.OrderReference.set -> void
+International.EInvoicing.Model.OrderCancellation.Originator.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.OrderCancellation.Originator.set -> void
+International.EInvoicing.Model.OrderCancellation.OriginatorReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.OrderCancellation.OriginatorReference.set -> void
+International.EInvoicing.Model.OrderCancellation.Profile.get -> International.EInvoicing.Profiles.ProfileResolution?
+International.EInvoicing.Model.OrderCancellation.Profile.set -> void
+International.EInvoicing.Model.OrderCancellation.Reason.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.OrderCancellation.Reason.set -> void
+International.EInvoicing.Model.OrderCancellation.Seller.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.OrderCancellation.Seller.set -> void
+International.EInvoicing.Model.OrderCancellation.SpecificationIdentifier.get -> International.EInvoicing.Profiles.ProfileIdentifier
+International.EInvoicing.Model.OrderCancellation.SpecificationIdentifier.set -> void
 International.EInvoicing.Model.OrderDelivery
 International.EInvoicing.Model.OrderDelivery.Address.get -> International.EInvoicing.Model.PostalAddress?
 International.EInvoicing.Model.OrderDelivery.Address.set -> void
@@ -852,6 +883,8 @@ International.EInvoicing.Model.OrderResponse.Note.get -> International.EInvoicin
 International.EInvoicing.Model.OrderResponse.Note.set -> void
 International.EInvoicing.Model.OrderResponse.Number.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.OrderResponse.Number.set -> void
+International.EInvoicing.Model.OrderResponse.OrderChangeReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.OrderResponse.OrderChangeReference.set -> void
 International.EInvoicing.Model.OrderResponse.OrderReference.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.OrderResponse.OrderReference.set -> void
 International.EInvoicing.Model.OrderResponse.OrderResponse() -> void

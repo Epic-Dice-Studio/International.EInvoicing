@@ -85,6 +85,13 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
             writer.End();
         }
 
+        if (response.OrderChangeReference.IsSet)
+        {
+            writer.StartCac("OrderChangeDocumentReference");
+            writer.Identifier("ID", response.OrderChangeReference);
+            writer.End();
+        }
+
         UblOrderWriter.WriteWrappedParty(response.Seller, "SellerSupplierParty", writer);
         UblOrderWriter.WriteWrappedParty(response.Buyer, "BuyerCustomerParty", writer);
         UblOrderWriter.WriteDelivery(response.Delivery, writer);

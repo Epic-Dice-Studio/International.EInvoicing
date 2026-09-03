@@ -146,7 +146,11 @@ static International.EInvoicing.Peppol.PeppolPostAwardProfiles.DespatchAdvice.ge
 static International.EInvoicing.Peppol.PeppolPostAwardProfiles.InvoiceResponse.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolPostAwardProfiles.MessageLevelResponse.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolPostAwardProfiles.Order.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderAgreement.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderCancellation.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderChange.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderResponse.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderResponseAdvanced.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolPostAwardProfiles.RuleSets.get -> System.Collections.Generic.IReadOnlyDictionary<string!, International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Peppol.PeppolProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Peppol.PeppolProfiles.BillingCii.get -> International.EInvoicing.Profiles.Profile!

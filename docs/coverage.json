@@ -72,7 +72,7 @@
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "The seller's answer to an order: accepted, rejected, or accepted on other terms — a different quantity, a later date, or a substitute product. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes."
+          "notes": "The seller's answer to an order: accepted, rejected, or accepted on other terms — a different quantity, a later date, or a substitute product. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes. The advanced response is the same document under another profile and needs no reader of its own."
         },
         {
           "name": "UN/CEFACT CDAR",
@@ -152,13 +152,13 @@
           "notes": "The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job. Read as well as written: the reported document is handed to the UBL invoice reader after three element renames, so a business term the invoice reader maps is one a tax authority gets back. Reading it back showed what the projection actually omits — the supplier has no name in a tax data document, only a VAT identifier."
         },
         {
-          "name": "Peppol post-award — Order, Order Response, Despatch Advice, Invoice Response, MLR",
-          "version": "Order 3, Order Response 3, Despatch Advice 3, Invoice Response 3.1, MLR",
+          "name": "Peppol post-award — Order, Response, Cancellation, Despatch Advice, Invoice Response, MLR",
+          "version": "Order 3, Order Response 3 (simple and advanced), Order Cancellation 3, Despatch Advice 3, Invoice Response 3.1, MLR",
           "package": "International.EInvoicing.Peppol",
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "The chain an invoice sits at the end of: an Order says what was asked for, a Despatch Advice what was sent, an Invoice Response what happened to the invoice, and a Message Level Response whether the message arrived at all. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence. Order Change, Order Cancellation and Order Agreement are not here."
+          "notes": "The chain an invoice sits at the end of: an Order says what was asked for, a Despatch Advice what was sent, an Invoice Response what happened to the invoice, and a Message Level Response whether the message arrived at all. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence. Order Change and Order Agreement are not here."
         }
       ]
     },

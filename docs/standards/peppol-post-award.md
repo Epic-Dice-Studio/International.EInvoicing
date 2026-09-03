@@ -2,7 +2,7 @@
 
 ## Scope and version
 
-Five Peppol documents that are not invoices — the chain an invoice sits at the end of.
+Seven Peppol documents that are not invoices — the chain an invoice sits at the end of.
 
 | | What it answers |
 |---|---|
@@ -11,6 +11,8 @@ Five Peppol documents that are not invoices — the chain an invoice sits at the
 | **Despatch Advice** — `urn:fdc:peppol.eu:poacc:trns:despatch_advice:3` | *What actually left the warehouse?* The document an invoice is reconciled against. |
 | **Order** — `urn:fdc:peppol.eu:poacc:trns:order:3` | *What did the buyer ask for?* The document the others are answered against. |
 | **Order Response** — `urn:fdc:peppol.eu:poacc:trns:order_response:3` | *Will the seller supply it?* Accepted, rejected, or accepted on other terms. |
+| **Order Response (advanced)** — `…:order_response_advanced:3` | The same document, answering line by line. |
+| **Order Cancellation** — `urn:fdc:peppol.eu:poacc:trns:order_cancellation:3` | *The buyer has withdrawn the order*, and why. |
 
 An Invoice Response is what a receiver **owes** a sender: without it, a supplier who has sent an invoice into
 the network knows nothing until the money arrives or does not. It is implemented in
@@ -188,10 +190,34 @@ The parts an order response shares with an order — a party, an item, a price, 
 and written by the order's own reader and writer, so the two documents cannot drift apart in how they state
 the same thing.
 
+## The cancellation, and the advanced response
+
+A cancellation withdraws an order and says why. `Reason` is not decoration: a cancellation the seller cannot
+explain to their warehouse is one they will query rather than act on, which is why the transaction makes it
+mandatory.
+
+The **advanced response** needed no reader of its own. It is the *same document* as the ordinary order
+response — same root, same shape — under a profile that answers line by line, so registering the profile and
+adding the one reference it carries that the simple one does not (`cac:OrderChangeDocumentReference`, which
+says *which version* of the order the seller answered) was the whole of the work.
+
+### Where the shipped schemas end
+
+`cac:OrderChangeDocumentReference` **is not in UBL 2.1**, which is the version this library embeds. Peppol's
+advanced ordering is built on a later UBL, so one of the published scenarios does not validate against the
+2.1 schema as it stands — before this library touches it.
+
+That is why the round-trip test for these documents asserts something different from the others: **a round
+trip introduces no schema error the document did not already have**. Asserting "no errors" would have meant
+either excluding the document or pretending it was clean; asserting that we do not make a document worse is
+true of all of them, and is what a caller actually needs to know.
+
 ## What is not here
 
-**Order Change, Order Cancellation and Order Agreement.** Three more transactions with their own models. The
-Order and its response are the pair an integration needs first; the rest amend what they established.
+**Order Change** and **Order Agreement**. The change is its own document; the agreement is the order response
+restating the whole order, and carries the totals, allowances, tax and extra parties that the simple response
+does not — eighteen elements this library does not yet map, each currently kept as extension data and
+reported.
 
 ## Prior art
 

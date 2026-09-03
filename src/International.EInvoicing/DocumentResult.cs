@@ -41,6 +41,9 @@ public enum DocumentKind
 
     /// <summary>A UBL <c>OrderResponse</c> — the seller's answer to it.</summary>
     UblOrderResponse,
+
+    /// <summary>A UBL <c>OrderCancellation</c> — the buyer withdrawing an order.</summary>
+    UblOrderCancellation,
 }
 
 /// <summary>
@@ -70,6 +73,9 @@ public sealed record DocumentResult
     /// <summary>The order response, when the document was one.</summary>
     public OrderResponse? OrderResponse { get; init; }
 
+    /// <summary>The order cancellation, when the document was one.</summary>
+    public OrderCancellation? OrderCancellation { get; init; }
+
     /// <summary>
     /// The invoice as a person reads it — the PDF a hybrid invoice arrived in. <c>null</c> for a document
     /// that arrived as bare XML, which has no readable copy to hand back.
@@ -93,7 +99,8 @@ public sealed record DocumentResult
         || LifecycleStatus is not null
         || DespatchAdvice is not null
         || Order is not null
-        || OrderResponse is not null;
+        || OrderResponse is not null
+        || OrderCancellation is not null;
 
     /// <summary>Whether anything reported means the result cannot be trusted for compliance.</summary>
     public bool HasErrors => Diagnostics.Any(diagnostic => diagnostic.Severity >= DiagnosticSeverity.Error);
@@ -194,6 +201,20 @@ public sealed record DocumentResult
     public OrderResponse RequireOrderResponse() =>
         OrderResponse ?? throw new DocumentException(
             $"Expected an order response; the document was read as {Kind}.",
+            Diagnostics);
+
+    /// <summary>The order cancellation, when the document was one.</summary>
+    public bool TryGetOrderCancellation([NotNullWhen(true)] out OrderCancellation? cancellation)
+    {
+        cancellation = OrderCancellation;
+        return cancellation is not null;
+    }
+
+    /// <summary>The order cancellation, or an exception explaining what arrived instead.</summary>
+    /// <exception cref="DocumentException">The document was not a readable order cancellation.</exception>
+    public OrderCancellation RequireOrderCancellation() =>
+        OrderCancellation ?? throw new DocumentException(
+            $"Expected an order cancellation; the document was read as {Kind}.",
             Diagnostics);
 
     /// <summary>The lifecycle status message, or an exception explaining what arrived instead.</summary>

@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Peppol Order Cancellation**, and the **advanced Order Response**. The cancellation withdraws an order
+  and says why — a cancellation the seller cannot explain is one they will query rather than act on. The
+  advanced response needed no reader of its own: it is the *same document* as the ordinary order response
+  under a profile that answers line by line, so registering the profile and adding the one reference it
+  carries — which version of the order the seller answered — was the whole of the work.
+- **This is where the shipped schemas end.** `cac:OrderChangeDocumentReference` is not in UBL 2.1; Peppol's
+  advanced ordering is built on a later UBL, so one published scenario does not validate against the 2.1
+  schema before this library touches it. The round-trip test for those documents therefore asserts that **a
+  round trip introduces no schema error the document did not already have** — true of all of them, where
+  "no errors" would have meant excluding the document or pretending.
+
 - **The Peppol Order Response** — the seller's answer to an order, and the pre-award twin of the gap the
   Invoice Response closes after the invoice. Read, written, schema-checked and judged by Peppol's own T76
   rules against all six documents OpenPEPPOL publishes, with nothing left unmapped.

@@ -41,6 +41,15 @@ public sealed class OrderResponse : InvoiceNode
     /// <summary>Which order is being answered.</summary>
     public IdentifierField OrderReference { get; set; }
 
+    /// <summary>
+    /// Which order <em>change</em> is being answered, when the response follows an amendment.
+    /// </summary>
+    /// <remarks>
+    /// A buyer who has changed an order needs to know which version the seller answered; without this a
+    /// response to the amendment is indistinguishable from a late response to the original.
+    /// </remarks>
+    public IdentifierField OrderChangeReference { get; set; }
+
     /// <summary>What the document claims to conform to.</summary>
     public ProfileIdentifier SpecificationIdentifier { get; set; }
 

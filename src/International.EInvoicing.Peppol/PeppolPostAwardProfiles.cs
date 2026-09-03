@@ -44,9 +44,50 @@ public static class PeppolPostAwardProfiles
         "Peppol BIS Order Response 3.0",
         DocumentSyntax.Ubl);
 
+    /// <summary>
+    /// Peppol BIS Ordering 3.0 — the seller's answer, restating the whole order as agreed.
+    /// </summary>
+    /// <remarks>
+    /// The same <c>OrderResponse</c> document as <see cref="OrderResponse"/> under two further profiles: the
+    /// advanced response, which answers line by line with everything the order carried, and the order
+    /// agreement, which is that answer treated as the contract. One document, three meanings.
+    /// </remarks>
+    public static Profile OrderResponseAdvanced { get; } = new(
+        new ProfileIdentifier("urn:fdc:peppol.eu:poacc:trns:order_response_advanced:3"),
+        "Peppol BIS Order Response (advanced) 3.0",
+        DocumentSyntax.Ubl);
+
+    /// <inheritdoc cref="OrderResponseAdvanced"/>
+    public static Profile OrderAgreement { get; } = new(
+        new ProfileIdentifier("urn:fdc:peppol.eu:poacc:trns:order_agreement:3"),
+        "Peppol BIS Order Agreement 3.0",
+        DocumentSyntax.Ubl);
+
+    /// <summary>Peppol BIS Ordering 3.0 — the buyer withdrawing an order.</summary>
+    public static Profile OrderCancellation { get; } = new(
+        new ProfileIdentifier("urn:fdc:peppol.eu:poacc:trns:order_cancellation:3"),
+        "Peppol BIS Order Cancellation 3.0",
+        DocumentSyntax.Ubl);
+
+    /// <summary>Peppol BIS Ordering 3.0 — the buyer amending an order already sent.</summary>
+    public static Profile OrderChange { get; } = new(
+        new ProfileIdentifier("urn:fdc:peppol.eu:poacc:trns:order_change:3"),
+        "Peppol BIS Order Change 3.0",
+        DocumentSyntax.Ubl);
+
     /// <summary>Every post-award profile this package registers.</summary>
     public static IReadOnlyList<Profile> All { get; } =
-        [InvoiceResponse, MessageLevelResponse, DespatchAdvice, Order, OrderResponse];
+    [
+        InvoiceResponse,
+        MessageLevelResponse,
+        DespatchAdvice,
+        Order,
+        OrderResponse,
+        OrderResponseAdvanced,
+        OrderAgreement,
+        OrderCancellation,
+        OrderChange,
+    ];
 
     /// <summary>
     /// The compiled rule set Peppol publishes for each profile, named as it is upstream.
@@ -70,5 +111,9 @@ public static class PeppolPostAwardProfiles
         ["PEPPOLBIS-T16.xslt"] = DespatchAdvice,
         ["PEPPOLBIS-T01.xslt"] = Order,
         ["PEPPOLBIS-T76.xslt"] = OrderResponse,
+        ["PEPPOLBIS-T110.xslt"] = OrderResponseAdvanced,
+        ["PEPPOLBIS-T116.xslt"] = OrderAgreement,
+        ["PEPPOLBIS-T115.xslt"] = OrderCancellation,
+        ["PEPPOLBIS-T114.xslt"] = OrderChange,
     };
 }

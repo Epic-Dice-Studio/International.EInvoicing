@@ -82,6 +82,16 @@ public static class UblServiceCollectionExtensions
         services.TryAddSingleton(provider =>
             provider.GetServices<IDocumentWriter<OrderResponse>>().OfType<UblOrderResponseWriter>().First());
 
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDocumentReader<OrderCancellation>, UblOrderCancellationReader>());
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDocumentWriter<OrderCancellation>, UblOrderCancellationWriter>());
+
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentReader<OrderCancellation>>().OfType<UblOrderCancellationReader>().First());
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentWriter<OrderCancellation>>().OfType<UblOrderCancellationWriter>().First());
+
         return services;
     }
 }
