@@ -1,6 +1,6 @@
 using System.Xml.Linq;
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Cdar.Writing;
+using International.EInvoicing.Model;
 using Shouldly;
 using Xunit;
 

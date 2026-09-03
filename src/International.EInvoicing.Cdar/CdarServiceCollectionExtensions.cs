@@ -1,8 +1,8 @@
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Cdar.Reading;
 using International.EInvoicing.Cdar.Writing;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Documents;
+using International.EInvoicing.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

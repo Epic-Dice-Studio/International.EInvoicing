@@ -1,7 +1,6 @@
-using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
-namespace International.EInvoicing.Cdar.Model;
+namespace International.EInvoicing.Model;
 
 /// <summary>
 /// What happened to one referenced document. A lifecycle message carries one of these per document it

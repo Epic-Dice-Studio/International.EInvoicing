@@ -1,7 +1,6 @@
-using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
-namespace International.EInvoicing.Cdar.Model;
+namespace International.EInvoicing.Model;
 
 /// <summary>
 /// The detail behind a status: why it was set, what the sender wants done about it, and which values are

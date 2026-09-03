@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Countries.France.EReporting.Model;
 using International.EInvoicing.Diagnostics;
 using International.EInvoicing.Model;

@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Xml;
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Documents;
 using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;

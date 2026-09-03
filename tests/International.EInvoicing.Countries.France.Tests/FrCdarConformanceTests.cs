@@ -1,8 +1,8 @@
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Cdar.Reading;
 using International.EInvoicing.Cdar.Writing;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Countries.France.Lifecycle;
+using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
 using International.EInvoicing.Validation.Schematron;

@@ -1,4 +1,3 @@
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Cdar.Reading;
 using International.EInvoicing.Cdar.Writing;
 using International.EInvoicing.Cii.Reading;

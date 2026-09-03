@@ -1,7 +1,6 @@
-using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
-namespace International.EInvoicing.Cdar.Model;
+namespace International.EInvoicing.Model;
 
 /// <summary>
 /// One value a status detail is about, and where in the document it came from.

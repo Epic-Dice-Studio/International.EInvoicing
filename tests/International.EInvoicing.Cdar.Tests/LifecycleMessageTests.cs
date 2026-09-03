@@ -1,9 +1,9 @@
 using System.Xml.Linq;
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Cdar.Reading;
 using International.EInvoicing.Cdar.Writing;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using Shouldly;
 using Xunit;

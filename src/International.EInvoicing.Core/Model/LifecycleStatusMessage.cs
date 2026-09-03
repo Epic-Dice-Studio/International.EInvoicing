@@ -1,9 +1,8 @@
 using International.EInvoicing.Diagnostics;
-using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Values;
 
-namespace International.EInvoicing.Cdar.Model;
+namespace International.EInvoicing.Model;
 
 /// <summary>
 /// A lifecycle message: what happened to one or more documents, who says so, and when.

@@ -1,96 +1,3 @@
-const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.InitialTransmission = "IN" -> string!
-const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.MixedTransactions = "TMA1" -> string!
-const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.OutOfScopeTransactions = "TNT1" -> string!
-const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.ProfileIdentifier = "urn.cpro.gouv.fr:1p0:ereporting" -> string!
-const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.Replacement = "RE" -> string!
-const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.RetailTransactions = "TLB1" -> string!
-const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.ServiceTransactions = "TPS1" -> string!
-const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.Siren = "0002" -> string!
-const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.Siret = "0009" -> string!
-const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.VatNumber = "9957" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.DepositInvoice = "B2" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.DepositInvoiceWithReporting = "S2" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.Invoice = "B1" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.InvoiceWithReporting = "S1" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedDepositInvoice = "M2" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedInvoice = "M1" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedSelfBilledInvoice = "M4" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.SelfBilledInvoice = "B4" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.SelfBilledInvoiceWithReporting = "S4" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.EarlyPaymentDiscountCode = "AAB" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.LatePaymentPenalties = "Pénalités de retard exigibles le jour suivant la date de règlement figurant sur la facture, au taux d'intérêt légal majoré, sans qu'un rappel soit nécessaire." -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.LatePaymentPenaltiesCode = "PMD" -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.NoEarlyPaymentDiscount = "Escompte pour paiement anticipé : néant." -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.RecoveryCosts = "Indemnité forfaitaire pour frais de recouvrement en cas de retard de paiement : 40 €." -> string!
-const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.RecoveryCostsCode = "PMT" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.Buyer = "BY" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.Platform = "WK" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.PublicPortal = "DFH" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.Seller = "SE" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrPartyScheme.Company = "0002" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrPartyScheme.Platform = "0238" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrPartyScheme.RoutingAddress = "0225" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.CorrectiveInvoice = "NIN" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.CreditNoteAndNewInvoice = "CNA" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.FullCreditNote = "CNF" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.None = "NOA" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.Other = "OTH" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.PartialCorrectiveInvoice = "PIN" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.PartialCreditNote = "CNP" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.AddressWrong = "ADR_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.BankDetailsWrong = "COORD_BANC_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.CalculationWrong = "CALCUL_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.ContractEnded = "CONTRAT_TERM" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.ContractReferenceMissing = "REF_CT_ABSENT" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.DeliveryIncomplete = "LIVR_INCOMP" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.DiscountWrong = "REM_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.Duplicate = "DOUBLON" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.EvidenceMissing = "JUSTIF_ABS" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.InvoicedTwice = "DOUBLE_FACT" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.IssuerUnknown = "EMMET_INC" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.ItemWrong = "ART_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.NotCompliant = "NON_CONFORME" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.NotTransmitted = "NON_TRANSMISE" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.OrderWrong = "CMD_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.Other = "AUTRE" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PaymentMeansWrong = "MODPAI_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PublicSectorCreditNoteRemoval = "SUPPR_COMP_AVOIR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PublicSectorPaymentTransferred = "TRANSF_PMNT_REGIE" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PublicSectorServiceWithdrawn = "RETRAIT_MAN_SERV" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PublicSectorSubcontractorUndeclared = "ST_CT_NON_DECLAR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.QualityWrong = "QUALITE_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.QuantityWrong = "QTE_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RecipientUnknown = "DEST_INC" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RecipientWrong = "DEST_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.ReferenceWrong = "REF_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedAddressing = "REJ_ADR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedAttachmentAssociation = "REJ_ASS_PJ" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedAttachmentReference = "REJ_REF_PJ" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedCoherence = "REJ_COH" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedPublicSectorContent = "REJ_CONT_B2G" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedSemantic = "REJ_SEMAN" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedUniqueness = "REJ_UNI" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RoutingCodeWrong = "CODE_ROUTAGE_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RoutingFailed = "ROUTAGE_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.SiretWrong = "SIRET_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.TotalWrong = "MONTANTTOTAL_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.TransactionUnknown = "TRANSAC_INC" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.UnitPriceWrong = "PU_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.VatRateWrong = "TX_TVA_ERR" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.AmountToPay = "MAP" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.AmountToPayIncludingTax = "MAPTTC" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.BankDetails = "CBB" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.CollectedAmount = "MEN" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.Discount = "REM" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.DocumentValue = "DIV" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.EarlyPaymentDiscount = "ESC" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.ExpectedValue = "DVA" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.LateCharge = "RAP" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.PaidAmount = "MPA" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.Rebate = "RAB" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.Surcharge = "MAJ" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.UncollectedAmount = "MNA" -> string!
-const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.UncollectedAmountIncludingTax = "MNATTC" -> string!
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.At(System.DateTimeOffset moment) -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.For(string! siren, string! name, string! roleCode = "SE") -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
@@ -99,6 +6,9 @@ International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.Named
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.Replacing() -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.UsingClock(System.TimeProvider! clock) -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
 International.EInvoicing.Countries.France.EReporting.Building.FrEReporting.WithIdentifier(string! identifier) -> International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!
+International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder
+International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder.At(decimal ratePercent, decimal amount, string! currencyCode = "EUR") -> International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder!
+International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder.FrPaymentSplitBuilder() -> void
 International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder
 International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder.Build() -> International.EInvoicing.Countries.France.EReporting.Model.FrEReport!
 International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder.For(string! siren, string! name) -> International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder!
@@ -106,9 +16,6 @@ International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder.
 International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder.ForTransactions(System.DateOnly paidOn, System.Action<International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder!>! split) -> International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder!
 International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder.From(string! platformIdentifier, string! name) -> International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder!
 International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder.Transmission(System.Action<International.EInvoicing.Countries.France.EReporting.Building.FrEReporting!>! configure) -> International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder!
-International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder
-International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder.At(decimal ratePercent, decimal amount, string! currencyCode = "EUR") -> International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder!
-International.EInvoicing.Countries.France.EReporting.Building.FrPaymentSplitBuilder.FrPaymentSplitBuilder() -> void
 International.EInvoicing.Countries.France.EReporting.Building.FrReportedInvoiceBuilder
 International.EInvoicing.Countries.France.EReporting.Building.FrReportedInvoiceBuilder.BoughtAbroadBy(string! schemeIdentifier, string! identifier, string! countryCode, string? vatNumber = null) -> International.EInvoicing.Countries.France.EReporting.Building.FrReportedInvoiceBuilder!
 International.EInvoicing.Countries.France.EReporting.Building.FrReportedInvoiceBuilder.BoughtBy(string! siren, string! vatNumber, string! countryCode = "FR") -> International.EInvoicing.Countries.France.EReporting.Building.FrReportedInvoiceBuilder!
@@ -171,12 +78,6 @@ International.EInvoicing.Countries.France.EReporting.Model.FrEReportParty.Name.g
 International.EInvoicing.Countries.France.EReporting.Model.FrEReportParty.Name.set -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrEReportParty.RoleCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Countries.France.EReporting.Model.FrEReportParty.RoleCode.set -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport
-International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.FrPaymentsReport() -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.Invoices.get -> System.Collections.Generic.List<International.EInvoicing.Countries.France.EReporting.Model.FrReportedInvoicePayment!>!
-International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.Period.get -> International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod!
-International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.Period.set -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.Transactions.get -> System.Collections.Generic.List<International.EInvoicing.Countries.France.EReporting.Model.FrReportedPayment!>!
 International.EInvoicing.Countries.France.EReporting.Model.FrPaymentSubtotal
 International.EInvoicing.Countries.France.EReporting.Model.FrPaymentSubtotal.Amount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Countries.France.EReporting.Model.FrPaymentSubtotal.Amount.set -> void
@@ -185,6 +86,12 @@ International.EInvoicing.Countries.France.EReporting.Model.FrPaymentSubtotal.Cur
 International.EInvoicing.Countries.France.EReporting.Model.FrPaymentSubtotal.FrPaymentSubtotal() -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrPaymentSubtotal.TaxPercent.get -> International.EInvoicing.Values.Field<decimal>
 International.EInvoicing.Countries.France.EReporting.Model.FrPaymentSubtotal.TaxPercent.set -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport
+International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.FrPaymentsReport() -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.Invoices.get -> System.Collections.Generic.List<International.EInvoicing.Countries.France.EReporting.Model.FrReportedInvoicePayment!>!
+International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.Period.get -> International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod!
+International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.Period.set -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrPaymentsReport.Transactions.get -> System.Collections.Generic.List<International.EInvoicing.Countries.France.EReporting.Model.FrReportedPayment!>!
 International.EInvoicing.Countries.France.EReporting.Model.FrPostalLocation
 International.EInvoicing.Countries.France.EReporting.Model.FrPostalLocation.CityName.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Countries.France.EReporting.Model.FrPostalLocation.CityName.set -> void
@@ -201,6 +108,12 @@ International.EInvoicing.Countries.France.EReporting.Model.FrPostalLocation.Line
 International.EInvoicing.Countries.France.EReporting.Model.FrPostalLocation.LineTwo.set -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrPostalLocation.PostalZone.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Countries.France.EReporting.Model.FrPostalLocation.PostalZone.set -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod
+International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.EndDate.get -> International.EInvoicing.Values.DateField
+International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.EndDate.set -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.FrReportPeriod() -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.StartDate.get -> International.EInvoicing.Values.DateField
+International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.StartDate.set -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedAllowanceCharge
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedAllowanceCharge.Amount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedAllowanceCharge.Amount.set -> void
@@ -328,28 +241,16 @@ International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.FrReportedTaxSubtotal() -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.Percent.get -> International.EInvoicing.Values.Field<decimal>
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.Percent.set -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.TaxableAmount.get -> International.EInvoicing.Values.AmountField
-International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.TaxableAmount.set -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.TaxAmount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.TaxAmount.set -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.TaxableAmount.get -> International.EInvoicing.Values.AmountField
+International.EInvoicing.Countries.France.EReporting.Model.FrReportedTaxSubtotal.TaxableAmount.set -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTotals
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTotals.FrReportedTotals() -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTotals.TaxAmount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTotals.TaxAmount.set -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTotals.TaxExclusiveAmount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Countries.France.EReporting.Model.FrReportedTotals.TaxExclusiveAmount.set -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod
-International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.EndDate.get -> International.EInvoicing.Values.DateField
-International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.EndDate.set -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.FrReportPeriod() -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.StartDate.get -> International.EInvoicing.Values.DateField
-International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod.StartDate.set -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport
-International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.FrTransactionsReport() -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.Invoices.get -> System.Collections.Generic.List<International.EInvoicing.Countries.France.EReporting.Model.FrReportedInvoice!>!
-International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.Period.get -> International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod!
-International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.Period.set -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.Summaries.get -> System.Collections.Generic.List<International.EInvoicing.Countries.France.EReporting.Model.FrTransactionSummary!>!
 International.EInvoicing.Countries.France.EReporting.Model.FrTransactionSummary
 International.EInvoicing.Countries.France.EReporting.Model.FrTransactionSummary.CategoryCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Countries.France.EReporting.Model.FrTransactionSummary.CategoryCode.set -> void
@@ -371,28 +272,35 @@ International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubto
 International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.FrTransactionTaxSubtotal() -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.Percent.get -> International.EInvoicing.Values.Field<decimal>
 International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.Percent.set -> void
-International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.TaxableAmount.get -> International.EInvoicing.Values.AmountField
-International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.TaxableAmount.set -> void
 International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.TaxAmount.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.TaxAmount.set -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.TaxableAmount.get -> International.EInvoicing.Values.AmountField
+International.EInvoicing.Countries.France.EReporting.Model.FrTransactionTaxSubtotal.TaxableAmount.set -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport
+International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.FrTransactionsReport() -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.Invoices.get -> System.Collections.Generic.List<International.EInvoicing.Countries.France.EReporting.Model.FrReportedInvoice!>!
+International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.Period.get -> International.EInvoicing.Countries.France.EReporting.Model.FrReportPeriod!
+International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.Period.set -> void
+International.EInvoicing.Countries.France.EReporting.Model.FrTransactionsReport.Summaries.get -> System.Collections.Generic.List<International.EInvoicing.Countries.France.EReporting.Model.FrTransactionSummary!>!
 International.EInvoicing.Countries.France.EReporting.Reading.FrEReportReader
 International.EInvoicing.Countries.France.EReporting.Reading.FrEReportReader.FrEReportReader() -> void
 International.EInvoicing.Countries.France.EReporting.Reading.FrEReportReader.FrEReportReader(International.EInvoicing.Configuration.EInvoicingOptions! options) -> void
-International.EInvoicing.Countries.France.EReporting.Reading.FrEReportReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Countries.France.EReporting.Model.FrEReport!>!
 International.EInvoicing.Countries.France.EReporting.Reading.FrEReportReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Countries.France.EReporting.Model.FrEReport!>!
+International.EInvoicing.Countries.France.EReporting.Reading.FrEReportReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Countries.France.EReporting.Model.FrEReport!>!
 International.EInvoicing.Countries.France.EReporting.Writing.FrEReportWriter
 International.EInvoicing.Countries.France.EReporting.Writing.FrEReportWriter.FrEReportWriter() -> void
 International.EInvoicing.Countries.France.EReporting.Writing.FrEReportWriter.Write(International.EInvoicing.Countries.France.EReporting.Model.FrEReport! report, System.IO.Stream! stream) -> void
 International.EInvoicing.Countries.France.EReporting.Writing.FrEReportWriter.WriteToString(International.EInvoicing.Countries.France.EReporting.Model.FrEReport! report) -> string!
+International.EInvoicing.Countries.France.FrProfiles
 International.EInvoicing.Countries.France.FranceServiceCollectionExtensions
 International.EInvoicing.Countries.France.FrenchDocument
 International.EInvoicing.Countries.France.FrenchDocument.<Clone>$() -> International.EInvoicing.Countries.France.FrenchDocument!
-International.EInvoicing.Countries.France.FrenchDocument.Deconstruct(out International.EInvoicing.Countries.France.FrenchDocumentKind kind, out International.EInvoicing.Model.EInvoice? invoice, out International.EInvoicing.Cdar.Model.LifecycleStatusMessage? status, out International.EInvoicing.Countries.France.EReporting.Model.FrEReport? report) -> void
+International.EInvoicing.Countries.France.FrenchDocument.Deconstruct(out International.EInvoicing.Countries.France.FrenchDocumentKind kind, out International.EInvoicing.Model.EInvoice? invoice, out International.EInvoicing.Model.LifecycleStatusMessage? status, out International.EInvoicing.Countries.France.EReporting.Model.FrEReport? report) -> void
 International.EInvoicing.Countries.France.FrenchDocument.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Diagnostics.Diagnostic!>!
 International.EInvoicing.Countries.France.FrenchDocument.Diagnostics.init -> void
-International.EInvoicing.Countries.France.FrenchDocument.Equals(International.EInvoicing.Countries.France.FrenchDocument? other) -> bool
 International.EInvoicing.Countries.France.FrenchDocument.EReport.get -> International.EInvoicing.Countries.France.EReporting.Model.FrEReport?
 International.EInvoicing.Countries.France.FrenchDocument.EReport.init -> void
+International.EInvoicing.Countries.France.FrenchDocument.Equals(International.EInvoicing.Countries.France.FrenchDocument? other) -> bool
 International.EInvoicing.Countries.France.FrenchDocument.Errors.get -> System.Collections.Generic.IEnumerable<International.EInvoicing.Diagnostics.Diagnostic!>!
 International.EInvoicing.Countries.France.FrenchDocument.FrenchDocument() -> void
 International.EInvoicing.Countries.France.FrenchDocument.Invoice.get -> International.EInvoicing.Model.EInvoice?
@@ -400,13 +308,13 @@ International.EInvoicing.Countries.France.FrenchDocument.Invoice.init -> void
 International.EInvoicing.Countries.France.FrenchDocument.IsUsable.get -> bool
 International.EInvoicing.Countries.France.FrenchDocument.Kind.get -> International.EInvoicing.Countries.France.FrenchDocumentKind
 International.EInvoicing.Countries.France.FrenchDocument.Kind.init -> void
-International.EInvoicing.Countries.France.FrenchDocument.LifecycleStatus.get -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage?
+International.EInvoicing.Countries.France.FrenchDocument.LifecycleStatus.get -> International.EInvoicing.Model.LifecycleStatusMessage?
 International.EInvoicing.Countries.France.FrenchDocument.LifecycleStatus.init -> void
 International.EInvoicing.Countries.France.FrenchDocument.Profile.get -> International.EInvoicing.Profiles.ProfileResolution?
 International.EInvoicing.Countries.France.FrenchDocument.Profile.init -> void
 International.EInvoicing.Countries.France.FrenchDocument.TryGetEReport(out International.EInvoicing.Countries.France.EReporting.Model.FrEReport? report) -> bool
 International.EInvoicing.Countries.France.FrenchDocument.TryGetInvoice(out International.EInvoicing.Model.EInvoice? invoice) -> bool
-International.EInvoicing.Countries.France.FrenchDocument.TryGetLifecycleStatus(out International.EInvoicing.Cdar.Model.LifecycleStatusMessage? status) -> bool
+International.EInvoicing.Countries.France.FrenchDocument.TryGetLifecycleStatus(out International.EInvoicing.Model.LifecycleStatusMessage? status) -> bool
 International.EInvoicing.Countries.France.FrenchDocumentKind
 International.EInvoicing.Countries.France.FrenchDocumentKind.CreditNote = 2 -> International.EInvoicing.Countries.France.FrenchDocumentKind
 International.EInvoicing.Countries.France.FrenchDocumentKind.EReport = 4 -> International.EInvoicing.Countries.France.FrenchDocumentKind
@@ -419,9 +327,9 @@ International.EInvoicing.Countries.France.FrenchEInvoicing.CreditNote(Internatio
 International.EInvoicing.Countries.France.FrenchEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Countries.France.FrenchEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax, string! businessProcess) -> International.EInvoicing.Building.EInvoiceBuilder!
 International.EInvoicing.Countries.France.FrenchEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.France.FrenchEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.Countries.France.FrenchDocument!
 International.EInvoicing.Countries.France.FrenchEInvoicing.Read(byte[]! document) -> International.EInvoicing.Countries.France.FrenchDocument!
 International.EInvoicing.Countries.France.FrenchEInvoicing.Read(string! document) -> International.EInvoicing.Countries.France.FrenchDocument!
-International.EInvoicing.Countries.France.FrenchEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.Countries.France.FrenchDocument!
 International.EInvoicing.Countries.France.FrenchEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Countries.France.FrenchDocument!>!
 International.EInvoicing.Countries.France.FrenchEInvoicing.ReadFile(string! path) -> International.EInvoicing.Countries.France.FrenchDocument!
 International.EInvoicing.Countries.France.FrenchEInvoicing.ReportPayments(System.DateOnly from, System.DateOnly to) -> International.EInvoicing.Countries.France.EReporting.Building.FrPaymentsBuilder!
@@ -433,11 +341,10 @@ International.EInvoicing.Countries.France.FrenchEInvoicing.StatusFromPlatform(st
 International.EInvoicing.Countries.France.FrenchEInvoicing.StatusFromSeller(string! siren) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.FrenchEInvoicing.StatusFromSeller(string! siren, string? name) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.FrenchEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
-International.EInvoicing.Countries.France.FrenchEInvoicing.Write(International.EInvoicing.Cdar.Model.LifecycleStatusMessage! status) -> string!
 International.EInvoicing.Countries.France.FrenchEInvoicing.Write(International.EInvoicing.Countries.France.EReporting.Model.FrEReport! report) -> string!
 International.EInvoicing.Countries.France.FrenchEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
 International.EInvoicing.Countries.France.FrenchEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
-International.EInvoicing.Countries.France.FrProfiles
+International.EInvoicing.Countries.France.FrenchEInvoicing.Write(International.EInvoicing.Model.LifecycleStatusMessage! status) -> string!
 International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes
 International.EInvoicing.Countries.France.Identifiers.FrSiren
 International.EInvoicing.Countries.France.Identifiers.FrSiren.Equals(International.EInvoicing.Countries.France.Identifiers.FrSiren other) -> bool
@@ -468,29 +375,29 @@ International.EInvoicing.Countries.France.Invoicing.FrInvoiceBuilderExtensions
 International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention
 International.EInvoicing.Countries.France.Lifecycle.FrCdar
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.About(string! invoiceNumber, System.DateOnly invoiceIssueDate, string! invoiceTypeCode = "380", string? issuerIdentifier = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Approved(System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Collected(International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount collected) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Collected(International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount collected, System.DateTimeOffset? at) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Collected(System.Collections.Generic.IEnumerable<International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount>! collected) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Collected(System.Collections.Generic.IEnumerable<International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount>! collected, System.DateTimeOffset? at) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Disputed(string! reasonCode, string! reason, System.DateTimeOffset? at = null, string? requestedActionCode = null, string? requestedAction = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Filed(System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.IssuedByPlatform(System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.MadeAvailable(System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.PaymentSent(System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Received(System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Approved(System.DateTimeOffset? at = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Collected(International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount collected) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Collected(International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount collected, System.DateTimeOffset? at) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Collected(System.Collections.Generic.IEnumerable<International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount>! collected) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Collected(System.Collections.Generic.IEnumerable<International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount>! collected, System.DateTimeOffset? at) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Disputed(string! reasonCode, string! reason, System.DateTimeOffset? at = null, string? requestedActionCode = null, string? requestedAction = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Filed(System.DateTimeOffset? at = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.IssuedByPlatform(System.DateTimeOffset? at = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.MadeAvailable(System.DateTimeOffset? at = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.PaymentSent(System.DateTimeOffset? at = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Received(System.DateTimeOffset? at = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.ReceivedAt(System.DateTimeOffset moment) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Refused(string! reasonCode, string! reason, System.DateTimeOffset? at = null, string? requestedActionCode = null, string? requestedAction = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.Rejected(string! reasonCode, string! reason, System.DateTimeOffset? at = null, string? requestedActionCode = null, string? requestedAction = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.SentBy(string! platformIdentifier, string? name = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Refused(string! reasonCode, string! reason, System.DateTimeOffset? at = null, string? requestedActionCode = null, string? requestedAction = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.Rejected(string! reasonCode, string! reason, System.DateTimeOffset? at = null, string? requestedActionCode = null, string? requestedAction = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.SentBy(System.Action<International.EInvoicing.Countries.France.Lifecycle.FrPartyBuilder!>! sender) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.TakenInCharge(System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.SentBy(string! platformIdentifier, string? name = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.TakenInCharge(System.DateTimeOffset? at = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.ToBuyer(string! siren, string? name = null, string? statusAddress = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.ToPartner(System.Action<International.EInvoicing.Countries.France.Lifecycle.FrPartyBuilder!>! recipient) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.ToPublicPortal() -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.ToSeller(string! siren, string? name = null, string? statusAddress = null) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.UsingClock(System.TimeProvider! clock) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
-International.EInvoicing.Countries.France.Lifecycle.FrCdar.With(International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus! status, System.DateTimeOffset? at = null) -> International.EInvoicing.Cdar.Model.LifecycleStatusMessage!
+International.EInvoicing.Countries.France.Lifecycle.FrCdar.With(International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus! status, System.DateTimeOffset? at = null) -> International.EInvoicing.Model.LifecycleStatusMessage!
 International.EInvoicing.Countries.France.Lifecycle.FrCdar.WithIdentifier(string! identifier) -> International.EInvoicing.Countries.France.Lifecycle.FrCdar!
 International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount
 International.EInvoicing.Countries.France.Lifecycle.FrCollectedAmount.Amount.get -> decimal
@@ -534,6 +441,99 @@ International.EInvoicing.Countries.France.Lifecycle.FrPartyScheme
 International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction
 International.EInvoicing.Countries.France.Lifecycle.FrStatusReason
 International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType
+const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.InitialTransmission = "IN" -> string!
+const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.MixedTransactions = "TMA1" -> string!
+const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.OutOfScopeTransactions = "TNT1" -> string!
+const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.ProfileIdentifier = "urn.cpro.gouv.fr:1p0:ereporting" -> string!
+const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.Replacement = "RE" -> string!
+const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.RetailTransactions = "TLB1" -> string!
+const International.EInvoicing.Countries.France.EReporting.FrEReportCodes.ServiceTransactions = "TPS1" -> string!
+const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.Siren = "0002" -> string!
+const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.Siret = "0009" -> string!
+const International.EInvoicing.Countries.France.Identifiers.FrIdentifierSchemes.VatNumber = "9957" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.DepositInvoice = "B2" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.DepositInvoiceWithReporting = "S2" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.Invoice = "B1" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.InvoiceWithReporting = "S1" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedDepositInvoice = "M2" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedInvoice = "M1" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.MixedSelfBilledInvoice = "M4" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.SelfBilledInvoice = "B4" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.SelfBilledInvoiceWithReporting = "S4" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.EarlyPaymentDiscountCode = "AAB" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.LatePaymentPenalties = "Pénalités de retard exigibles le jour suivant la date de règlement figurant sur la facture, au taux d'intérêt légal majoré, sans qu'un rappel soit nécessaire." -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.LatePaymentPenaltiesCode = "PMD" -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.NoEarlyPaymentDiscount = "Escompte pour paiement anticipé : néant." -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.RecoveryCosts = "Indemnité forfaitaire pour frais de recouvrement en cas de retard de paiement : 40 €." -> string!
+const International.EInvoicing.Countries.France.Invoicing.FrInvoiceMention.RecoveryCostsCode = "PMT" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.Buyer = "BY" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.Platform = "WK" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.PublicPortal = "DFH" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrPartyRole.Seller = "SE" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrPartyScheme.Company = "0002" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrPartyScheme.Platform = "0238" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrPartyScheme.RoutingAddress = "0225" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.CorrectiveInvoice = "NIN" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.CreditNoteAndNewInvoice = "CNA" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.FullCreditNote = "CNF" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.None = "NOA" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.Other = "OTH" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.PartialCorrectiveInvoice = "PIN" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrRequestedAction.PartialCreditNote = "CNP" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.AddressWrong = "ADR_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.BankDetailsWrong = "COORD_BANC_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.CalculationWrong = "CALCUL_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.ContractEnded = "CONTRAT_TERM" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.ContractReferenceMissing = "REF_CT_ABSENT" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.DeliveryIncomplete = "LIVR_INCOMP" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.DiscountWrong = "REM_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.Duplicate = "DOUBLON" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.EvidenceMissing = "JUSTIF_ABS" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.InvoicedTwice = "DOUBLE_FACT" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.IssuerUnknown = "EMMET_INC" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.ItemWrong = "ART_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.NotCompliant = "NON_CONFORME" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.NotTransmitted = "NON_TRANSMISE" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.OrderWrong = "CMD_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.Other = "AUTRE" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PaymentMeansWrong = "MODPAI_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PublicSectorCreditNoteRemoval = "SUPPR_COMP_AVOIR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PublicSectorPaymentTransferred = "TRANSF_PMNT_REGIE" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PublicSectorServiceWithdrawn = "RETRAIT_MAN_SERV" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.PublicSectorSubcontractorUndeclared = "ST_CT_NON_DECLAR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.QualityWrong = "QUALITE_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.QuantityWrong = "QTE_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RecipientUnknown = "DEST_INC" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RecipientWrong = "DEST_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.ReferenceWrong = "REF_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedAddressing = "REJ_ADR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedAttachmentAssociation = "REJ_ASS_PJ" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedAttachmentReference = "REJ_REF_PJ" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedCoherence = "REJ_COH" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedPublicSectorContent = "REJ_CONT_B2G" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedSemantic = "REJ_SEMAN" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RejectedUniqueness = "REJ_UNI" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RoutingCodeWrong = "CODE_ROUTAGE_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.RoutingFailed = "ROUTAGE_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.SiretWrong = "SIRET_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.TotalWrong = "MONTANTTOTAL_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.TransactionUnknown = "TRANSAC_INC" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.UnitPriceWrong = "PU_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.VatRateWrong = "TX_TVA_ERR" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.AmountToPay = "MAP" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.AmountToPayIncludingTax = "MAPTTC" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.BankDetails = "CBB" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.CollectedAmount = "MEN" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.Discount = "REM" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.DocumentValue = "DIV" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.EarlyPaymentDiscount = "ESC" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.ExpectedValue = "DVA" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.LateCharge = "RAP" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.PaidAmount = "MPA" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.Rebate = "RAB" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.Surcharge = "MAJ" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.UncollectedAmount = "MNA" -> string!
+const International.EInvoicing.Countries.France.Lifecycle.FrStatusValueType.UncollectedAmountIncludingTax = "MNATTC" -> string!
 override International.EInvoicing.Countries.France.FrenchDocument.Equals(object? obj) -> bool
 override International.EInvoicing.Countries.France.FrenchDocument.GetHashCode() -> int
 override International.EInvoicing.Countries.France.FrenchDocument.ToString() -> string!
@@ -557,6 +557,11 @@ static International.EInvoicing.Countries.France.EReporting.FrEReportCodes.VatCa
 static International.EInvoicing.Countries.France.EReporting.FrEReportCodes.VatRates.get -> System.Collections.Generic.IReadOnlyList<decimal>!
 static International.EInvoicing.Countries.France.EReporting.FrEReportDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Countries.France.EReporting.FrEReportDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Countries.France.FrProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.France.FrProfiles.ExtendedCtcFrCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.France.FrProfiles.ExtendedCtcFrUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.France.FrProfiles.LifecycleStatusToPartner.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.France.FrProfiles.LifecycleStatusToPublicPortal.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Countries.France.FranceServiceCollectionExtensions.AddFrance(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Countries.France.FrenchDocument.operator !=(International.EInvoicing.Countries.France.FrenchDocument? left, International.EInvoicing.Countries.France.FrenchDocument? right) -> bool
 static International.EInvoicing.Countries.France.FrenchDocument.operator ==(International.EInvoicing.Countries.France.FrenchDocument? left, International.EInvoicing.Countries.France.FrenchDocument? right) -> bool
@@ -566,27 +571,22 @@ static International.EInvoicing.Countries.France.FrenchEInvoicing.Create(System.
 static International.EInvoicing.Countries.France.FrenchEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.France.FrenchEInvoicing!
 static International.EInvoicing.Countries.France.FrenchEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.France.FrenchEInvoicing!
 static International.EInvoicing.Countries.France.FrenchEInvoicing.Over(International.EInvoicing.EInvoicing! library, International.EInvoicing.Configuration.EInvoicingOptions! options) -> International.EInvoicing.Countries.France.FrenchEInvoicing!
-static International.EInvoicing.Countries.France.FrProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
-static International.EInvoicing.Countries.France.FrProfiles.ExtendedCtcFrCii.get -> International.EInvoicing.Profiles.Profile!
-static International.EInvoicing.Countries.France.FrProfiles.ExtendedCtcFrUbl.get -> International.EInvoicing.Profiles.Profile!
-static International.EInvoicing.Countries.France.FrProfiles.LifecycleStatusToPartner.get -> International.EInvoicing.Profiles.Profile!
-static International.EInvoicing.Countries.France.FrProfiles.LifecycleStatusToPublicPortal.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Countries.France.Identifiers.FrSiren.IsValid(string? value) -> bool
-static International.EInvoicing.Countries.France.Identifiers.FrSiren.operator !=(International.EInvoicing.Countries.France.Identifiers.FrSiren left, International.EInvoicing.Countries.France.Identifiers.FrSiren right) -> bool
-static International.EInvoicing.Countries.France.Identifiers.FrSiren.operator ==(International.EInvoicing.Countries.France.Identifiers.FrSiren left, International.EInvoicing.Countries.France.Identifiers.FrSiren right) -> bool
 static International.EInvoicing.Countries.France.Identifiers.FrSiren.Parse(string! value) -> International.EInvoicing.Countries.France.Identifiers.FrSiren
 static International.EInvoicing.Countries.France.Identifiers.FrSiren.TryParse(string? value, out International.EInvoicing.Countries.France.Identifiers.FrSiren siren) -> bool
+static International.EInvoicing.Countries.France.Identifiers.FrSiren.operator !=(International.EInvoicing.Countries.France.Identifiers.FrSiren left, International.EInvoicing.Countries.France.Identifiers.FrSiren right) -> bool
+static International.EInvoicing.Countries.France.Identifiers.FrSiren.operator ==(International.EInvoicing.Countries.France.Identifiers.FrSiren left, International.EInvoicing.Countries.France.Identifiers.FrSiren right) -> bool
 static International.EInvoicing.Countries.France.Identifiers.FrSiret.IsValid(string? value) -> bool
-static International.EInvoicing.Countries.France.Identifiers.FrSiret.operator !=(International.EInvoicing.Countries.France.Identifiers.FrSiret left, International.EInvoicing.Countries.France.Identifiers.FrSiret right) -> bool
-static International.EInvoicing.Countries.France.Identifiers.FrSiret.operator ==(International.EInvoicing.Countries.France.Identifiers.FrSiret left, International.EInvoicing.Countries.France.Identifiers.FrSiret right) -> bool
 static International.EInvoicing.Countries.France.Identifiers.FrSiret.Parse(string! value) -> International.EInvoicing.Countries.France.Identifiers.FrSiret
 static International.EInvoicing.Countries.France.Identifiers.FrSiret.TryParse(string? value, out International.EInvoicing.Countries.France.Identifiers.FrSiret siret) -> bool
+static International.EInvoicing.Countries.France.Identifiers.FrSiret.operator !=(International.EInvoicing.Countries.France.Identifiers.FrSiret left, International.EInvoicing.Countries.France.Identifiers.FrSiret right) -> bool
+static International.EInvoicing.Countries.France.Identifiers.FrSiret.operator ==(International.EInvoicing.Countries.France.Identifiers.FrSiret left, International.EInvoicing.Countries.France.Identifiers.FrSiret right) -> bool
 static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.ForSiren(International.EInvoicing.Countries.France.Identifiers.FrSiren siren) -> International.EInvoicing.Countries.France.Identifiers.FrVatNumber
 static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.IsValid(string? value) -> bool
-static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.operator !=(International.EInvoicing.Countries.France.Identifiers.FrVatNumber left, International.EInvoicing.Countries.France.Identifiers.FrVatNumber right) -> bool
-static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.operator ==(International.EInvoicing.Countries.France.Identifiers.FrVatNumber left, International.EInvoicing.Countries.France.Identifiers.FrVatNumber right) -> bool
 static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.Parse(string! value) -> International.EInvoicing.Countries.France.Identifiers.FrVatNumber
 static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.TryParse(string? value, out International.EInvoicing.Countries.France.Identifiers.FrVatNumber number) -> bool
+static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.operator !=(International.EInvoicing.Countries.France.Identifiers.FrVatNumber left, International.EInvoicing.Countries.France.Identifiers.FrVatNumber right) -> bool
+static International.EInvoicing.Countries.France.Identifiers.FrVatNumber.operator ==(International.EInvoicing.Countries.France.Identifiers.FrVatNumber left, International.EInvoicing.Countries.France.Identifiers.FrVatNumber right) -> bool
 static International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Countries.France.Invoicing.FrBusinessProcess.IsKnown(string? code) -> bool
 static International.EInvoicing.Countries.France.Invoicing.FrInvoiceBuilderExtensions.ForFrance(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! businessProcess = "B1") -> International.EInvoicing.Building.EInvoiceBuilder!
@@ -608,13 +608,13 @@ static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.Fil
 static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.FromCode(string? code) -> International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus?
 static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.IssuedByPlatform.get -> International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus!
 static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.MadeAvailable.get -> International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus!
-static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.operator !=(International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus? left, International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus? right) -> bool
-static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.operator ==(International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus? left, International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus? right) -> bool
 static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.PaymentSent.get -> International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus!
 static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.Received.get -> International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus!
 static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.Refused.get -> International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus!
 static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.Rejected.get -> International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus!
 static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.TakenInCharge.get -> International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus!
+static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.operator !=(International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus? left, International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus? right) -> bool
+static International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus.operator ==(International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus? left, International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus? right) -> bool
 static International.EInvoicing.Countries.France.Lifecycle.FrStatusReason.AllowedFor(International.EInvoicing.Countries.France.Lifecycle.FrLifecycleStatus! status, bool publicSector = false) -> System.Collections.Generic.IReadOnlyList<string!>!
 ~override International.EInvoicing.Countries.France.Identifiers.FrSiren.Equals(object obj) -> bool
 ~override International.EInvoicing.Countries.France.Identifiers.FrSiret.Equals(object obj) -> bool

@@ -2,110 +2,18 @@ International.EInvoicing.Cdar.CdarDiagnostics
 International.EInvoicing.Cdar.CdarNames
 International.EInvoicing.Cdar.CdarProfiles
 International.EInvoicing.Cdar.CdarServiceCollectionExtensions
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.DocumentStatusCharacteristic() -> void
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.Identifier.get -> International.EInvoicing.Values.IdentifierField
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.Identifier.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.Location.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.Location.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.Name.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.Name.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.TypeCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.TypeCode.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.ValueAmount.get -> International.EInvoicing.Values.AmountField
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.ValueAmount.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.ValueChanged.get -> International.EInvoicing.Values.IndicatorField
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.ValueChanged.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.ValuePercent.get -> International.EInvoicing.Values.Field<decimal>
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.ValuePercent.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.ValueText.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic.ValueText.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusDetail
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.Characteristics.get -> System.Collections.Generic.List<International.EInvoicing.Cdar.Model.DocumentStatusCharacteristic!>!
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.DocumentStatusDetail() -> void
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.ProcessConditionCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.ProcessConditionCode.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.Reason.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.Reason.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.ReasonCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.ReasonCode.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.RequestedAction.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.RequestedAction.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.RequestedActionCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.RequestedActionCode.set -> void
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.SequenceNumber.get -> International.EInvoicing.Values.Field<int>
-International.EInvoicing.Cdar.Model.DocumentStatusDetail.SequenceNumber.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.BusinessProcessType.get -> International.EInvoicing.Values.IdentifierField
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.BusinessProcessType.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.CoversMultipleDocuments.get -> International.EInvoicing.Values.IndicatorField
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.CoversMultipleDocuments.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Diagnostics.Diagnostic!>!
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Diagnostics.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Identifier.get -> International.EInvoicing.Values.IdentifierField
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Identifier.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.IssuedAt.get -> International.EInvoicing.Values.DateTimeField
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.IssuedAt.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Issuer.get -> International.EInvoicing.Cdar.Model.StatusParty?
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Issuer.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.LifecycleStatusMessage() -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Name.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Name.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Profile.get -> International.EInvoicing.Profiles.ProfileResolution?
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Profile.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Recipients.get -> System.Collections.Generic.List<International.EInvoicing.Cdar.Model.StatusParty!>!
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.References.get -> System.Collections.Generic.List<International.EInvoicing.Cdar.Model.ReferencedDocumentStatus!>!
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Sender.get -> International.EInvoicing.Cdar.Model.StatusParty?
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.Sender.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.SpecificationIdentifier.get -> International.EInvoicing.Profiles.ProfileIdentifier
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.SpecificationIdentifier.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.StatusIssuedAt.get -> International.EInvoicing.Values.DateTimeField
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.StatusIssuedAt.set -> void
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.TypeCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.LifecycleStatusMessage.TypeCode.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.DocumentIdentifier.get -> International.EInvoicing.Values.IdentifierField
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.DocumentIdentifier.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.DocumentIssueDate.get -> International.EInvoicing.Values.DateField
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.DocumentIssueDate.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.DocumentTypeCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.DocumentTypeCode.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.Issuer.get -> International.EInvoicing.Cdar.Model.StatusParty?
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.Issuer.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.ProcessCondition.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.ProcessCondition.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.ProcessConditionCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.ProcessConditionCode.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.Reason.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.Reason.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.ReceivedAt.get -> International.EInvoicing.Values.DateTimeField
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.ReceivedAt.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.ReferencedDocumentStatus() -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.StatusCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.StatusCode.set -> void
-International.EInvoicing.Cdar.Model.ReferencedDocumentStatus.StatusDetails.get -> System.Collections.Generic.List<International.EInvoicing.Cdar.Model.DocumentStatusDetail!>!
-International.EInvoicing.Cdar.Model.StatusParty
-International.EInvoicing.Cdar.Model.StatusParty.ElectronicAddress.get -> International.EInvoicing.Values.IdentifierField
-International.EInvoicing.Cdar.Model.StatusParty.ElectronicAddress.set -> void
-International.EInvoicing.Cdar.Model.StatusParty.GlobalIdentifier.get -> International.EInvoicing.Values.IdentifierField
-International.EInvoicing.Cdar.Model.StatusParty.GlobalIdentifier.set -> void
-International.EInvoicing.Cdar.Model.StatusParty.Name.get -> International.EInvoicing.Values.TextField
-International.EInvoicing.Cdar.Model.StatusParty.Name.set -> void
-International.EInvoicing.Cdar.Model.StatusParty.RoleCode.get -> International.EInvoicing.Values.CodeField
-International.EInvoicing.Cdar.Model.StatusParty.RoleCode.set -> void
-International.EInvoicing.Cdar.Model.StatusParty.StatusParty() -> void
 International.EInvoicing.Cdar.Reading.CdarReader
 International.EInvoicing.Cdar.Reading.CdarReader.CdarReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
-International.EInvoicing.Cdar.Reading.CdarReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Cdar.Model.LifecycleStatusMessage!>!
-International.EInvoicing.Cdar.Reading.CdarReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Cdar.Model.LifecycleStatusMessage!>!
-International.EInvoicing.Cdar.Reading.CdarReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Cdar.Model.LifecycleStatusMessage!>!>!
+International.EInvoicing.Cdar.Reading.CdarReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!
+International.EInvoicing.Cdar.Reading.CdarReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!
+International.EInvoicing.Cdar.Reading.CdarReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!>!
 International.EInvoicing.Cdar.Reading.CdarReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Cdar.Writing.CdarWriter
 International.EInvoicing.Cdar.Writing.CdarWriter.CdarWriter() -> void
 International.EInvoicing.Cdar.Writing.CdarWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
-International.EInvoicing.Cdar.Writing.CdarWriter.Write(International.EInvoicing.Cdar.Model.LifecycleStatusMessage! document, System.IO.Stream! destination) -> void
-International.EInvoicing.Cdar.Writing.CdarWriter.WriteAsync(International.EInvoicing.Cdar.Model.LifecycleStatusMessage! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
-International.EInvoicing.Cdar.Writing.CdarWriter.WriteToString(International.EInvoicing.Cdar.Model.LifecycleStatusMessage! document) -> string!
+International.EInvoicing.Cdar.Writing.CdarWriter.Write(International.EInvoicing.Model.LifecycleStatusMessage! document, System.IO.Stream! destination) -> void
+International.EInvoicing.Cdar.Writing.CdarWriter.WriteAsync(International.EInvoicing.Model.LifecycleStatusMessage! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.Cdar.Writing.CdarWriter.WriteToString(International.EInvoicing.Model.LifecycleStatusMessage! document) -> string!
 static International.EInvoicing.Cdar.CdarDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Cdar.CdarDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Cdar.CdarNames.Qdt.get -> System.Xml.Linq.XNamespace!

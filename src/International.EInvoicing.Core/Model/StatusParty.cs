@@ -1,7 +1,6 @@
-using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 
-namespace International.EInvoicing.Cdar.Model;
+namespace International.EInvoicing.Model;
 
 /// <summary>A party taking part in a lifecycle message: who sent it, who issued it, who it is for.</summary>
 public sealed class StatusParty : InvoiceNode

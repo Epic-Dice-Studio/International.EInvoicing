@@ -54,8 +54,8 @@ public static class EInvoicingBuilderExtensions
             services.TryAddSingleton(provider => new DocumentHandlers(
                 provider.GetServices<IDocumentReader<Model.EInvoice>>(),
                 provider.GetServices<IDocumentWriter<Model.EInvoice>>(),
-                provider.GetServices<IDocumentReader<Cdar.Model.LifecycleStatusMessage>>(),
-                provider.GetServices<IDocumentWriter<Cdar.Model.LifecycleStatusMessage>>(),
+                provider.GetServices<IDocumentReader<Model.LifecycleStatusMessage>>(),
+                provider.GetServices<IDocumentWriter<Model.LifecycleStatusMessage>>(),
                 provider.GetServices<IWritePipelineStep>()));
 
             services.TryAddSingleton(provider => new EInvoicing(

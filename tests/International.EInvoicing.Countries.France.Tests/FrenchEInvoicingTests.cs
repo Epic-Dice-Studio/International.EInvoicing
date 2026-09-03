@@ -1,5 +1,4 @@
 using International.EInvoicing.Building;
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Countries.France.EReporting;
 using International.EInvoicing.Countries.France.EReporting.Model;
 using International.EInvoicing.Countries.France.Invoicing;

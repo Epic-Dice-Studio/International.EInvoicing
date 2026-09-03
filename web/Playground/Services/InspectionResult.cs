@@ -1,4 +1,3 @@
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Diagnostics;
 using International.EInvoicing.Model;
 using International.EInvoicing.Validation;

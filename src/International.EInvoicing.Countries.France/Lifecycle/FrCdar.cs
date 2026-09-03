@@ -1,5 +1,5 @@
 using System.Globalization;
-using International.EInvoicing.Cdar.Model;
+using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Values;
 

@@ -1,5 +1,5 @@
-using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Countries.France.Lifecycle;
+using International.EInvoicing.Model;
 
 namespace International.EInvoicing.Samples.Chapters;
 
