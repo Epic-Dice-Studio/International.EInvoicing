@@ -6,6 +6,29 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Order-X**, the Franco-German order — `International.EInvoicing.OrderX`. Same publishers as Factur-X,
+  same CII family, one document earlier in the chain, and a different UN/CEFACT message: the Cross Industry
+  Order, on version 128 of the same data types, so nothing that reads an invoice reads it. The order and the
+  order change are read, written, round-tripped element for element and in sequence, and judged by FNFE-MPE's
+  own schema and its 124 assertions against the one document they publish.
+- The schemas and rules are **fetched, not shipped** — FNFE-MPE and FeRD publish Order-X behind a
+  registration. `build/fetch-specs.sh order-x` fills `specs/order-x`; `AddOrderXSchemaFrom` and
+  `AddOrderXRulesFrom` put them to work, one rule set per profile so a BASIC document is judged by BASIC.
+- `CiiValueReader` is **public**, because the Cross Industry Invoice is not the only message in its family
+  and anyone teaching this library another one should not have to write value reading again. Its `udt`/`qdt`
+  lookups match on local name, since the data-type namespace carries a version, and it now reads a moment as
+  well as a day — Order-X states the issue time as `CCYYMMDDHHMM`.
+- **An item classification is a code and a name.** UBL puts the name on the code, CII beside it, and this
+  library kept only the code — in `Item`, `OrderItem` and `DespatchItem`, in both syntaxes, from the
+  beginning. `ItemClassification` carries both. A `CodeField` still converts implicitly, so a caller who has
+  only a code writes what they wrote before.
+- Three more losses the census caught: a gross price may carry **several** per-unit allowances and the model
+  held one amount, so `LinePrice.Adjustments` is the full account and `Discount` is their total; a delivery
+  event may state **both** a preferred date and an acceptable window, so `OrderDelivery.RequestedAt` is kept
+  apart from the window; and a contact's department and function code had nowhere to go.
+- **The Order-X order response is not done.** It fills `OrderResponse` rather than `Order`, and there is no
+  published reference document for it — tracked on the roadmap.
+
 - **Unmapped content is written back where it was read from, in UBL.** An element nobody maps used to be kept
   verbatim and flushed at the end of the node holding it. UBL's element order is normative, so content in the
   wrong place is content a receiver's parser rejects: keeping it was only half of not losing it. Each

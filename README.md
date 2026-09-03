@@ -117,6 +117,7 @@ validation is never presented as a success.
 | UBL 2.1 — Despatch Advice <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Order <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Order Response <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
+| Order-X — Order, Order Change <sub>1.0, on CIO D20B</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.OrderX` |
 | UN/CEFACT CDAR <sub>generic</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Cdar` |
 
 > **UBL 2.1 — Invoice** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine.
@@ -133,13 +134,15 @@ validation is never presented as a success.
 
 > **UBL 2.1 — Order Response** — The seller's answer to an order: accepted, rejected, or accepted on other terms — a different quantity, a later date, or a substitute product. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes. The advanced response and the order agreement are the same document under other profiles and need no reader of their own; the agreement restates the whole order, certificates and specification documents included.
 
+> **Order-X** — The Franco-German order, by the publishers of Factur-X and one document earlier in the chain. CII, but not the Cross Industry Invoice: the Cross Industry Order is a different UN/CEFACT message on version 128 of the same data types, so nothing that reads an invoice reads it. Read, round-tripped element for element and in sequence, and judged by FNFE-MPE's own schema and its 124 assertions against the one document they publish — the COMFORT reference order — with nothing left unmapped. The schemas and rules are fetched rather than shipped: `build/fetch-specs.sh order-x`, then `AddOrderXSchemaFrom` and `AddOrderXRulesFrom`.
+
 > **UN/CEFACT CDAR** — The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported. Validation runs any Schematron rule set published for it, the French BR-FR-CDV included.
 
 ### Profiles
 
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
-| XSD schema validation (UBL 2.1, CII D22B) <sub>UBL 2.1 · CII D22B</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Validation.Xsd` |
+| XSD schema validation (UBL 2.1, CII D22B, Order-X 1.0) <sub>UBL 2.1 · CII D22B · Order-X 1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Validation.Xsd` |
 | EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | ✅ | `International.EInvoicing.Validation.En16931` |
 | Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.FacturX` |
 | Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | ⛔ | `International.EInvoicing.FacturX.PdfSharp` |

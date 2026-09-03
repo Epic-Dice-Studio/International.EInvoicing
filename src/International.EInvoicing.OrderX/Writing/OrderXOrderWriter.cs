@@ -289,7 +289,7 @@ public sealed class OrderXOrderWriter : IDocumentWriter<Order>
         writer.Amount("ChargeTotalAmount", totals.ChargeTotalAmount);
         writer.Amount("AllowanceTotalAmount", totals.AllowanceTotalAmount);
         writer.Amount("TaxBasisTotalAmount", totals.TaxExclusiveAmount);
-        writer.Amount("TaxTotalAmount", totals.TaxAmount);
+        writer.Amount("TaxTotalAmount", totals.TaxAmount, withCurrency: true, order.CurrencyCode.Value);
         writer.Amount("RoundingAmount", totals.RoundingAmount);
         writer.Amount("GrandTotalAmount", totals.TaxInclusiveAmount);
         writer.Amount("TotalPrepaidAmount", totals.PrepaidAmount);

@@ -163,15 +163,42 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
     }
 
     /// <summary>
-    /// Writes an amount. Order-X states the currency once, on the document, and forbids
-    /// <c>currencyID</c> everywhere else — the same rule the Cross Industry Invoice has.
+    /// Writes an amount.
     /// </summary>
-    public void Amount(string localName, AmountField field)
+    /// <remarks>
+    /// Order-X states the currency once, on the document, and forbids <c>currencyID</c> on nearly every
+    /// amount — the same rule the Cross Industry Invoice has. <c>TaxTotalAmount</c> is the exception, and
+    /// there the attribute is <em>required</em>, because a document may state the tax in a second currency.
+    /// <paramref name="documentCurrency"/> stands in when the field carries none, which is what a caller assigning
+    /// a plain <c>decimal</c> leaves behind.
+    /// </remarks>
+    public void Amount(
+        string localName,
+        AmountField field,
+        bool withCurrency = false,
+        string? documentCurrency = null)
     {
-        if (field.IsSet)
+        if (!field.IsSet)
+        {
+            return;
+        }
+
+        if (!withCurrency)
         {
             Ram(localName, field.Raw ?? Format(field.Value));
+            return;
         }
+
+        Written(localName, () =>
+        {
+            writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
+
+            // Nothing is invented when neither the amount nor the document names a currency: the document
+            // goes out without the attribute and the schema says so, which beats guessing at somebody's money.
+            Attribute("currencyID", field.CurrencyCode ?? documentCurrency);
+            writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
+            writer.WriteEndElement();
+        });
     }
 
     public void Quantity(string localName, QuantityField field)

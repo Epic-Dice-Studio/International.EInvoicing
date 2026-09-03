@@ -1,7 +1,9 @@
 #nullable enable
+International.EInvoicing.OrderX.OrderXBuilderExtensions
 International.EInvoicing.OrderX.OrderXDiagnostics
 International.EInvoicing.OrderX.OrderXNames
 International.EInvoicing.OrderX.OrderXProfiles
+International.EInvoicing.OrderX.OrderXServiceCollectionExtensions
 International.EInvoicing.OrderX.OrderXTypeCodes
 International.EInvoicing.OrderX.Reading.OrderXOrderReader
 International.EInvoicing.OrderX.Reading.OrderXOrderReader.OrderXOrderReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
@@ -18,6 +20,7 @@ International.EInvoicing.OrderX.Writing.OrderXOrderWriter.WriteToString(Internat
 const International.EInvoicing.OrderX.OrderXTypeCodes.Order = "220" -> string!
 const International.EInvoicing.OrderX.OrderXTypeCodes.OrderChange = "230" -> string!
 const International.EInvoicing.OrderX.OrderXTypeCodes.OrderResponse = "231" -> string!
+static International.EInvoicing.OrderX.OrderXBuilderExtensions.AddOrderXRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory, string! version = "1.0") -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.OrderX.OrderXDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.OrderX.OrderXDiagnostics.UnknownDocumentType.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.OrderX.OrderXDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
@@ -30,3 +33,5 @@ static International.EInvoicing.OrderX.OrderXProfiles.All.get -> System.Collecti
 static International.EInvoicing.OrderX.OrderXProfiles.Basic.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.OrderX.OrderXProfiles.Comfort.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.OrderX.OrderXProfiles.Extended.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.OrderX.OrderXServiceCollectionExtensions.AddOrderX(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.OrderX.OrderXServiceCollectionExtensions.AddOrderXServices(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

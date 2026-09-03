@@ -1,3 +1,4 @@
+using System.Xml;
 using System.Xml.Linq;
 using International.EInvoicing.Cdar;
 using International.EInvoicing.Cdar.Reading;
@@ -11,6 +12,9 @@ using International.EInvoicing.Documents;
 using International.EInvoicing.FacturX;
 using International.EInvoicing.FacturX.Pdf;
 using International.EInvoicing.Model;
+using International.EInvoicing.OrderX;
+using International.EInvoicing.OrderX.Reading;
+using International.EInvoicing.OrderX.Writing;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Ubl;
 using International.EInvoicing.Ubl.Reading;
@@ -155,6 +159,17 @@ public sealed class EInvoicing
     /// <summary>The writer for a UBL <c>Order</c>.</summary>
     public IDocumentWriter<Order> UblOrderWriter =>
         Required(Handlers.OrderWriterFor(DocumentSyntax.Ubl), "write UBL orders");
+
+    /// <summary>
+    /// The reader for an Order-X order — or an order change, which is the same document with another type
+    /// code.
+    /// </summary>
+    public IDocumentReader<Order> OrderX =>
+        Required(Handlers.OrderReaderFor(DocumentSyntax.OrderX), "read Order-X orders");
+
+    /// <summary>The writer for an Order-X order.</summary>
+    public IDocumentWriter<Order> OrderXWriter =>
+        Required(Handlers.OrderWriterFor(DocumentSyntax.OrderX), "write Order-X orders");
 
     /// <summary>The reader for a UBL <c>OrderResponse</c> — the seller's answer to an order.</summary>
     public IDocumentReader<OrderResponse> UblOrderResponse =>
@@ -308,6 +323,8 @@ public sealed class EInvoicing
             DocumentKind.UblDespatchAdvice => FromDespatchAdvice(UblDespatchAdvice.Read(text)),
             DocumentKind.UblOrder => FromOrder(DocumentKind.UblOrder, UblOrder.Read(text)),
             DocumentKind.UblOrderChange => FromOrder(DocumentKind.UblOrderChange, UblOrder.Read(text)),
+            DocumentKind.OrderX => FromOrder(DocumentKind.OrderX, OrderX.Read(text)),
+            DocumentKind.OrderXOrderChange => FromOrder(DocumentKind.OrderXOrderChange, OrderX.Read(text)),
             DocumentKind.UblOrderResponse => FromOrderResponse(UblOrderResponse.Read(text)),
             DocumentKind.UblOrderCancellation => FromOrderCancellation(UblOrderCancellation.Read(text)),
             _ => new DocumentResult
@@ -398,6 +415,13 @@ public sealed class EInvoicing
         if (root.Namespace == CiiNames.Rsm)
         {
             return DocumentKind.Cii;
+        }
+
+        // All three Order-X documents share this root, so which one it is has to be read out of the type
+        // code rather than off the element — the only place in this library where that is true.
+        if (root == OrderXNames.Root)
+        {
+            return OrderXKindOf(document);
         }
 
         if (root.Namespace == UblNames.CreditNote)
@@ -725,6 +749,31 @@ public sealed class EInvoicing
     }
 
     /// <summary>Which syntax a detected document is written in, or <c>null</c> when it is not one.</summary>
+    /// <summary>
+    /// Which of the three Order-X documents this is, from <c>ExchangedDocument/TypeCode</c>.
+    /// </summary>
+    /// <remarks>
+    /// An unrecognised code is read as an order rather than refused: the content is still an order, and the
+    /// reader reports the code it did not know. Refusing would lose a document over one element.
+    /// </remarks>
+    private static DocumentKind OrderXKindOf(string document)
+    {
+        using XmlReader reader = SecureXml.CreateReader(document);
+        XElement? root = XDocument.Load(reader).Root;
+
+        string? typeCode = root
+            ?.Element(OrderXNames.Rsm + "ExchangedDocument")
+            ?.Element(OrderXNames.Ram + "TypeCode")
+            ?.Value.Trim();
+
+        return typeCode switch
+        {
+            OrderXTypeCodes.OrderChange => DocumentKind.OrderXOrderChange,
+            OrderXTypeCodes.OrderResponse => DocumentKind.OrderXOrderResponse,
+            _ => DocumentKind.OrderX,
+        };
+    }
+
     private static DocumentSyntax? SyntaxOf(DocumentKind kind) => kind switch
     {
         DocumentKind.Ubl
@@ -737,6 +786,9 @@ public sealed class EInvoicing
             or DocumentKind.UblOrderChange => DocumentSyntax.Ubl,
         DocumentKind.Cii => DocumentSyntax.Cii,
         DocumentKind.Cdar => DocumentSyntax.Cdar,
+        DocumentKind.OrderX
+            or DocumentKind.OrderXOrderChange
+            or DocumentKind.OrderXOrderResponse => DocumentSyntax.OrderX,
         _ => null,
     };
 

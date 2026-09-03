@@ -5,6 +5,8 @@ using International.EInvoicing.Cii.Writing;
 using International.EInvoicing.Configuration;
 using International.EInvoicing.Documents;
 using International.EInvoicing.Model;
+using International.EInvoicing.OrderX.Reading;
+using International.EInvoicing.OrderX.Writing;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Ubl.Reading;
 using International.EInvoicing.Ubl.Writing;
@@ -185,8 +187,8 @@ public sealed class DocumentHandlers
             [new CdarWriter(), new UblApplicationResponseWriter()],
             [new UblDespatchAdviceReader(options, profiles)],
             [new UblDespatchAdviceWriter()],
-            [new UblOrderReader(options, profiles)],
-            [new UblOrderWriter()],
+            [new UblOrderReader(options, profiles), new OrderXOrderReader(options, profiles)],
+            [new UblOrderWriter(), new OrderXOrderWriter()],
             [new UblOrderResponseReader(options, profiles)],
             [new UblOrderResponseWriter()],
             [new UblOrderCancellationReader(options, profiles)],

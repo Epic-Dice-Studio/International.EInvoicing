@@ -47,6 +47,15 @@ public enum DocumentKind
 
     /// <summary>A UBL <c>OrderChange</c> — the buyer amending an order already sent.</summary>
     UblOrderChange,
+
+    /// <summary>An Order-X order.</summary>
+    OrderX,
+
+    /// <summary>An Order-X order change — the same document, amending one already sent.</summary>
+    OrderXOrderChange,
+
+    /// <summary>An Order-X order response — what the seller says about an order.</summary>
+    OrderXOrderResponse,
 }
 
 /// <summary>

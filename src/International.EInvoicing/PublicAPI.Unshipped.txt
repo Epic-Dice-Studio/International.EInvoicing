@@ -56,6 +56,9 @@ International.EInvoicing.DocumentHandlers.WriteSteps.get -> System.Collections.G
 International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Cdar = 4 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Cii = 3 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.OrderX = 12 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.OrderXOrderChange = 13 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.OrderXOrderResponse = 14 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Pdf = 5 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Ubl = 1 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.UblApplicationResponse = 6 -> International.EInvoicing.DocumentKind
@@ -121,6 +124,8 @@ International.EInvoicing.EInvoicing.Handlers.get -> International.EInvoicing.Doc
 International.EInvoicing.EInvoicing.KnownProfiles.get -> System.Collections.Generic.IReadOnlyCollection<International.EInvoicing.Profiles.Profile!>!
 International.EInvoicing.EInvoicing.Lifecycle.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>!
 International.EInvoicing.EInvoicing.LifecycleWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>!
+International.EInvoicing.EInvoicing.OrderX.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.Order!>!
+International.EInvoicing.EInvoicing.OrderXWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.Order!>!
 International.EInvoicing.EInvoicing.Profiles.get -> International.EInvoicing.Profiles.IProfileResolver!
 International.EInvoicing.EInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
 International.EInvoicing.EInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
