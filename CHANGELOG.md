@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **ZUGFeRD 1.0, for reading** — `International.EInvoicing.Zugferd1`. The 2013 German hybrid invoice,
+  replaced in 2019 and still sitting in archives. CII from before CII settled: FeRD's own document namespace
+  and versions 12 and 15 of the data types, so it needs its own reader rather than a flag on the CII one.
+- Reading only, on purpose. What an archive needs is a way forward, not a way to make more of a retired
+  format; `EInvoicing.Convert` writes it out as ZUGFeRD 2, Factur-X, CII or UBL. What a migration must decide
+  for itself is the conformance claim: the reader reports what the 2013 document said, and this library will
+  not invent a new one on the way out.
+- All four reference documents are read with nothing dropped, they satisfy FeRD's own schema and rule set,
+  and the migration forward is judged against mustangproject's own ZUGFeRD 2 conversion of one of them —
+  same totals, same parties, same lines.
+- **`InvoiceNodes.Descendants` had stopped reaching two nodes**, which meant `Convert` under-reported
+  conversion losses and `inspect` under-counted extensions on a line's price adjustments and an item's
+  classifications. Its own remark promised a test that would catch this; there wasn't one, and now there is.
+
 - **Unmapped content is written back where it was read from in CII and CDAR too.** The UBL half shipped
   first; `CiiInvoiceWriter` and `CdarWriter` now route through `AnchoredDocument`, which is where the
   anchoring lives rather than in a copy per syntax.

@@ -1,4 +1,5 @@
 using International.EInvoicing.Configuration;
+using International.EInvoicing.Profiles;
 
 namespace International.EInvoicing.Validation.Xsd;
 
@@ -75,9 +76,11 @@ public static class XsdBuilderExtensions
 
             string identifier = $"urn:order-x.eu:1p0:{profile}";
 
-            builder.AddRules(new OrderXSchemaRuleSet(
+            builder.AddRules(new DirectorySchemaRuleSet(
                 path,
                 $"Order-X 1.0 {profile.ToUpperInvariant()} (schema)",
+                "1.0",
+                DocumentSyntax.OrderX,
                 declared => string.Equals(declared.Value, identifier, StringComparison.Ordinal)));
             added++;
         }
@@ -91,6 +94,33 @@ public static class XsdBuilderExtensions
         }
 
         return builder;
+    }
+
+    /// <summary>
+    /// Adds the ZUGFeRD 1.0 schemas found in a directory of fetched artefacts.
+    /// </summary>
+    /// <remarks>
+    /// One schema for the whole format rather than one per profile: FeRD's 2013 package expressed the
+    /// profiles in its rules, not in three schemas. Fetched rather than embedded because FeRD no longer
+    /// publishes the format at all — <c>build/fetch-specs.sh zugferd1</c>, then
+    /// <c>specs/zugferd-1.0/schema</c>.
+    /// </remarks>
+    /// <param name="builder">The library being assembled.</param>
+    /// <param name="directory">The <c>schema</c> directory the fetch script writes.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="directory"/> is empty.</exception>
+    /// <exception cref="DirectoryNotFoundException">The directory does not exist.</exception>
+    public static EInvoicingBuilder AddZugferd1SchemaFrom(this EInvoicingBuilder builder, string directory)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory);
+
+        return builder.AddRules(new DirectorySchemaRuleSet(
+            directory,
+            "ZUGFeRD 1.0 (schema)",
+            "1.0",
+            DocumentSyntax.Zugferd1,
+            _ => true));
     }
 
     /// <summary>

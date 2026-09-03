@@ -1813,6 +1813,7 @@ static International.EInvoicing.Profiles.DocumentSyntax.Cii.get -> International
 static International.EInvoicing.Profiles.DocumentSyntax.OrderX.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Ubl.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Unknown.get -> International.EInvoicing.Profiles.DocumentSyntax
+static International.EInvoicing.Profiles.DocumentSyntax.Zugferd1.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.operator !=(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool
 static International.EInvoicing.Profiles.DocumentSyntax.operator ==(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool
 static International.EInvoicing.Profiles.En16931Edition.Implemented.get -> International.EInvoicing.Profiles.En16931Edition

@@ -1,0 +1,27 @@
+#nullable enable
+International.EInvoicing.Zugferd1.Reading.Zugferd1InvoiceReader
+International.EInvoicing.Zugferd1.Reading.Zugferd1InvoiceReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Zugferd1.Reading.Zugferd1InvoiceReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Zugferd1.Reading.Zugferd1InvoiceReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!>!
+International.EInvoicing.Zugferd1.Reading.Zugferd1InvoiceReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Zugferd1.Reading.Zugferd1InvoiceReader.Zugferd1InvoiceReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Zugferd1.Zugferd1Diagnostics
+International.EInvoicing.Zugferd1.Zugferd1Names
+International.EInvoicing.Zugferd1.Zugferd1Profiles
+International.EInvoicing.Zugferd1.Zugferd1ServiceCollectionExtensions
+const International.EInvoicing.Zugferd1.Zugferd1Profiles.BaseIdentifier = "urn:ferd:CrossIndustryDocument:invoice:1p0" -> string!
+static International.EInvoicing.Zugferd1.Zugferd1Diagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Zugferd1.Zugferd1Diagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Zugferd1.Zugferd1Names.Qdt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Zugferd1.Zugferd1Names.Ram.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Zugferd1.Zugferd1Names.Root.get -> System.Xml.Linq.XName!
+static International.EInvoicing.Zugferd1.Zugferd1Names.Rsm.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Zugferd1.Zugferd1Names.Udt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Zugferd1.Zugferd1Profiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Zugferd1.Zugferd1Profiles.Basic.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Zugferd1.Zugferd1Profiles.Comfort.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Zugferd1.Zugferd1Profiles.Extended.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Zugferd1.Zugferd1Profiles.Unprofiled.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Zugferd1.Zugferd1ServiceCollectionExtensions.AddZugferd1(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Zugferd1.Zugferd1ServiceCollectionExtensions.AddZugferd1RulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Zugferd1.Zugferd1ServiceCollectionExtensions.AddZugferd1Services(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

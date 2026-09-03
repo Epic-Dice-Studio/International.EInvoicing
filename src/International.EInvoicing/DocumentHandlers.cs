@@ -10,6 +10,7 @@ using International.EInvoicing.OrderX.Writing;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Ubl.Reading;
 using International.EInvoicing.Ubl.Writing;
+using International.EInvoicing.Zugferd1.Reading;
 
 namespace International.EInvoicing;
 
@@ -181,7 +182,11 @@ public sealed class DocumentHandlers
         ArgumentNullException.ThrowIfNull(writeSteps);
 
         return new DocumentHandlers(
-            [new UblInvoiceReader(options, profiles), new CiiInvoiceReader(options, profiles)],
+            [
+                new UblInvoiceReader(options, profiles),
+                new CiiInvoiceReader(options, profiles),
+                new Zugferd1InvoiceReader(options, profiles),
+            ],
             [new UblInvoiceWriter(), new CiiInvoiceWriter()],
             [new CdarReader(options, profiles), new UblApplicationResponseReader(options, profiles)],
             [new CdarWriter(), new UblApplicationResponseWriter()],

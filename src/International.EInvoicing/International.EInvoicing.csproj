@@ -22,6 +22,7 @@
     <ProjectReference Include="../International.EInvoicing.Cdar/International.EInvoicing.Cdar.csproj" />
     <ProjectReference Include="../International.EInvoicing.FacturX/International.EInvoicing.FacturX.csproj" />
     <ProjectReference Include="../International.EInvoicing.OrderX/International.EInvoicing.OrderX.csproj" />
+    <ProjectReference Include="../International.EInvoicing.Zugferd1/International.EInvoicing.Zugferd1.csproj" />
     <ProjectReference Include="../International.EInvoicing.Validation.En16931/International.EInvoicing.Validation.En16931.csproj" />
   </ItemGroup>
 

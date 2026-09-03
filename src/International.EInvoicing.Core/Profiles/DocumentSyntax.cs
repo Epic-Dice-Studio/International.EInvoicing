@@ -26,6 +26,16 @@ public readonly record struct DocumentSyntax(string Name)
     /// </remarks>
     public static DocumentSyntax OrderX => new("order-x");
 
+    /// <summary>
+    /// ZUGFeRD 1.0 — the 2013 German hybrid invoice, which is CII from before CII settled.
+    /// </summary>
+    /// <remarks>
+    /// Named apart from <see cref="Cii"/> for the same reason <see cref="OrderX"/> is: FeRD's own document
+    /// namespace, and versions 12 and 15 of the data types rather than 100. This library reads it and does
+    /// not write it.
+    /// </remarks>
+    public static DocumentSyntax Zugferd1 => new("zugferd-1.0");
+
     /// <summary>No syntax determined.</summary>
     public static DocumentSyntax Unknown => default;
 

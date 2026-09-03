@@ -69,6 +69,7 @@ International.EInvoicing.DocumentKind.UblOrderCancellation = 10 -> International
 International.EInvoicing.DocumentKind.UblOrderChange = 11 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.UblOrderResponse = 9 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Unknown = 0 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.Zugferd1 = 15 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentResult
 International.EInvoicing.DocumentResult.<Clone>$() -> International.EInvoicing.DocumentResult!
 International.EInvoicing.DocumentResult.Deconstruct(out International.EInvoicing.DocumentKind kind, out International.EInvoicing.Model.EInvoice? invoice, out International.EInvoicing.Model.LifecycleStatusMessage? status) -> void
@@ -157,6 +158,7 @@ International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.Order! 
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.OrderCancellation! cancellation) -> string!
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.OrderResponse! response) -> string!
 International.EInvoicing.EInvoicing.WriteAsync(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.EInvoicing.Zugferd1.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>!
 International.EInvoicing.EInvoicingBuilderExtensions
 International.EInvoicing.EInvoicingDiagnostics
 override International.EInvoicing.ConversionLoss.Equals(object? obj) -> bool

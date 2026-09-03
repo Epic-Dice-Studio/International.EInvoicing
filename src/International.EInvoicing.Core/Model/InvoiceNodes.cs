@@ -47,11 +47,16 @@ public static class InvoiceNodes
         One(line)
             .Concat(One(line.Period))
             .Concat(Many(line.AllowancesAndCharges))
-            .Concat(One(line.Price))
+            .Concat(Price(line.Price))
             .Concat(Item(line.Item));
 
+    private static IEnumerable<InvoiceNode> Price(LinePrice? price) =>
+        price is null ? [] : One(price).Concat(Many(price.Adjustments));
+
     private static IEnumerable<InvoiceNode> Item(Item? item) =>
-        item is null ? [] : One(item).Concat(Many(item.Characteristics));
+        item is null
+            ? []
+            : One(item).Concat(Many(item.Characteristics)).Concat(Many(item.Classifications));
 
     private static IEnumerable<InvoiceNode> Party(Party? party) =>
         party is null ? [] : One(party).Concat(One(party.Address)).Concat(One(party.Contact));

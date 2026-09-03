@@ -56,6 +56,9 @@ public enum DocumentKind
 
     /// <summary>An Order-X order response — what the seller says about an order.</summary>
     OrderXOrderResponse,
+
+    /// <summary>A ZUGFeRD 1.0 invoice — the 2013 German format, which this library reads and does not write.</summary>
+    Zugferd1,
 }
 
 /// <summary>

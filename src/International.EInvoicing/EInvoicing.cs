@@ -23,6 +23,8 @@ using International.EInvoicing.Validation;
 using International.EInvoicing.Validation.En16931;
 using International.EInvoicing.Validation.Schematron;
 using International.EInvoicing.Xml;
+using International.EInvoicing.Zugferd1;
+using International.EInvoicing.Zugferd1.Reading;
 
 namespace International.EInvoicing;
 
@@ -159,6 +161,13 @@ public sealed class EInvoicing
     /// <summary>The writer for a UBL <c>Order</c>.</summary>
     public IDocumentWriter<Order> UblOrderWriter =>
         Required(Handlers.OrderWriterFor(DocumentSyntax.Ubl), "write UBL orders");
+
+    /// <summary>
+    /// The reader for a ZUGFeRD 1.0 invoice. There is no writer: the format was replaced in 2019, and what
+    /// an archive of them needs is a way forward rather than a way to make more.
+    /// </summary>
+    public IDocumentReader<EInvoice> Zugferd1 =>
+        Required(Handlers.InvoiceReaderFor(DocumentSyntax.Zugferd1), "read ZUGFeRD 1.0 invoices");
 
     /// <summary>
     /// The reader for an Order-X order — or an order change, which is the same document with another type
@@ -317,6 +326,7 @@ public sealed class EInvoicing
             DocumentKind.Ubl => FromInvoice(DocumentKind.Ubl, Ubl.Read(text)),
             DocumentKind.UblCreditNote => FromInvoice(DocumentKind.UblCreditNote, Ubl.Read(text)),
             DocumentKind.Cii => FromInvoice(DocumentKind.Cii, Cii.Read(text)),
+            DocumentKind.Zugferd1 => FromInvoice(DocumentKind.Zugferd1, Zugferd1.Read(text)),
             DocumentKind.Cdar => FromStatus(DocumentKind.Cdar, Lifecycle.Read(text)),
             DocumentKind.UblApplicationResponse =>
                 FromStatus(DocumentKind.UblApplicationResponse, UblResponse.Read(text)),
@@ -422,6 +432,11 @@ public sealed class EInvoicing
         if (root == OrderXNames.Root)
         {
             return OrderXKindOf(document);
+        }
+
+        if (root == Zugferd1Names.Root)
+        {
+            return DocumentKind.Zugferd1;
         }
 
         if (root.Namespace == UblNames.CreditNote)
@@ -789,6 +804,7 @@ public sealed class EInvoicing
         DocumentKind.OrderX
             or DocumentKind.OrderXOrderChange
             or DocumentKind.OrderXOrderResponse => DocumentSyntax.OrderX,
+        DocumentKind.Zugferd1 => DocumentSyntax.Zugferd1,
         _ => null,
     };
 

@@ -257,6 +257,31 @@ fetch_orderx() {
     copy_licence "$src" "$SPECS_DIR/order-x"
 }
 
+# ZUGFeRD 1.0: the 2013 German hybrid invoice, still sitting in archives. FeRD's own package is gone from
+# the web; mustangproject carries the schema, the rule set and four reference documents, plus its own
+# reference output for converting one of them to ZUGFeRD 2 — which is what says whether we read it correctly.
+fetch_zugferd1() {
+    local src="$WORK_DIR/mustang-zf1"
+    clone_at https://github.com/ZUGFeRD/mustangproject.git "$MUSTANG_REF" "$src"
+
+    rm -rf "$SPECS_DIR/zugferd-1.0"
+    sync_into "$src/validator/src/main/resources/schema/ZF_10" "$SPECS_DIR/zugferd-1.0"
+    mv "$SPECS_DIR/zugferd-1.0/ZF_10" "$SPECS_DIR/zugferd-1.0/schema"
+    sync_into "$src/validator/src/main/resources/ZUGFeRD_1p0.sch" "$SPECS_DIR/zugferd-1.0/schematron"
+
+    local name
+    for name in ZUGFeRD1-invoice.xml ZUGFeRD1-invoice-adjusted.xml ZUGFeRD1_COMFORT_Einfach.xml \
+        ZUGFeRD1_EXTENDED_Warenrechnung.xml; do
+        sync_into "$src/library/src/test/resources/migration/input/$name" "$SPECS_DIR/zugferd-1.0/examples"
+    done
+
+    # Their own reference conversion of one of those to ZUGFeRD 2, for judging ours against.
+    sync_into "$src/library/src/test/resources/migration/reference/ZUGFeRD2_COMFORT_Einfach.xml" \
+        "$SPECS_DIR/zugferd-1.0/reference"
+
+    copy_licence "$src" "$SPECS_DIR/zugferd-1.0"
+}
+
 fetch_manual() {
     cat >&2 <<'MANUAL'
 
@@ -287,9 +312,10 @@ main() {
         ubl)       fetch_ubl_schemas ;;
         cii)       fetch_cii_schemas ;;
         order-x)   fetch_orderx ;;
+        zugferd1)  fetch_zugferd1 ;;
         france)    fetch_france ;;
-        all)       fetch_en16931; fetch_peppol; fetch_poacc; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_cii_schemas; fetch_orderx; fetch_manual ;;
-        *)         warn "unknown target '$target' (en16931 | peppol | poacc | pint | national | xrechnung | france | ubl | cii | order-x | all)"; exit 2 ;;
+        all)       fetch_en16931; fetch_peppol; fetch_poacc; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_cii_schemas; fetch_orderx; fetch_zugferd1; fetch_manual ;;
+        *)         warn "unknown target '$target' (en16931 | peppol | poacc | pint | national | xrechnung | france | ubl | cii | order-x | zugferd1 | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"
 }

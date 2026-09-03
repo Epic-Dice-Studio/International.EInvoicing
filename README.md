@@ -118,6 +118,7 @@ validation is never presented as a success.
 | UBL 2.1 — Order <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Order Response <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | Order-X — Order, Order Change <sub>1.0, on CIO D20B</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.OrderX` |
+| ZUGFeRD 1.0 <sub>1.0, 2014</sub> | ✅ | ⛔ | ✅ | `International.EInvoicing.Zugferd1` |
 | UN/CEFACT CDAR <sub>generic</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Cdar` |
 
 > **UBL 2.1 — Invoice** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine.
@@ -134,7 +135,9 @@ validation is never presented as a success.
 
 > **UBL 2.1 — Order Response** — The seller's answer to an order: accepted, rejected, or accepted on other terms — a different quantity, a later date, or a substitute product. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes. The advanced response and the order agreement are the same document under other profiles and need no reader of their own; the agreement restates the whole order, certificates and specification documents included.
 
-> **Order-X** — The Franco-German order, by the publishers of Factur-X and one document earlier in the chain. CII, but not the Cross Industry Invoice: the Cross Industry Order is a different UN/CEFACT message on version 128 of the same data types, so nothing that reads an invoice reads it. Read, round-tripped element for element and in sequence, and judged by FNFE-MPE's own schema and its 124 assertions against the one document they publish — the COMFORT reference order — with nothing left unmapped. The schemas and rules are fetched rather than shipped: `build/fetch-specs.sh order-x`, then `AddOrderXSchemaFrom` and `AddOrderXRulesFrom`.
+> **Order-X — Order, Order Change** — The Franco-German order, by the publishers of Factur-X and one document earlier in the chain. CII, but not the Cross Industry Invoice: the Cross Industry Order is a different UN/CEFACT message on version 128 of the same data types, so nothing that reads an invoice reads it. Read, round-tripped element for element and in sequence, and judged by FNFE-MPE's own schema and its 124 assertions against the one document they publish — the COMFORT reference order — with nothing left unmapped. The schemas and rules are fetched rather than shipped: build/fetch-specs.sh order-x, then AddOrderXSchemaFrom and AddOrderXRulesFrom. The order response is not done.
+
+> **ZUGFeRD 1.0** — The 2013 German hybrid invoice, replaced in 2019 and still sitting in archives. CII from before CII settled: FeRD's own document namespace and versions 12 and 15 of the data types. Reading only, on purpose — what an archive needs is a way forward, not a way to make more. All four reference documents are read with nothing dropped, they satisfy FeRD's own schema and rule set, and the migration forward is judged against mustangproject's own ZUGFeRD 2 conversion of one of them: same totals, same parties, same lines. Fetched rather than shipped, because FeRD no longer publishes it.
 
 > **UN/CEFACT CDAR** — The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported. Validation runs any Schematron rule set published for it, the French BR-FR-CDV included.
 
@@ -142,7 +145,7 @@ validation is never presented as a success.
 
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
-| XSD schema validation (UBL 2.1, CII D22B, Order-X 1.0) <sub>UBL 2.1 · CII D22B · Order-X 1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Validation.Xsd` |
+| XSD schema validation (UBL 2.1, CII D22B, Order-X, ZUGFeRD 1.0) <sub>UBL 2.1 · CII D22B · Order-X 1.0 · ZUGFeRD 1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Validation.Xsd` |
 | EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | ✅ | `International.EInvoicing.Validation.En16931` |
 | Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.FacturX` |
 | Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | ⛔ | `International.EInvoicing.FacturX.PdfSharp` |
@@ -151,7 +154,7 @@ validation is never presented as a success.
 | Peppol tax data document (SK, ViDA) <sub>taxdata sk-1, vida-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 | Peppol post-award — the whole family <sub>Order 3, Order Change 3, Order Cancellation 3, Order Response 3 (simple, advanced, agreement), Despatch Advice 3, Invoice Response 3.1, MLR</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 
-> **XSD schema validation (UBL 2.1, CII D22B)** — The OASIS and UN/CEFACT schemas, embedded and offline, as rule sets like any other. They judge what no business rule looks at — element order and cardinality are normative in both syntaxes — and they earned their keep twice: they caught the shape this library shipped (two bank accounts in one cac:PaymentMeans) and then, on the official corpora, fifteen EN 16931 terms that were read by nothing and written by nothing. Both corpora now round-trip with their shape intact and nothing unmapped.
+> **XSD schema validation (UBL 2.1, CII D22B, Order-X, ZUGFeRD 1.0)** — The OASIS and UN/CEFACT schemas, embedded and offline, as rule sets like any other. They judge what no business rule looks at — element order and cardinality are normative in both syntaxes — and they earned their keep twice: they caught the shape this library shipped (two bank accounts in one cac:PaymentMeans) and then, on the official corpora, fifteen EN 16931 terms that were read by nothing and written by nothing. Both corpora now round-trip with their shape intact and nothing unmapped.
 
 > **EN 16931 (core invoice model)** — The published Schematron artefacts are executed as data. Measured against the 23 official example documents and the 80 CIUS documents of the XRechnung test suite: all accepted.
 

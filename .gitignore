@@ -80,6 +80,14 @@ specs/order-x/schematron/
 specs/order-x/examples/
 specs/order-x/LICENSE.upstream.txt
 
+# ZUGFeRD 1.0: FeRD replaced the format in 2019 and no longer publishes it; what exists is carried by a
+# third party's repository, and nothing here may be redistributed on FeRD's behalf.
+specs/zugferd-1.0/schema/
+specs/zugferd-1.0/schematron/
+specs/zugferd-1.0/examples/
+specs/zugferd-1.0/reference/
+specs/zugferd-1.0/LICENSE.upstream.txt
+
 # French rule sets: published by the DGFiP, carried by a repository that declares no licence
 specs/fr-dse/rules/
 specs/fr-dse/samples/
