@@ -61,7 +61,7 @@ public sealed record FacturXMetadata(
         {
             XNamespace fx = uri;
 
-            if (document.Descendants().FirstOrDefault(element => element.Name.Namespace == fx) is null)
+            if (!Mentions(document, fx))
             {
                 continue;
             }
@@ -87,6 +87,26 @@ public sealed record FacturXMetadata(
             : xmp;
     }
 
-    private static string? Value(XDocument document, XName name) =>
-        document.Descendants(name).FirstOrDefault()?.Value.Trim();
+    /// <summary>Whether the packet uses this namespace at all, in either serialisation.</summary>
+    private static bool Mentions(XDocument document, XNamespace fx) =>
+        document.Descendants().Any(element =>
+            element.Name.Namespace == fx
+            || element.Attributes().Any(attribute => attribute.Name.Namespace == fx));
+
+    /// <summary>
+    /// One property of the block, however the packet chose to serialise it.
+    /// </summary>
+    /// <remarks>
+    /// XMP allows a simple property as a child element or as an attribute of the <c>rdf:Description</c>, and
+    /// both are in circulation — Adobe's own tooling writes the attribute form. Reading only elements makes
+    /// a container that used attributes look like one that says nothing about an invoice, so a metadata
+    /// block claiming the wrong profile would pass unremarked.
+    /// </remarks>
+    private static string? Value(XDocument document, XName name)
+    {
+        string? text = document.Descendants(name).FirstOrDefault()?.Value
+            ?? document.Descendants().Attributes(name).FirstOrDefault()?.Value;
+
+        return string.IsNullOrWhiteSpace(text) ? null : text.Trim();
+    }
 }

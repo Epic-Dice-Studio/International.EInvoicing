@@ -54,6 +54,22 @@ public class HostilePdfTests
         attachment.ShouldBeNull(what);
     }
 
+    /// <summary>
+    /// Asking the same documents what their metadata says does not throw either.
+    /// </summary>
+    /// <remarks>
+    /// Reading the metadata walks a different part of the file from reading the attachment — the catalogue
+    /// rather than the name tree — so a document that survives one can still break the other.
+    /// </remarks>
+    [Theory]
+    [MemberData(nameof(Documents))]
+    public void NorDoesAskingWhatTheyClaimToBe(string what, byte[] bytes)
+    {
+        using var stream = new MemoryStream(bytes);
+
+        Should.NotThrow(() => Reader.FindMetadata(stream), $"reading the metadata of {what} threw");
+    }
+
     /// <summary>Read through the facade, the same documents are a diagnostic rather than an exception.</summary>
     [Theory]
     [MemberData(nameof(Documents))]

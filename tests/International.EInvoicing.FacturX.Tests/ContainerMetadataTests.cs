@@ -87,6 +87,74 @@ public class ContainerMetadataTests
     }
 
     /// <summary>
+    /// XMP writes a simple property either way, and both are in circulation.
+    /// </summary>
+    /// <remarks>
+    /// Reading only the element form made a container that used attributes look like one saying nothing
+    /// about an invoice — so a block claiming the wrong profile passed unremarked, which is the one thing
+    /// this check exists to stop. Adobe's own tooling writes the attribute form.
+    /// </remarks>
+    [Fact]
+    public void APropertyWrittenAsAnAttributeSaysTheSameThingAsOneWrittenAsAnElement()
+    {
+        string attributes = $"""
+            <x:xmpmeta xmlns:x="adobe:ns:meta/">
+              <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                <rdf:Description rdf:about="" xmlns:fx="{FacturXMetadata.Namespaces[0]}"
+                                 fx:DocumentType="INVOICE"
+                                 fx:DocumentFileName="factur-x.xml"
+                                 fx:Version="1.0"
+                                 fx:ConformanceLevel="EN 16931"/>
+              </rdf:RDF>
+            </x:xmpmeta>
+            """;
+
+        FacturXMetadata.Read(attributes)
+            .ShouldBe(FacturXMetadata.Read(Xmp("INVOICE", "EN 16931", FacturXAttachment.FacturXFileName)));
+    }
+
+    /// <summary>And a container using it is judged, rather than quietly let through.</summary>
+    [Fact]
+    public void AndAContainerThatUsesItIsStillJudged()
+    {
+        var pdf = new StubPdf(
+            new FacturXAttachment(FacturXAttachment.FacturXFileName, Payload(FacturXProfiles.Minimum)),
+            $"""
+            <x:xmpmeta xmlns:x="adobe:ns:meta/">
+              <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                <rdf:Description rdf:about="" xmlns:fx="{FacturXMetadata.Namespaces[0]}"
+                                 fx:DocumentType="INVOICE" fx:ConformanceLevel="EN 16931"/>
+              </rdf:RDF>
+            </x:xmpmeta>
+            """);
+
+        EInvoicing.Create(builder => builder.AddDefaults(), pdf).Read(SomePdfBytes()).Diagnostics.ShouldContain(
+            diagnostic => diagnostic.Code == FacturXDiagnostics.MetadataDisagrees.Code
+                && diagnostic.Expected == "MINIMUM");
+    }
+
+    /// <summary>
+    /// A hybrid XRechnung says <c>XRECHNUNG</c>, and used to be stamped <c>EN 16931</c>.
+    /// </summary>
+    /// <remarks>
+    /// The conformance level was answered by falling through to EN 16931 for anything unrecognised, so a
+    /// German hybrid invoice claimed a profile it was not written against — and a receiver told EN 16931
+    /// does not apply the German rules. Now it is named, and a profile Factur-X has no level for is refused
+    /// rather than guessed.
+    /// </remarks>
+    [Fact]
+    public void AHybridXRechnungSaysSoRatherThanClaimingPlainEn16931()
+    {
+        FacturXProfiles.ConformanceLevelOf(FacturXProfiles.XRechnung).ShouldBe("XRECHNUNG");
+        FacturXProfiles.ConformanceLevelOf(FacturXProfiles.XRechnungExtension).ShouldBe("XRECHNUNG");
+    }
+
+    [Fact]
+    public void AndAProfileFacturXHasNoLevelForIsRefusedRatherThanGuessed() =>
+        Should.Throw<ArgumentException>(
+            () => FacturXProfiles.ConformanceLevelOf(KnownProfiles.PeppolBisBilling3Cii));
+
+    /// <summary>
     /// Metadata that says nothing about an invoice is not a disagreement.
     /// </summary>
     /// <remarks>

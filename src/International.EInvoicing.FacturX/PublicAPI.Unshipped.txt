@@ -1,5 +1,4 @@
 #nullable enable
-const International.EInvoicing.FacturX.Pdf.FacturXAttachment.FacturXFileName = "factur-x.xml" -> string!
 International.EInvoicing.FacturX.FacturXDiagnostics
 International.EInvoicing.FacturX.FacturXProfiles
 International.EInvoicing.FacturX.FacturXReader
@@ -40,6 +39,8 @@ International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader.FindAttachment(System.
 International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader.FindMetadata(System.IO.Stream! pdf) -> string?
 International.EInvoicing.FacturX.Pdf.IPdfAttachmentWriter
 International.EInvoicing.FacturX.Pdf.IPdfAttachmentWriter.Attach(System.IO.Stream! source, International.EInvoicing.FacturX.Pdf.FacturXAttachment! attachment, International.EInvoicing.Profiles.Profile! profile, System.IO.Stream! destination) -> void
+const International.EInvoicing.FacturX.FacturXProfiles.XRechnungLevel = "XRECHNUNG" -> string!
+const International.EInvoicing.FacturX.Pdf.FacturXAttachment.FacturXFileName = "factur-x.xml" -> string!
 override International.EInvoicing.FacturX.Pdf.FacturXAttachment.Equals(object? obj) -> bool
 override International.EInvoicing.FacturX.Pdf.FacturXAttachment.GetHashCode() -> int
 override International.EInvoicing.FacturX.Pdf.FacturXAttachment.ToString() -> string!
@@ -58,6 +59,8 @@ static International.EInvoicing.FacturX.FacturXProfiles.En16931.get -> Internati
 static International.EInvoicing.FacturX.FacturXProfiles.Extended.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.FacturX.FacturXProfiles.IsEn16931Compliant(International.EInvoicing.Profiles.Profile! profile) -> bool
 static International.EInvoicing.FacturX.FacturXProfiles.Minimum.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.FacturX.FacturXProfiles.XRechnung.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.FacturX.FacturXProfiles.XRechnungExtension.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.FacturX.FacturXReader.LooksLikePdf(System.ReadOnlySpan<byte> content) -> bool
 static International.EInvoicing.FacturX.FacturXRules.AddFacturXRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.FacturX.FacturXRules.FileNames.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
@@ -66,6 +69,6 @@ static International.EInvoicing.FacturX.Pdf.FacturXAttachment.KnownFileNames.get
 static International.EInvoicing.FacturX.Pdf.FacturXAttachment.operator !=(International.EInvoicing.FacturX.Pdf.FacturXAttachment? left, International.EInvoicing.FacturX.Pdf.FacturXAttachment? right) -> bool
 static International.EInvoicing.FacturX.Pdf.FacturXAttachment.operator ==(International.EInvoicing.FacturX.Pdf.FacturXAttachment? left, International.EInvoicing.FacturX.Pdf.FacturXAttachment? right) -> bool
 static International.EInvoicing.FacturX.Pdf.FacturXMetadata.Namespaces.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.FacturX.Pdf.FacturXMetadata.Read(string? xmp) -> International.EInvoicing.FacturX.Pdf.FacturXMetadata?
 static International.EInvoicing.FacturX.Pdf.FacturXMetadata.operator !=(International.EInvoicing.FacturX.Pdf.FacturXMetadata? left, International.EInvoicing.FacturX.Pdf.FacturXMetadata? right) -> bool
 static International.EInvoicing.FacturX.Pdf.FacturXMetadata.operator ==(International.EInvoicing.FacturX.Pdf.FacturXMetadata? left, International.EInvoicing.FacturX.Pdf.FacturXMetadata? right) -> bool
-static International.EInvoicing.FacturX.Pdf.FacturXMetadata.Read(string? xmp) -> International.EInvoicing.FacturX.Pdf.FacturXMetadata?

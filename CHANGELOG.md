@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **A hybrid XRechnung now says `XRECHNUNG`**, and used to say `EN 16931`. The Factur-X conformance level
+  was answered by falling through to EN 16931 for anything that was not MINIMUM, BASIC WL, BASIC or
+  EXTENDED — so a German hybrid invoice was stamped with a profile it is not written against, and a receiver
+  told EN 16931 does not apply the German rules. That mattered little while the metadata was an object
+  nothing pointed at; it matters now that [it is the document's own](docs/diagnostics/EIV4011.md). A profile
+  Factur-X publishes no conformance level for is refused at write time rather than guessed.
+- **[EIV4011](docs/diagnostics/EIV4011.md) reads both XMP serialisations.** A simple property may be a child
+  element or an attribute of the `rdf:Description`, and Adobe's own tooling writes the attribute form.
+  Reading only elements made such a container look like one saying nothing about an invoice — so a block
+  claiming the wrong profile passed unremarked, which is the one thing the check exists to stop.
+- The hostile PDF corpus now asks each document what its metadata claims as well as what it carries. The two
+  walk different parts of the file, so a document that survives one can still break the other.
+
 - **Reading a tax data document** — [the standard page](docs/standards/peppol-taxdata.md). It was the one
   place this library did not read back what it writes, and that parity is what lets an integrator test their
   own output and a receiver use the same library as the sender. `PeppolTaxDataReader` closes it, for
