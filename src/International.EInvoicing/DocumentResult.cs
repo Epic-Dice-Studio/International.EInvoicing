@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using International.EInvoicing.Cdar.Model;
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Documents;
 using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 
@@ -45,6 +46,17 @@ public sealed record DocumentResult
 
     /// <summary>The lifecycle status message, when the document was one.</summary>
     public LifecycleStatusMessage? LifecycleStatus { get; init; }
+
+    /// <summary>
+    /// The invoice as a person reads it — the PDF a hybrid invoice arrived in. <c>null</c> for a document
+    /// that arrived as bare XML, which has no readable copy to hand back.
+    /// </summary>
+    /// <remarks>
+    /// The container used to be dropped once the XML was out of it, which left a caller holding an invoice
+    /// they could not show anybody. This is the invoice itself, readable; what the invoice carries
+    /// <em>beside</em> itself is <see cref="EInvoice.SupportingDocuments"/>.
+    /// </remarks>
+    public InvoiceRendition? Rendition { get; init; }
 
     /// <summary>Everything reading reported: unknown profiles, unreadable values, unmapped elements.</summary>
     public IReadOnlyList<Diagnostic> Diagnostics { get; init; } = [];

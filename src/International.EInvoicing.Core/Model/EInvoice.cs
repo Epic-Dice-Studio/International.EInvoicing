@@ -1,4 +1,5 @@
 using International.EInvoicing.Diagnostics;
+using International.EInvoicing.Documents;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Values;
 
@@ -140,6 +141,35 @@ public sealed class EInvoice : InvoiceNode
 
     /// <summary>BG-24 — supporting documents, referenced or attached.</summary>
     public List<AdditionalDocument> AdditionalDocuments { get; } = [];
+
+    /// <summary>
+    /// The supporting documents this invoice carries, ready to open — BG-24 entries with BT-125 attached.
+    /// </summary>
+    /// <remarks>
+    /// Something else, attached: not the invoice in readable form. An entry that carries neither bytes nor a
+    /// location is a reference by identifier alone, and appears in <see cref="AdditionalDocuments"/> only.
+    /// </remarks>
+    public IEnumerable<SupportingDocument> SupportingDocuments =>
+        AdditionalDocuments
+            .Where(document => document.Attachment.Value is not null)
+            .Select(document => new SupportingDocument(
+                document.Attachment.Value!,
+                document.Attachment.MimeCode,
+                document.Attachment.Filename,
+                document.Identifier.Value,
+                document.Description.Value));
+
+    /// <summary>
+    /// The supporting documents this invoice points at rather than carries — BG-24 entries with BT-124.
+    /// </summary>
+    /// <remarks>Fetching one is the caller's to do: this library performs no network I/O.</remarks>
+    public IEnumerable<SupportingDocumentLink> SupportingDocumentLinks =>
+        AdditionalDocuments
+            .Where(document => !string.IsNullOrWhiteSpace(document.ExternalLocation.Value))
+            .Select(document => new SupportingDocumentLink(
+                document.ExternalLocation.Value!,
+                document.Identifier.Value,
+                document.Description.Value));
 
     /// <summary>BG-25 — the invoice lines.</summary>
     public List<InvoiceLine> Lines { get; } = [];

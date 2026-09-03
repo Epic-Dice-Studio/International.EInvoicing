@@ -169,6 +169,7 @@ considered and rejected.
 
 ## Next
 
+- [The readable copy, and what came with it](attachments.md)
 - [Writing a document](writing.md)
 - [Lifecycle statuses](lifecycle.md)
 - [Raw values](raw-values.md)

@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The readable copy of an invoice, and the documents it carries, in one call each** —
+  [the guide](docs/guides/attachments.md). `result.Rendition` is the PDF a hybrid invoice arrived in, which
+  used to go out of scope with the stream and leave a caller holding an invoice they could not show anybody;
+  `invoice.SupportingDocuments` are the BG-24 attachments, decoded, with their media type and file name;
+  `invoice.SupportingDocumentLinks` are the ones the invoice only points at. Three types rather than one,
+  because a caller who treats a delivery note as the invoice's readable copy has mixed up two different
+  things — and a BT-124 link has no `OpenRead()` on purpose: fetching it is network I/O this library does
+  not do, and the decision to open a URI from a third party stays the caller's.
 - **A hybrid PDF is now checked against its own metadata** — [EIV4011](docs/diagnostics/EIV4011.md). The XMP
   repeats the profile and the name of the embedded file so a reader can tell what it holds without opening
   it; when that disagrees with the XML inside, a receiver who trusts the metadata and one who reads the

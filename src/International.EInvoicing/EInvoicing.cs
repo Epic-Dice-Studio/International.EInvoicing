@@ -299,7 +299,7 @@ public sealed class EInvoicing
     public DocumentResult ReadFile(string path)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        return Read(File.ReadAllBytes(path));
+        return Named(Read(File.ReadAllBytes(path)), path);
     }
 
     /// <summary>Reads whatever the file holds, without blocking on the read.</summary>
@@ -310,8 +310,14 @@ public sealed class EInvoicing
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
         byte[] content = await File.ReadAllBytesAsync(path, cancellationToken).ConfigureAwait(false);
-        return Read(content);
+        return Named(Read(content), path);
     }
+
+    /// <summary>Gives the readable copy the name of the file it was read from, which only this call knows.</summary>
+    private static DocumentResult Named(DocumentResult result, string path) =>
+        result.Rendition is { } rendition
+            ? result with { Rendition = rendition with { FileName = Path.GetFileName(path) } }
+            : result;
 
     /// <summary>What a document is, judged by its root element rather than by its file name.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="document"/> is <c>null</c>.</exception>
@@ -620,6 +626,8 @@ public sealed class EInvoicing
         return Unrecognised();
     }
 
+    private const string PdfMediaType = "application/pdf";
+
     private DocumentResult ReadHybrid(byte[] pdf)
     {
         using var stream = new MemoryStream(pdf);
@@ -632,6 +640,7 @@ public sealed class EInvoicing
             Invoice = result.Value,
             Diagnostics = result.Diagnostics,
             Profile = result.Value?.Profile,
+            Rendition = new InvoiceRendition(pdf, PdfMediaType),
         };
     }
 

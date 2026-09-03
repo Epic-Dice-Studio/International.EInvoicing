@@ -18,6 +18,7 @@ the [runnable sample](https://github.com/Epic-Dice-Studio/International.EInvoici
 | [E-reporting](e-reporting.md) | The French flux 10 report: sales, transactions abroad, and when the money arrived |
 | [Validation](validation.md) | What ran, what failed, and your own rule sets |
 | [Converting between syntaxes](convert-between-syntaxes.md) | UBL ↔ CII, and a report of what the crossing cost |
+| [The readable copy, and what came with it](attachments.md) | The PDF a hybrid invoice arrived in, and the documents BG-24 carries |
 | [Hooking into generation](hook-into-generation.md) | Your own numbering, rounding or signature, on every document written |
 | [Testing your integration](testing.md) | Conforming samples, a round-trip harness, hostile documents, assertions |
 | [Raw values](raw-values.md) | The text and attributes behind any field |

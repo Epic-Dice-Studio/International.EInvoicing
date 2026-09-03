@@ -22,6 +22,8 @@
   href: raw-values.md
 - name: Reading a document
   href: reading.md
+- name: The readable copy, and what came with it
+  href: attachments.md
 - name: Validating a document
   href: validation.md
 - name: Writing a document

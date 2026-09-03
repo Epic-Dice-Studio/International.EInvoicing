@@ -20,6 +20,7 @@ Generation.Run(Invoices.Build(announce: false));
 HostileDocuments.Run(einvoicing);
 Extending.Run();
 HybridPdf.Run(Invoices.Build(announce: false));
+OpeningWhatArrived.Run(einvoicing, Invoices.Build(announce: false));
 
 CountryInvoices.Run(einvoicing);
 CountryShortcuts.Run();
