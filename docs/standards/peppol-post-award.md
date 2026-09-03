@@ -2,13 +2,14 @@
 
 ## Scope and version
 
-Three Peppol documents that are not invoices.
+Four Peppol documents that are not invoices — the chain an invoice sits at the end of.
 
 | | What it answers |
 |---|---|
 | **Invoice Response** — `urn:fdc:peppol.eu:poacc:trns:invoice_response:3` | *What happened to the invoice?* In process, accepted, rejected, under query, conditionally accepted, paid. |
 | **Message Level Response** — `urn:fdc:peppol.eu:poacc:trns:mlr:3` | *Did the message arrive and parse at all?* One layer below the business question. |
 | **Despatch Advice** — `urn:fdc:peppol.eu:poacc:trns:despatch_advice:3` | *What actually left the warehouse?* The document an invoice is reconciled against. |
+| **Order** — `urn:fdc:peppol.eu:poacc:trns:order:3` | *What did the buyer ask for?* The document the other two are answered against. |
 
 An Invoice Response is what a receiver **owes** a sender: without it, a supplier who has sent an invoice into
 the network knows nothing until the money arrives or does not. It is implemented in
@@ -134,10 +135,39 @@ carries the second so the invoice model does not grow a logistics vocabulary no 
 Every element of all six documents OpenPEPPOL publishes is mapped, bar one: `cac:Person` on the carrier,
 which identifies the driver. It is kept verbatim, written back, and reported as `EIV2020`.
 
+## The order
+
+The first document of the chain. A despatch advice says what was sent of it and an invoice says what is owed
+for it, so a buyer who can read all three can check the second two against the first.
+
+Its model is `Order`, and its amounts are **anticipated** rather than due —
+`cac:AnticipatedMonetaryTotal`, not `cac:LegalMonetaryTotal`. An order commits to a price, not to a debt.
+
+`OrderItem` is a third item type, for the same reason `DespatchItem` was a second one: an order's item is
+being chosen from a catalogue, so it carries the manufacturer's article number and the specification the
+buyer is ordering against, neither of which an invoice or a despatch advice has any use for.
+
+| Model | UBL |
+|---|---|
+| `Number`, `SalesOrderNumber` | `cbc:ID`, `cbc:SalesOrderID` — the buyer's number and the seller's for the same order |
+| `Buyer`, `Seller`, `Originator`, `Invoicee` | the four role wrappers |
+| `Delivery` | `cac:Delivery` — where, when, who receives, and how urgently |
+| `DeliveryTermsCode` | `cac:DeliveryTerms/cbc:ID` — the Incoterm |
+| `Lines[].PartialDeliveryAccepted` | `cbc:PartialDeliveryIndicator` — whether a short delivery is acceptable |
+| `Lines[].Item.ManufacturerIdentifier` | `cac:ManufacturersItemIdentification` — the number that outlives a seller's catalogue |
+| `Totals` | `cac:AnticipatedMonetaryTotal` |
+
+**`PartialDeliveryAccepted` is the term that joins the three documents**: a line the buyer will not take in
+part makes an outstanding quantity on the despatch advice a failure rather than a note.
+
+Every element of all seven documents OpenPEPPOL publishes for the order is mapped, and each is written back
+with the same elements in the same places, accepted by the OASIS schema and by Peppol's own T01 rules.
+
 ## What is not here
 
-**Ordering.** The Order, Order Response, Order Change, Order Cancellation and Order Agreement are five more
-transactions with their own models — a bigger piece than this one, and the next in the family.
+**The rest of the ordering family.** Order Response, Order Change, Order Cancellation and Order Agreement are
+four more transactions with their own models. The Order is the anchor of the family and the one the other
+documents reference; the rest follow it.
 
 ## Prior art
 

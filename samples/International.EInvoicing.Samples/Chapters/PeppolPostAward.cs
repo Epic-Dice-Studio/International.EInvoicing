@@ -46,8 +46,47 @@ internal static class PeppolPostAward
         Report.Say("The same message written as CDAR instead is one argument away — einvoicing.Write(message).");
 
         Console.WriteLine();
-        Report.Say("And the document an invoice is reconciled against — what actually left the warehouse:");
+        Report.Say("The chain an invoice sits at the end of. First, what the buyer asked for:");
+        Order(library);
+
+        Console.WriteLine();
+        Report.Say("Then what actually left the warehouse, which the invoice is reconciled against:");
         Despatch(library);
+    }
+
+    /// <summary>
+    /// An order that will not accept part of a line, which is what makes a short delivery a failure.
+    /// </summary>
+    private static void Order(EInvoicing library)
+    {
+        var order = new Model.Order
+        {
+            SpecificationIdentifier = PeppolPostAwardProfiles.Order.Id,
+            Number = new IdentifierField("PO-8891"),
+            IssuedAt = new DateTimeField(new DateTimeOffset(2026, 8, 20, 9, 0, 0, TimeSpan.Zero)),
+            CurrencyCode = new CodeField("EUR"),
+            Buyer = new Party { Name = "Acheteur GmbH" },
+            Seller = new Party { Name = "Vendeur SAS" },
+        };
+
+        order.Lines.Add(new OrderLine
+        {
+            Identifier = new IdentifierField("1"),
+            Quantity = new QuantityField(10, "C62"),
+            NetAmount = new AmountField(1000m, "EUR"),
+            PartialDeliveryAccepted = new IndicatorField(false),
+            Price = new LinePrice { NetPrice = new AmountField(100m, "EUR") },
+            Item = new OrderItem { Name = "Beeswax, filtered" },
+        });
+
+        order.Totals.DuePayableAmount = new AmountField(1000m, "EUR");
+
+        Model.Order read = library.Read(library.Write(order)).RequireOrder();
+
+        Report.Fact("read back as", library.Read(library.Write(order)).Kind);
+        Report.Fact("ordered", read.Lines[0].Quantity.Value);
+        Report.Fact("will part of it do?", read.Lines[0].PartialDeliveryAccepted.Value);
+        Report.Note("That answer is why the despatch advice below has to say what it left outstanding.");
     }
 
     /// <summary>

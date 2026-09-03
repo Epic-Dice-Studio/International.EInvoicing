@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 using International.EInvoicing.Model;
+using International.EInvoicing.Values;
 
 namespace International.EInvoicing.Ubl.Reading;
 
@@ -48,6 +49,38 @@ internal static class UblParties
             owners[legal] = party;
             party.Name = values.ReadText(Take(legal, UblNames.Cbc + "RegistrationName", mapped));
             party.LegalRegistrationIdentifier = values.ReadIdentifier(Take(legal, UblNames.Cbc + "CompanyID", mapped));
+
+            // Where the company is registered, which is not always where it trades from. The model holds one
+            // address, so the registration one is kept only when there is no trading address to lose.
+            if (Take(legal, UblNames.Cac + "RegistrationAddress", mapped) is { } registration)
+            {
+                party.RegistrationAddress = ReadAddress(registration, values, mapped, owners);
+            }
+        }
+
+        // A party may declare several tax registrations; VAT is the one EN 16931 names, and the others are
+        // kept apart rather than overwriting it.
+        foreach (XElement scheme in TakeAll(element, UblNames.Cac + "PartyTaxScheme", mapped))
+        {
+            owners[scheme] = party;
+            IdentifierField identifier = values.ReadIdentifier(Take(scheme, UblNames.Cbc + "CompanyID", mapped));
+            XElement? taxScheme = Take(scheme, UblNames.Cac + "TaxScheme", mapped);
+            string? code = Take(taxScheme, UblNames.Cbc + "ID", mapped)?.Value.Trim();
+
+            if (taxScheme is not null)
+            {
+                owners[taxScheme] = party;
+            }
+
+            if (string.Equals(code, "VAT", StringComparison.OrdinalIgnoreCase))
+            {
+                party.VatIdentifier = identifier;
+            }
+            else
+            {
+                party.TaxRegistrationIdentifier = identifier;
+                party.TaxRegistrationScheme = new CodeField(code);
+            }
         }
 
         party.Address = ReadAddress(Take(element, UblNames.Cac + "PostalAddress", mapped), values, mapped, owners);
@@ -114,9 +147,9 @@ internal static class UblParties
         return contact;
     }
 
-    private static XElement? Take(XElement parent, XName name, HashSet<XElement> mapped)
+    private static XElement? Take(XElement? parent, XName name, HashSet<XElement> mapped)
     {
-        XElement? element = parent.Element(name);
+        XElement? element = parent?.Element(name);
         if (element is not null)
         {
             mapped.Add(element);

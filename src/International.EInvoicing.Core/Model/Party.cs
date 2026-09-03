@@ -40,6 +40,18 @@ public sealed class Party : InvoiceNode
     /// <summary>BG-5 / BG-8 / BG-12 — the party's postal address.</summary>
     public PostalAddress? Address { get; set; }
 
+    /// <summary>
+    /// Where the company is registered, when that is not where it trades from.
+    /// </summary>
+    /// <remarks>
+    /// EN 16931 carries only the trading address; UBL's post-award documents carry both, and a party whose
+    /// registration is in one country and whose warehouse is in another is ordinary rather than exotic.
+    /// </remarks>
+    public PostalAddress? RegistrationAddress { get; set; }
+
+    /// <summary>The scheme of <see cref="TaxRegistrationIdentifier"/>, when it is not VAT.</summary>
+    public CodeField TaxRegistrationScheme { get; set; }
+
     /// <summary>BG-6 / BG-9 — the party's contact point.</summary>
     public Contact? Contact { get; set; }
 }

@@ -35,6 +35,7 @@ International.EInvoicing.DocumentHandlers
 International.EInvoicing.DocumentHandlers.DespatchAdviceReaderFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.DespatchAdvice!>?
 International.EInvoicing.DocumentHandlers.DespatchAdviceWriterFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.DespatchAdvice!>?
 International.EInvoicing.DocumentHandlers.DocumentHandlers(System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>!>! invoiceReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.EInvoice!>!>! invoiceWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>!>! lifecycleReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>!>! lifecycleWriters) -> void
+International.EInvoicing.DocumentHandlers.DocumentHandlers(System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>!>! invoiceReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.EInvoice!>!>! invoiceWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>!>! lifecycleReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>!>! lifecycleWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.DespatchAdvice!>!>! despatchReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.DespatchAdvice!>!>! despatchWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.Order!>!>! orderReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.Order!>!>! orderWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IWritePipelineStep!>! writeSteps) -> void
 International.EInvoicing.DocumentHandlers.DocumentHandlers(System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>!>! invoiceReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.EInvoice!>!>! invoiceWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>!>! lifecycleReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>!>! lifecycleWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.DespatchAdvice!>!>! despatchReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.DespatchAdvice!>!>! despatchWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IWritePipelineStep!>! writeSteps) -> void
 International.EInvoicing.DocumentHandlers.DocumentHandlers(System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>!>! invoiceReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.EInvoice!>!>! invoiceWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>!>! lifecycleReaders, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>!>! lifecycleWriters, System.Collections.Generic.IEnumerable<International.EInvoicing.Documents.IWritePipelineStep!>! writeSteps) -> void
 International.EInvoicing.DocumentHandlers.InvoiceReaderFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>?
@@ -43,6 +44,8 @@ International.EInvoicing.DocumentHandlers.LifecycleReader() -> International.EIn
 International.EInvoicing.DocumentHandlers.LifecycleReaderFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>?
 International.EInvoicing.DocumentHandlers.LifecycleWriter() -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>?
 International.EInvoicing.DocumentHandlers.LifecycleWriterFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>?
+International.EInvoicing.DocumentHandlers.OrderReaderFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.Order!>?
+International.EInvoicing.DocumentHandlers.OrderWriterFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.Order!>?
 International.EInvoicing.DocumentHandlers.WriteSteps.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Documents.IWritePipelineStep!>!
 International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Cdar = 4 -> International.EInvoicing.DocumentKind
@@ -52,6 +55,7 @@ International.EInvoicing.DocumentKind.Ubl = 1 -> International.EInvoicing.Docume
 International.EInvoicing.DocumentKind.UblApplicationResponse = 6 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.UblCreditNote = 2 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.UblDespatchAdvice = 7 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.UblOrder = 8 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Unknown = 0 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentResult
 International.EInvoicing.DocumentResult.<Clone>$() -> International.EInvoicing.DocumentResult!
@@ -73,6 +77,8 @@ International.EInvoicing.DocumentResult.Kind.init -> void
 International.EInvoicing.DocumentResult.LifecycleStatus.get -> International.EInvoicing.Model.LifecycleStatusMessage?
 International.EInvoicing.DocumentResult.LifecycleStatus.init -> void
 International.EInvoicing.DocumentResult.OfAtLeast(International.EInvoicing.Diagnostics.DiagnosticSeverity severity) -> System.Collections.Generic.IEnumerable<International.EInvoicing.Diagnostics.Diagnostic!>!
+International.EInvoicing.DocumentResult.Order.get -> International.EInvoicing.Model.Order?
+International.EInvoicing.DocumentResult.Order.init -> void
 International.EInvoicing.DocumentResult.Profile.get -> International.EInvoicing.Profiles.ProfileResolution?
 International.EInvoicing.DocumentResult.Profile.init -> void
 International.EInvoicing.DocumentResult.Rendition.get -> International.EInvoicing.Documents.InvoiceRendition?
@@ -80,9 +86,11 @@ International.EInvoicing.DocumentResult.Rendition.init -> void
 International.EInvoicing.DocumentResult.RequireDespatchAdvice() -> International.EInvoicing.Model.DespatchAdvice!
 International.EInvoicing.DocumentResult.RequireInvoice() -> International.EInvoicing.Model.EInvoice!
 International.EInvoicing.DocumentResult.RequireLifecycleStatus() -> International.EInvoicing.Model.LifecycleStatusMessage!
+International.EInvoicing.DocumentResult.RequireOrder() -> International.EInvoicing.Model.Order!
 International.EInvoicing.DocumentResult.TryGetDespatchAdvice(out International.EInvoicing.Model.DespatchAdvice? advice) -> bool
 International.EInvoicing.DocumentResult.TryGetInvoice(out International.EInvoicing.Model.EInvoice? invoice) -> bool
 International.EInvoicing.DocumentResult.TryGetLifecycleStatus(out International.EInvoicing.Model.LifecycleStatusMessage? status) -> bool
+International.EInvoicing.DocumentResult.TryGetOrder(out International.EInvoicing.Model.Order? order) -> bool
 International.EInvoicing.DocumentResult.Warnings.get -> System.Collections.Generic.IEnumerable<International.EInvoicing.Diagnostics.Diagnostic!>!
 International.EInvoicing.EInvoicing
 International.EInvoicing.EInvoicing.Cii.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>!
@@ -107,6 +115,8 @@ International.EInvoicing.EInvoicing.RuleSets.get -> System.Collections.Generic.I
 International.EInvoicing.EInvoicing.Ubl.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>!
 International.EInvoicing.EInvoicing.UblDespatchAdvice.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.DespatchAdvice!>!
 International.EInvoicing.EInvoicing.UblDespatchAdviceWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.DespatchAdvice!>!
+International.EInvoicing.EInvoicing.UblOrder.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.Order!>!
+International.EInvoicing.EInvoicing.UblOrderWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.Order!>!
 International.EInvoicing.EInvoicing.UblResponse.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>!
 International.EInvoicing.EInvoicing.UblResponseWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>!
 International.EInvoicing.EInvoicing.UblWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.EInvoice!>!
@@ -117,6 +127,7 @@ International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.EInvoic
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format, System.IO.Stream! destination) -> void
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.LifecycleStatusMessage! status) -> string!
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.LifecycleStatusMessage! status, International.EInvoicing.Profiles.DocumentSyntax syntax) -> string!
+International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.Order! order) -> string!
 International.EInvoicing.EInvoicing.WriteAsync(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 International.EInvoicing.EInvoicingBuilderExtensions
 International.EInvoicing.EInvoicingDiagnostics

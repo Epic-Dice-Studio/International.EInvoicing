@@ -148,6 +148,14 @@ public sealed class EInvoicing
     public IDocumentWriter<DespatchAdvice> UblDespatchAdviceWriter =>
         Required(Handlers.DespatchAdviceWriterFor(DocumentSyntax.Ubl), "write UBL despatch advices");
 
+    /// <summary>The reader for a UBL <c>Order</c> — what the buyer asked for.</summary>
+    public IDocumentReader<Order> UblOrder =>
+        Required(Handlers.OrderReaderFor(DocumentSyntax.Ubl), "read UBL orders");
+
+    /// <summary>The writer for a UBL <c>Order</c>.</summary>
+    public IDocumentWriter<Order> UblOrderWriter =>
+        Required(Handlers.OrderWriterFor(DocumentSyntax.Ubl), "write UBL orders");
+
     private static THandler Required<THandler>(THandler? handler, string what)
         where THandler : class =>
         handler ?? throw new InvalidOperationException(
@@ -282,6 +290,7 @@ public sealed class EInvoicing
             DocumentKind.UblApplicationResponse =>
                 FromStatus(DocumentKind.UblApplicationResponse, UblResponse.Read(text)),
             DocumentKind.UblDespatchAdvice => FromDespatchAdvice(UblDespatchAdvice.Read(text)),
+            DocumentKind.UblOrder => FromOrder(UblOrder.Read(text)),
             _ => new DocumentResult
             {
                 Kind = DocumentKind.Unknown,
@@ -385,6 +394,11 @@ public sealed class EInvoicing
         if (root.Namespace == UblDespatchAdviceNames.DespatchAdvice)
         {
             return DocumentKind.UblDespatchAdvice;
+        }
+
+        if (root.Namespace == UblOrderNames.Order)
+        {
+            return DocumentKind.UblOrder;
         }
 
         return root.Namespace == UblNames.Invoice ? DocumentKind.Ubl : DocumentKind.Unknown;
@@ -543,6 +557,14 @@ public sealed class EInvoicing
         return writer.WriteAsync(invoice, destination, cancellationToken);
     }
 
+    /// <summary>Writes an order as UBL.</summary>
+    /// <exception cref="ArgumentNullException"><paramref name="order"/> is <c>null</c>.</exception>
+    public string Write(Order order)
+    {
+        ArgumentNullException.ThrowIfNull(order);
+        return UblOrderWriter.WriteToString(order);
+    }
+
     /// <summary>Writes a despatch advice as UBL.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="advice"/> is <c>null</c>.</exception>
     public string Write(DespatchAdvice advice)
@@ -658,7 +680,8 @@ public sealed class EInvoicing
         DocumentKind.Ubl
             or DocumentKind.UblCreditNote
             or DocumentKind.UblApplicationResponse
-            or DocumentKind.UblDespatchAdvice => DocumentSyntax.Ubl,
+            or DocumentKind.UblDespatchAdvice
+            or DocumentKind.UblOrder => DocumentSyntax.Ubl,
         DocumentKind.Cii => DocumentSyntax.Cii,
         DocumentKind.Cdar => DocumentSyntax.Cdar,
         _ => null,
@@ -708,6 +731,14 @@ public sealed class EInvoicing
     {
         Kind = kind,
         Invoice = result.Value,
+        Diagnostics = result.Diagnostics,
+        Profile = result.Value?.Profile,
+    };
+
+    private static DocumentResult FromOrder(ParseResult<Order> result) => new()
+    {
+        Kind = DocumentKind.UblOrder,
+        Order = result.Value,
         Diagnostics = result.Diagnostics,
         Profile = result.Value?.Profile,
     };

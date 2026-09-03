@@ -90,6 +90,28 @@ internal sealed class UblDocument : IDisposable
         }
     }
 
+    /// <summary>Writes an amount, in the currency the field carries or, failing that, the document's own.</summary>
+    /// <remarks>
+    /// UBL makes <c>currencyID</c> mandatory on every amount, so an amount assigned as a plain decimal —
+    /// which carries no currency — would otherwise be refused by the schema before any rule ran.
+    /// </remarks>
+    public void Amount(string localName, AmountField field, string? documentCurrency)
+    {
+        if (Start(localName, field))
+        {
+            Attribute("currencyID", field.CurrencyCode ?? documentCurrency);
+            Value(field.Raw ?? field.Value?.ToString("0.00###############", CultureInfo.InvariantCulture));
+        }
+    }
+
+    public void Decimal(string localName, Field<decimal> field)
+    {
+        if (field.IsSet)
+        {
+            Cbc(localName, field.Raw ?? field.Value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty);
+        }
+    }
+
     public void Date(string localName, DateField field)
     {
         if (field.IsSet)

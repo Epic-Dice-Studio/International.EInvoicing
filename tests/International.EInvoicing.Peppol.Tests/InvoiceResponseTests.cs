@@ -298,14 +298,23 @@ public class InvoiceResponseTests
             : [];
     }
 
+    /// <summary>
+    /// Whether a document is one of the two this class is about, named rather than excluded.
+    /// </summary>
+    /// <remarks>
+    /// Listing what belongs here rather than what does not is the difference between this surviving the next
+    /// document type and breaking on it: the folder gained despatch advices and then orders, and a filter
+    /// written as "everything except the despatch advice" let the orders through.
+    /// </remarks>
     private static bool Declares(string path)
     {
         string xml = File.ReadAllText(path);
 
-        return PeppolPostAwardProfiles.All
-            .Where(profile => profile != PeppolPostAwardProfiles.DespatchAdvice)
-            .Any(profile => xml.Contains(profile.Id.Value, StringComparison.Ordinal));
+        return Responses.Any(profile => xml.Contains(profile.Id.Value, StringComparison.Ordinal));
     }
+
+    private static readonly Profile[] Responses =
+        [PeppolPostAwardProfiles.InvoiceResponse, PeppolPostAwardProfiles.MessageLevelResponse];
 
     private static string CorpusRoot() => Path.Combine(RepositoryRoot(), "specs", "peppol", "poacc");
 

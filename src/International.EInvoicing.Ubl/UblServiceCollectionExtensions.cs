@@ -64,6 +64,14 @@ public static class UblServiceCollectionExtensions
         services.TryAddSingleton(provider =>
             provider.GetServices<IDocumentWriter<DespatchAdvice>>().OfType<UblDespatchAdviceWriter>().First());
 
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentReader<Order>, UblOrderReader>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDocumentWriter<Order>, UblOrderWriter>());
+
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentReader<Order>>().OfType<UblOrderReader>().First());
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentWriter<Order>>().OfType<UblOrderWriter>().First());
+
         return services;
     }
 }

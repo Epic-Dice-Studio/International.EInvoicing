@@ -80,16 +80,16 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
             writer.End();
         }
 
+        foreach (AdditionalDocument document in advice.AdditionalDocuments)
+        {
+            WriteDocument("AdditionalDocumentReference", document, writer);
+        }
+
         WriteWrappedParty(advice.DespatchParty, "DespatchSupplierParty", writer);
         WriteWrappedParty(advice.DeliveryParty, "DeliveryCustomerParty", writer);
         WriteWrappedParty(advice.BuyerParty, "BuyerCustomerParty", writer);
         WriteWrappedParty(advice.SellerParty, "SellerSupplierParty", writer);
         WriteWrappedParty(advice.OriginatorParty, "OriginatorCustomerParty", writer);
-
-        foreach (AdditionalDocument document in advice.AdditionalDocuments)
-        {
-            WriteDocument("AdditionalDocumentReference", document, writer);
-        }
 
         WriteShipment(advice.Shipment, writer);
 

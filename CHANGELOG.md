@@ -6,6 +6,23 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Peppol Order** — [the standard page](docs/standards/peppol-post-award.md). The first document of the
+  post-award chain and the one the other two are answered against: a despatch advice says what was sent of
+  it, an invoice says what is owed for it. Read, written, schema-checked and judged by Peppol's own T01 rules
+  against all seven documents OpenPEPPOL publishes, with nothing left unmapped and the same elements coming
+  back in the same places.
+- Its amounts are **anticipated**, not due — `cac:AnticipatedMonetaryTotal` — because an order commits to a
+  price and not to a debt. `OrderItem` is a third item type for the same reason `DespatchItem` was a second:
+  an order's item is being chosen from a catalogue, so it carries the manufacturer's article number and the
+  specification the buyer is ordering against.
+- `PartialDeliveryAccepted` is the term that joins the three documents: a line the buyer will not take in
+  part makes an outstanding quantity on the despatch advice a failure rather than a note.
+- **The despatch advice was writing `cac:AdditionalDocumentReference` in the wrong place**, and its schema
+  check had been passing without noticing. The DespatchAdvice schema was never fetched, so the validator had
+  no global declaration to match its root against and judged nothing — the same vacuum a document type falls
+  into whenever its schema is missing. Fetching the Order schema brought the despatch one with it, the check
+  became real, and it found the defect immediately.
+
 - **Grouped invoice lines** — `ParentLineIdentifier`, `LineStatusReasonCode` and `LineStatusCode` on
   `InvoiceLine`, read and written on the CII side. EN 16931 has no term for a line hierarchy and Factur-X
   EXTENDED does, and it is expressed by **reference rather than by nesting**: the lines stay a flat list and

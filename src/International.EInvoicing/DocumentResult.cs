@@ -35,6 +35,9 @@ public enum DocumentKind
 
     /// <summary>A UBL <c>DespatchAdvice</c> — what was actually sent.</summary>
     UblDespatchAdvice,
+
+    /// <summary>A UBL <c>Order</c> — what the buyer asked for.</summary>
+    UblOrder,
 }
 
 /// <summary>
@@ -58,6 +61,9 @@ public sealed record DocumentResult
     /// <summary>The despatch advice, when the document was one.</summary>
     public DespatchAdvice? DespatchAdvice { get; init; }
 
+    /// <summary>The order, when the document was one.</summary>
+    public Order? Order { get; init; }
+
     /// <summary>
     /// The invoice as a person reads it — the PDF a hybrid invoice arrived in. <c>null</c> for a document
     /// that arrived as bare XML, which has no readable copy to hand back.
@@ -76,7 +82,8 @@ public sealed record DocumentResult
     public ProfileResolution? Profile { get; init; }
 
     /// <summary>Whether something usable came out.</summary>
-    public bool IsUsable => Invoice is not null || LifecycleStatus is not null || DespatchAdvice is not null;
+    public bool IsUsable =>
+        Invoice is not null || LifecycleStatus is not null || DespatchAdvice is not null || Order is not null;
 
     /// <summary>Whether anything reported means the result cannot be trusted for compliance.</summary>
     public bool HasErrors => Diagnostics.Any(diagnostic => diagnostic.Severity >= DiagnosticSeverity.Error);
@@ -149,6 +156,20 @@ public sealed record DocumentResult
     public DespatchAdvice RequireDespatchAdvice() =>
         DespatchAdvice ?? throw new DocumentException(
             $"Expected a despatch advice; the document was read as {Kind}.",
+            Diagnostics);
+
+    /// <summary>The order, when the document was one.</summary>
+    public bool TryGetOrder([NotNullWhen(true)] out Order? order)
+    {
+        order = Order;
+        return order is not null;
+    }
+
+    /// <summary>The order, or an exception explaining what arrived instead.</summary>
+    /// <exception cref="DocumentException">The document was not a readable order.</exception>
+    public Order RequireOrder() =>
+        Order ?? throw new DocumentException(
+            $"Expected an order; the document was read as {Kind}.",
             Diagnostics);
 
     /// <summary>The lifecycle status message, or an exception explaining what arrived instead.</summary>

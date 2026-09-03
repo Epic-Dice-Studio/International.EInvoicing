@@ -119,7 +119,7 @@ public sealed class UblDespatchAdviceReader : IDocumentReader<DespatchAdvice>
 
         foreach (XElement reference in TakeAll(root, UblNames.Cac + "AdditionalDocumentReference", mapped))
         {
-            advice.AdditionalDocuments.Add(ReadDocument(reference, values, mapped, owners, _options.Limits));
+            advice.AdditionalDocuments.Add(UblAttachments.Read(reference, values, mapped, owners, _options.Limits));
         }
 
         advice.Shipment = ReadShipment(Take(root, UblNames.Cac + "Shipment", mapped), values, mapped, owners);
@@ -290,7 +290,7 @@ public sealed class UblDespatchAdviceReader : IDocumentReader<DespatchAdvice>
 
         foreach (XElement attached in TakeAll(element, UblNames.Cac + "DocumentReference", mapped))
         {
-            line.AdditionalDocuments.Add(ReadDocument(attached, values, mapped, owners, limits));
+            line.AdditionalDocuments.Add(UblAttachments.Read(attached, values, mapped, owners, limits));
         }
 
         line.Item = ReadItem(Take(element, UblNames.Cac + "Item", mapped), values, mapped, owners);
@@ -368,39 +368,6 @@ public sealed class UblDespatchAdviceReader : IDocumentReader<DespatchAdvice>
 
         owners[element] = characteristic;
         return characteristic;
-    }
-
-    /// <summary>A document sent with the despatch, attached or referenced.</summary>
-    private static AdditionalDocument ReadDocument(
-        XElement element,
-        UblValueReader values,
-        HashSet<XElement> mapped,
-        Dictionary<XElement, InvoiceNode> owners,
-        DocumentLimits limits)
-    {
-        var document = new AdditionalDocument
-        {
-            Identifier = values.ReadIdentifier(Take(element, UblNames.Cbc + "ID", mapped)),
-            Description = values.ReadText(Take(element, UblNames.Cbc + "DocumentType", mapped)),
-        };
-
-        owners[element] = document;
-
-        if (Take(element, UblNames.Cac + "Attachment", mapped) is { } attachment)
-        {
-            owners[attachment] = document;
-            document.Attachment = values.ReadBinary(
-                Take(attachment, UblNames.Cbc + "EmbeddedDocumentBinaryObject", mapped),
-                limits);
-
-            if (Take(attachment, UblNames.Cac + "ExternalReference", mapped) is { } external)
-            {
-                owners[external] = document;
-                document.ExternalLocation = values.ReadText(Take(external, UblNames.Cbc + "URI", mapped));
-            }
-        }
-
-        return document;
     }
 
     /// <summary>An article number and the extension that qualifies it, which UBL keeps in one wrapper.</summary>

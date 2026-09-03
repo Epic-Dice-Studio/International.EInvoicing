@@ -58,6 +58,8 @@ public static class EInvoicingBuilderExtensions
                 provider.GetServices<IDocumentWriter<Model.LifecycleStatusMessage>>(),
                 provider.GetServices<IDocumentReader<Model.DespatchAdvice>>(),
                 provider.GetServices<IDocumentWriter<Model.DespatchAdvice>>(),
+                provider.GetServices<IDocumentReader<Model.Order>>(),
+                provider.GetServices<IDocumentWriter<Model.Order>>(),
                 provider.GetServices<IWritePipelineStep>()));
 
             services.TryAddSingleton(provider => new EInvoicing(

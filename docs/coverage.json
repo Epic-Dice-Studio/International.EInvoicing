@@ -57,6 +57,15 @@
           "notes": "What actually left the warehouse, which is what an invoice is reconciled against: delivered and outstanding quantities, serial numbers and lots, pallets and packages, and how the consignment travels. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes."
         },
         {
+          "name": "UBL 2.1 — Order",
+          "version": "OASIS UBL 2.1",
+          "package": "International.EInvoicing.Ubl",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "What the buyer asked for, and the document the despatch advice and the invoice are answered against: lines with quantities and prices, delivery terms and windows, whether a short delivery is acceptable. Read, round-tripped, schema-checked and judged by Peppol's own rules against all seven documents OpenPEPPOL publishes, with nothing left unmapped."
+        },
+        {
           "name": "UN/CEFACT CDAR",
           "version": "generic",
           "package": "International.EInvoicing.Cdar",
@@ -134,13 +143,13 @@
           "notes": "The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job. Read as well as written: the reported document is handed to the UBL invoice reader after three element renames, so a business term the invoice reader maps is one a tax authority gets back. Reading it back showed what the projection actually omits — the supplier has no name in a tax data document, only a VAT identifier."
         },
         {
-          "name": "Peppol post-award — Invoice Response, MLR, Despatch Advice",
-          "version": "Invoice Response 3.1, MLR, Despatch Advice 3",
+          "name": "Peppol post-award — Order, Despatch Advice, Invoice Response, MLR",
+          "version": "Order 3, Despatch Advice 3, Invoice Response 3.1, MLR",
           "package": "International.EInvoicing.Peppol",
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "An Invoice Response is what a receiver owes a sender — in process, accepted, rejected, under query, paid; a Message Level Response answers whether the message arrived at all; a Despatch Advice says what was sent. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence. Ordering is not here."
+          "notes": "The chain an invoice sits at the end of: an Order says what was asked for, a Despatch Advice what was sent, an Invoice Response what happened to the invoice, and a Message Level Response whether the message arrived at all. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence. Order Response, Order Change, Order Cancellation and Order Agreement are not here."
         }
       ]
     },
