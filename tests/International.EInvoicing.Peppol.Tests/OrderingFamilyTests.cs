@@ -39,6 +39,8 @@ public class OrderingFamilyTests
 
     public static TheoryData<string> Agreements => Documents(PeppolPostAwardProfiles.OrderAgreement);
 
+    public static TheoryData<string> Changes => Documents(PeppolPostAwardProfiles.OrderChange);
+
     [Theory]
     [MemberData(nameof(Cancellations))]
     public void EveryPublishedCancellationIsRead(string fileName)
@@ -67,6 +69,44 @@ public class OrderingFamilyTests
         result.RequireOrderResponse().ResponseCode.Value.ShouldNotBeNullOrWhiteSpace();
 
         Unmapped(result).ShouldBeEmpty();
+    }
+
+    /// <summary>
+    /// An order change is an order that amends an earlier one, and is read as one.
+    /// </summary>
+    /// <remarks>
+    /// UBL gives it its own root and one element the order does not have — the sequence number saying which
+    /// amendment this is — and is otherwise the same document. So it fills the same model, and
+    /// <see cref="DocumentKind"/> tells the two apart: exactly the arrangement an invoice and a credit note
+    /// already have here.
+    /// </remarks>
+    [Theory]
+    [MemberData(nameof(Changes))]
+    public void AnOrderChangeIsAnOrderThatAmendsAnEarlierOne(string fileName)
+    {
+        DocumentResult result = Library.Read(ReadCorpusFile(fileName));
+
+        result.Kind.ShouldBe(DocumentKind.UblOrderChange);
+        Order change = result.RequireOrder();
+
+        change.SequenceNumber.Value.ShouldNotBeNullOrWhiteSpace(
+            "two amendments to one order may not arrive in the order they were sent");
+        change.OrderReference.Value.ShouldNotBeNullOrWhiteSpace("a change that names no order changes nothing");
+        change.Lines.ShouldContain(line => line.StatusCode.IsSet,
+            "a change restates every line and marks the ones that moved");
+
+        Unmapped(result).ShouldBeEmpty();
+    }
+
+    [Theory]
+    [MemberData(nameof(Changes))]
+    public void AndIsWrittenBackUnderItsOwnRoot(string fileName)
+    {
+        string xml = ReadCorpusFile(fileName);
+        string written = Library.Write(Library.Read(xml).RequireOrder());
+
+        written.ShouldContain("OrderChange", Case.Sensitive);
+        Census(written).ShouldBe(Census(xml));
     }
 
     /// <summary>
@@ -139,14 +179,18 @@ public class OrderingFamilyTests
     [MemberData(nameof(Cancellations))]
     [MemberData(nameof(AdvancedResponses))]
     [MemberData(nameof(Agreements))]
+    [MemberData(nameof(Changes))]
     public void AndNoneIsMadeWorseByBeingWrittenBack(string fileName)
     {
         string xml = ReadCorpusFile(fileName);
         DocumentResult read = Library.Read(xml);
 
-        string written = read.Kind == DocumentKind.UblOrderCancellation
-            ? Library.Write(read.RequireOrderCancellation())
-            : Library.Write(read.RequireOrderResponse());
+        string written = read.Kind switch
+        {
+            DocumentKind.UblOrderCancellation => Library.Write(read.RequireOrderCancellation()),
+            DocumentKind.UblOrderChange => Library.Write(read.RequireOrder()),
+            _ => Library.Write(read.RequireOrderResponse()),
+        };
 
         Errors(Library.Validate(written)).ShouldBe(Errors(Library.Validate(xml)));
     }

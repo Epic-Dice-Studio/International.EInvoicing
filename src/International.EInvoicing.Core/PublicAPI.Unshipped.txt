@@ -743,6 +743,8 @@ International.EInvoicing.Model.Order.SalesOrderNumber.get -> International.EInvo
 International.EInvoicing.Model.Order.SalesOrderNumber.set -> void
 International.EInvoicing.Model.Order.Seller.get -> International.EInvoicing.Model.Party?
 International.EInvoicing.Model.Order.Seller.set -> void
+International.EInvoicing.Model.Order.SequenceNumber.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.Order.SequenceNumber.set -> void
 International.EInvoicing.Model.Order.SpecificationIdentifier.get -> International.EInvoicing.Profiles.ProfileIdentifier
 International.EInvoicing.Model.Order.SpecificationIdentifier.set -> void
 International.EInvoicing.Model.Order.TaxAmount.get -> International.EInvoicing.Values.AmountField
@@ -890,6 +892,8 @@ International.EInvoicing.Model.OrderLine.Price.get -> International.EInvoicing.M
 International.EInvoicing.Model.OrderLine.Price.set -> void
 International.EInvoicing.Model.OrderLine.Quantity.get -> International.EInvoicing.Values.QuantityField
 International.EInvoicing.Model.OrderLine.Quantity.set -> void
+International.EInvoicing.Model.OrderLine.StatusCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.OrderLine.StatusCode.set -> void
 International.EInvoicing.Model.OrderResponse
 International.EInvoicing.Model.OrderResponse.AdditionalDocuments.get -> System.Collections.Generic.List<International.EInvoicing.Model.AdditionalDocument!>!
 International.EInvoicing.Model.OrderResponse.AllowancesAndCharges.get -> System.Collections.Generic.List<International.EInvoicing.Model.AllowanceCharge!>!

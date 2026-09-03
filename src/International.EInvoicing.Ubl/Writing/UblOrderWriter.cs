@@ -30,12 +30,15 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         ArgumentNullException.ThrowIfNull(document);
         ArgumentNullException.ThrowIfNull(destination);
 
+        // An order change is the same document under another root, the way a credit note is to an invoice.
+        UblOrderShape shape = UblOrderShape.For(document);
+
         using var writer = UblDocument.Open(
             destination,
-            UblOrderNames.RootElement,
-            UblOrderNames.Order.NamespaceName);
+            shape.Root.LocalName,
+            shape.Root.NamespaceName);
 
-        Write(document, writer);
+        Write(document, writer, shape);
     }
 
     /// <summary>Writes <paramref name="document"/> and returns it as XML text.</summary>
@@ -58,7 +61,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         return DocumentStreams.WriteAllAsync(WriteToString(document), destination, cancellationToken);
     }
 
-    private static void Write(Order order, UblDocument writer)
+    private static void Write(Order order, UblDocument writer, UblOrderShape shape)
     {
         string? currency = order.CurrencyCode.Value ?? order.CurrencyCode.Raw;
 
@@ -71,7 +74,16 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.Identifier("ID", order.Number);
         writer.Identifier("SalesOrderID", order.SalesOrderNumber);
         writer.Moment("IssueDate", "IssueTime", order.IssuedAt);
-        writer.Code("OrderTypeCode", order.TypeCode);
+
+        if (shape.IsChange)
+        {
+            writer.Identifier("SequenceNumberID", order.SequenceNumber);
+        }
+        else
+        {
+            writer.Code("OrderTypeCode", order.TypeCode);
+        }
+
         writer.Text("Note", order.Note);
         writer.Code("DocumentCurrencyCode", order.CurrencyCode);
         writer.Text("CustomerReference", order.BuyerReference);
@@ -79,8 +91,18 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
         WritePeriod("ValidityPeriod", order.ValidityPeriod, writer);
 
-        WriteReference("QuotationDocumentReference", order.QuotationReference, writer);
-        WriteReference("OrderDocumentReference", order.OrderReference, writer);
+        // An order change names the order it amends where an order names an earlier one it relates to, and
+        // the schema puts them in different places.
+        if (shape.IsChange)
+        {
+            WriteReference("OrderReference", order.OrderReference, writer);
+            WriteReference("QuotationDocumentReference", order.QuotationReference, writer);
+        }
+        else
+        {
+            WriteReference("QuotationDocumentReference", order.QuotationReference, writer);
+            WriteReference("OrderDocumentReference", order.OrderReference, writer);
+        }
         WriteReference("OriginatorDocumentReference", order.OriginatorReference, writer);
         WriteReference("CatalogueReference", order.CatalogueReference, writer);
 
@@ -467,6 +489,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
 
         writer.StartCac("LineItem");
         writer.Identifier("ID", line.Identifier);
+        writer.Code("LineStatusCode", line.StatusCode);
         writer.Quantity("Quantity", line.Quantity);
         writer.Amount("LineExtensionAmount", line.NetAmount, currency);
         writer.Indicator("PartialDeliveryIndicator", line.PartialDeliveryAccepted);

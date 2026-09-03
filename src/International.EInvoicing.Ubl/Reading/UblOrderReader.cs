@@ -97,6 +97,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         order.BusinessProcessType = values.ReadIdentifier(Take(root, UblNames.Cbc + "ProfileID", mapped));
         order.Number = values.ReadIdentifier(Take(root, UblNames.Cbc + "ID", mapped));
         order.SalesOrderNumber = values.ReadIdentifier(Take(root, UblNames.Cbc + "SalesOrderID", mapped));
+        order.SequenceNumber = values.ReadIdentifier(Take(root, UblNames.Cbc + "SequenceNumberID", mapped));
         order.IssuedAt = UblMoment.Read(
             Take(root, UblNames.Cbc + "IssueDate", mapped),
             Take(root, UblNames.Cbc + "IssueTime", mapped));
@@ -108,7 +109,9 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         order.ValidityPeriod = ReadPeriod(Take(root, UblNames.Cac + "ValidityPeriod", mapped), values, mapped, owners);
 
         order.QuotationReference = Reference(root, "QuotationDocumentReference", values, mapped, owners, order);
-        order.OrderReference = Reference(root, "OrderDocumentReference", values, mapped, owners, order);
+        order.OrderReference = UblOrderShape.Of(root).IsChange
+            ? Reference(root, "OrderReference", values, mapped, owners, order)
+            : Reference(root, "OrderDocumentReference", values, mapped, owners, order);
         order.OriginatorReference = Reference(root, "OriginatorDocumentReference", values, mapped, owners, order);
         order.CatalogueReference = Reference(root, "CatalogueReference", values, mapped, owners, order);
         order.ContractReference = Reference(root, "Contract", values, mapped, owners, order);
@@ -400,6 +403,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
 
         owners[item] = line;
         line.Identifier = values.ReadIdentifier(Take(item, UblNames.Cbc + "ID", mapped));
+        line.StatusCode = values.ReadCode(Take(item, UblNames.Cbc + "LineStatusCode", mapped));
         line.Quantity = values.ReadQuantity(Take(item, UblNames.Cbc + "Quantity", mapped));
         line.NetAmount = values.ReadAmount(Take(item, UblNames.Cbc + "LineExtensionAmount", mapped));
         line.AccountingReference = values.ReadText(Take(item, UblNames.Cbc + "AccountingCost", mapped));

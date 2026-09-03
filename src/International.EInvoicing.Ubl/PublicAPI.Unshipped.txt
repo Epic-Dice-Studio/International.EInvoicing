@@ -39,6 +39,7 @@ International.EInvoicing.Ubl.UblDespatchAdviceNames
 International.EInvoicing.Ubl.UblDiagnostics
 International.EInvoicing.Ubl.UblNames
 International.EInvoicing.Ubl.UblOrderCancellationNames
+International.EInvoicing.Ubl.UblOrderChangeNames
 International.EInvoicing.Ubl.UblOrderNames
 International.EInvoicing.Ubl.UblOrderResponseNames
 International.EInvoicing.Ubl.UblServiceCollectionExtensions
@@ -82,6 +83,7 @@ const International.EInvoicing.Ubl.UblApplicationResponseNames.ActionCodeList = 
 const International.EInvoicing.Ubl.UblApplicationResponseNames.RootElement = "ApplicationResponse" -> string!
 const International.EInvoicing.Ubl.UblDespatchAdviceNames.RootElement = "DespatchAdvice" -> string!
 const International.EInvoicing.Ubl.UblOrderCancellationNames.RootElement = "OrderCancellation" -> string!
+const International.EInvoicing.Ubl.UblOrderChangeNames.RootElement = "OrderChange" -> string!
 const International.EInvoicing.Ubl.UblOrderNames.RootElement = "Order" -> string!
 const International.EInvoicing.Ubl.UblOrderResponseNames.RootElement = "OrderResponse" -> string!
 static International.EInvoicing.Ubl.UblApplicationResponseNames.ApplicationResponse.get -> System.Xml.Linq.XNamespace!
@@ -94,6 +96,7 @@ static International.EInvoicing.Ubl.UblNames.CreditNote.get -> System.Xml.Linq.X
 static International.EInvoicing.Ubl.UblNames.Ext.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblNames.Invoice.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblOrderCancellationNames.OrderCancellation.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Ubl.UblOrderChangeNames.OrderChange.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblOrderNames.Order.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblOrderResponseNames.OrderResponse.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblServiceCollectionExtensions.AddUbl(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!

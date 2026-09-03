@@ -306,7 +306,8 @@ public sealed class EInvoicing
             DocumentKind.UblApplicationResponse =>
                 FromStatus(DocumentKind.UblApplicationResponse, UblResponse.Read(text)),
             DocumentKind.UblDespatchAdvice => FromDespatchAdvice(UblDespatchAdvice.Read(text)),
-            DocumentKind.UblOrder => FromOrder(UblOrder.Read(text)),
+            DocumentKind.UblOrder => FromOrder(DocumentKind.UblOrder, UblOrder.Read(text)),
+            DocumentKind.UblOrderChange => FromOrder(DocumentKind.UblOrderChange, UblOrder.Read(text)),
             DocumentKind.UblOrderResponse => FromOrderResponse(UblOrderResponse.Read(text)),
             DocumentKind.UblOrderCancellation => FromOrderCancellation(UblOrderCancellation.Read(text)),
             _ => new DocumentResult
@@ -427,6 +428,11 @@ public sealed class EInvoicing
         if (root.Namespace == UblOrderCancellationNames.OrderCancellation)
         {
             return DocumentKind.UblOrderCancellation;
+        }
+
+        if (root.Namespace == UblOrderChangeNames.OrderChange)
+        {
+            return DocumentKind.UblOrderChange;
         }
 
         return root.Namespace == UblNames.Invoice ? DocumentKind.Ubl : DocumentKind.Unknown;
@@ -727,7 +733,8 @@ public sealed class EInvoicing
             or DocumentKind.UblDespatchAdvice
             or DocumentKind.UblOrder
             or DocumentKind.UblOrderResponse
-            or DocumentKind.UblOrderCancellation => DocumentSyntax.Ubl,
+            or DocumentKind.UblOrderCancellation
+            or DocumentKind.UblOrderChange => DocumentSyntax.Ubl,
         DocumentKind.Cii => DocumentSyntax.Cii,
         DocumentKind.Cdar => DocumentSyntax.Cdar,
         _ => null,
@@ -797,9 +804,9 @@ public sealed class EInvoicing
         Profile = result.Value?.Profile,
     };
 
-    private static DocumentResult FromOrder(ParseResult<Order> result) => new()
+    private static DocumentResult FromOrder(DocumentKind kind, ParseResult<Order> result) => new()
     {
-        Kind = DocumentKind.UblOrder,
+        Kind = kind,
         Order = result.Value,
         Diagnostics = result.Diagnostics,
         Profile = result.Value?.Profile,

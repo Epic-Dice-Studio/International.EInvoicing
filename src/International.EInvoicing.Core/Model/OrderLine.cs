@@ -11,6 +11,15 @@ public sealed class OrderLine : InvoiceNode
     /// <summary>A free-text note about this line.</summary>
     public TextField Note { get; set; }
 
+    /// <summary>
+    /// What is happening to the line, when the document amends an earlier order.
+    /// </summary>
+    /// <remarks>
+    /// An order change restates every line and marks the ones that moved, so without this a seller cannot
+    /// tell an amended line from one repeated unchanged — and would reprocess the lot.
+    /// </remarks>
+    public CodeField StatusCode { get; set; }
+
     /// <summary>How much is wanted.</summary>
     public QuantityField Quantity { get; set; }
 

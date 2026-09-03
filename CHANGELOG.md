@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Peppol Order Change, and with it the whole post-award family.** All nine transactions — Order, Order
+  Change, Order Cancellation, Order Response (simple, advanced and agreement), Despatch Advice, Invoice
+  Response and Message Level Response — are read, written, round-tripped element for element and judged by
+  the OASIS schema and Peppol's own rules against the entire published corpus. One element in the lot is
+  left unmapped: `cac:Person` on a despatch advice's carrier, which identifies the driver.
+- An order change is an **order that amends an earlier one**, so it fills the same model and
+  `DocumentResult.Kind` tells them apart — the arrangement an invoice and a credit note already have. It adds
+  the sequence number, because two amendments may not arrive in the order they were sent, and a status code
+  per line, because a change restates every line and marks only the ones that moved.
+
 - **The Peppol Order Agreement** — the third profile on the `OrderResponse` root, and the fullest: it
   restates the whole order as the parties settled it, with the totals, the VAT breakdown, the allowances, the
   extra parties, and on each item the certificates and the specification document agreed against. Every

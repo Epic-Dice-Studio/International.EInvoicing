@@ -54,6 +54,15 @@ public sealed class Order : InvoiceNode
     /// <summary>An earlier order this one relates to.</summary>
     public IdentifierField OrderReference { get; set; }
 
+    /// <summary>
+    /// Which amendment this is, when the document is an order change rather than an order.
+    /// </summary>
+    /// <remarks>
+    /// A seller who receives two amendments to the same order has no other way to tell which supersedes
+    /// which — they may not arrive in the order they were sent.
+    /// </remarks>
+    public IdentifierField SequenceNumber { get; set; }
+
     /// <summary>The originator's own document reference.</summary>
     public IdentifierField OriginatorReference { get; set; }
 

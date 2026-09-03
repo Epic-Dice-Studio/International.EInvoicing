@@ -44,6 +44,9 @@ public enum DocumentKind
 
     /// <summary>A UBL <c>OrderCancellation</c> — the buyer withdrawing an order.</summary>
     UblOrderCancellation,
+
+    /// <summary>A UBL <c>OrderChange</c> — the buyer amending an order already sent.</summary>
+    UblOrderChange,
 }
 
 /// <summary>
@@ -67,7 +70,14 @@ public sealed record DocumentResult
     /// <summary>The despatch advice, when the document was one.</summary>
     public DespatchAdvice? DespatchAdvice { get; init; }
 
-    /// <summary>The order, when the document was one.</summary>
+    /// <summary>
+    /// The order, when the document was one — including an order change, which is the same model.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="Kind"/> tells the two apart, the way it does an invoice from a credit note: an order
+    /// change is an order that amends an earlier one, and carries the sequence number saying which
+    /// amendment it is.
+    /// </remarks>
     public Order? Order { get; init; }
 
     /// <summary>The order response, when the document was one.</summary>

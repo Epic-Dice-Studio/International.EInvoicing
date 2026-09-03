@@ -2,7 +2,7 @@
 
 ## Scope and version
 
-Eight Peppol documents that are not invoices — the chain an invoice sits at the end of.
+Nine Peppol documents that are not invoices — the whole post-award family — the chain an invoice sits at the end of.
 
 | | What it answers |
 |---|---|
@@ -14,6 +14,7 @@ Eight Peppol documents that are not invoices — the chain an invoice sits at th
 | **Order Response (advanced)** — `…:order_response_advanced:3` | The same document, answering line by line. |
 | **Order Agreement** — `urn:fdc:peppol.eu:poacc:trns:order_agreement:3` | The same document again, restating the whole order as the parties settled it. |
 | **Order Cancellation** — `urn:fdc:peppol.eu:poacc:trns:order_cancellation:3` | *The buyer has withdrawn the order*, and why. |
+| **Order Change** — `urn:fdc:peppol.eu:poacc:trns:order_change:3` | *The buyer has amended it*, and which amendment this is. |
 
 An Invoice Response is what a receiver **owes** a sender: without it, a supplier who has sent an invoice into
 the network knows nothing until the money arrives or does not. It is implemented in
@@ -225,10 +226,25 @@ left unmapped is a term of a contract nobody can see.** A buyer who agreed to a 
 received an uncertified one did not get what they agreed to, so `OrderItemCertificate` carries the label, its
 type, and who issued it — a certificate nobody issued being worth nothing.
 
-## What is not here
+## The order change
 
-**Order Change.** The buyer amending an order already sent: its own root and its own model, and the last
-transaction of the family.
+UBL gives it its own root and one element the order does not have — `cbc:SequenceNumberID`, saying which
+amendment this is — and it is otherwise the same document. So it fills the same `Order` model, and
+`DocumentResult.Kind` tells the two apart: exactly the arrangement an invoice and a credit note already have
+here, and for the same reason.
+
+Two things it carries that an order does not need:
+
+- **`SequenceNumber`.** Two amendments to one order may not arrive in the order they were sent, and nothing
+  else says which supersedes which.
+- **`Lines[].StatusCode`.** A change restates *every* line and marks the ones that moved. Without it a seller
+  cannot tell an amended line from one repeated unchanged, and would reprocess the lot.
+
+## All of it
+
+Every document of the family is read, written, round-tripped element for element, and judged by the OASIS
+schema and by Peppol's own rules against the whole published corpus — with one element left unmapped in the
+lot: `cac:Person` on a despatch advice's carrier, which identifies the driver.
 
 ## Prior art
 

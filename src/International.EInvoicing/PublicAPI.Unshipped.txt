@@ -63,6 +63,7 @@ International.EInvoicing.DocumentKind.UblCreditNote = 2 -> International.EInvoic
 International.EInvoicing.DocumentKind.UblDespatchAdvice = 7 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.UblOrder = 8 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.UblOrderCancellation = 10 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.UblOrderChange = 11 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.UblOrderResponse = 9 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Unknown = 0 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentResult
