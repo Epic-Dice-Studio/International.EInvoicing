@@ -278,10 +278,14 @@ public sealed class CdarReader : IDocumentReader<LifecycleStatusMessage>
         IReadOnlyDictionary<XElement, InvoiceNode> owners,
         DiagnosticCollector diagnostics)
     {
+        string? preceding = null;
+
         foreach (XElement element in source.Elements())
         {
             if (mapped.Contains(element))
             {
+                preceding = element.Name.ToString();
+
                 KeepEverythingElse(
                     element,
                     owners.TryGetValue(element, out InvoiceNode? owner) ? owner : node,
@@ -295,7 +299,9 @@ public sealed class CdarReader : IDocumentReader<LifecycleStatusMessage>
                 element.Name.NamespaceName,
                 element.Name.LocalName,
                 element.ToString(SaveOptions.DisableFormatting),
-                CdarValueReader.LocationOf(element)));
+                CdarValueReader.LocationOf(element),
+                preceding,
+                source.Name.ToString()));
 
             diagnostics.Add(Diagnostic.Create(CdarDiagnostics.UnmappedElement, element.Name.LocalName) with
             {

@@ -552,15 +552,17 @@ International.EInvoicing.Model.ExtensionData.Named(string! namespaceUri, string!
 International.EInvoicing.Model.ExtensionData.this[int index].get -> International.EInvoicing.Model.ExtensionElement!
 International.EInvoicing.Model.ExtensionElement
 International.EInvoicing.Model.ExtensionElement.<Clone>$() -> International.EInvoicing.Model.ExtensionElement!
-International.EInvoicing.Model.ExtensionElement.Deconstruct(out string! NamespaceUri, out string! LocalName, out string! Xml, out International.EInvoicing.Diagnostics.SourceLocation Location, out string? PrecedingSibling) -> void
+International.EInvoicing.Model.ExtensionElement.Deconstruct(out string! NamespaceUri, out string! LocalName, out string! Xml, out International.EInvoicing.Diagnostics.SourceLocation Location, out string? PrecedingSibling, out string? ParentName) -> void
 International.EInvoicing.Model.ExtensionElement.Equals(International.EInvoicing.Model.ExtensionElement? other) -> bool
-International.EInvoicing.Model.ExtensionElement.ExtensionElement(string! NamespaceUri, string! LocalName, string! Xml, International.EInvoicing.Diagnostics.SourceLocation Location = default(International.EInvoicing.Diagnostics.SourceLocation), string? PrecedingSibling = null) -> void
+International.EInvoicing.Model.ExtensionElement.ExtensionElement(string! NamespaceUri, string! LocalName, string! Xml, International.EInvoicing.Diagnostics.SourceLocation Location = default(International.EInvoicing.Diagnostics.SourceLocation), string? PrecedingSibling = null, string? ParentName = null) -> void
 International.EInvoicing.Model.ExtensionElement.LocalName.get -> string!
 International.EInvoicing.Model.ExtensionElement.LocalName.init -> void
 International.EInvoicing.Model.ExtensionElement.Location.get -> International.EInvoicing.Diagnostics.SourceLocation
 International.EInvoicing.Model.ExtensionElement.Location.init -> void
 International.EInvoicing.Model.ExtensionElement.NamespaceUri.get -> string!
 International.EInvoicing.Model.ExtensionElement.NamespaceUri.init -> void
+International.EInvoicing.Model.ExtensionElement.ParentName.get -> string?
+International.EInvoicing.Model.ExtensionElement.ParentName.init -> void
 International.EInvoicing.Model.ExtensionElement.PrecedingSibling.get -> string?
 International.EInvoicing.Model.ExtensionElement.PrecedingSibling.init -> void
 International.EInvoicing.Model.ExtensionElement.QualifiedName.get -> string!
@@ -1576,6 +1578,22 @@ International.EInvoicing.Values.TextField.TextField(string? Value, string? Langu
 International.EInvoicing.Values.TextField.UntypedValue.get -> object?
 International.EInvoicing.Values.TextField.Value.get -> string?
 International.EInvoicing.Values.TextField.Value.init -> void
+International.EInvoicing.Xml.AnchoredDocument
+International.EInvoicing.Xml.AnchoredDocument.AnchoredDocument(System.Xml.XmlWriter! writer) -> void
+International.EInvoicing.Xml.AnchoredDocument.Dispose() -> void
+International.EInvoicing.Xml.AnchoredDocument.Flush() -> void
+International.EInvoicing.Xml.AnchoredDocument.Node(System.Collections.Generic.IEnumerable<International.EInvoicing.Model.ExtensionElement!>! extensions) -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteAttributeString(string! localName, string? value) -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteAttributeString(string? prefix, string! localName, string? ns, string? value) -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteElementString(string? prefix, string! localName, string? ns, string? value) -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteEndDocument() -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteEndElement() -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteRaw(string! data) -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteStartDocument() -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteStartElement(string! localName) -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteStartElement(string? prefix, string! localName, string? ns) -> void
+International.EInvoicing.Xml.AnchoredDocument.WriteString(string? text) -> void
+International.EInvoicing.Xml.AnchoredDocument.Writer.get -> System.Xml.XmlWriter!
 International.EInvoicing.Xml.DecodedDocument
 International.EInvoicing.Xml.DecodedDocument.<Clone>$() -> International.EInvoicing.Xml.DecodedDocument!
 International.EInvoicing.Xml.DecodedDocument.DecodedDocument(string! Text, System.Text.Encoding! Encoding, International.EInvoicing.Diagnostics.Diagnostic? Diagnostic) -> void

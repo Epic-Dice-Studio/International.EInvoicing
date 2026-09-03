@@ -41,8 +41,11 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
             CloseOutput = false,
         };
 
-        using XmlWriter writer = XmlWriter.Create(destination, settings);
+        using XmlWriter xml = XmlWriter.Create(destination, settings);
+        using var writer = new AnchoredDocument(xml);
+
         Write(document, writer);
+        xml.Flush();
     }
 
     /// <summary>Writes <paramref name="document"/> and returns it as XML text.</summary>
@@ -65,7 +68,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         return DocumentStreams.WriteAllAsync(WriteToString(document), destination, cancellationToken);
     }
 
-    private static void Write(LifecycleStatusMessage message, XmlWriter writer)
+    private static void Write(LifecycleStatusMessage message, AnchoredDocument writer)
     {
         writer.WriteStartDocument();
         writer.WriteStartElement(
@@ -76,16 +79,19 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         writer.WriteAttributeString("xmlns", CdarNames.QdtPrefix, null, CdarNames.Qdt.NamespaceName);
         writer.WriteAttributeString("xmlns", CdarNames.UdtPrefix, null, CdarNames.Udt.NamespaceName);
 
+        // After the namespace declarations, never among them: opening a node writes content, and content
+        // closes the element's attribute list.
+        writer.Node(message.Extensions);
+
         WriteContext(message, writer);
         WriteDocument(message, writer);
         WriteAcknowledgement(message, writer);
-        WriteExtensions(message.Extensions, writer);
 
         writer.WriteEndElement();
         writer.WriteEndDocument();
     }
 
-    private static void WriteContext(LifecycleStatusMessage message, XmlWriter writer)
+    private static void WriteContext(LifecycleStatusMessage message, AnchoredDocument writer)
     {
         StartRsm(writer, "ExchangedDocumentContext");
 
@@ -106,7 +112,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         writer.WriteEndElement();
     }
 
-    private static void WriteDocument(LifecycleStatusMessage message, XmlWriter writer)
+    private static void WriteDocument(LifecycleStatusMessage message, AnchoredDocument writer)
     {
         StartRsm(writer, "ExchangedDocument");
         WriteIdentifier(writer, "ID", message.Identifier);
@@ -123,7 +129,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         writer.WriteEndElement();
     }
 
-    private static void WriteAcknowledgement(LifecycleStatusMessage message, XmlWriter writer)
+    private static void WriteAcknowledgement(LifecycleStatusMessage message, AnchoredDocument writer)
     {
         StartRsm(writer, "AcknowledgementDocument");
 
@@ -143,6 +149,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         foreach (ReferencedDocumentStatus status in message.References)
         {
             StartRam(writer, "ReferenceReferencedDocument");
+            writer.Node(status.Extensions);
             WriteIdentifier(writer, "IssuerAssignedID", status.DocumentIdentifier);
             WriteCode(writer, "StatusCode", status.StatusCode);
             WriteCode(writer, "TypeCode", status.DocumentTypeCode);
@@ -158,14 +165,13 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
                 WriteStatusDetail(writer, detail);
             }
 
-            WriteExtensions(status.Extensions, writer);
             writer.WriteEndElement();
         }
 
         writer.WriteEndElement();
     }
 
-    private static void WriteStatusDetail(XmlWriter writer, DocumentStatusDetail detail)
+    private static void WriteStatusDetail(AnchoredDocument writer, DocumentStatusDetail detail)
     {
         StartRam(writer, "SpecifiedDocumentStatus");
         WriteCode(writer, "ProcessConditionCode", detail.ProcessConditionCode);
@@ -180,13 +186,13 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
             WriteCharacteristic(writer, characteristic);
         }
 
-        WriteExtensions(detail.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WriteCharacteristic(XmlWriter writer, DocumentStatusCharacteristic characteristic)
+    private static void WriteCharacteristic(AnchoredDocument writer, DocumentStatusCharacteristic characteristic)
     {
         StartRam(writer, "SpecifiedDocumentCharacteristic");
+        writer.Node(characteristic.Extensions);
         WriteIdentifier(writer, "ID", characteristic.Identifier);
         WriteCode(writer, "TypeCode", characteristic.TypeCode);
 
@@ -207,11 +213,10 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         WriteAmount(writer, "ValueAmount", characteristic.ValueAmount);
         WriteDecimal(writer, "ValuePercent", characteristic.ValuePercent);
         WriteText(writer, "ValueText", characteristic.ValueText);
-        WriteExtensions(characteristic.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WriteParty(XmlWriter writer, string elementName, StatusParty? party)
+    private static void WriteParty(AnchoredDocument writer, string elementName, StatusParty? party)
     {
         if (party is null)
         {
@@ -219,6 +224,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         }
 
         StartRam(writer, elementName);
+        writer.Node(party.Extensions);
         WriteIdentifier(writer, "GlobalID", party.GlobalIdentifier);
         WriteText(writer, "Name", party.Name);
         WriteCode(writer, "RoleCode", party.RoleCode);
@@ -230,28 +236,19 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
             writer.WriteEndElement();
         }
 
-        WriteExtensions(party.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WriteExtensions(ExtensionData extensions, XmlWriter writer)
-    {
-        foreach (ExtensionElement element in extensions)
-        {
-            writer.WriteRaw(element.Xml);
-        }
-    }
-
-    private static void StartRsm(XmlWriter writer, string localName) =>
+    private static void StartRsm(AnchoredDocument writer, string localName) =>
         writer.WriteStartElement(CdarNames.RsmPrefix, localName, CdarNames.Rsm.NamespaceName);
 
-    private static void StartRam(XmlWriter writer, string localName) =>
+    private static void StartRam(AnchoredDocument writer, string localName) =>
         writer.WriteStartElement(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName);
 
-    private static void Ram(XmlWriter writer, string localName, string value) =>
+    private static void Ram(AnchoredDocument writer, string localName, string value) =>
         writer.WriteElementString(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName, XmlCharacters.Sanitize(value));
 
-    private static void WriteText(XmlWriter writer, string localName, TextField field)
+    private static void WriteText(AnchoredDocument writer, string localName, TextField field)
     {
         if (field.IsSet)
         {
@@ -259,7 +256,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         }
     }
 
-    private static void WriteCode(XmlWriter writer, string localName, CodeField field)
+    private static void WriteCode(AnchoredDocument writer, string localName, CodeField field)
     {
         if (!field.IsSet)
         {
@@ -276,7 +273,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         writer.WriteEndElement();
     }
 
-    private static void WriteIdentifier(XmlWriter writer, string localName, IdentifierField field)
+    private static void WriteIdentifier(AnchoredDocument writer, string localName, IdentifierField field)
     {
         if (!field.IsSet)
         {
@@ -293,7 +290,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         writer.WriteEndElement();
     }
 
-    private static void WriteAmount(XmlWriter writer, string localName, AmountField field)
+    private static void WriteAmount(AnchoredDocument writer, string localName, AmountField field)
     {
         if (!field.IsSet)
         {
@@ -310,7 +307,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         writer.WriteEndElement();
     }
 
-    private static void WriteDecimal(XmlWriter writer, string localName, Field<decimal> field)
+    private static void WriteDecimal(AnchoredDocument writer, string localName, Field<decimal> field)
     {
         if (field.IsSet)
         {
@@ -318,7 +315,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         }
     }
 
-    private static void WriteNumber(XmlWriter writer, string localName, Field<int> field)
+    private static void WriteNumber(AnchoredDocument writer, string localName, Field<int> field)
     {
         if (field.IsSet)
         {
@@ -326,7 +323,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         }
     }
 
-    private static void WriteDateTime(XmlWriter writer, string localName, DateTimeField field)
+    private static void WriteDateTime(AnchoredDocument writer, string localName, DateTimeField field)
     {
         if (!field.IsSet)
         {
@@ -343,7 +340,7 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
     }
 
     /// <summary>The date of the document being reported on is a qualified, not unqualified, date string.</summary>
-    private static void WriteDate(XmlWriter writer, string localName, DateField field)
+    private static void WriteDate(AnchoredDocument writer, string localName, DateField field)
     {
         if (!field.IsSet)
         {

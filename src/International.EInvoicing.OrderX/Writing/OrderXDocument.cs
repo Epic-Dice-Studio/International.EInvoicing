@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Xml;
-using System.Xml.Linq;
 using International.EInvoicing.Model;
 using International.EInvoicing.Values;
 using International.EInvoicing.Xml;
@@ -8,60 +7,41 @@ using International.EInvoicing.Xml;
 namespace International.EInvoicing.OrderX.Writing;
 
 /// <summary>
-/// Writes the elements of an Order-X document, and puts back what nobody mapped where it was found.
+/// Writes the elements of an Order-X document.
 /// </summary>
 /// <remarks>
-/// <para>
-/// The order of a Cross Industry Order's elements is normative, so an unmapped element written at the end of
-/// its node is one a receiver's parser rejects. Each extension remembers the mapped sibling it followed;
-/// <see cref="Node"/> opens a scope, and the extension is written as soon as that sibling has been.
-/// </para>
-/// <para>
-/// A scope belongs to the element that was open when it was pushed, so the extensions of a party are flushed
-/// among the party's children and not among its parent's.
-/// </para>
+/// The typed part of writing: which attributes a code carries, how CII wraps an indicator and a moment, how
+/// a decimal is formatted. Where unmapped content goes back is <see cref="AnchoredDocument"/>'s business,
+/// and this forwards to it, so an extension is written among a node's children rather than after them.
 /// </remarks>
-internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
+internal sealed class OrderXDocument(XmlWriter xml) : IDisposable
 {
-    private readonly Stack<List<ExtensionElement>> _pending = new();
-    private readonly Stack<int> _scopes = new();
-    private readonly Stack<XName> _open = new();
-    private int _depth;
+    private readonly AnchoredDocument _writer = new(xml);
 
     /// <summary>Starts the document element, binding the four namespaces every Order-X document uses.</summary>
     public void StartDocument()
     {
-        writer.WriteStartDocument();
-        writer.WriteStartElement(
+        _writer.WriteStartDocument();
+        _writer.WriteStartElement(
             OrderXNames.RsmPrefix,
             "SCRDMCCBDACIOMessageStructure",
             OrderXNames.Rsm.NamespaceName);
-        _open.Push(OrderXNames.Root);
-        writer.WriteAttributeString("xmlns", OrderXNames.QdtPrefix, null, OrderXNames.Qdt.NamespaceName);
-        writer.WriteAttributeString("xmlns", OrderXNames.RamPrefix, null, OrderXNames.Ram.NamespaceName);
-        writer.WriteAttributeString("xmlns", OrderXNames.UdtPrefix, null, OrderXNames.Udt.NamespaceName);
-        _depth++;
+        _writer.WriteAttributeString("xmlns", OrderXNames.QdtPrefix, null, OrderXNames.Qdt.NamespaceName);
+        _writer.WriteAttributeString("xmlns", OrderXNames.RamPrefix, null, OrderXNames.Ram.NamespaceName);
+        _writer.WriteAttributeString("xmlns", OrderXNames.UdtPrefix, null, OrderXNames.Udt.NamespaceName);
     }
 
     public void EndDocument()
     {
         End();
-        writer.WriteEndDocument();
+        _writer.WriteEndDocument();
     }
 
-    public void StartRsm(string localName)
-    {
-        writer.WriteStartElement(OrderXNames.RsmPrefix, localName, OrderXNames.Rsm.NamespaceName);
-        _open.Push(OrderXNames.Rsm + localName);
-        _depth++;
-    }
+    public void StartRsm(string localName) =>
+        _writer.WriteStartElement(OrderXNames.RsmPrefix, localName, OrderXNames.Rsm.NamespaceName);
 
-    public void StartRam(string localName)
-    {
-        writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
-        _open.Push(OrderXNames.Ram + localName);
-        _depth++;
-    }
+    public void StartRam(string localName) =>
+        _writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
 
     /// <summary>Starts a <c>ram:</c> element and scopes the node's extensions to it in one step.</summary>
     public void StartRam(string localName, ExtensionData extensions)
@@ -73,45 +53,16 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
     /// <summary>
     /// Declares that the element now open is a model node, so its extensions are flushed among its children.
     /// </summary>
-    public void Node(ExtensionData extensions)
-    {
-        ArgumentNullException.ThrowIfNull(extensions);
+    public void Node(ExtensionData extensions) => _writer.Node(extensions);
 
-        List<ExtensionElement> pending = [.. extensions.Where(element => !string.IsNullOrEmpty(element.Xml))];
-
-        _scopes.Push(_depth);
-        _pending.Push(pending);
-
-        // Anything that preceded every mapped element goes out first, before the node has written anything.
-        Flush(pending, null);
-    }
-
-    public void End()
-    {
-        if (_scopes.Count > 0 && _scopes.Peek() == _depth)
-        {
-            _scopes.Pop();
-            foreach (ExtensionElement element in _pending.Pop())
-            {
-                writer.WriteRaw(element.Xml);
-            }
-        }
-
-        writer.WriteEndElement();
-        _depth--;
-
-        if (_open.Count > 0)
-        {
-            Placed(_open.Pop());
-        }
-    }
+    public void End() => _writer.WriteEndElement();
 
     public void Ram(string localName, string value) =>
-        Written(localName, () => writer.WriteElementString(
+        _writer.WriteElementString(
             OrderXNames.RamPrefix,
             localName,
             OrderXNames.Ram.NamespaceName,
-            XmlCharacters.Sanitize(value)));
+            XmlCharacters.Sanitize(value));
 
     public void Text(string localName, TextField field)
     {
@@ -120,13 +71,10 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
             return;
         }
 
-        Written(localName, () =>
-        {
-            writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
-            Attribute("languageID", field.LanguageId);
-            writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
-            writer.WriteEndElement();
-        });
+        Start(localName);
+        Attribute("languageID", field.LanguageId);
+        Value(field.Raw ?? field.Value);
+        End();
     }
 
     public void Code(string localName, CodeField field)
@@ -136,14 +84,11 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
             return;
         }
 
-        Written(localName, () =>
-        {
-            writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
-            Attribute("listID", field.ListId);
-            Attribute("listVersionID", field.ListVersionId);
-            writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
-            writer.WriteEndElement();
-        });
+        Start(localName);
+        Attribute("listID", field.ListId);
+        Attribute("listVersionID", field.ListVersionId);
+        Value(field.Raw ?? field.Value);
+        End();
     }
 
     public void Identifier(string localName, IdentifierField field)
@@ -153,13 +98,10 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
             return;
         }
 
-        Written(localName, () =>
-        {
-            writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
-            Attribute("schemeID", field.SchemeId);
-            writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value ?? string.Empty));
-            writer.WriteEndElement();
-        });
+        Start(localName);
+        Attribute("schemeID", field.SchemeId);
+        Value(field.Raw ?? field.Value);
+        End();
     }
 
     /// <summary>
@@ -169,8 +111,8 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
     /// Order-X states the currency once, on the document, and forbids <c>currencyID</c> on nearly every
     /// amount — the same rule the Cross Industry Invoice has. <c>TaxTotalAmount</c> is the exception, and
     /// there the attribute is <em>required</em>, because a document may state the tax in a second currency.
-    /// <paramref name="documentCurrency"/> stands in when the field carries none, which is what a caller assigning
-    /// a plain <c>decimal</c> leaves behind.
+    /// <paramref name="documentCurrency"/> stands in when the field carries none, which is what a caller
+    /// assigning a plain <c>decimal</c> leaves behind.
     /// </remarks>
     public void Amount(
         string localName,
@@ -189,16 +131,13 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
             return;
         }
 
-        Written(localName, () =>
-        {
-            writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
+        Start(localName);
 
-            // Nothing is invented when neither the amount nor the document names a currency: the document
-            // goes out without the attribute and the schema says so, which beats guessing at somebody's money.
-            Attribute("currencyID", field.CurrencyCode ?? documentCurrency);
-            writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
-            writer.WriteEndElement();
-        });
+        // Nothing is invented when neither the amount nor the document names a currency: the document goes
+        // out without the attribute and the schema says so, which beats guessing at somebody's money.
+        Attribute("currencyID", field.CurrencyCode ?? documentCurrency);
+        Value(field.Raw ?? Format(field.Value));
+        End();
     }
 
     public void Quantity(string localName, QuantityField field)
@@ -208,13 +147,10 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
             return;
         }
 
-        Written(localName, () =>
-        {
-            writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
-            Attribute("unitCode", field.UnitCode);
-            writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value)));
-            writer.WriteEndElement();
-        });
+        Start(localName);
+        Attribute("unitCode", field.UnitCode);
+        Value(field.Raw ?? Format(field.Value));
+        End();
     }
 
     public void Decimal(string localName, Field<decimal> field)
@@ -233,16 +169,13 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
             return;
         }
 
-        Written(localName, () =>
-        {
-            writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
-            writer.WriteElementString(
-                OrderXNames.UdtPrefix,
-                "Indicator",
-                OrderXNames.Udt.NamespaceName,
-                field.Raw ?? (field.Value == true ? "true" : "false"));
-            writer.WriteEndElement();
-        });
+        Start(localName);
+        _writer.WriteElementString(
+            OrderXNames.UdtPrefix,
+            "Indicator",
+            OrderXNames.Udt.NamespaceName,
+            field.Raw ?? (field.Value == true ? "true" : "false"));
+        End();
     }
 
     /// <summary>
@@ -256,19 +189,17 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
             return;
         }
 
-        Written(localName, () =>
-        {
-            writer.WriteStartElement(OrderXNames.RamPrefix, localName, OrderXNames.Ram.NamespaceName);
-            writer.WriteStartElement(OrderXNames.UdtPrefix, "DateTimeString", OrderXNames.Udt.NamespaceName);
-            string format = field.FormatCode ?? "102";
-            writer.WriteAttributeString("format", XmlCharacters.Sanitize(format));
-            writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value, format)));
-            writer.WriteEndElement();
-            writer.WriteEndElement();
-        });
+        string format = field.FormatCode ?? "102";
+
+        Start(localName);
+        _writer.WriteStartElement(OrderXNames.UdtPrefix, "DateTimeString", OrderXNames.Udt.NamespaceName);
+        _writer.WriteAttributeString("format", XmlCharacters.Sanitize(format));
+        _writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? Format(field.Value, format)));
+        _writer.WriteEndElement();
+        End();
     }
 
-    public void Dispose() => writer.Flush();
+    public void Dispose() => _writer.Dispose();
 
     private static string Format(decimal? value) =>
         value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty;
@@ -283,49 +214,15 @@ internal sealed class OrderXDocument(XmlWriter writer) : IDisposable
             },
             CultureInfo.InvariantCulture) ?? string.Empty;
 
+    private void Start(string localName) => StartRam(localName);
+
+    private void Value(string? text) => _writer.WriteString(XmlCharacters.Sanitize(text ?? string.Empty));
+
     private void Attribute(string name, string? value)
     {
         if (!string.IsNullOrEmpty(value))
         {
-            writer.WriteAttributeString(name, value);
-        }
-    }
-
-    /// <summary>Writes a leaf element, then flushes whatever was anchored to it.</summary>
-    private void Written(string localName, Action write)
-    {
-        write();
-        Placed(OrderXNames.Ram + localName);
-    }
-
-    /// <summary>
-    /// Flushes the extensions anchored to the element just written, when the node they belong to is the one
-    /// currently open.
-    /// </summary>
-    /// <remarks>
-    /// The anchor is the reader's own <see cref="XName.ToString"/> of the sibling — namespace and local name
-    /// — so it survives a document written with different prefixes than the one it was read from.
-    /// </remarks>
-    private void Placed(XName name)
-    {
-        if (_scopes.Count > 0 && _scopes.Peek() == _depth)
-        {
-            Flush(_pending.Peek(), name.ToString());
-        }
-    }
-
-    private void Flush(List<ExtensionElement> pending, string? preceding)
-    {
-        for (var index = 0; index < pending.Count;)
-        {
-            if (pending[index].PrecedingSibling == preceding)
-            {
-                writer.WriteRaw(pending[index].Xml);
-                pending.RemoveAt(index);
-                continue;
-            }
-
-            index++;
+            _writer.WriteAttributeString(name, value);
         }
     }
 }

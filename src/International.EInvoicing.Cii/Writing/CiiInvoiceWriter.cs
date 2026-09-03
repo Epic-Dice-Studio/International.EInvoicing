@@ -49,8 +49,11 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             CloseOutput = false,
         };
 
-        using XmlWriter writer = XmlWriter.Create(destination, settings);
+        using XmlWriter xml = XmlWriter.Create(destination, settings);
+        using var writer = new AnchoredDocument(xml);
+
         Write(document, writer);
+        xml.Flush();
     }
 
     /// <summary>Writes <paramref name="document"/> and returns it as XML text.</summary>
@@ -73,13 +76,17 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         return DocumentStreams.WriteAllAsync(WriteToString(document), destination, cancellationToken);
     }
 
-    private static void Write(EInvoice invoice, XmlWriter writer)
+    private static void Write(EInvoice invoice, AnchoredDocument writer)
     {
         writer.WriteStartDocument();
         writer.WriteStartElement(CiiNames.RsmPrefix, "CrossIndustryInvoice", CiiNames.Rsm.NamespaceName);
         writer.WriteAttributeString("xmlns", CiiNames.RamPrefix, null, CiiNames.Ram.NamespaceName);
         writer.WriteAttributeString("xmlns", CiiNames.QdtPrefix, null, CiiNames.Qdt.NamespaceName);
         writer.WriteAttributeString("xmlns", CiiNames.UdtPrefix, null, CiiNames.Udt.NamespaceName);
+
+        // After the namespace declarations, never among them: opening a node writes content, and content
+        // closes the element's attribute list.
+        writer.Node(Writable(invoice.Extensions));
 
         WriteContext(invoice, writer);
         WriteDocument(invoice, writer);
@@ -95,13 +102,11 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         WriteSettlement(invoice, writer);
         writer.WriteEndElement();
 
-        WriteExtensions(invoice.Extensions, writer);
-
         writer.WriteEndElement();
         writer.WriteEndDocument();
     }
 
-    private static void WriteContext(EInvoice invoice, XmlWriter writer)
+    private static void WriteContext(EInvoice invoice, AnchoredDocument writer)
     {
         StartRsm(writer, "ExchangedDocumentContext");
 
@@ -122,7 +127,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteDocument(EInvoice invoice, XmlWriter writer)
+    private static void WriteDocument(EInvoice invoice, AnchoredDocument writer)
     {
         StartRsm(writer, "ExchangedDocument");
         WriteIdentifier(writer, "ID", invoice.Number);
@@ -140,9 +145,10 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteLine(InvoiceLine line, XmlWriter writer)
+    private static void WriteLine(InvoiceLine line, AnchoredDocument writer)
     {
         StartRam(writer, "IncludedSupplyChainTradeLineItem");
+        writer.Node(Writable(line.Extensions));
 
         StartRam(writer, "AssociatedDocumentLineDocument");
         WriteIdentifier(writer, "LineID", line.Identifier);
@@ -166,11 +172,10 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
 
         WriteLineSettlement(line, writer);
-        WriteExtensions(line.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WriteItem(Item? item, XmlWriter writer)
+    private static void WriteItem(Item? item, AnchoredDocument writer)
     {
         if (item is null)
         {
@@ -178,6 +183,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         }
 
         StartRam(writer, "SpecifiedTradeProduct");
+        writer.Node(Writable(item.Extensions));
         WriteIdentifier(writer, "GlobalID", item.StandardIdentifier);
         WriteIdentifier(writer, "SellerAssignedID", item.SellerIdentifier);
         WriteIdentifier(writer, "BuyerAssignedID", item.BuyerIdentifier);
@@ -207,11 +213,10 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        WriteExtensions(item.Extensions, writer);
         writer.WriteEndElement();
     }
 
-    private static void WriteLineAgreement(InvoiceLine line, XmlWriter writer)
+    private static void WriteLineAgreement(InvoiceLine line, AnchoredDocument writer)
     {
         StartRam(writer, "SpecifiedLineTradeAgreement");
 
@@ -254,7 +259,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteLineSettlement(InvoiceLine line, XmlWriter writer)
+    private static void WriteLineSettlement(InvoiceLine line, AnchoredDocument writer)
     {
         StartRam(writer, "SpecifiedLineTradeSettlement");
 
@@ -304,7 +309,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteAgreement(EInvoice invoice, XmlWriter writer)
+    private static void WriteAgreement(EInvoice invoice, AnchoredDocument writer)
     {
         StartRam(writer, "ApplicableHeaderTradeAgreement");
         WriteText(writer, "BuyerReference", invoice.BuyerReference);
@@ -355,7 +360,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteDelivery(EInvoice invoice, XmlWriter writer)
+    private static void WriteDelivery(EInvoice invoice, AnchoredDocument writer)
     {
         StartRam(writer, "ApplicableHeaderTradeDelivery");
 
@@ -387,7 +392,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteSettlement(EInvoice invoice, XmlWriter writer)
+    private static void WriteSettlement(EInvoice invoice, AnchoredDocument writer)
     {
         StartRam(writer, "ApplicableHeaderTradeSettlement");
 
@@ -475,7 +480,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
     }
 
     /// <summary>BT-91 — the account a direct debit takes from, which comes before the payee's.</summary>
-    private static void WriteDebitedAccount(XmlWriter writer, DirectDebit? debit)
+    private static void WriteDebitedAccount(AnchoredDocument writer, DirectDebit? debit)
     {
         if (debit is not { DebitedAccountIdentifier.IsSet: true })
         {
@@ -487,7 +492,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WritePaymentMeans(PaymentInstructions? payment, XmlWriter writer)
+    private static void WritePaymentMeans(PaymentInstructions? payment, AnchoredDocument writer)
     {
         if (payment is null || (!payment.MeansTypeCode.IsSet && payment.CreditTransfers.Count == 0))
         {
@@ -531,7 +536,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
 
     private static void WriteTotals(
         DocumentTotals totals,
-        XmlWriter writer,
+        AnchoredDocument writer,
         string? documentCurrency,
         string? accountingCurrency)
     {
@@ -558,7 +563,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteAllowanceCharge(AllowanceCharge allowanceCharge, XmlWriter writer)
+    private static void WriteAllowanceCharge(AllowanceCharge allowanceCharge, AnchoredDocument writer)
     {
         StartRam(writer, "SpecifiedTradeAllowanceCharge");
         WriteIndicator(writer, "ChargeIndicator", allowanceCharge.IsCharge);
@@ -580,9 +585,10 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteAdditionalDocument(AdditionalDocument document, XmlWriter writer)
+    private static void WriteAdditionalDocument(AdditionalDocument document, AnchoredDocument writer)
     {
         StartRam(writer, "AdditionalReferencedDocument");
+        writer.Node(Writable(document.Extensions));
         WriteIdentifier(writer, "IssuerAssignedID", document.Identifier);
         WriteText(writer, "URIID", document.ExternalLocation);
 
@@ -594,7 +600,6 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             Ram(writer, "TypeCode", "916");
         }
 
-        WriteExtensions(document.Extensions, writer);
         WriteText(writer, "Name", document.Description);
 
         if (document.Attachment.Value is { } bytes)
@@ -609,7 +614,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteParty(XmlWriter writer, string elementName, Party? party)
+    private static void WriteParty(AnchoredDocument writer, string elementName, Party? party)
     {
         if (party is null)
         {
@@ -653,7 +658,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
     /// Writes BT-84 as the element CII expects. The scheme discriminates the two, and is not written as an
     /// attribute: in CII the element name already carries that meaning.
     /// </summary>
-    private static void WriteAccountIdentifier(XmlWriter writer, IdentifierField account)
+    private static void WriteAccountIdentifier(AnchoredDocument writer, IdentifierField account)
     {
         if (!account.IsSet)
         {
@@ -668,7 +673,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         Ram(writer, proprietary ? "ProprietaryID" : "IBANID", account.Raw ?? account.Value ?? string.Empty);
     }
 
-    private static void WriteTaxRegistration(XmlWriter writer, IdentifierField identifier, string scheme)
+    private static void WriteTaxRegistration(AnchoredDocument writer, IdentifierField identifier, string scheme)
     {
         if (!identifier.IsSet)
         {
@@ -683,7 +688,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteContact(XmlWriter writer, Contact? contact)
+    private static void WriteContact(AnchoredDocument writer, Contact? contact)
     {
         if (contact is null)
         {
@@ -710,7 +715,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteAddress(XmlWriter writer, string elementName, PostalAddress? address)
+    private static void WriteAddress(AnchoredDocument writer, string elementName, PostalAddress? address)
     {
         if (address is null)
         {
@@ -728,7 +733,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteReferencedDocument(XmlWriter writer, string elementName, IdentifierField identifier)
+    private static void WriteReferencedDocument(AnchoredDocument writer, string elementName, IdentifierField identifier)
     {
         if (!identifier.IsSet)
         {
@@ -740,7 +745,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WritePeriod(XmlWriter writer, string elementName, InvoicingPeriod? period)
+    private static void WritePeriod(AnchoredDocument writer, string elementName, InvoicingPeriod? period)
     {
         if (period is null || (!period.StartDate.IsSet && !period.EndDate.IsSet))
         {
@@ -762,29 +767,19 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
     /// something no receiver will accept. They do not cross; <c>EInvoicing.Convert</c> reports them as the
     /// cost of the conversion.
     /// </remarks>
-    private static void WriteExtensions(ExtensionData extensions, XmlWriter writer)
-    {
-        foreach (ExtensionElement element in extensions)
-        {
-            if (SyntaxNamespaces.BelongsTo(element.NamespaceUri, DocumentSyntax.Ubl))
-            {
-                continue;
-            }
+    private static IEnumerable<ExtensionElement> Writable(ExtensionData extensions) =>
+        extensions.Where(element => !SyntaxNamespaces.BelongsTo(element.NamespaceUri, DocumentSyntax.Ubl));
 
-            writer.WriteRaw(element.Xml);
-        }
-    }
-
-    private static void StartRsm(XmlWriter writer, string localName) =>
+    private static void StartRsm(AnchoredDocument writer, string localName) =>
         writer.WriteStartElement(CiiNames.RsmPrefix, localName, CiiNames.Rsm.NamespaceName);
 
-    private static void StartRam(XmlWriter writer, string localName) =>
+    private static void StartRam(AnchoredDocument writer, string localName) =>
         writer.WriteStartElement(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName);
 
-    private static void Ram(XmlWriter writer, string localName, string value) =>
+    private static void Ram(AnchoredDocument writer, string localName, string value) =>
         writer.WriteElementString(CiiNames.RamPrefix, localName, CiiNames.Ram.NamespaceName, XmlCharacters.Sanitize(value));
 
-    private static void WriteText(XmlWriter writer, string localName, TextField field)
+    private static void WriteText(AnchoredDocument writer, string localName, TextField field)
     {
         if (!field.IsSet)
         {
@@ -797,7 +792,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteCode(XmlWriter writer, string localName, CodeField field)
+    private static void WriteCode(AnchoredDocument writer, string localName, CodeField field)
     {
         if (!field.IsSet)
         {
@@ -811,7 +806,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteIdentifier(XmlWriter writer, string localName, IdentifierField field)
+    private static void WriteIdentifier(AnchoredDocument writer, string localName, IdentifierField field)
     {
         if (!field.IsSet)
         {
@@ -843,7 +838,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
     /// which is what a caller assigning a plain <c>decimal</c> leaves behind.
     /// </remarks>
     private static void WriteAmount(
-        XmlWriter writer,
+        AnchoredDocument writer,
         string localName,
         AmountField field,
         bool withCurrency = false,
@@ -865,7 +860,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteQuantity(XmlWriter writer, string localName, QuantityField field)
+    private static void WriteQuantity(AnchoredDocument writer, string localName, QuantityField field)
     {
         if (!field.IsSet)
         {
@@ -878,7 +873,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteDecimal(XmlWriter writer, string localName, Field<decimal> field)
+    private static void WriteDecimal(AnchoredDocument writer, string localName, Field<decimal> field)
     {
         if (field.IsSet)
         {
@@ -886,7 +881,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         }
     }
 
-    private static void WriteIndicator(XmlWriter writer, string localName, bool value)
+    private static void WriteIndicator(AnchoredDocument writer, string localName, bool value)
     {
         StartRam(writer, localName);
         writer.WriteElementString(
@@ -901,7 +896,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
     /// <c>format</c> attribute says how to read it. The original format code is preserved when there is one.
     /// </summary>
     private static void WriteDate(
-        XmlWriter writer,
+        AnchoredDocument writer,
         string localName,
         DateField field,
         string prefix = CiiNames.UdtPrefix,
@@ -921,7 +916,7 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
         writer.WriteEndElement();
     }
 
-    private static void WriteAttributeIfSet(XmlWriter writer, string name, string? value)
+    private static void WriteAttributeIfSet(AnchoredDocument writer, string name, string? value)
     {
         if (!string.IsNullOrEmpty(value))
         {

@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Unmapped content is written back where it was read from in CII and CDAR too.** The UBL half shipped
+  first; `CiiInvoiceWriter` and `CdarWriter` now route through `AnchoredDocument`, which is where the
+  anchoring lives rather than in a copy per syntax.
+- CII needed a more precise anchor than UBL did. A model node there is not always one element — a CII invoice
+  fills itself from the document context, the exchanged document and three header sections at once, and
+  `ram:ID` appears in most of them — so the sibling it followed would have placed an extension after the
+  first `ram:ID` written anywhere in the node. `ExtensionElement.ParentName` records the element it sat in,
+  and the two together are an address rather than a guess.
+
 - **Order-X**, the Franco-German order — `International.EInvoicing.OrderX`. Same publishers as Factur-X,
   same CII family, one document earlier in the chain, and a different UN/CEFACT message: the Cross Industry
   Order, on version 128 of the same data types, so nothing that reads an invoice reads it. The order and the

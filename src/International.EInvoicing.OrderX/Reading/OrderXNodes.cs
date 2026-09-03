@@ -64,7 +64,8 @@ internal static class OrderXNodes
                 element.Name.LocalName,
                 element.ToString(SaveOptions.DisableFormatting),
                 CiiValueReader.LocationOf(element),
-                preceding));
+                preceding,
+                source.Name.ToString()));
 
             diagnostics.Add(Diagnostic.Create(OrderXDiagnostics.UnmappedElement, element.Name.LocalName) with
             {
