@@ -20,6 +20,9 @@ public sealed class LifecycleStatusMessage : InvoiceNode
     /// <summary>The message's name, when the sender gave one.</summary>
     public TextField Name { get; set; }
 
+    /// <summary>A free-text note about the message as a whole.</summary>
+    public TextField Note { get; set; }
+
     /// <summary>When the message was created.</summary>
     public DateTimeField IssuedAt { get; set; }
 

@@ -529,6 +529,13 @@ internal sealed class XPathEvaluator(
         string prefix = test[..colon];
         string local = test[(colon + 1)..];
 
+        // *:name — that local name in whatever namespace. Published rule sets use it to reach an attribute
+        // whose namespace the document is free to choose, xsi:schemaLocation above all.
+        if (prefix == "*")
+        {
+            return string.Equals(name.LocalName, local, StringComparison.Ordinal);
+        }
+
         if (!namespaces.TryGetValue(prefix, out string? uri))
         {
             return false;

@@ -556,6 +556,8 @@ International.EInvoicing.Model.LifecycleStatusMessage.Issuer.set -> void
 International.EInvoicing.Model.LifecycleStatusMessage.LifecycleStatusMessage() -> void
 International.EInvoicing.Model.LifecycleStatusMessage.Name.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.LifecycleStatusMessage.Name.set -> void
+International.EInvoicing.Model.LifecycleStatusMessage.Note.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.LifecycleStatusMessage.Note.set -> void
 International.EInvoicing.Model.LifecycleStatusMessage.Profile.get -> International.EInvoicing.Profiles.ProfileResolution?
 International.EInvoicing.Model.LifecycleStatusMessage.Profile.set -> void
 International.EInvoicing.Model.LifecycleStatusMessage.Recipients.get -> System.Collections.Generic.List<International.EInvoicing.Model.StatusParty!>!
@@ -642,8 +644,13 @@ International.EInvoicing.Model.ReferencedDocumentStatus.DocumentIssueDate.get ->
 International.EInvoicing.Model.ReferencedDocumentStatus.DocumentIssueDate.set -> void
 International.EInvoicing.Model.ReferencedDocumentStatus.DocumentTypeCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.ReferencedDocumentStatus.DocumentTypeCode.set -> void
+International.EInvoicing.Model.ReferencedDocumentStatus.DocumentVersion.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.ReferencedDocumentStatus.DocumentVersion.set -> void
+International.EInvoicing.Model.ReferencedDocumentStatus.EffectiveDate.get -> International.EInvoicing.Values.DateField
+International.EInvoicing.Model.ReferencedDocumentStatus.EffectiveDate.set -> void
 International.EInvoicing.Model.ReferencedDocumentStatus.Issuer.get -> International.EInvoicing.Model.StatusParty?
 International.EInvoicing.Model.ReferencedDocumentStatus.Issuer.set -> void
+International.EInvoicing.Model.ReferencedDocumentStatus.LineStatuses.get -> System.Collections.Generic.List<International.EInvoicing.Model.ReferencedLineStatus!>!
 International.EInvoicing.Model.ReferencedDocumentStatus.ProcessCondition.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.ReferencedDocumentStatus.ProcessCondition.set -> void
 International.EInvoicing.Model.ReferencedDocumentStatus.ProcessConditionCode.get -> International.EInvoicing.Values.CodeField
@@ -652,11 +659,24 @@ International.EInvoicing.Model.ReferencedDocumentStatus.Reason.get -> Internatio
 International.EInvoicing.Model.ReferencedDocumentStatus.Reason.set -> void
 International.EInvoicing.Model.ReferencedDocumentStatus.ReceivedAt.get -> International.EInvoicing.Values.DateTimeField
 International.EInvoicing.Model.ReferencedDocumentStatus.ReceivedAt.set -> void
+International.EInvoicing.Model.ReferencedDocumentStatus.Recipient.get -> International.EInvoicing.Model.StatusParty?
+International.EInvoicing.Model.ReferencedDocumentStatus.Recipient.set -> void
 International.EInvoicing.Model.ReferencedDocumentStatus.ReferencedDocumentStatus() -> void
 International.EInvoicing.Model.ReferencedDocumentStatus.StatusCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.ReferencedDocumentStatus.StatusCode.set -> void
 International.EInvoicing.Model.ReferencedDocumentStatus.StatusDetails.get -> System.Collections.Generic.List<International.EInvoicing.Model.DocumentStatusDetail!>!
+International.EInvoicing.Model.ReferencedLineStatus
+International.EInvoicing.Model.ReferencedLineStatus.LineIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.ReferencedLineStatus.LineIdentifier.set -> void
+International.EInvoicing.Model.ReferencedLineStatus.ProcessCondition.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.ReferencedLineStatus.ProcessCondition.set -> void
+International.EInvoicing.Model.ReferencedLineStatus.ProcessConditionCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.ReferencedLineStatus.ProcessConditionCode.set -> void
+International.EInvoicing.Model.ReferencedLineStatus.ReferencedLineStatus() -> void
+International.EInvoicing.Model.ReferencedLineStatus.StatusDetails.get -> System.Collections.Generic.List<International.EInvoicing.Model.DocumentStatusDetail!>!
 International.EInvoicing.Model.StatusParty
+International.EInvoicing.Model.StatusParty.Contact.get -> International.EInvoicing.Model.Contact?
+International.EInvoicing.Model.StatusParty.Contact.set -> void
 International.EInvoicing.Model.StatusParty.ElectronicAddress.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.StatusParty.ElectronicAddress.set -> void
 International.EInvoicing.Model.StatusParty.GlobalIdentifier.get -> International.EInvoicing.Values.IdentifierField
@@ -666,6 +686,8 @@ International.EInvoicing.Model.StatusParty.Name.set -> void
 International.EInvoicing.Model.StatusParty.RoleCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.StatusParty.RoleCode.set -> void
 International.EInvoicing.Model.StatusParty.StatusParty() -> void
+International.EInvoicing.Model.StatusParty.TradingName.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.StatusParty.TradingName.set -> void
 International.EInvoicing.Model.VatBreakdownEntry
 International.EInvoicing.Model.VatBreakdownEntry.CategoryCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.VatBreakdownEntry.CategoryCode.set -> void

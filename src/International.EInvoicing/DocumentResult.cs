@@ -21,11 +21,17 @@ public enum DocumentKind
     /// <summary>An invoice in UN/CEFACT CII — the payload of Factur-X and ZUGFeRD.</summary>
     Cii,
 
-    /// <summary>A lifecycle status message.</summary>
+    /// <summary>A lifecycle status message in UN/CEFACT CDAR.</summary>
     Cdar,
 
     /// <summary>A PDF, which may carry an invoice inside it.</summary>
     Pdf,
+
+    /// <summary>
+    /// A UBL <c>ApplicationResponse</c> — a lifecycle status message as the Peppol network carries it.
+    /// </summary>
+    /// <remarks>Appended rather than filed beside <see cref="Cdar"/> so the values already in use keep theirs.</remarks>
+    UblApplicationResponse,
 }
 
 /// <summary>

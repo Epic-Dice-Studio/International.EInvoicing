@@ -237,11 +237,67 @@ ParseResult<LifecycleStatusMessage> read = einvoicing.Lifecycle.Read(stream);
 string xml = einvoicing.LifecycleWriter.WriteToString(message);
 ```
 
+## The same statement, on the Peppol network
+
+France sends lifecycle statuses as UN/CEFACT CDAR. Peppol sends them as a UBL `ApplicationResponse` — the
+**Invoice Response**, which is what a receiver owes a sender, and the **Message Level Response**, which
+answers the question underneath it: did the message arrive and parse at all.
+
+They are two syntaxes for one semantic statement, so they fill the same model. `Read` works out which
+arrived:
+
+```csharp
+DocumentResult result = einvoicing.Read(xml);
+
+if (result.TryGetLifecycleStatus(out LifecycleStatusMessage? status))
+{
+    // result.Kind is Cdar or UblApplicationResponse; the model is the same either way
+    foreach (ReferencedDocumentStatus reported in status.References)
+    {
+        Console.WriteLine($"{reported.DocumentIdentifier.Value}: {reported.ProcessConditionCode.Value}");
+        // inv021: RE
+    }
+}
+```
+
+Writing asks which network you are on, because that is not the message's decision:
+
+```csharp
+string ubl = einvoicing.Write(status, DocumentSyntax.Ubl);    // ApplicationResponse
+string cdar = einvoicing.Write(status);                       // CDAR, as before
+```
+
+The seven statuses an Invoice Response may carry are in `PeppolResponseCodes`, and the two that decide
+whether a supplier chases a payment are `AP` (the buyer approved it) and `PD` (the money has been sent).
+`RE`, `UQ` and `CA` must say why — `PEPPOL-T111-R001` — and the reason and the requested action arrive as
+`StatusDetails`:
+
+```csharp
+foreach (DocumentStatusDetail detail in reported.StatusDetails)
+{
+    Console.WriteLine(detail.ReasonCode.Value);            // REF — references incorrect
+    Console.WriteLine(detail.RequestedActionCode.Value);   // NIN — send a new invoice
+}
+```
+
+Peppol's own rules are fetched rather than shipped, since OpenPEPPOL declares no licence for them:
+
+```csharp
+EInvoicing library = EInvoicing.Create(builder => builder
+    .AddDefaults()
+    .AddPeppol()
+    .AddUblSchema()
+    .AddPeppolResponseRulesFrom("specs/peppol/poacc/rules"));
+```
+
+See [the standard page](../standards/peppol-response.md) for the full structure and the code lists.
+
 ## Next
 
 - [Reading a document](reading.md)
 - [Writing a document](writing.md)
 - [The CDAR standard page](../standards/cdar.md), including where the structure was verified
+- [The Peppol Invoice Response](../standards/peppol-response.md), the same statement on the Peppol network
 
 ## Run it
 

@@ -23,6 +23,12 @@ public sealed class ReferencedDocumentStatus : InvoiceNode
     /// <summary>The date the document reported on was issued — an invoice's BT-2.</summary>
     public DateField DocumentIssueDate { get; set; }
 
+    /// <summary>Which version of the document is reported on, when the sender numbers them.</summary>
+    public IdentifierField DocumentVersion { get; set; }
+
+    /// <summary>When the status takes effect, when that is not the moment the message was written.</summary>
+    public DateField EffectiveDate { get; set; }
+
     /// <summary>
     /// The lifecycle status itself, as a code. In France this is the value that matters: 200 filed,
     /// 202 received, 205 approved, 207 disputed, 210 refused, 212 collected, and so on.
@@ -37,6 +43,18 @@ public sealed class ReferencedDocumentStatus : InvoiceNode
 
     /// <summary>Who issued the document being reported on.</summary>
     public StatusParty? Issuer { get; set; }
+
+    /// <summary>Who received the document being reported on, when the sender named them.</summary>
+    public StatusParty? Recipient { get; set; }
+
+    /// <summary>
+    /// What happened to individual lines of the document, when the status is not the same for all of them.
+    /// </summary>
+    /// <remarks>
+    /// A message-level response points at the place in the document that failed, which is how a receiver
+    /// tells "this invoice is wrong" from "line 3 of this invoice is wrong".
+    /// </remarks>
+    public List<ReferencedLineStatus> LineStatuses { get; } = [];
 
     /// <summary>The detail behind the status: reasons, requested actions, the values at issue.</summary>
     public List<DocumentStatusDetail> StatusDetails { get; } = [];

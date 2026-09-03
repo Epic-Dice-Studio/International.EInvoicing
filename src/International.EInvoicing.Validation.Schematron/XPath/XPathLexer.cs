@@ -91,6 +91,15 @@ internal sealed class XPathLexer(string expression)
             return new XPathToken(XPathTokenKind.Name, name);
         }
 
+        // A wildcard prefix, *:schemaLocation — a name in whatever namespace. Only a name test, never
+        // multiplication, because an operator cannot be followed by a colon.
+        if (current == '*' && _position + 1 < _text.Length && _text[_position + 1] == ':'
+            && _position + 2 < _text.Length && IsNameStart(_text[_position + 2]))
+        {
+            _position += 2;
+            return new XPathToken(XPathTokenKind.Name, "*:" + ReadName());
+        }
+
         foreach (string candidate in TwoCharacterOperators)
         {
             if (_position + 1 < _text.Length && _text[_position] == candidate[0] && _text[_position + 1] == candidate[1])

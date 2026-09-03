@@ -39,6 +39,15 @@
           "notes": "Reading and writing the EN 16931 core, with everything else kept verbatim as extension data on the node that contained it. Round-tripped against the 41 CII invoices of the official XRechnung test suite without losing an element."
         },
         {
+          "name": "UBL 2.1 — Application Response",
+          "version": "OASIS UBL 2.1",
+          "package": "International.EInvoicing.Ubl",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "What happened to a document rather than what is owed for it: the Peppol Invoice Response and Message Level Response. Fills the same lifecycle model the French CDAR messages do, so one model serves both syntaxes. Read, round-tripped and schema-checked against OpenPEPPOL's own thirteen use cases and two published examples."
+        },
+        {
           "name": "UN/CEFACT CDAR",
           "version": "generic",
           "package": "International.EInvoicing.Cdar",
@@ -114,6 +123,15 @@
           "write": "done",
           "validate": "done",
           "notes": "The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job."
+        },
+        {
+          "name": "Peppol Invoice Response and Message Level Response",
+          "version": "Invoice Response 3.1, MLR",
+          "package": "International.EInvoicing.Peppol",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "An Invoice Response is what a receiver owes a sender — in process, accepted, rejected, under query, paid — and a Message Level Response answers whether the message arrived at all. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence."
         }
       ]
     },

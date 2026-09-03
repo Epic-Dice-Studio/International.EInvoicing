@@ -19,6 +19,8 @@ trap 'rm -rf "$WORK_DIR"' EXIT
 EN16931_REF="validation-1.3.16"
 EN16931_COMPILED_REF="1.3.16"
 PEPPOL_REF="master"
+POACC_REF="master"
+POACC_COMPILED_REF="2026.5"
 XRECHNUNG_SCHEMATRON_REF="master"
 XRECHNUNG_TESTSUITE_REF="master"
 PHIVE_RULES_REF="master"
@@ -143,6 +145,34 @@ fetch_national() {
     done
 }
 
+# The Peppol post-award documents that are not invoices: the Invoice Response and the Message Level
+# Response, both of which are a UBL ApplicationResponse. OpenPEPPOL publishes the sources under no
+# redistribution licence, and generates the structural half of each rule set at build time — so the runnable
+# artefact is the compiled XSLT phive-rules carries, which this library's engine reads. See
+# specs/peppol/PROVENANCE.md.
+fetch_poacc() {
+    local src="$WORK_DIR/poacc" compiled="$WORK_DIR/poacc-compiled"
+    clone_at https://github.com/OpenPEPPOL/poacc-upgrade-3.git "$POACC_REF" "$src"
+
+    rm -rf "$SPECS_DIR/peppol/poacc"
+    # The published examples and the thirteen Invoice Response use cases: what the reader is measured against.
+    sync_into "$src/rules/examples/InvoiceResponse_Example.xml" "$SPECS_DIR/peppol/poacc/examples"
+    sync_into "$src/rules/examples/MessageLevelResponse_Example.xml" "$SPECS_DIR/peppol/poacc/examples"
+    sync_into "$src/rules/examples/Invoice reponse use cases" "$SPECS_DIR/peppol/poacc/examples"
+    # Each unit case names how many times a rule should fire.
+    sync_into "$src/rules/unit-invoice-response" "$SPECS_DIR/peppol/poacc"
+    # The status, reason and action code lists, which is what the shipped constants are checked against.
+    sync_into "$src/structure/codelist" "$SPECS_DIR/peppol/poacc"
+
+    clone_at https://github.com/phax/phive-rules.git "$PHIVE_RULES_REF" "$compiled"
+    local xslt="$compiled/phive-rules-peppol/src/main/resources/external/schematron/openpeppol/$POACC_COMPILED_REF/xslt"
+    local name
+    mkdir -p "$SPECS_DIR/peppol/poacc/rules"
+    for name in PEPPOLBIS-T111 PEPPOLBIS-T71; do
+        sync_into "$xslt/$name.xslt" "$SPECS_DIR/peppol/poacc/rules"
+    done
+}
+
 # The UBL 2.1 schemas, file by file rather than as the 58 MB OASIS archive: what a validator needs is the
 # xsd folder, and the rest of that zip is documentation and examples. OASIS publishes them individually.
 fetch_ubl_schemas() {
@@ -210,12 +240,13 @@ main() {
         pint)      fetch_pint ;;
         national)  fetch_national ;;
         peppol)    fetch_peppol ;;
+        poacc)     fetch_poacc ;;
         xrechnung) fetch_xrechnung ;;
         ubl)       fetch_ubl_schemas ;;
         cii)       fetch_cii_schemas ;;
         france)    fetch_france ;;
-        all)       fetch_en16931; fetch_peppol; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_cii_schemas; fetch_manual ;;
-        *)         warn "unknown target '$target' (en16931 | peppol | pint | national | xrechnung | france | all)"; exit 2 ;;
+        all)       fetch_en16931; fetch_peppol; fetch_poacc; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_cii_schemas; fetch_manual ;;
+        *)         warn "unknown target '$target' (en16931 | peppol | poacc | pint | national | xrechnung | france | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"
 }

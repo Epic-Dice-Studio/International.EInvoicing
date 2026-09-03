@@ -40,6 +40,8 @@ public sealed partial class SchematronRuleSet
 
     private static readonly XNamespace Schematron = "http://purl.oclc.org/dsdl/schematron";
 
+    private static readonly XNamespace Xslt = "http://www.w3.org/1999/XSL/Transform";
+
     private SchematronRuleSet(
         string name,
         string version,
@@ -94,6 +96,14 @@ public sealed partial class SchematronRuleSet
 
         using var reader = SecureXml.CreateReader(schematron, DocumentLimits.Unlimited);
         XElement root = XElement.Load(reader);
+
+        // A publisher who ships only the compiled form hands you a stylesheet, and reading one as source
+        // Schematron finds no patterns at all — a rule set that loads, runs, and judges nothing. Recognising
+        // it here is what keeps "point this at the artefact you have" true for both forms.
+        if (root.Name == Xslt + "stylesheet" || root.Name == Xslt + "transform")
+        {
+            return CompiledSchematron.Read(schematron, name, version);
+        }
 
         Resolve(root, include);
 

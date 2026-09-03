@@ -113,6 +113,7 @@ validation is never presented as a success.
 | UBL 2.1 — Invoice <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Credit Note <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UN/CEFACT CII <sub>D22B</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Cii` |
+| UBL 2.1 — Application Response <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UN/CEFACT CDAR <sub>generic</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Cdar` |
 
 > **UBL 2.1 — Invoice** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data. Round-tripped against the 45 UBL invoices of the official XRechnung test suite without losing an element. Validation comes with the rule engine.
@@ -120,6 +121,8 @@ validation is never presented as a success.
 > **UBL 2.1 — Credit Note** — In UBL a credit note is not an invoice with a different code: it has its own root element and renames three things inside it. Read, written and round-tripped against the official EN 16931 credit note, and the type code (BT-3) decides which root a document built in code is written under.
 
 > **UN/CEFACT CII** — Reading and writing the EN 16931 core, with everything else kept verbatim as extension data on the node that contained it. Round-tripped against the 41 CII invoices of the official XRechnung test suite without losing an element.
+
+> **UBL 2.1 — Application Response** — What happened to a document rather than what is owed for it: the Peppol Invoice Response and Message Level Response. Fills the same lifecycle model the French CDAR messages do, so one model serves both syntaxes. Read, round-tripped and schema-checked against OpenPEPPOL's own thirteen use cases and two published examples.
 
 > **UN/CEFACT CDAR** — The generic message, which is what makes the fallback real: a national profiling this library does not know still parses, with its codes uninterpreted and the downgrade reported. Validation runs any Schematron rule set published for it, the French BR-FR-CDV included.
 
@@ -134,6 +137,7 @@ validation is never presented as a success.
 | Peppol BIS Billing <sub>3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
 | Peppol tax data document (SK, ViDA) <sub>taxdata sk-1, vida-1</sub> | 🚧 | ✅ | ✅ | `International.EInvoicing.Peppol` |
+| Peppol Invoice Response and Message Level Response <sub>Invoice Response 3.1, MLR</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 
 > **XSD schema validation (UBL 2.1, CII D22B)** — The OASIS and UN/CEFACT schemas, embedded and offline, as rule sets like any other. They judge what no business rule looks at — element order and cardinality are normative in both syntaxes — and they earned their keep twice: they caught the shape this library shipped (two bank accounts in one cac:PaymentMeans) and then, on the official corpora, fifteen EN 16931 terms that were read by nothing and written by nothing. Both corpora now round-trip with their shape intact and nothing unmapped.
 
@@ -148,6 +152,8 @@ validation is never presented as a success.
 > **XRechnung (CIUS + Extension)** — Profiles for both syntaxes and the published rule sets, embedded. Measured against all 86 documents of the official KoSIT test suite.
 
 > **Peppol tax data document (SK, ViDA)** — The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job.
+
+> **Peppol Invoice Response and Message Level Response** — An Invoice Response is what a receiver owes a sender — in process, accepted, rejected, under query, paid — and a Message Level Response answers whether the message arrived at all. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence.
 
 ### Countries
 

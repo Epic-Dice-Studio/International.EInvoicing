@@ -6,6 +6,27 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Peppol documents that are not invoices, starting with the answer a receiver owes a sender** —
+  [the standard page](docs/standards/peppol-response.md). The **Invoice Response** says what happened to the
+  invoice — in process, accepted, rejected, under query, conditionally accepted, paid — and the **Message
+  Level Response** answers the question underneath it: did the message arrive and parse at all. Both are a
+  UBL `ApplicationResponse`, so both are read and written by one reader and one writer, and both fill
+  `LifecycleStatusMessage` — the same model the French CDAR messages fill, because a lifecycle status is a
+  semantic statement and CDAR and `ApplicationResponse` are two syntaxes for it. `Read` works out which
+  arrived; `Write(status, DocumentSyntax.Ubl)` chooses which to send.
+- Measured against OpenPEPPOL's own corpus rather than documents written for the occasion: all fifteen
+  published examples and use cases read with nothing left unmapped, written back with the same elements in
+  the same places, accepted by the OASIS schema, and accepted by Peppol's own rules with zero errors.
+  `PeppolResponseCodes` is compared against the publisher's `UNCL4343-T111` subset on every build the
+  artefacts are present for.
+- **Two defects in this library's own rule engine, both found by pointing it at those rules**, and both the
+  same shape — a rule set that loads, reports that it ran, and judges nothing. `AddRulesFromFile` read a
+  compiled artefact as source Schematron, found no patterns, and built an empty rule set; it now recognises
+  a stylesheet by what it is rather than by its file name. And `*:name` — a local name in any namespace —
+  was an expression the XPath engine refused outright, which matters because `not(@*:schemaLocation)` is the
+  first rule in every Peppol rule set. Both affect any caller who points the engine at a published compiled
+  artefact, which is how Croatia, PINT and the tax data documents are validated.
+
 - **The readable copy of an invoice, and the documents it carries, in one call each** —
   [the guide](docs/guides/attachments.md). `result.Rendition` is the PDF a hybrid invoice arrived in, which
   used to go out of scope with the stream and leave a caller holding an invoice they could not show anybody;

@@ -85,8 +85,8 @@ public sealed class DocumentHandlers
         return new DocumentHandlers(
             [new UblInvoiceReader(options, profiles), new CiiInvoiceReader(options, profiles)],
             [new UblInvoiceWriter(), new CiiInvoiceWriter()],
-            [new CdarReader(options, profiles)],
-            [new CdarWriter()],
+            [new CdarReader(options, profiles), new UblApplicationResponseReader(options, profiles)],
+            [new CdarWriter(), new UblApplicationResponseWriter()],
             writeSteps);
     }
 
@@ -106,13 +106,29 @@ public sealed class DocumentHandlers
     public IDocumentWriter<EInvoice>? InvoiceWriterFor(DocumentSyntax syntax) =>
         Last(_invoiceWriters, syntax) is { } writer ? WritePipeline.Around(writer, _writeSteps) : null;
 
-    /// <summary>The lifecycle reader, or <c>null</c> when nothing handles lifecycle messages.</summary>
+    /// <summary>
+    /// The lifecycle reader for UN/CEFACT CDAR, or <c>null</c> when nothing handles it.
+    /// </summary>
+    /// <remarks>
+    /// A lifecycle status arrives in two syntaxes — CDAR from the French platforms, a UBL
+    /// <c>ApplicationResponse</c> from the Peppol network — so ask for the one you hold with
+    /// <see cref="LifecycleReaderFor"/>. This overload answers for CDAR, which is what an unqualified
+    /// "lifecycle message" meant when there was only one.
+    /// </remarks>
     public IDocumentReader<LifecycleStatusMessage>? LifecycleReader() =>
-        Last(_lifecycleReaders, DocumentSyntax.Cdar);
+        LifecycleReaderFor(DocumentSyntax.Cdar);
 
-    /// <summary>The lifecycle writer, or <c>null</c> when nothing handles lifecycle messages.</summary>
+    /// <summary>The lifecycle reader for a syntax, or <c>null</c> when nothing handles it.</summary>
+    public IDocumentReader<LifecycleStatusMessage>? LifecycleReaderFor(DocumentSyntax syntax) =>
+        Last(_lifecycleReaders, syntax);
+
+    /// <summary>The lifecycle writer for UN/CEFACT CDAR, or <c>null</c> when nothing handles it.</summary>
     public IDocumentWriter<LifecycleStatusMessage>? LifecycleWriter() =>
-        Last(_lifecycleWriters, DocumentSyntax.Cdar);
+        LifecycleWriterFor(DocumentSyntax.Cdar);
+
+    /// <summary>The lifecycle writer for a syntax, or <c>null</c> when nothing handles it.</summary>
+    public IDocumentWriter<LifecycleStatusMessage>? LifecycleWriterFor(DocumentSyntax syntax) =>
+        Last(_lifecycleWriters, syntax);
 
     private static THandler? Last<THandler>(IReadOnlyList<THandler> handlers, DocumentSyntax syntax)
         where THandler : class

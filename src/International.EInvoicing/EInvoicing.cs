@@ -129,6 +129,17 @@ public sealed class EInvoicing
     public IDocumentWriter<LifecycleStatusMessage> LifecycleWriter =>
         Required(Handlers.LifecycleWriter(), "write lifecycle messages");
 
+    /// <summary>
+    /// The reader for a UBL <c>ApplicationResponse</c> — the Peppol Invoice Response and Message Level
+    /// Response, which say what happened to a document rather than what is owed.
+    /// </summary>
+    public IDocumentReader<LifecycleStatusMessage> UblResponse =>
+        Required(Handlers.LifecycleReaderFor(DocumentSyntax.Ubl), "read UBL application responses");
+
+    /// <summary>The writer for a UBL <c>ApplicationResponse</c>.</summary>
+    public IDocumentWriter<LifecycleStatusMessage> UblResponseWriter =>
+        Required(Handlers.LifecycleWriterFor(DocumentSyntax.Ubl), "write UBL application responses");
+
     private static THandler Required<THandler>(THandler? handler, string what)
         where THandler : class =>
         handler ?? throw new InvalidOperationException(
@@ -259,7 +270,9 @@ public sealed class EInvoicing
             DocumentKind.Ubl => FromInvoice(DocumentKind.Ubl, Ubl.Read(text)),
             DocumentKind.UblCreditNote => FromInvoice(DocumentKind.UblCreditNote, Ubl.Read(text)),
             DocumentKind.Cii => FromInvoice(DocumentKind.Cii, Cii.Read(text)),
-            DocumentKind.Cdar => FromStatus(Lifecycle.Read(text)),
+            DocumentKind.Cdar => FromStatus(DocumentKind.Cdar, Lifecycle.Read(text)),
+            DocumentKind.UblApplicationResponse =>
+                FromStatus(DocumentKind.UblApplicationResponse, UblResponse.Read(text)),
             _ => new DocumentResult
             {
                 Kind = DocumentKind.Unknown,
@@ -353,6 +366,11 @@ public sealed class EInvoicing
         if (root.Namespace == UblNames.CreditNote)
         {
             return DocumentKind.UblCreditNote;
+        }
+
+        if (root.Namespace == UblApplicationResponseNames.ApplicationResponse)
+        {
+            return DocumentKind.UblApplicationResponse;
         }
 
         return root.Namespace == UblNames.Invoice ? DocumentKind.Ubl : DocumentKind.Unknown;
@@ -511,12 +529,30 @@ public sealed class EInvoicing
         return writer.WriteAsync(invoice, destination, cancellationToken);
     }
 
-    /// <summary>Writes a lifecycle status message.</summary>
+    /// <summary>Writes a lifecycle status message in UN/CEFACT CDAR.</summary>
     /// <exception cref="ArgumentNullException"><paramref name="status"/> is <c>null</c>.</exception>
     public string Write(LifecycleStatusMessage status)
     {
         ArgumentNullException.ThrowIfNull(status);
         return LifecycleWriter.WriteToString(status);
+    }
+
+    /// <summary>
+    /// Writes a lifecycle status message in the syntax asked for.
+    /// </summary>
+    /// <remarks>
+    /// The same statement travels as UN/CEFACT CDAR between the French platforms and as a UBL
+    /// <c>ApplicationResponse</c> over the Peppol network, so which one to write is the network's decision
+    /// rather than the message's.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="status"/> is <c>null</c>.</exception>
+    /// <exception cref="InvalidOperationException">Nothing registered writes that syntax.</exception>
+    public string Write(LifecycleStatusMessage status, DocumentSyntax syntax)
+    {
+        ArgumentNullException.ThrowIfNull(status);
+
+        return Required(Handlers.LifecycleWriterFor(syntax), $"write lifecycle messages as {syntax}")
+            .WriteToString(status);
     }
 
     /// <summary>
@@ -597,7 +633,7 @@ public sealed class EInvoicing
     /// <summary>Which syntax a detected document is written in, or <c>null</c> when it is not one.</summary>
     private static DocumentSyntax? SyntaxOf(DocumentKind kind) => kind switch
     {
-        DocumentKind.Ubl or DocumentKind.UblCreditNote => DocumentSyntax.Ubl,
+        DocumentKind.Ubl or DocumentKind.UblCreditNote or DocumentKind.UblApplicationResponse => DocumentSyntax.Ubl,
         DocumentKind.Cii => DocumentSyntax.Cii,
         DocumentKind.Cdar => DocumentSyntax.Cdar,
         _ => null,
@@ -651,9 +687,9 @@ public sealed class EInvoicing
         Profile = result.Value?.Profile,
     };
 
-    private static DocumentResult FromStatus(ParseResult<LifecycleStatusMessage> result) => new()
+    private static DocumentResult FromStatus(DocumentKind kind, ParseResult<LifecycleStatusMessage> result) => new()
     {
-        Kind = DocumentKind.Cdar,
+        Kind = kind,
         LifecycleStatus = result.Value,
         Diagnostics = result.Diagnostics,
         Profile = result.Value?.Profile,

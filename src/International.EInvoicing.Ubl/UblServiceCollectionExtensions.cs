@@ -42,6 +42,18 @@ public static class UblServiceCollectionExtensions
         services.TryAddSingleton(provider =>
             provider.GetServices<IDocumentWriter<EInvoice>>().OfType<UblInvoiceWriter>().First());
 
+        // A UBL ApplicationResponse says what happened to a document rather than what is owed, so it fills
+        // the lifecycle model and registers beside the UN/CEFACT reader that fills the same one.
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDocumentReader<LifecycleStatusMessage>, UblApplicationResponseReader>());
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDocumentWriter<LifecycleStatusMessage>, UblApplicationResponseWriter>());
+
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentReader<LifecycleStatusMessage>>().OfType<UblApplicationResponseReader>().First());
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentWriter<LifecycleStatusMessage>>().OfType<UblApplicationResponseWriter>().First());
+
         return services;
     }
 }

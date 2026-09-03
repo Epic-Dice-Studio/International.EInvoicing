@@ -34,6 +34,8 @@
   href: peppol-pint.md
 - name: Peppol tax data documents
   href: peppol-taxdata.md
+- name: Peppol Invoice Response and MLR
+  href: peppol-response.md
 - name: UBL 2.1 — OASIS Universal Business Language
   href: ubl-2.1.md
 - name: XRechnung

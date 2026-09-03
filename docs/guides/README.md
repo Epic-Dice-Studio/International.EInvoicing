@@ -14,7 +14,7 @@ the [runnable sample](https://github.com/Epic-Dice-Studio/International.EInvoici
 | [One country, one object](country-shortcuts.md) | France, Germany, Belgium — one type each, everything that country needs |
 | [Reading a document](reading.md) | Hand over a stream, get back an invoice, credit note or lifecycle status |
 | [Writing a document](writing.md) | Builders, credit notes, hybrid Factur-X, anything the norm has no field for |
-| [Lifecycle statuses](lifecycle.md) | Every French status, and how sending to a partner differs from the public portal |
+| [Lifecycle statuses](lifecycle.md) | Every French status, the Peppol Invoice Response, and who reports what to whom |
 | [E-reporting](e-reporting.md) | The French flux 10 report: sales, transactions abroad, and when the money arrived |
 | [Validation](validation.md) | What ran, what failed, and your own rule sets |
 | [Converting between syntaxes](convert-between-syntaxes.md) | UBL ↔ CII, and a report of what the crossing cost |

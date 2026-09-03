@@ -1,18 +1,34 @@
+International.EInvoicing.Ubl.Reading.UblApplicationResponseReader
+International.EInvoicing.Ubl.Reading.UblApplicationResponseReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!
+International.EInvoicing.Ubl.Reading.UblApplicationResponseReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!
+International.EInvoicing.Ubl.Reading.UblApplicationResponseReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!>!
+International.EInvoicing.Ubl.Reading.UblApplicationResponseReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Ubl.Reading.UblApplicationResponseReader.UblApplicationResponseReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
 International.EInvoicing.Ubl.Reading.UblInvoiceReader
-International.EInvoicing.Ubl.Reading.UblInvoiceReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
 International.EInvoicing.Ubl.Reading.UblInvoiceReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Ubl.Reading.UblInvoiceReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
 International.EInvoicing.Ubl.Reading.UblInvoiceReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!>!
 International.EInvoicing.Ubl.Reading.UblInvoiceReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Ubl.Reading.UblInvoiceReader.UblInvoiceReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Ubl.UblApplicationResponseNames
 International.EInvoicing.Ubl.UblDiagnostics
 International.EInvoicing.Ubl.UblNames
 International.EInvoicing.Ubl.UblServiceCollectionExtensions
+International.EInvoicing.Ubl.Writing.UblApplicationResponseWriter
+International.EInvoicing.Ubl.Writing.UblApplicationResponseWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Ubl.Writing.UblApplicationResponseWriter.UblApplicationResponseWriter() -> void
+International.EInvoicing.Ubl.Writing.UblApplicationResponseWriter.Write(International.EInvoicing.Model.LifecycleStatusMessage! document, System.IO.Stream! destination) -> void
+International.EInvoicing.Ubl.Writing.UblApplicationResponseWriter.WriteAsync(International.EInvoicing.Model.LifecycleStatusMessage! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.Ubl.Writing.UblApplicationResponseWriter.WriteToString(International.EInvoicing.Model.LifecycleStatusMessage! document) -> string!
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.UblInvoiceWriter() -> void
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.Write(International.EInvoicing.Model.EInvoice! document, System.IO.Stream! destination) -> void
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.WriteAsync(International.EInvoicing.Model.EInvoice! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.WriteToString(International.EInvoicing.Model.EInvoice! document) -> string!
+const International.EInvoicing.Ubl.UblApplicationResponseNames.ActionCodeList = "OPStatusAction" -> string!
+const International.EInvoicing.Ubl.UblApplicationResponseNames.RootElement = "ApplicationResponse" -> string!
+static International.EInvoicing.Ubl.UblApplicationResponseNames.ApplicationResponse.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Ubl.UblDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.Ubl.UblNames.Cac.get -> System.Xml.Linq.XNamespace!

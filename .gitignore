@@ -69,6 +69,7 @@ specs/peppol/examples/
 specs/peppol/unit-UBL-PEPPOL/
 specs/peppol/unit-CII-PEPPOL/
 specs/peppol/pint/
+specs/peppol/poacc/
 specs/en16931/compiled/
 specs/national/
 

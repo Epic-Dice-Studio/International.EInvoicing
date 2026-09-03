@@ -25,7 +25,8 @@ public static class PeppolServiceCollectionExtensions
             .AddUbl()
             .AddCii()
             .AddProfiles(PeppolProfiles.All)
-            .AddProfiles(PeppolPintProfiles.All);
+            .AddProfiles(PeppolPintProfiles.All)
+            .AddProfiles(PeppolResponseProfiles.All);
     }
 
     /// <summary>
@@ -93,6 +94,79 @@ public static class PeppolServiceCollectionExtensions
                 $"'{directory}' holds none of the Peppol rule sets ({string.Join(", ", PeppolProfiles.RuleSetFileNames)}). "
                 + "Run build/fetch-specs.sh peppol.",
                 Path.Combine(directory, PeppolProfiles.RuleSetFileNames[0]));
+        }
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds the rule sets for the Peppol documents that are not invoices — the Invoice Response and the
+    /// Message Level Response.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Point it at the folder <c>build/fetch-specs.sh poacc</c> filled — <c>specs/peppol/poacc/rules</c>.
+    /// OpenPEPPOL generates the structural half of these rule sets when it builds them and publishes only
+    /// the compiled form, so what is registered here is compiled XSLT: the assertions are recovered from it,
+    /// and they run and report like any other rule set.
+    /// </para>
+    /// <para>
+    /// They are not registered by <see cref="AddPeppol"/> for the same reason the Billing rules are not:
+    /// OpenPEPPOL declares no licence permitting redistribution, so they are fetched rather than shipped.
+    /// </para>
+    /// </remarks>
+    /// <param name="builder">The library being assembled.</param>
+    /// <param name="directory">Where the compiled rule sets are.</param>
+    /// <param name="version">The Peppol release the files came from, so a report can be reproduced later.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="directory"/> is empty.</exception>
+    /// <exception cref="DirectoryNotFoundException">There is no such directory.</exception>
+    /// <exception cref="FileNotFoundException">The directory holds neither rule set.</exception>
+    public static EInvoicingBuilder AddPeppolResponseRulesFrom(
+        this EInvoicingBuilder builder,
+        string directory,
+        string version = "3.0")
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentException.ThrowIfNullOrWhiteSpace(directory);
+
+        if (!Directory.Exists(directory))
+        {
+            throw new DirectoryNotFoundException(
+                $"No Peppol response rule sets at '{directory}'. They declare no licence upstream, so this "
+                + "library does not ship them: run build/fetch-specs.sh poacc, or point this at your own copy.");
+        }
+
+        var added = 0;
+
+        foreach ((string fileName, Profile profile) in PeppolResponseProfiles.RuleSets)
+        {
+            string path = Path.Combine(directory, fileName);
+
+            if (!File.Exists(path))
+            {
+                continue;
+            }
+
+            // Each rule set governs its own transaction. Both are an ApplicationResponse, so a rule set let
+            // loose on the other's documents reports failures that are not in them.
+            string identifier = profile.Id.Value;
+
+            builder.AddRulesFromFile(
+                DocumentSyntax.Ubl,
+                path,
+                Path.GetFileNameWithoutExtension(fileName),
+                version,
+                declared => string.Equals(declared.Value, identifier, StringComparison.Ordinal));
+            added++;
+        }
+
+        if (added == 0)
+        {
+            throw new FileNotFoundException(
+                $"'{directory}' holds neither response rule set "
+                + $"({string.Join(", ", PeppolResponseProfiles.RuleSets.Keys)}). Run build/fetch-specs.sh poacc.",
+                Path.Combine(directory, PeppolResponseProfiles.RuleSets.Keys.First()));
         }
 
         return builder;

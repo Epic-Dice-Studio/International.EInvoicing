@@ -39,3 +39,38 @@ these artefacts are not a rule set that runs; they are the source the jurisdicti
 present.
 
 Running them needs an XSLT processor. That is an open item — see `docs/roadmap.md`.
+
+## The Peppol post-award documents that are not invoices
+
+| | |
+|---|---|
+| **Source** | <https://github.com/OpenPEPPOL/poacc-upgrade-3> — examples, use cases and the unit corpus; <https://github.com/phax/phive-rules> (`phive-rules-peppol`) for the runnable rule sets |
+| **Version** | Invoice Response transaction 3.1 and Message Level Response, OpenPEPPOL release 2026.5 |
+| **Fetched by** | `build/fetch-specs.sh poacc` |
+| **Licence** | **none declared upstream** |
+| **Redistributable** | **no** — nothing under `specs/peppol/poacc/` is committed |
+
+`poacc-upgrade-3` is OpenPEPPOL's development repository for the post-award documents, and carries no
+`LICENSE`, `COPYING` or `NOTICE` file — the same position as `peppol-bis-invoice-3` above. Fetch them
+yourself.
+
+**The rule sets are fetched from a different place than their sources, and that is deliberate.** The `.sch`
+files in `poacc-upgrade-3/rules/sch` are not whole: each one `include`s a `target/generated/T*-basic.sch`
+that the repository's own build produces from its structure spreadsheets and does not commit. Running them
+as published would silently drop the structural half of every rule set. What is fetched instead is the
+**compiled** form phive-rules carries, which is complete — the assertions are recovered from it by
+`CompiledSchematron`, the same path Croatia and the tax data documents take.
+
+Expected content:
+
+| | |
+|---|---|
+| `poacc/examples/` | `InvoiceResponse_Example.xml`, `MessageLevelResponse_Example.xml`, and the thirteen `T111-uc*` use cases — one per business situation a response reports |
+| `poacc/unit-invoice-response/` | Peppol's unit corpus: each case names how many times a rule should fire |
+| `poacc/codelist/` | `UNCL4343-T111.xml`, `OPStatusReason.xml`, `OPStatusAction.xml` — what `PeppolResponseCodes` is compared against on every build they are present for |
+| `poacc/rules/` | `PEPPOLBIS-T111.xslt`, `PEPPOLBIS-T71.xslt` |
+
+Each rule set governs one transaction and is registered against its profile. Both documents share a root
+element and differ in what they mean, so a rule set let loose on the other's documents reports failures that
+are not in them — twelve of them, on OpenPEPPOL's own example.
+

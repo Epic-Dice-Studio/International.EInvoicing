@@ -37,13 +37,16 @@ International.EInvoicing.DocumentHandlers.DocumentHandlers(System.Collections.Ge
 International.EInvoicing.DocumentHandlers.InvoiceReaderFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>?
 International.EInvoicing.DocumentHandlers.InvoiceWriterFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.EInvoice!>?
 International.EInvoicing.DocumentHandlers.LifecycleReader() -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>?
+International.EInvoicing.DocumentHandlers.LifecycleReaderFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>?
 International.EInvoicing.DocumentHandlers.LifecycleWriter() -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>?
+International.EInvoicing.DocumentHandlers.LifecycleWriterFor(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>?
 International.EInvoicing.DocumentHandlers.WriteSteps.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Documents.IWritePipelineStep!>!
 International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Cdar = 4 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Cii = 3 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Pdf = 5 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Ubl = 1 -> International.EInvoicing.DocumentKind
+International.EInvoicing.DocumentKind.UblApplicationResponse = 6 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.UblCreditNote = 2 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentKind.Unknown = 0 -> International.EInvoicing.DocumentKind
 International.EInvoicing.DocumentResult
@@ -94,12 +97,15 @@ International.EInvoicing.EInvoicing.ReadFile(string! path) -> International.EInv
 International.EInvoicing.EInvoicing.ReadFileAsync(string! path, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
 International.EInvoicing.EInvoicing.RuleSets.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Validation.IDocumentRuleSet!>!
 International.EInvoicing.EInvoicing.Ubl.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.EInvoicing.UblResponse.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>!
+International.EInvoicing.EInvoicing.UblResponseWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>!
 International.EInvoicing.EInvoicing.UblWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.EInvoice!>!
 International.EInvoicing.EInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format, System.IO.Stream! destination) -> void
 International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.LifecycleStatusMessage! status) -> string!
+International.EInvoicing.EInvoicing.Write(International.EInvoicing.Model.LifecycleStatusMessage! status, International.EInvoicing.Profiles.DocumentSyntax syntax) -> string!
 International.EInvoicing.EInvoicing.WriteAsync(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 International.EInvoicing.EInvoicingBuilderExtensions
 International.EInvoicing.EInvoicingDiagnostics
