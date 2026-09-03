@@ -166,7 +166,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WriteWrappedParty(Party? party, string role, UblDocument writer)
+    internal static void WriteWrappedParty(Party? party, string role, UblDocument writer)
     {
         if (party is null)
         {
@@ -178,7 +178,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WriteParty(Party party, UblDocument writer)
+    internal static void WriteParty(Party party, UblDocument writer)
     {
         writer.StartCac("Party");
         writer.Identifier("EndpointID", party.ElectronicAddress);
@@ -219,7 +219,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WriteTaxScheme(IdentifierField identifier, string? scheme, UblDocument writer)
+    internal static void WriteTaxScheme(IdentifierField identifier, string? scheme, UblDocument writer)
     {
         if (!identifier.IsSet)
         {
@@ -234,7 +234,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WriteContact(Contact? contact, UblDocument writer)
+    internal static void WriteContact(Contact? contact, UblDocument writer)
     {
         if (contact is null)
         {
@@ -249,7 +249,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WriteAddress(PostalAddress? address, string localName, UblDocument writer)
+    internal static void WriteAddress(PostalAddress? address, string localName, UblDocument writer)
     {
         if (address is null)
         {
@@ -295,7 +295,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WriteDelivery(OrderDelivery? delivery, UblDocument writer)
+    internal static void WriteDelivery(OrderDelivery? delivery, UblDocument writer)
     {
         if (delivery is null)
         {
@@ -329,6 +329,14 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             writer.End();
         }
 
+        if (delivery.PromisedFrom.IsSet || delivery.PromisedUntil.IsSet)
+        {
+            writer.StartCac("PromisedDeliveryPeriod");
+            writer.Moment("StartDate", "StartTime", delivery.PromisedFrom);
+            writer.Moment("EndDate", "EndTime", delivery.PromisedUntil);
+            writer.End();
+        }
+
         if (delivery.RequestedDespatchAt.IsSet)
         {
             writer.StartCac("Despatch");
@@ -349,7 +357,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
     }
 
     /// <summary>A delivery party is a party without the <c>cac:Party</c> wrapper the roles use.</summary>
-    private static void WriteInnerParty(Party party, UblDocument writer)
+    internal static void WriteInnerParty(Party party, UblDocument writer)
     {
         foreach (IdentifierField identifier in party.Identifiers)
         {
@@ -470,7 +478,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WritePrice(LinePrice? price, UblDocument writer, string? currency)
+    internal static void WritePrice(LinePrice? price, UblDocument writer, string? currency)
     {
         if (price is null)
         {
@@ -495,7 +503,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WriteItem(OrderItem? item, UblDocument writer)
+    internal static void WriteItem(OrderItem? item, UblDocument writer)
     {
         if (item is null)
         {
@@ -562,7 +570,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
         writer.End();
     }
 
-    private static void WriteItemIdentifier(string localName, IdentifierField field, UblDocument writer)
+    internal static void WriteItemIdentifier(string localName, IdentifierField field, UblDocument writer)
     {
         if (!field.IsSet)
         {

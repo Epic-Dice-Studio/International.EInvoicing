@@ -2,14 +2,15 @@
 
 ## Scope and version
 
-Four Peppol documents that are not invoices — the chain an invoice sits at the end of.
+Five Peppol documents that are not invoices — the chain an invoice sits at the end of.
 
 | | What it answers |
 |---|---|
 | **Invoice Response** — `urn:fdc:peppol.eu:poacc:trns:invoice_response:3` | *What happened to the invoice?* In process, accepted, rejected, under query, conditionally accepted, paid. |
 | **Message Level Response** — `urn:fdc:peppol.eu:poacc:trns:mlr:3` | *Did the message arrive and parse at all?* One layer below the business question. |
 | **Despatch Advice** — `urn:fdc:peppol.eu:poacc:trns:despatch_advice:3` | *What actually left the warehouse?* The document an invoice is reconciled against. |
-| **Order** — `urn:fdc:peppol.eu:poacc:trns:order:3` | *What did the buyer ask for?* The document the other two are answered against. |
+| **Order** — `urn:fdc:peppol.eu:poacc:trns:order:3` | *What did the buyer ask for?* The document the others are answered against. |
+| **Order Response** — `urn:fdc:peppol.eu:poacc:trns:order_response:3` | *Will the seller supply it?* Accepted, rejected, or accepted on other terms. |
 
 An Invoice Response is what a receiver **owes** a sender: without it, a supplier who has sent an invoice into
 the network knows nothing until the money arrives or does not. It is implemented in
@@ -163,11 +164,34 @@ part makes an outstanding quantity on the despatch advice a failure rather than 
 Every element of all seven documents OpenPEPPOL publishes for the order is mapped, and each is written back
 with the same elements in the same places, accepted by the OASIS schema and by Peppol's own T01 rules.
 
+## The order response
+
+Without it a buyer who has sent an order knows nothing until goods arrive or do not — the pre-award twin of
+the gap the Invoice Response closes after the invoice.
+
+What makes it more than a yes or no is that a seller may accept a line on **other terms**, and the buyer
+needs to see which before the goods turn up:
+
+| Model | What it answers |
+|---|---|
+| `ResponseCode` | The answer as a whole. |
+| `Lines[].StatusCode` | What is happening to this line — accepted, changed, rejected. |
+| `Lines[].Quantity` | How much the seller will actually supply. |
+| `Lines[].Delivery.PromisedFrom` / `PromisedUntil` | When the seller undertakes to deliver. |
+| `Lines[].SubstitutedItem` | What the seller offers instead, when they cannot supply what was ordered. |
+
+**Requested and promised are different claims by different parties**, so `OrderDelivery` keeps both: a buyer
+asking for Friday and a seller promising Monday is the ordinary case, and one delivery window would lose
+which of them said what.
+
+The parts an order response shares with an order — a party, an item, a price, a delivery window — are read
+and written by the order's own reader and writer, so the two documents cannot drift apart in how they state
+the same thing.
+
 ## What is not here
 
-**The rest of the ordering family.** Order Response, Order Change, Order Cancellation and Order Agreement are
-four more transactions with their own models. The Order is the anchor of the family and the one the other
-documents reference; the rest follow it.
+**Order Change, Order Cancellation and Order Agreement.** Three more transactions with their own models. The
+Order and its response are the pair an integration needs first; the rest amend what they established.
 
 ## Prior art
 

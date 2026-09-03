@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Peppol Order Response** — the seller's answer to an order, and the pre-award twin of the gap the
+  Invoice Response closes after the invoice. Read, written, schema-checked and judged by Peppol's own T76
+  rules against all six documents OpenPEPPOL publishes, with nothing left unmapped.
+- What makes it more than a yes or no is that a seller may accept a line on **other terms** — a different
+  quantity, a later date, or a substitute product — and the buyer needs to see which before the goods turn
+  up. `SubstitutedItem` is modelled rather than kept as extension data for that reason.
+- **Requested and promised are different claims by different parties.** `OrderDelivery` keeps both: a buyer
+  asking for Friday and a seller promising Monday is the ordinary case, and one delivery window would lose
+  which of them said what.
+
 - **The Peppol Order** — [the standard page](docs/standards/peppol-post-award.md). The first document of the
   post-award chain and the one the other two are answered against: a despatch advice says what was sent of
   it, an invoice says what is owed for it. Read, written, schema-checked and judged by Peppol's own T01 rules

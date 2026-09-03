@@ -163,10 +163,13 @@ fetch_poacc() {
     sync_into "$src/rules/examples/Despatch Advice use cases" "$SPECS_DIR/peppol/poacc/examples"
     sync_into "$src/rules/examples/Order_Example.xml" "$SPECS_DIR/peppol/poacc/examples"
     sync_into "$src/rules/examples/Order use cases" "$SPECS_DIR/peppol/poacc/examples"
+    sync_into "$src/rules/examples/OrderResponse_Example.xml" "$SPECS_DIR/peppol/poacc/examples"
+    sync_into "$src/rules/examples/Order-response use cases" "$SPECS_DIR/peppol/poacc/examples"
     # Each unit case names how many times a rule should fire.
     sync_into "$src/rules/unit-invoice-response" "$SPECS_DIR/peppol/poacc"
     sync_into "$src/rules/unit-despatch-advice" "$SPECS_DIR/peppol/poacc"
     sync_into "$src/rules/unit-order" "$SPECS_DIR/peppol/poacc"
+    sync_into "$src/rules/unit-order-response" "$SPECS_DIR/peppol/poacc"
     # The status, reason and action code lists, which is what the shipped constants are checked against.
     sync_into "$src/structure/codelist" "$SPECS_DIR/peppol/poacc"
 
@@ -174,7 +177,7 @@ fetch_poacc() {
     local xslt="$compiled/phive-rules-peppol/src/main/resources/external/schematron/openpeppol/$POACC_COMPILED_REF/xslt"
     local name
     mkdir -p "$SPECS_DIR/peppol/poacc/rules"
-    for name in PEPPOLBIS-T111 PEPPOLBIS-T71 PEPPOLBIS-T16 PEPPOLBIS-T01; do
+    for name in PEPPOLBIS-T111 PEPPOLBIS-T71 PEPPOLBIS-T16 PEPPOLBIS-T01 PEPPOLBIS-T76; do
         sync_into "$xslt/$name.xslt" "$SPECS_DIR/peppol/poacc/rules"
     done
 }
@@ -189,7 +192,7 @@ fetch_ubl_schemas() {
     log "fetching UBL 2.1 schemas"
     mkdir -p "$target/maindoc" "$target/common"
 
-    for name in UBL-Invoice-2.1 UBL-CreditNote-2.1 UBL-ApplicationResponse-2.1 UBL-DespatchAdvice-2.1 UBL-Order-2.1; do
+    for name in UBL-Invoice-2.1 UBL-CreditNote-2.1 UBL-ApplicationResponse-2.1 UBL-DespatchAdvice-2.1 UBL-Order-2.1 UBL-OrderResponse-2.1 UBL-OrderResponseSimple-2.1; do
         curl -fsS "$base/maindoc/$name.xsd" -o "$target/maindoc/$name.xsd"
     done
 

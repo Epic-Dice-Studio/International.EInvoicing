@@ -9,14 +9,15 @@ using Xunit;
 namespace International.EInvoicing.Peppol.Tests;
 
 /// <summary>
-/// The order: what the buyer asked for, and the document the other two are answered against.
+/// The seller's answer to an order: accepted, rejected, or accepted on different terms.
 /// </summary>
 /// <remarks>
-/// A despatch advice says what was sent of it and an invoice says what is owed for it, so an integrator who
-/// can read all three can check the second two against the first — which is the whole reason the post-award
-/// documents are worth carrying.
+/// Without it a buyer who has sent an order knows nothing until goods arrive or do not — the pre-award twin
+/// of the gap the Invoice Response closes. What makes it more than a yes or no is that a seller may accept a
+/// line on other terms: a different quantity, a later date, or a substitute product, each of which the buyer
+/// needs to see before the goods turn up rather than after.
 /// </remarks>
-public class OrderTests
+public class OrderResponseTests
 {
     private static readonly EInvoicing Library =
         EInvoicing.Create(builder => builder.AddDefaults().AddPeppol().AddUblSchema());
@@ -38,17 +39,16 @@ public class OrderTests
 
     [Theory]
     [MemberData(nameof(PublishedDocuments))]
-    public void EveryPublishedOrderIsReadWithNothingLeftUnmapped(string fileName)
+    public void EveryPublishedResponseIsReadWithNothingLeftUnmapped(string fileName)
     {
         DocumentResult result = Library.Read(ReadCorpusFile(fileName));
 
-        result.Kind.ShouldBe(DocumentKind.UblOrder);
-        Order order = result.RequireOrder();
+        result.Kind.ShouldBe(DocumentKind.UblOrderResponse);
+        OrderResponse response = result.RequireOrderResponse();
 
-        order.Number.Value.ShouldNotBeNullOrWhiteSpace();
-        order.Lines.ShouldNotBeEmpty();
-        order.Buyer.ShouldNotBeNull();
-        order.Seller.ShouldNotBeNull();
+        response.Number.Value.ShouldNotBeNullOrWhiteSpace();
+        response.OrderReference.Value.ShouldNotBeNullOrWhiteSpace();
+        response.ResponseCode.Value.ShouldNotBeNullOrWhiteSpace();
 
         result.Diagnostics
             .Where(diagnostic => diagnostic.Code == UblDiagnostics.UnmappedElement.Code)
@@ -62,16 +62,15 @@ public class OrderTests
     {
         string xml = ReadCorpusFile(fileName);
 
-        Census(Library.Write(Library.Read(xml).RequireOrder())).ShouldBe(Census(xml));
+        Census(Library.Write(Library.Read(xml).RequireOrderResponse())).ShouldBe(Census(xml));
     }
 
-    /// <summary>Element order is normative in UBL, and only the schema judges it.</summary>
     [Theory]
     [MemberData(nameof(PublishedDocuments))]
     public void AndInAShapeTheOasisSchemaAccepts(string fileName)
     {
         ValidationReport report = Library.Validate(
-            Library.Write(Library.Read(ReadCorpusFile(fileName)).RequireOrder()));
+            Library.Write(Library.Read(ReadCorpusFile(fileName)).RequireOrderResponse()));
 
         report.Errors.ShouldBeEmpty(
             string.Join(Environment.NewLine, report.Errors.Select(error => error.ToString())));
@@ -84,59 +83,60 @@ public class OrderTests
         EInvoicing library = WithPeppolRules();
 
         ValidationReport report = library.Validate(
-            library.Write(library.Read(ReadCorpusFile(fileName)).RequireOrder()));
+            library.Write(library.Read(ReadCorpusFile(fileName)).RequireOrderResponse()));
 
         report.Errors.ShouldBeEmpty(
             string.Join(Environment.NewLine, report.Errors.Select(error => error.ToString())));
     }
 
-    /// <summary>What the buyer asked for, and on what terms.</summary>
-    [Fact]
-    public void AnOrderSaysWhatIsWantedAndWhen()
-    {
-        Order order = Library.Read(ReadCorpusFile("Order_Example.xml")).RequireOrder();
-
-        order.Number.Value.ShouldNotBeNullOrWhiteSpace();
-        order.CurrencyCode.Value.ShouldNotBeNullOrWhiteSpace();
-        order.Totals.DuePayableAmount.Value.ShouldNotBeNull();
-
-        OrderLine line = order.Lines[0];
-        line.Quantity.Value.ShouldNotBeNull();
-        line.Item.ShouldNotBeNull().Name.Value.ShouldNotBeNullOrWhiteSpace();
-        line.Price.ShouldNotBeNull().NetPrice.Value.ShouldNotBeNull();
-    }
-
     /// <summary>
-    /// Whether a short delivery is acceptable is the buyer's to say, and the order is where they say it.
+    /// The answer a buyer most needs before the goods arrive: not this, but that instead.
     /// </summary>
     /// <remarks>
-    /// It is the term that connects the three documents: a line the buyer will not take in part makes an
-    /// outstanding quantity on the despatch advice a failure rather than a note.
+    /// A response reduced to a status code cannot carry it, which is why the substituted line item is
+    /// modelled rather than kept as extension data.
     /// </remarks>
     [Fact]
-    public void AndWhetherPartOfALineWillDo()
+    public void ASellerOfferingSomethingElseSaysWhat()
     {
         Assert.SkipWhen(
             !Corpus().Any(),
             "The POACC artefacts are not present; run build/fetch-specs.sh poacc.");
 
-        IEnumerable<OrderLine> lines = Corpus()
-            .Select(path => Library.Read(File.ReadAllText(path)).RequireOrder())
-            .SelectMany(order => order.Lines);
+        IEnumerable<OrderResponseLine> lines = Corpus()
+            .Select(path => Library.Read(File.ReadAllText(path)).RequireOrderResponse())
+            .SelectMany(response => response.Lines);
 
-        lines.ShouldContain(line => line.PartialDeliveryAccepted.IsSet);
+        OrderResponseLine substituted = lines.First(line => line.SubstitutedItem is not null);
+
+        substituted.SubstitutedItem.ShouldNotBeNull().Name.Value.ShouldNotBeNullOrWhiteSpace();
+        substituted.OrderLineReference.Value.ShouldNotBeNullOrWhiteSpace(
+            "a substitute is only meaningful against the line it replaces");
     }
 
-    /// <summary>A party's tax registration and its registered address, which an order carries and an invoice does not.</summary>
+    /// <summary>
+    /// Requested and promised are different claims by different parties, and are kept apart.
+    /// </summary>
+    /// <remarks>
+    /// A buyer asking for Friday and a seller promising Monday is the ordinary case; collapsing the two into
+    /// one delivery window would lose which of them said what.
+    /// </remarks>
     [Fact]
-    public void AndWhoIsRegisteredWhere()
+    public void AndWhenTheSellerUndertakesToDeliver()
     {
-        Order order = Library.Read(ReadCorpusFile("Order_Example.xml")).RequireOrder();
+        Assert.SkipWhen(
+            !Corpus().Any(),
+            "The POACC artefacts are not present; run build/fetch-specs.sh poacc.");
 
-        Party buyer = order.Buyer.ShouldNotBeNull();
-        buyer.VatIdentifier.Value.ShouldNotBeNullOrWhiteSpace();
-        buyer.Address.ShouldNotBeNull().CountryCode.Value.ShouldNotBeNullOrWhiteSpace();
-        buyer.RegistrationAddress.ShouldNotBeNull().City.Value.ShouldNotBeNullOrWhiteSpace();
+        IEnumerable<OrderResponse> responses = Corpus()
+            .Select(path => Library.Read(File.ReadAllText(path)).RequireOrderResponse());
+
+        OrderDelivery promised = responses
+            .SelectMany(response => response.Lines.Select(line => line.Delivery).Prepend(response.Delivery))
+            .First(delivery => delivery?.PromisedFrom.IsSet == true)!;
+
+        promised.PromisedFrom.Value.ShouldNotBeNull();
+        promised.RequestedFrom.IsSet.ShouldBeFalse("a promise is not a request");
     }
 
     private static EInvoicing WithPeppolRules()
@@ -165,24 +165,20 @@ public class OrderTests
         return File.ReadAllText(path!);
     }
 
-    /// <summary>The orders of the fetched corpus, which holds more than one kind of document.</summary>
     private static IEnumerable<string> Corpus()
     {
         string root = Path.Combine(CorpusRoot(), "examples");
 
         return Directory.Exists(root)
             ? Directory.EnumerateFiles(root, "*.xml", SearchOption.AllDirectories)
-                // The order response's identifier contains the order's, so matching on the order's alone
-                // would claim both. Whole-word comparison against the declared value is what tells them apart.
-                .Where(path => Declares(path, PeppolPostAwardProfiles.Order))
+                .Where(path => Declares(path, PeppolPostAwardProfiles.OrderResponse))
                 .Order()
             : [];
     }
 
-    /// <summary>Whether a document declares exactly this profile, rather than one whose name contains it.</summary>
+    /// <summary>Whether a document declares exactly this profile.</summary>
     private static bool Declares(string path, Profiles.Profile profile) =>
-        System.Xml.Linq.XDocument.Load(path).Root?
-            .Element(UblNames.Cbc + "CustomizationID")?.Value.Trim() == profile.Id.Value;
+        XDocument.Load(path).Root?.Element(UblNames.Cbc + "CustomizationID")?.Value.Trim() == profile.Id.Value;
 
     private static string CorpusRoot() => Path.Combine(RepositoryRoot(), "specs", "peppol", "poacc");
 

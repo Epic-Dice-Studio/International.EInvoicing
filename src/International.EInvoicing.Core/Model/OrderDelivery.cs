@@ -29,6 +29,19 @@ public sealed class OrderDelivery : InvoiceNode
     /// <summary>When the buyer wants them despatched.</summary>
     public DateTimeField RequestedDespatchAt { get; set; }
 
+    /// <summary>
+    /// The earliest the seller undertakes to deliver, which is their answer to <see cref="RequestedFrom"/>.
+    /// </summary>
+    /// <remarks>
+    /// Requested and promised are different claims by different parties, so they are different fields: a
+    /// buyer asking for Friday and a seller promising Monday is the ordinary case, and collapsing the two
+    /// would lose which of them said what.
+    /// </remarks>
+    public DateTimeField PromisedFrom { get; set; }
+
+    /// <summary>The latest the seller undertakes to deliver.</summary>
+    public DateTimeField PromisedUntil { get; set; }
+
     /// <summary>The shipment's identifier, when the buyer names one.</summary>
     public IdentifierField ShipmentIdentifier { get; set; }
 

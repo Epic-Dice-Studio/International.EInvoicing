@@ -38,9 +38,15 @@ public static class PeppolPostAwardProfiles
         "Peppol BIS Order 3.0",
         DocumentSyntax.Ubl);
 
+    /// <summary>Peppol BIS Ordering 3.0 — the seller's answer to the order.</summary>
+    public static Profile OrderResponse { get; } = new(
+        new ProfileIdentifier("urn:fdc:peppol.eu:poacc:trns:order_response:3"),
+        "Peppol BIS Order Response 3.0",
+        DocumentSyntax.Ubl);
+
     /// <summary>Every post-award profile this package registers.</summary>
     public static IReadOnlyList<Profile> All { get; } =
-        [InvoiceResponse, MessageLevelResponse, DespatchAdvice, Order];
+        [InvoiceResponse, MessageLevelResponse, DespatchAdvice, Order, OrderResponse];
 
     /// <summary>
     /// The compiled rule set Peppol publishes for each profile, named as it is upstream.
@@ -63,5 +69,6 @@ public static class PeppolPostAwardProfiles
         ["PEPPOLBIS-T71.xslt"] = MessageLevelResponse,
         ["PEPPOLBIS-T16.xslt"] = DespatchAdvice,
         ["PEPPOLBIS-T01.xslt"] = Order,
+        ["PEPPOLBIS-T76.xslt"] = OrderResponse,
     };
 }

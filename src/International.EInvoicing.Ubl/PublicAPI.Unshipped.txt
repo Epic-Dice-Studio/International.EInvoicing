@@ -22,11 +22,18 @@ International.EInvoicing.Ubl.Reading.UblOrderReader.Read(string! xml) -> Interna
 International.EInvoicing.Ubl.Reading.UblOrderReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.Order!>!>!
 International.EInvoicing.Ubl.Reading.UblOrderReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Ubl.Reading.UblOrderReader.UblOrderReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Ubl.Reading.UblOrderResponseReader
+International.EInvoicing.Ubl.Reading.UblOrderResponseReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.OrderResponse!>!
+International.EInvoicing.Ubl.Reading.UblOrderResponseReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.OrderResponse!>!
+International.EInvoicing.Ubl.Reading.UblOrderResponseReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.OrderResponse!>!>!
+International.EInvoicing.Ubl.Reading.UblOrderResponseReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Ubl.Reading.UblOrderResponseReader.UblOrderResponseReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
 International.EInvoicing.Ubl.UblApplicationResponseNames
 International.EInvoicing.Ubl.UblDespatchAdviceNames
 International.EInvoicing.Ubl.UblDiagnostics
 International.EInvoicing.Ubl.UblNames
 International.EInvoicing.Ubl.UblOrderNames
+International.EInvoicing.Ubl.UblOrderResponseNames
 International.EInvoicing.Ubl.UblServiceCollectionExtensions
 International.EInvoicing.Ubl.Writing.UblApplicationResponseWriter
 International.EInvoicing.Ubl.Writing.UblApplicationResponseWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
@@ -46,6 +53,12 @@ International.EInvoicing.Ubl.Writing.UblInvoiceWriter.UblInvoiceWriter() -> void
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.Write(International.EInvoicing.Model.EInvoice! document, System.IO.Stream! destination) -> void
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.WriteAsync(International.EInvoicing.Model.EInvoice! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 International.EInvoicing.Ubl.Writing.UblInvoiceWriter.WriteToString(International.EInvoicing.Model.EInvoice! document) -> string!
+International.EInvoicing.Ubl.Writing.UblOrderResponseWriter
+International.EInvoicing.Ubl.Writing.UblOrderResponseWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Ubl.Writing.UblOrderResponseWriter.UblOrderResponseWriter() -> void
+International.EInvoicing.Ubl.Writing.UblOrderResponseWriter.Write(International.EInvoicing.Model.OrderResponse! document, System.IO.Stream! destination) -> void
+International.EInvoicing.Ubl.Writing.UblOrderResponseWriter.WriteAsync(International.EInvoicing.Model.OrderResponse! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.Ubl.Writing.UblOrderResponseWriter.WriteToString(International.EInvoicing.Model.OrderResponse! document) -> string!
 International.EInvoicing.Ubl.Writing.UblOrderWriter
 International.EInvoicing.Ubl.Writing.UblOrderWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
 International.EInvoicing.Ubl.Writing.UblOrderWriter.UblOrderWriter() -> void
@@ -56,6 +69,7 @@ const International.EInvoicing.Ubl.UblApplicationResponseNames.ActionCodeList = 
 const International.EInvoicing.Ubl.UblApplicationResponseNames.RootElement = "ApplicationResponse" -> string!
 const International.EInvoicing.Ubl.UblDespatchAdviceNames.RootElement = "DespatchAdvice" -> string!
 const International.EInvoicing.Ubl.UblOrderNames.RootElement = "Order" -> string!
+const International.EInvoicing.Ubl.UblOrderResponseNames.RootElement = "OrderResponse" -> string!
 static International.EInvoicing.Ubl.UblApplicationResponseNames.ApplicationResponse.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblDespatchAdviceNames.DespatchAdvice.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
@@ -66,5 +80,6 @@ static International.EInvoicing.Ubl.UblNames.CreditNote.get -> System.Xml.Linq.X
 static International.EInvoicing.Ubl.UblNames.Ext.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblNames.Invoice.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblOrderNames.Order.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Ubl.UblOrderResponseNames.OrderResponse.get -> System.Xml.Linq.XNamespace!
 static International.EInvoicing.Ubl.UblServiceCollectionExtensions.AddUbl(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Ubl.UblServiceCollectionExtensions.AddUblServices(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

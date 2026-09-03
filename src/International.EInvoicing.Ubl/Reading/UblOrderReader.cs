@@ -191,7 +191,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         return values.ReadIdentifier(Take(element, UblNames.Cbc + "ID", mapped));
     }
 
-    private static Party? WrappedParty(
+    internal static Party? WrappedParty(
         XElement root,
         string role,
         UblValueReader values,
@@ -234,7 +234,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         return period;
     }
 
-    private static OrderDelivery? ReadDelivery(
+    internal static OrderDelivery? ReadDelivery(
         XElement? element,
         UblValueReader values,
         HashSet<XElement> mapped,
@@ -270,6 +270,17 @@ public sealed class UblOrderReader : IDocumentReader<Order>
             delivery.RequestedUntil = UblMoment.Read(
                 Take(period, UblNames.Cbc + "EndDate", mapped),
                 Take(period, UblNames.Cbc + "EndTime", mapped));
+        }
+
+        if (Take(element, UblNames.Cac + "PromisedDeliveryPeriod", mapped) is { } promised)
+        {
+            owners[promised] = delivery;
+            delivery.PromisedFrom = UblMoment.Read(
+                Take(promised, UblNames.Cbc + "StartDate", mapped),
+                Take(promised, UblNames.Cbc + "StartTime", mapped));
+            delivery.PromisedUntil = UblMoment.Read(
+                Take(promised, UblNames.Cbc + "EndDate", mapped),
+                Take(promised, UblNames.Cbc + "EndTime", mapped));
         }
 
         if (Take(element, UblNames.Cac + "Despatch", mapped) is { } despatch)
@@ -408,7 +419,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         return line;
     }
 
-    private static LinePrice? ReadPrice(
+    internal static LinePrice? ReadPrice(
         XElement? element,
         UblValueReader values,
         HashSet<XElement> mapped,
@@ -439,7 +450,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         return price;
     }
 
-    private static OrderItem? ReadItem(
+    internal static OrderItem? ReadItem(
         XElement? element,
         UblValueReader values,
         HashSet<XElement> mapped,
@@ -552,7 +563,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         }
     }
 
-    private static XElement? Take(XElement? parent, XName name, HashSet<XElement> mapped)
+    internal static XElement? Take(XElement? parent, XName name, HashSet<XElement> mapped)
     {
         XElement? element = parent?.Element(name);
         if (element is not null)
@@ -563,7 +574,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         return element;
     }
 
-    private static List<XElement> TakeAll(XElement parent, XName name, HashSet<XElement> mapped)
+    internal static List<XElement> TakeAll(XElement parent, XName name, HashSet<XElement> mapped)
     {
         List<XElement> elements = [.. parent.Elements(name)];
         foreach (XElement element in elements)
