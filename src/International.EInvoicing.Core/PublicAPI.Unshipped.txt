@@ -306,6 +306,88 @@ International.EInvoicing.Model.DeliveryInformation.LocationIdentifier.get -> Int
 International.EInvoicing.Model.DeliveryInformation.LocationIdentifier.set -> void
 International.EInvoicing.Model.DeliveryInformation.Name.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.DeliveryInformation.Name.set -> void
+International.EInvoicing.Model.DespatchAdvice
+International.EInvoicing.Model.DespatchAdvice.AdditionalDocuments.get -> System.Collections.Generic.List<International.EInvoicing.Model.AdditionalDocument!>!
+International.EInvoicing.Model.DespatchAdvice.BusinessProcessType.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchAdvice.BusinessProcessType.set -> void
+International.EInvoicing.Model.DespatchAdvice.BuyerParty.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.DespatchAdvice.BuyerParty.set -> void
+International.EInvoicing.Model.DespatchAdvice.DeliveryParty.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.DespatchAdvice.DeliveryParty.set -> void
+International.EInvoicing.Model.DespatchAdvice.DespatchAdvice() -> void
+International.EInvoicing.Model.DespatchAdvice.DespatchParty.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.DespatchAdvice.DespatchParty.set -> void
+International.EInvoicing.Model.DespatchAdvice.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Diagnostics.Diagnostic!>!
+International.EInvoicing.Model.DespatchAdvice.Diagnostics.set -> void
+International.EInvoicing.Model.DespatchAdvice.IssuedAt.get -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Model.DespatchAdvice.IssuedAt.set -> void
+International.EInvoicing.Model.DespatchAdvice.Lines.get -> System.Collections.Generic.List<International.EInvoicing.Model.DespatchLine!>!
+International.EInvoicing.Model.DespatchAdvice.Note.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.DespatchAdvice.Note.set -> void
+International.EInvoicing.Model.DespatchAdvice.Number.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchAdvice.Number.set -> void
+International.EInvoicing.Model.DespatchAdvice.OrderReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchAdvice.OrderReference.set -> void
+International.EInvoicing.Model.DespatchAdvice.OriginatorParty.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.DespatchAdvice.OriginatorParty.set -> void
+International.EInvoicing.Model.DespatchAdvice.Profile.get -> International.EInvoicing.Profiles.ProfileResolution?
+International.EInvoicing.Model.DespatchAdvice.Profile.set -> void
+International.EInvoicing.Model.DespatchAdvice.SellerParty.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.DespatchAdvice.SellerParty.set -> void
+International.EInvoicing.Model.DespatchAdvice.Shipment.get -> International.EInvoicing.Model.Shipment?
+International.EInvoicing.Model.DespatchAdvice.Shipment.set -> void
+International.EInvoicing.Model.DespatchAdvice.SpecificationIdentifier.get -> International.EInvoicing.Profiles.ProfileIdentifier
+International.EInvoicing.Model.DespatchAdvice.SpecificationIdentifier.set -> void
+International.EInvoicing.Model.DespatchAdvice.TypeCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.DespatchAdvice.TypeCode.set -> void
+International.EInvoicing.Model.DespatchItem
+International.EInvoicing.Model.DespatchItem.BuyerIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchItem.BuyerIdentifier.set -> void
+International.EInvoicing.Model.DespatchItem.BuyerIdentifierExtension.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchItem.BuyerIdentifierExtension.set -> void
+International.EInvoicing.Model.DespatchItem.Characteristics.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemCharacteristic!>!
+International.EInvoicing.Model.DespatchItem.ClassificationCodes.get -> System.Collections.Generic.List<International.EInvoicing.Values.CodeField>!
+International.EInvoicing.Model.DespatchItem.DangerousGoodsCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.DespatchItem.DangerousGoodsCode.set -> void
+International.EInvoicing.Model.DespatchItem.Description.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.DespatchItem.Description.set -> void
+International.EInvoicing.Model.DespatchItem.DespatchItem() -> void
+International.EInvoicing.Model.DespatchItem.HazardClass.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.DespatchItem.HazardClass.set -> void
+International.EInvoicing.Model.DespatchItem.Instances.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemInstance!>!
+International.EInvoicing.Model.DespatchItem.Name.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.DespatchItem.Name.set -> void
+International.EInvoicing.Model.DespatchItem.SellerIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchItem.SellerIdentifier.set -> void
+International.EInvoicing.Model.DespatchItem.SellerIdentifierExtension.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchItem.SellerIdentifierExtension.set -> void
+International.EInvoicing.Model.DespatchItem.StandardIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchItem.StandardIdentifier.set -> void
+International.EInvoicing.Model.DespatchItem.StandardIdentifierExtension.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchItem.StandardIdentifierExtension.set -> void
+International.EInvoicing.Model.DespatchLine
+International.EInvoicing.Model.DespatchLine.AdditionalDocuments.get -> System.Collections.Generic.List<International.EInvoicing.Model.AdditionalDocument!>!
+International.EInvoicing.Model.DespatchLine.DeliveredQuantity.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.DespatchLine.DeliveredQuantity.set -> void
+International.EInvoicing.Model.DespatchLine.DespatchLine() -> void
+International.EInvoicing.Model.DespatchLine.Identifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchLine.Identifier.set -> void
+International.EInvoicing.Model.DespatchLine.Item.get -> International.EInvoicing.Model.DespatchItem?
+International.EInvoicing.Model.DespatchLine.Item.set -> void
+International.EInvoicing.Model.DespatchLine.Note.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.DespatchLine.Note.set -> void
+International.EInvoicing.Model.DespatchLine.OrderLineReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchLine.OrderLineReference.set -> void
+International.EInvoicing.Model.DespatchLine.OrderReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchLine.OrderReference.set -> void
+International.EInvoicing.Model.DespatchLine.OutstandingQuantity.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.DespatchLine.OutstandingQuantity.set -> void
+International.EInvoicing.Model.DespatchLine.OutstandingReason.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.DespatchLine.OutstandingReason.set -> void
+International.EInvoicing.Model.DespatchLine.Packaging.get -> International.EInvoicing.Model.Shipment?
+International.EInvoicing.Model.DespatchLine.Packaging.set -> void
+International.EInvoicing.Model.DespatchLine.SalesOrderLineReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.DespatchLine.SalesOrderLineReference.set -> void
 International.EInvoicing.Model.DirectDebit
 International.EInvoicing.Model.DirectDebit.CreditorIdentifier.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.DirectDebit.CreditorIdentifier.set -> void
@@ -540,6 +622,21 @@ International.EInvoicing.Model.ItemCharacteristic.Name.set -> void
 International.EInvoicing.Model.ItemCharacteristic.Value.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.ItemCharacteristic.Value.set -> void
 International.EInvoicing.Model.ItemClassificationSchemeCodes
+International.EInvoicing.Model.ItemInstance
+International.EInvoicing.Model.ItemInstance.BestBeforeDate.get -> International.EInvoicing.Values.DateField
+International.EInvoicing.Model.ItemInstance.BestBeforeDate.set -> void
+International.EInvoicing.Model.ItemInstance.Characteristics.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemCharacteristic!>!
+International.EInvoicing.Model.ItemInstance.ItemInstance() -> void
+International.EInvoicing.Model.ItemInstance.LotExpiryDate.get -> International.EInvoicing.Values.DateField
+International.EInvoicing.Model.ItemInstance.LotExpiryDate.set -> void
+International.EInvoicing.Model.ItemInstance.LotIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.ItemInstance.LotIdentifier.set -> void
+International.EInvoicing.Model.ItemInstance.ManufactureDate.get -> International.EInvoicing.Values.DateField
+International.EInvoicing.Model.ItemInstance.ManufactureDate.set -> void
+International.EInvoicing.Model.ItemInstance.ProductTraceIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.ItemInstance.ProductTraceIdentifier.set -> void
+International.EInvoicing.Model.ItemInstance.SerialIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.ItemInstance.SerialIdentifier.set -> void
 International.EInvoicing.Model.LifecycleStatusMessage
 International.EInvoicing.Model.LifecycleStatusMessage.BusinessProcessType.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.LifecycleStatusMessage.BusinessProcessType.set -> void
@@ -580,6 +677,12 @@ International.EInvoicing.Model.LinePrice.GrossPrice.set -> void
 International.EInvoicing.Model.LinePrice.LinePrice() -> void
 International.EInvoicing.Model.LinePrice.NetPrice.get -> International.EInvoicing.Values.AmountField
 International.EInvoicing.Model.LinePrice.NetPrice.set -> void
+International.EInvoicing.Model.Package
+International.EInvoicing.Model.Package.Identifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.Package.Identifier.set -> void
+International.EInvoicing.Model.Package.Package() -> void
+International.EInvoicing.Model.Package.PackagingTypeCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.Package.PackagingTypeCode.set -> void
 International.EInvoicing.Model.Party
 International.EInvoicing.Model.Party.AdditionalLegalInformation.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.Party.AdditionalLegalInformation.set -> void
@@ -674,6 +777,37 @@ International.EInvoicing.Model.ReferencedLineStatus.ProcessConditionCode.get -> 
 International.EInvoicing.Model.ReferencedLineStatus.ProcessConditionCode.set -> void
 International.EInvoicing.Model.ReferencedLineStatus.ReferencedLineStatus() -> void
 International.EInvoicing.Model.ReferencedLineStatus.StatusDetails.get -> System.Collections.Generic.List<International.EInvoicing.Model.DocumentStatusDetail!>!
+International.EInvoicing.Model.Shipment
+International.EInvoicing.Model.Shipment.Carrier.get -> International.EInvoicing.Model.Party?
+International.EInvoicing.Model.Shipment.Carrier.set -> void
+International.EInvoicing.Model.Shipment.ConsignmentIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.Shipment.ConsignmentIdentifier.set -> void
+International.EInvoicing.Model.Shipment.ConsignmentInformation.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.Shipment.ConsignmentInformation.set -> void
+International.EInvoicing.Model.Shipment.DespatchAddress.get -> International.EInvoicing.Model.PostalAddress?
+International.EInvoicing.Model.Shipment.DespatchAddress.set -> void
+International.EInvoicing.Model.Shipment.DespatchedAt.get -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Model.Shipment.DespatchedAt.set -> void
+International.EInvoicing.Model.Shipment.EstimatedDeliveryFrom.get -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Model.Shipment.EstimatedDeliveryFrom.set -> void
+International.EInvoicing.Model.Shipment.EstimatedDeliveryUntil.get -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Model.Shipment.EstimatedDeliveryUntil.set -> void
+International.EInvoicing.Model.Shipment.GrossVolume.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.Shipment.GrossVolume.set -> void
+International.EInvoicing.Model.Shipment.GrossWeight.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.Shipment.GrossWeight.set -> void
+International.EInvoicing.Model.Shipment.HandlingUnitCount.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.Shipment.HandlingUnitCount.set -> void
+International.EInvoicing.Model.Shipment.HandlingUnits.get -> System.Collections.Generic.List<International.EInvoicing.Model.TransportHandlingUnit!>!
+International.EInvoicing.Model.Shipment.Identifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.Shipment.Identifier.set -> void
+International.EInvoicing.Model.Shipment.Information.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.Shipment.Information.set -> void
+International.EInvoicing.Model.Shipment.Shipment() -> void
+International.EInvoicing.Model.Shipment.TrackingIdentifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.Shipment.TrackingIdentifier.set -> void
+International.EInvoicing.Model.Shipment.TransportModeCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.Shipment.TransportModeCode.set -> void
 International.EInvoicing.Model.StatusParty
 International.EInvoicing.Model.StatusParty.Contact.get -> International.EInvoicing.Model.Contact?
 International.EInvoicing.Model.StatusParty.Contact.set -> void
@@ -688,6 +822,21 @@ International.EInvoicing.Model.StatusParty.RoleCode.set -> void
 International.EInvoicing.Model.StatusParty.StatusParty() -> void
 International.EInvoicing.Model.StatusParty.TradingName.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.StatusParty.TradingName.set -> void
+International.EInvoicing.Model.TransportHandlingUnit
+International.EInvoicing.Model.TransportHandlingUnit.Hazardous.get -> International.EInvoicing.Values.IndicatorField
+International.EInvoicing.Model.TransportHandlingUnit.Hazardous.set -> void
+International.EInvoicing.Model.TransportHandlingUnit.Identifier.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.TransportHandlingUnit.Identifier.set -> void
+International.EInvoicing.Model.TransportHandlingUnit.Measure.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.TransportHandlingUnit.Measure.set -> void
+International.EInvoicing.Model.TransportHandlingUnit.MeasuredAttribute.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.TransportHandlingUnit.MeasuredAttribute.set -> void
+International.EInvoicing.Model.TransportHandlingUnit.Packages.get -> System.Collections.Generic.List<International.EInvoicing.Model.Package!>!
+International.EInvoicing.Model.TransportHandlingUnit.ShippingMarks.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.TransportHandlingUnit.ShippingMarks.set -> void
+International.EInvoicing.Model.TransportHandlingUnit.TransportHandlingUnit() -> void
+International.EInvoicing.Model.TransportHandlingUnit.TypeCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.TransportHandlingUnit.TypeCode.set -> void
 International.EInvoicing.Model.VatBreakdownEntry
 International.EInvoicing.Model.VatBreakdownEntry.CategoryCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.VatBreakdownEntry.CategoryCode.set -> void

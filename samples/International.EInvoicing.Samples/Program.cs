@@ -25,7 +25,7 @@ OpeningWhatArrived.Run(einvoicing, Invoices.Build(announce: false));
 CountryInvoices.Run(einvoicing);
 CountryShortcuts.Run();
 FrenchLifecycle.Run(einvoicing);
-PeppolResponses.Run();
+PeppolPostAward.Run();
 FrenchEReporting.Run();
 NationalIdentifiers.Run();
 NationalRuleSets.Run();

@@ -48,6 +48,15 @@
           "notes": "What happened to a document rather than what is owed for it: the Peppol Invoice Response and Message Level Response. Fills the same lifecycle model the French CDAR messages do, so one model serves both syntaxes. Read, round-tripped and schema-checked against OpenPEPPOL's own thirteen use cases and two published examples."
         },
         {
+          "name": "UBL 2.1 — Despatch Advice",
+          "version": "OASIS UBL 2.1",
+          "package": "International.EInvoicing.Ubl",
+          "read": "done",
+          "write": "done",
+          "validate": "done",
+          "notes": "What actually left the warehouse, which is what an invoice is reconciled against: delivered and outstanding quantities, serial numbers and lots, pallets and packages, and how the consignment travels. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes."
+        },
+        {
           "name": "UN/CEFACT CDAR",
           "version": "generic",
           "package": "International.EInvoicing.Cdar",
@@ -125,13 +134,13 @@
           "notes": "The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job."
         },
         {
-          "name": "Peppol Invoice Response and Message Level Response",
-          "version": "Invoice Response 3.1, MLR",
+          "name": "Peppol post-award — Invoice Response, MLR, Despatch Advice",
+          "version": "Invoice Response 3.1, MLR, Despatch Advice 3",
           "package": "International.EInvoicing.Peppol",
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "An Invoice Response is what a receiver owes a sender — in process, accepted, rejected, under query, paid — and a Message Level Response answers whether the message arrived at all. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence."
+          "notes": "An Invoice Response is what a receiver owes a sender — in process, accepted, rejected, under query, paid; a Message Level Response answers whether the message arrived at all; a Despatch Advice says what was sent. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence. Ordering is not here."
         }
       ]
     },

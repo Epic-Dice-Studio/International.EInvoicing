@@ -26,7 +26,7 @@ public static class PeppolServiceCollectionExtensions
             .AddCii()
             .AddProfiles(PeppolProfiles.All)
             .AddProfiles(PeppolPintProfiles.All)
-            .AddProfiles(PeppolResponseProfiles.All);
+            .AddProfiles(PeppolPostAwardProfiles.All);
     }
 
     /// <summary>
@@ -100,8 +100,8 @@ public static class PeppolServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds the rule sets for the Peppol documents that are not invoices — the Invoice Response and the
-    /// Message Level Response.
+    /// Adds the rule sets for the Peppol post-award documents that are not invoices — the Invoice Response,
+    /// the Message Level Response and the Despatch Advice.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -121,8 +121,8 @@ public static class PeppolServiceCollectionExtensions
     /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentException"><paramref name="directory"/> is empty.</exception>
     /// <exception cref="DirectoryNotFoundException">There is no such directory.</exception>
-    /// <exception cref="FileNotFoundException">The directory holds neither rule set.</exception>
-    public static EInvoicingBuilder AddPeppolResponseRulesFrom(
+    /// <exception cref="FileNotFoundException">The directory holds none of the rule sets.</exception>
+    public static EInvoicingBuilder AddPeppolPostAwardRulesFrom(
         this EInvoicingBuilder builder,
         string directory,
         string version = "3.0")
@@ -133,13 +133,13 @@ public static class PeppolServiceCollectionExtensions
         if (!Directory.Exists(directory))
         {
             throw new DirectoryNotFoundException(
-                $"No Peppol response rule sets at '{directory}'. They declare no licence upstream, so this "
+                $"No Peppol post-award rule sets at '{directory}'. They declare no licence upstream, so this "
                 + "library does not ship them: run build/fetch-specs.sh poacc, or point this at your own copy.");
         }
 
         var added = 0;
 
-        foreach ((string fileName, Profile profile) in PeppolResponseProfiles.RuleSets)
+        foreach ((string fileName, Profile profile) in PeppolPostAwardProfiles.RuleSets)
         {
             string path = Path.Combine(directory, fileName);
 
@@ -164,9 +164,9 @@ public static class PeppolServiceCollectionExtensions
         if (added == 0)
         {
             throw new FileNotFoundException(
-                $"'{directory}' holds neither response rule set "
-                + $"({string.Join(", ", PeppolResponseProfiles.RuleSets.Keys)}). Run build/fetch-specs.sh poacc.",
-                Path.Combine(directory, PeppolResponseProfiles.RuleSets.Keys.First()));
+                $"'{directory}' holds none of the post-award rule sets "
+                + $"({string.Join(", ", PeppolPostAwardProfiles.RuleSets.Keys)}). Run build/fetch-specs.sh poacc.",
+                Path.Combine(directory, PeppolPostAwardProfiles.RuleSets.Keys.First()));
         }
 
         return builder;

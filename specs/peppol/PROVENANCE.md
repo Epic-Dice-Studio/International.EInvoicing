@@ -65,10 +65,10 @@ Expected content:
 
 | | |
 |---|---|
-| `poacc/examples/` | `InvoiceResponse_Example.xml`, `MessageLevelResponse_Example.xml`, and the thirteen `T111-uc*` use cases — one per business situation a response reports |
-| `poacc/unit-invoice-response/` | Peppol's unit corpus: each case names how many times a rule should fire |
+| `poacc/examples/` | `InvoiceResponse_Example.xml`, `MessageLevelResponse_Example.xml` and the thirteen `T111-uc*` use cases — one per business situation a response reports — plus `DespatchAdvice_Example.xml` and its five use cases |
+| `poacc/unit-invoice-response/`, `poacc/unit-despatch-advice/` | Peppol's unit corpora: each case names how many times a rule should fire |
 | `poacc/codelist/` | `UNCL4343-T111.xml`, `OPStatusReason.xml`, `OPStatusAction.xml` — what `PeppolResponseCodes` is compared against on every build they are present for |
-| `poacc/rules/` | `PEPPOLBIS-T111.xslt`, `PEPPOLBIS-T71.xslt` |
+| `poacc/rules/` | `PEPPOLBIS-T111.xslt`, `PEPPOLBIS-T71.xslt`, `PEPPOLBIS-T16.xslt` |
 
 Each rule set governs one transaction and is registered against its profile. Both documents share a root
 element and differ in what they mean, so a rule set let loose on the other's documents reports failures that

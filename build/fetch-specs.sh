@@ -159,8 +159,11 @@ fetch_poacc() {
     sync_into "$src/rules/examples/InvoiceResponse_Example.xml" "$SPECS_DIR/peppol/poacc/examples"
     sync_into "$src/rules/examples/MessageLevelResponse_Example.xml" "$SPECS_DIR/peppol/poacc/examples"
     sync_into "$src/rules/examples/Invoice reponse use cases" "$SPECS_DIR/peppol/poacc/examples"
+    sync_into "$src/rules/examples/DespatchAdvice_Example.xml" "$SPECS_DIR/peppol/poacc/examples"
+    sync_into "$src/rules/examples/Despatch Advice use cases" "$SPECS_DIR/peppol/poacc/examples"
     # Each unit case names how many times a rule should fire.
     sync_into "$src/rules/unit-invoice-response" "$SPECS_DIR/peppol/poacc"
+    sync_into "$src/rules/unit-despatch-advice" "$SPECS_DIR/peppol/poacc"
     # The status, reason and action code lists, which is what the shipped constants are checked against.
     sync_into "$src/structure/codelist" "$SPECS_DIR/peppol/poacc"
 
@@ -168,7 +171,7 @@ fetch_poacc() {
     local xslt="$compiled/phive-rules-peppol/src/main/resources/external/schematron/openpeppol/$POACC_COMPILED_REF/xslt"
     local name
     mkdir -p "$SPECS_DIR/peppol/poacc/rules"
-    for name in PEPPOLBIS-T111 PEPPOLBIS-T71; do
+    for name in PEPPOLBIS-T111 PEPPOLBIS-T71 PEPPOLBIS-T16; do
         sync_into "$xslt/$name.xslt" "$SPECS_DIR/peppol/poacc/rules"
     done
 }

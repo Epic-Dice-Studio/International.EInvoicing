@@ -32,14 +32,17 @@ public enum DocumentKind
     /// </summary>
     /// <remarks>Appended rather than filed beside <see cref="Cdar"/> so the values already in use keep theirs.</remarks>
     UblApplicationResponse,
+
+    /// <summary>A UBL <c>DespatchAdvice</c> — what was actually sent.</summary>
+    UblDespatchAdvice,
 }
 
 /// <summary>
 /// Whatever came out of reading a document, without the caller having had to say what it was.
 /// </summary>
 /// <remarks>
-/// Exactly one of <see cref="Invoice"/> and <see cref="LifecycleStatus"/> is set when reading succeeded.
-/// Both are <c>null</c> when it did not, and <see cref="Diagnostics"/> says why.
+/// Exactly one of <see cref="Invoice"/>, <see cref="LifecycleStatus"/> and <see cref="DespatchAdvice"/> is
+/// set when reading succeeded. All are <c>null</c> when it did not, and <see cref="Diagnostics"/> says why.
 /// </remarks>
 public sealed record DocumentResult
 {
@@ -51,6 +54,9 @@ public sealed record DocumentResult
 
     /// <summary>The lifecycle status message, when the document was one.</summary>
     public LifecycleStatusMessage? LifecycleStatus { get; init; }
+
+    /// <summary>The despatch advice, when the document was one.</summary>
+    public DespatchAdvice? DespatchAdvice { get; init; }
 
     /// <summary>
     /// The invoice as a person reads it — the PDF a hybrid invoice arrived in. <c>null</c> for a document
@@ -70,7 +76,7 @@ public sealed record DocumentResult
     public ProfileResolution? Profile { get; init; }
 
     /// <summary>Whether something usable came out.</summary>
-    public bool IsUsable => Invoice is not null || LifecycleStatus is not null;
+    public bool IsUsable => Invoice is not null || LifecycleStatus is not null || DespatchAdvice is not null;
 
     /// <summary>Whether anything reported means the result cannot be trusted for compliance.</summary>
     public bool HasErrors => Diagnostics.Any(diagnostic => diagnostic.Severity >= DiagnosticSeverity.Error);
@@ -129,6 +135,20 @@ public sealed record DocumentResult
     public EInvoice RequireInvoice() =>
         Invoice ?? throw new DocumentException(
             $"Expected an invoice; the document was read as {Kind}.",
+            Diagnostics);
+
+    /// <summary>The despatch advice, when the document was one.</summary>
+    public bool TryGetDespatchAdvice([NotNullWhen(true)] out DespatchAdvice? advice)
+    {
+        advice = DespatchAdvice;
+        return advice is not null;
+    }
+
+    /// <summary>The despatch advice, or an exception explaining what arrived instead.</summary>
+    /// <exception cref="DocumentException">The document was not a readable despatch advice.</exception>
+    public DespatchAdvice RequireDespatchAdvice() =>
+        DespatchAdvice ?? throw new DocumentException(
+            $"Expected a despatch advice; the document was read as {Kind}.",
             Diagnostics);
 
     /// <summary>The lifecycle status message, or an exception explaining what arrived instead.</summary>

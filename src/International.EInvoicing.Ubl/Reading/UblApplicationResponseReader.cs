@@ -100,7 +100,9 @@ public sealed class UblApplicationResponseReader : IDocumentReader<LifecycleStat
             Take(root, UblNames.Cbc + "CustomizationID", mapped)?.Value);
         message.BusinessProcessType = values.ReadIdentifier(Take(root, UblNames.Cbc + "ProfileID", mapped));
         message.Identifier = values.ReadIdentifier(Take(root, UblNames.Cbc + "ID", mapped));
-        message.IssuedAt = IssuedAt(root, values, mapped);
+        message.IssuedAt = UblMoment.Read(
+            Take(root, UblNames.Cbc + "IssueDate", mapped),
+            Take(root, UblNames.Cbc + "IssueTime", mapped));
         message.Note = values.ReadText(Take(root, UblNames.Cbc + "Note", mapped));
 
         message.Sender = ReadParty(Take(root, UblNames.Cac + "SenderParty", mapped), values, mapped, owners);
@@ -116,7 +118,7 @@ public sealed class UblApplicationResponseReader : IDocumentReader<LifecycleStat
             message.References.Add(status);
         }
 
-        KeepEverythingElse(root, message, mapped, owners, diagnostics);
+        UblExtensions.KeepEverythingElse(root, message, mapped, owners, diagnostics);
 
         ProfileResolution resolution = _profiles.Resolve(message.SpecificationIdentifier, DocumentSyntax.Ubl);
         foreach (Diagnostic diagnostic in resolution.Diagnostics)
@@ -127,29 +129,6 @@ public sealed class UblApplicationResponseReader : IDocumentReader<LifecycleStat
         message.Profile = resolution;
         message.Diagnostics = diagnostics.Diagnostics;
         return message;
-    }
-
-    /// <summary>UBL states the moment in two elements, and the model holds one.</summary>
-    private static DateTimeField IssuedAt(XElement root, UblValueReader values, HashSet<XElement> mapped)
-    {
-        XElement? date = Take(root, UblNames.Cbc + "IssueDate", mapped);
-        XElement? time = Take(root, UblNames.Cbc + "IssueTime", mapped);
-
-        if (date is null)
-        {
-            return DateTimeField.Unset;
-        }
-
-        string text = time is null ? date.Value.Trim() : $"{date.Value.Trim()}T{time.Value.Trim()}";
-        var source = new FieldSource(text, UblValueReader.LocationOf(date));
-
-        return DateTimeOffset.TryParse(
-            text,
-            System.Globalization.CultureInfo.InvariantCulture,
-            System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
-            out DateTimeOffset moment)
-            ? new DateTimeField(moment, null, source)
-            : new DateTimeField(null, null, source);
     }
 
     private static ReferencedDocumentStatus ReadDocumentResponse(
@@ -346,44 +325,5 @@ public sealed class UblApplicationResponseReader : IDocumentReader<LifecycleStat
         }
 
         return elements;
-    }
-
-    /// <summary>
-    /// Walks the whole document and gives every element the reader did not map to the node that contained it,
-    /// so an element nobody thought about is still kept, wherever it sits.
-    /// </summary>
-    private static void KeepEverythingElse(
-        XElement source,
-        InvoiceNode node,
-        HashSet<XElement> mapped,
-        IReadOnlyDictionary<XElement, InvoiceNode> owners,
-        DiagnosticCollector diagnostics)
-    {
-        foreach (XElement element in source.Elements())
-        {
-            if (mapped.Contains(element))
-            {
-                KeepEverythingElse(
-                    element,
-                    owners.TryGetValue(element, out InvoiceNode? owner) ? owner : node,
-                    mapped,
-                    owners,
-                    diagnostics);
-                continue;
-            }
-
-            node.Extensions.Add(new ExtensionElement(
-                element.Name.NamespaceName,
-                element.Name.LocalName,
-                element.ToString(SaveOptions.DisableFormatting),
-                UblValueReader.LocationOf(element)));
-
-            diagnostics.Add(Diagnostic.Create(UblDiagnostics.UnmappedElement, element.Name.LocalName) with
-            {
-                Location = UblValueReader.LocationOf(element),
-                Found = element.Name.LocalName,
-                AppliedFallback = "kept verbatim as extension data",
-            });
-        }
     }
 }

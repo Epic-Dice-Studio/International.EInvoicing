@@ -13,9 +13,9 @@ International.EInvoicing.Peppol.PeppolParticipant.ToQualifiedString() -> string!
 International.EInvoicing.Peppol.PeppolParticipant.Value.get -> string!
 International.EInvoicing.Peppol.PeppolPintProfiles
 International.EInvoicing.Peppol.PeppolPintRules
+International.EInvoicing.Peppol.PeppolPostAwardProfiles
 International.EInvoicing.Peppol.PeppolProfiles
 International.EInvoicing.Peppol.PeppolResponseCodes
-International.EInvoicing.Peppol.PeppolResponseProfiles
 International.EInvoicing.Peppol.PeppolServiceCollectionExtensions
 International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority
 International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority.Id.get -> string!
@@ -135,19 +135,20 @@ static International.EInvoicing.Peppol.PeppolPintProfiles.ForJurisdiction(string
 static International.EInvoicing.Peppol.PeppolPintProfiles.SelfBillingAe.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolPintRules.Folders.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
 static International.EInvoicing.Peppol.PeppolPintRules.For(International.EInvoicing.Profiles.Profile! profile, string! directory) -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Validation.Schematron.SchematronRuleSet!>!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.DespatchAdvice.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.InvoiceResponse.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.MessageLevelResponse.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.RuleSets.get -> System.Collections.Generic.IReadOnlyDictionary<string!, International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Peppol.PeppolProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Peppol.PeppolProfiles.BillingCii.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolProfiles.BillingUbl.get -> International.EInvoicing.Profiles.Profile!
 static International.EInvoicing.Peppol.PeppolProfiles.RuleSetFileNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Peppol.PeppolResponseCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Peppol.PeppolResponseCodes.RequiringClarification.get -> System.Collections.Generic.IReadOnlyList<string!>!
-static International.EInvoicing.Peppol.PeppolResponseProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
-static International.EInvoicing.Peppol.PeppolResponseProfiles.InvoiceResponse.get -> International.EInvoicing.Profiles.Profile!
-static International.EInvoicing.Peppol.PeppolResponseProfiles.MessageLevelResponse.get -> International.EInvoicing.Profiles.Profile!
-static International.EInvoicing.Peppol.PeppolResponseProfiles.RuleSets.get -> System.Collections.Generic.IReadOnlyDictionary<string!, International.EInvoicing.Profiles.Profile!>!
 static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppol(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppolPintRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
-static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppolResponseRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory, string! version = "3.0") -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppolPostAwardRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory, string! version = "3.0") -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppolRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory, string! version = "3.0") -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction!>!
 static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.IsValid(System.Collections.Generic.IReadOnlyList<string!>! list, string? value) -> bool

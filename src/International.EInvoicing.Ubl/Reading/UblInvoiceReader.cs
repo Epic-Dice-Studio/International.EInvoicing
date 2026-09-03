@@ -209,7 +209,7 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
             invoice.Lines.Add(mappedLine);
         }
 
-        KeepEverythingElse(root, invoice, mapped, owners, diagnostics);
+        UblExtensions.KeepEverythingElse(root, invoice, mapped, owners, diagnostics);
 
         ProfileResolution resolution = _profiles.Resolve(invoice.SpecificationIdentifier, DocumentSyntax.Ubl);
         foreach (Diagnostic diagnostic in resolution.Diagnostics)
@@ -674,47 +674,5 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
         }
 
         return elements;
-    }
-
-    /// <summary>
-    /// Walks the whole document and gives every element the reader did not map to the node that contained it.
-    /// Doing this once at the end, rather than per mapping method, is what makes the guarantee total: an
-    /// element nobody thought about is still kept, wherever it sits.
-    /// </summary>
-    private static void KeepEverythingElse(
-        XElement source,
-        InvoiceNode node,
-        HashSet<XElement> mapped,
-        IReadOnlyDictionary<XElement, InvoiceNode> owners,
-        DiagnosticCollector diagnostics)
-    {
-        foreach (XElement element in source.Elements())
-        {
-            if (mapped.Contains(element))
-            {
-                // Descend with the node that owns this element, when one exists, so what it contains is kept
-                // where it belongs and can be written back inside it.
-                KeepEverythingElse(
-                    element,
-                    owners.TryGetValue(element, out InvoiceNode? owner) ? owner : node,
-                    mapped,
-                    owners,
-                    diagnostics);
-                continue;
-            }
-
-            node.Extensions.Add(new ExtensionElement(
-                element.Name.NamespaceName,
-                element.Name.LocalName,
-                element.ToString(SaveOptions.DisableFormatting),
-                UblValueReader.LocationOf(element)));
-
-            diagnostics.Add(Diagnostic.Create(UblDiagnostics.UnmappedElement, element.Name.LocalName) with
-            {
-                Location = UblValueReader.LocationOf(element),
-                Found = element.Name.LocalName,
-                AppliedFallback = "kept verbatim as extension data",
-            });
-        }
     }
 }

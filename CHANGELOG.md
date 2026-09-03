@@ -6,8 +6,22 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Peppol Despatch Advice** — what actually left the warehouse, which is the document an invoice is
+  reconciled against. An invoice says what is owed and an order says what was asked for; only this says what
+  was sent, and receiving ten of an ordered twelve is the whole reason `cbc:OutstandingQuantity` exists.
+  Read, written, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL
+  publishes, with exactly one element in the whole corpus left unmapped — `cac:Person` on the carrier, kept
+  verbatim and reported.
+- It does **not** reuse the invoice's `Item`. UBL calls both `cac:Item`, but an invoice's item is what is
+  being charged for and a despatched item is a physical thing in a box: which serial numbers went out, which
+  lot they came from, whether the box is dangerous to carry. `DespatchItem` carries the second, so the
+  invoice model does not grow a logistics vocabulary no invoice uses.
+- Three UBL writers were carrying three copies of the same element helpers, and three readers three copies
+  of the same extension-data keeper. They are now one `UblDocument` and one `UblExtensions`, which is how
+  the despatch advice writer got element order right for free.
+
 - **The Peppol documents that are not invoices, starting with the answer a receiver owes a sender** —
-  [the standard page](docs/standards/peppol-response.md). The **Invoice Response** says what happened to the
+  [the standard page](docs/standards/peppol-post-award.md). The **Invoice Response** says what happened to the
   invoice — in process, accepted, rejected, under query, conditionally accepted, paid — and the **Message
   Level Response** answers the question underneath it: did the message arrive and parse at all. Both are a
   UBL `ApplicationResponse`, so both are read and written by one reader and one writer, and both fill

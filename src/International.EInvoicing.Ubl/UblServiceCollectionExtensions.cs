@@ -54,6 +54,16 @@ public static class UblServiceCollectionExtensions
         services.TryAddSingleton(provider =>
             provider.GetServices<IDocumentWriter<LifecycleStatusMessage>>().OfType<UblApplicationResponseWriter>().First());
 
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDocumentReader<DespatchAdvice>, UblDespatchAdviceReader>());
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDocumentWriter<DespatchAdvice>, UblDespatchAdviceWriter>());
+
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentReader<DespatchAdvice>>().OfType<UblDespatchAdviceReader>().First());
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentWriter<DespatchAdvice>>().OfType<UblDespatchAdviceWriter>().First());
+
         return services;
     }
 }

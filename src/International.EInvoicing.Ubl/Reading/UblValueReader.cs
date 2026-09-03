@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using International.EInvoicing.Diagnostics;
 using International.EInvoicing.Model;
 using International.EInvoicing.Values;
+using International.EInvoicing.Xml;
 
 namespace International.EInvoicing.Ubl.Reading;
 
@@ -72,6 +73,27 @@ internal sealed class UblValueReader(DiagnosticCollector diagnostics, HashSet<XE
                 Attribute(element, "schemeVersionID"),
                 Source(element))
             : IdentifierField.Unset;
+
+    /// <summary>
+    /// Embedded bytes, decoded, with what they are and what they are called.
+    /// </summary>
+    /// <remarks>
+    /// An attachment is the largest thing a document can carry, so the limit is applied before the decoding
+    /// rather than after it: content over the limit is reported and the field keeps its raw text.
+    /// </remarks>
+    public BinaryField ReadBinary(XElement? element, DocumentLimits limits)
+    {
+        if (!Consume(element))
+        {
+            return BinaryField.Unset;
+        }
+
+        string mimeCode = Attribute(element, "mimeCode") ?? string.Empty;
+        string filename = Attribute(element, "filename") ?? string.Empty;
+        var source = new FieldSource(element.Value, LocationOf(element));
+
+        return new BinaryField(Limits.Decode(element.Value, limits, diagnostics), mimeCode, filename, source);
+    }
 
     public AmountField ReadAmount(XElement? element, string? businessTerm = null)
     {

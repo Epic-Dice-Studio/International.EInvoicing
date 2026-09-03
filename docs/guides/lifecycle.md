@@ -287,17 +287,29 @@ EInvoicing library = EInvoicing.Create(builder => builder
     .AddDefaults()
     .AddPeppol()
     .AddUblSchema()
-    .AddPeppolResponseRulesFrom("specs/peppol/poacc/rules"));
+    .AddPeppolPostAwardRulesFrom("specs/peppol/poacc/rules"));
 ```
 
-See [the standard page](../standards/peppol-response.md) for the full structure and the code lists.
+See [the standard page](../standards/peppol-post-award.md) for the full structure and the code lists — it
+also covers the **despatch advice**, the third Peppol document that is not an invoice, which says what
+actually left the warehouse:
+
+```csharp
+DespatchAdvice advice = einvoicing.Read(xml).RequireDespatchAdvice();
+
+foreach (DespatchLine line in advice.Lines)
+{
+    Console.WriteLine($"{line.DeliveredQuantity.Value} sent, {line.OutstandingQuantity.Value} still owed");
+    Console.WriteLine(line.OutstandingReason.Value);   // PEPPOL-T16-R007 warns when this is missing
+}
+```
 
 ## Next
 
 - [Reading a document](reading.md)
 - [Writing a document](writing.md)
 - [The CDAR standard page](../standards/cdar.md), including where the structure was verified
-- [The Peppol Invoice Response](../standards/peppol-response.md), the same statement on the Peppol network
+- [The Peppol Invoice Response](../standards/peppol-post-award.md), the same statement on the Peppol network
 
 ## Run it
 

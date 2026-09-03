@@ -166,7 +166,7 @@ public class InvoiceResponseTests
             .Read(ReadCorpusFile("MessageLevelResponse_Example.xml"))
             .RequireLifecycleStatus();
 
-        message.SpecificationIdentifier.ShouldBe(PeppolResponseProfiles.MessageLevelResponse.Id);
+        message.SpecificationIdentifier.ShouldBe(PeppolPostAwardProfiles.MessageLevelResponse.Id);
 
         ReferencedLineStatus line = message.References.ShouldHaveSingleItem().LineStatuses.ShouldHaveSingleItem();
         line.LineIdentifier.Value.ShouldStartWith("/Catalogue/cac:CatalogueLine[3]");
@@ -219,7 +219,7 @@ public class InvoiceResponseTests
             .AddDefaults()
             .AddPeppol()
             .AddUblSchema()
-            .AddPeppolResponseRulesFrom(rules));
+            .AddPeppolPostAwardRulesFrom(rules));
     }
 
     /// <summary>Reading never throws on the document, whatever arrives.</summary>
@@ -279,13 +279,32 @@ public class InvoiceResponseTests
         return File.ReadAllText(path!);
     }
 
+    /// <summary>
+    /// The response documents of the fetched corpus, which holds more than one kind.
+    /// </summary>
+    /// <remarks>
+    /// The folder is filled by transaction, not by document type, so a despatch advice sits beside an
+    /// invoice response. Selecting by what a document declares itself to be is what keeps each family's
+    /// tests looking at its own documents.
+    /// </remarks>
     private static IEnumerable<string> Corpus()
     {
         string root = Path.Combine(CorpusRoot(), "examples");
 
         return Directory.Exists(root)
-            ? Directory.EnumerateFiles(root, "*.xml", SearchOption.AllDirectories).Order()
+            ? Directory.EnumerateFiles(root, "*.xml", SearchOption.AllDirectories)
+                .Where(Declares)
+                .Order()
             : [];
+    }
+
+    private static bool Declares(string path)
+    {
+        string xml = File.ReadAllText(path);
+
+        return PeppolPostAwardProfiles.All
+            .Where(profile => profile != PeppolPostAwardProfiles.DespatchAdvice)
+            .Any(profile => xml.Contains(profile.Id.Value, StringComparison.Ordinal));
     }
 
     private static string CorpusRoot() => Path.Combine(RepositoryRoot(), "specs", "peppol", "poacc");

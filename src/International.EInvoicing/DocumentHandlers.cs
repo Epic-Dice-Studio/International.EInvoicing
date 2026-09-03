@@ -31,6 +31,8 @@ public sealed class DocumentHandlers
     private readonly IReadOnlyList<IDocumentWriter<EInvoice>> _invoiceWriters;
     private readonly IReadOnlyList<IDocumentReader<LifecycleStatusMessage>> _lifecycleReaders;
     private readonly IReadOnlyList<IDocumentWriter<LifecycleStatusMessage>> _lifecycleWriters;
+    private readonly IReadOnlyList<IDocumentReader<DespatchAdvice>> _despatchReaders;
+    private readonly IReadOnlyList<IDocumentWriter<DespatchAdvice>> _despatchWriters;
     private readonly IReadOnlyList<IWritePipelineStep> _writeSteps;
 
     /// <summary>Collects the handlers a container has registered.</summary>
@@ -52,17 +54,35 @@ public sealed class DocumentHandlers
         IEnumerable<IDocumentReader<LifecycleStatusMessage>> lifecycleReaders,
         IEnumerable<IDocumentWriter<LifecycleStatusMessage>> lifecycleWriters,
         IEnumerable<IWritePipelineStep> writeSteps)
+        : this(invoiceReaders, invoiceWriters, lifecycleReaders, lifecycleWriters, [], [], writeSteps)
+    {
+    }
+
+    /// <summary>The same, with the despatch advice handlers as well.</summary>
+    /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
+    public DocumentHandlers(
+        IEnumerable<IDocumentReader<EInvoice>> invoiceReaders,
+        IEnumerable<IDocumentWriter<EInvoice>> invoiceWriters,
+        IEnumerable<IDocumentReader<LifecycleStatusMessage>> lifecycleReaders,
+        IEnumerable<IDocumentWriter<LifecycleStatusMessage>> lifecycleWriters,
+        IEnumerable<IDocumentReader<DespatchAdvice>> despatchReaders,
+        IEnumerable<IDocumentWriter<DespatchAdvice>> despatchWriters,
+        IEnumerable<IWritePipelineStep> writeSteps)
     {
         ArgumentNullException.ThrowIfNull(invoiceReaders);
         ArgumentNullException.ThrowIfNull(invoiceWriters);
         ArgumentNullException.ThrowIfNull(lifecycleReaders);
         ArgumentNullException.ThrowIfNull(lifecycleWriters);
+        ArgumentNullException.ThrowIfNull(despatchReaders);
+        ArgumentNullException.ThrowIfNull(despatchWriters);
         ArgumentNullException.ThrowIfNull(writeSteps);
 
         _invoiceReaders = [.. invoiceReaders];
         _invoiceWriters = [.. invoiceWriters];
         _lifecycleReaders = [.. lifecycleReaders];
         _lifecycleWriters = [.. lifecycleWriters];
+        _despatchReaders = [.. despatchReaders];
+        _despatchWriters = [.. despatchWriters];
         _writeSteps = [.. writeSteps];
     }
 
@@ -87,6 +107,8 @@ public sealed class DocumentHandlers
             [new UblInvoiceWriter(), new CiiInvoiceWriter()],
             [new CdarReader(options, profiles), new UblApplicationResponseReader(options, profiles)],
             [new CdarWriter(), new UblApplicationResponseWriter()],
+            [new UblDespatchAdviceReader(options, profiles)],
+            [new UblDespatchAdviceWriter()],
             writeSteps);
     }
 
@@ -130,6 +152,14 @@ public sealed class DocumentHandlers
     public IDocumentWriter<LifecycleStatusMessage>? LifecycleWriterFor(DocumentSyntax syntax) =>
         Last(_lifecycleWriters, syntax);
 
+    /// <summary>The despatch advice reader for a syntax, or <c>null</c> when nothing handles it.</summary>
+    public IDocumentReader<DespatchAdvice>? DespatchAdviceReaderFor(DocumentSyntax syntax) =>
+        Last(_despatchReaders, syntax);
+
+    /// <summary>The despatch advice writer for a syntax, or <c>null</c> when nothing handles it.</summary>
+    public IDocumentWriter<DespatchAdvice>? DespatchAdviceWriterFor(DocumentSyntax syntax) =>
+        Last(_despatchWriters, syntax);
+
     private static THandler? Last<THandler>(IReadOnlyList<THandler> handlers, DocumentSyntax syntax)
         where THandler : class
     {
@@ -141,6 +171,8 @@ public sealed class DocumentHandlers
                 IDocumentWriter<EInvoice> writer => writer.Syntax,
                 IDocumentReader<LifecycleStatusMessage> reader => reader.Syntax,
                 IDocumentWriter<LifecycleStatusMessage> writer => writer.Syntax,
+                IDocumentReader<DespatchAdvice> reader => reader.Syntax,
+                IDocumentWriter<DespatchAdvice> writer => writer.Syntax,
                 _ => default,
             };
 

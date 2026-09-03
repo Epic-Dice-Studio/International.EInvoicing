@@ -1,13 +1,14 @@
-# Peppol Invoice Response and Message Level Response
+# The Peppol post-award documents that are not invoices
 
 ## Scope and version
 
-Two Peppol documents that are not invoices, and the first of the post-award family this library carries.
+Three Peppol documents that are not invoices.
 
 | | What it answers |
 |---|---|
 | **Invoice Response** — `urn:fdc:peppol.eu:poacc:trns:invoice_response:3` | *What happened to the invoice?* In process, accepted, rejected, under query, conditionally accepted, paid. |
 | **Message Level Response** — `urn:fdc:peppol.eu:poacc:trns:mlr:3` | *Did the message arrive and parse at all?* One layer below the business question. |
+| **Despatch Advice** — `urn:fdc:peppol.eu:poacc:trns:despatch_advice:3` | *What actually left the warehouse?* The document an invoice is reconciled against. |
 
 An Invoice Response is what a receiver **owes** a sender: without it, a supplier who has sent an invoice into
 the network knows nothing until the money arrives or does not. It is implemented in
@@ -102,17 +103,41 @@ EInvoicing library = EInvoicing.Create(builder => builder
     .AddDefaults()
     .AddPeppol()
     .AddUblSchema()
-    .AddPeppolResponseRulesFrom("specs/peppol/poacc/rules"));
+    .AddPeppolPostAwardRulesFrom("specs/peppol/poacc/rules"));
 ```
 
 Each rule set is registered against the transaction it governs. Both documents share a root element and
 differ in what they mean, so a rule set let loose on the other's documents reports failures that are not in
 them — twelve of them, on OpenPEPPOL's own example.
 
+## The despatch advice
+
+An invoice says what is owed and an order says what was asked for; only the despatch advice says what was
+sent. Receiving ten of an ordered twelve is the whole reason `cbc:OutstandingQuantity` exists — and
+`PEPPOL-T16-R007` warns when one appears without a reason beside it, because a buyer told goods are missing
+and not told why has nothing to act on.
+
+Its model is `DespatchAdvice`, and it does **not** reuse the invoice's `Item`. UBL calls both `cac:Item`, but
+an invoice's item is what is being charged for and a despatched item is a physical thing in a box: which
+serial numbers went out, which lot they came from, whether the box is dangerous to carry. `DespatchItem`
+carries the second so the invoice model does not grow a logistics vocabulary no invoice uses.
+
+| Model | UBL |
+|---|---|
+| `Number`, `IssuedAt` | `cbc:ID`, `cbc:IssueDate` + `cbc:IssueTime` |
+| `DespatchParty`, `DeliveryParty`, `BuyerParty`, `SellerParty`, `OriginatorParty` | the five role wrappers, each holding a `cac:Party` |
+| `Shipment` | `cac:Shipment` — weight, volume, carrier, tracking, when it left, when it is expected |
+| `Lines[].DeliveredQuantity` / `OutstandingQuantity` / `OutstandingReason` | what arrived, what did not, and why |
+| `Lines[].Item.Instances` | `cac:ItemInstance` — serial numbers, lots, best-before dates |
+| `Lines[].Packaging.HandlingUnits` | the line's own `cac:Shipment`: pallets, boxes, packages |
+
+Every element of all six documents OpenPEPPOL publishes is mapped, bar one: `cac:Person` on the carrier,
+which identifies the driver. It is kept verbatim, written back, and reported as `EIV2020`.
+
 ## What is not here
 
-**Ordering and Despatch Advice.** They are different documents with different roots and their own models, not
-the same document under another profile. They are next in the post-award family.
+**Ordering.** The Order, Order Response, Order Change, Order Cancellation and Order Agreement are five more
+transactions with their own models — a bigger piece than this one, and the next in the family.
 
 ## Prior art
 
