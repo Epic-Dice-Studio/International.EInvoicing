@@ -41,6 +41,17 @@ public static class OrderXServiceCollectionExtensions
         services.TryAddSingleton(provider =>
             provider.GetServices<IDocumentWriter<Order>>().OfType<OrderXOrderWriter>().First());
 
+        // The response is the third document, and fills its own model rather than the order's.
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDocumentReader<OrderResponse>, OrderXOrderResponseReader>());
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IDocumentWriter<OrderResponse>, OrderXOrderResponseWriter>());
+
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentReader<OrderResponse>>().OfType<OrderXOrderResponseReader>().First());
+        services.TryAddSingleton(provider =>
+            provider.GetServices<IDocumentWriter<OrderResponse>>().OfType<OrderXOrderResponseWriter>().First());
+
         return services;
     }
 }

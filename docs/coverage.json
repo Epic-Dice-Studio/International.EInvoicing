@@ -75,13 +75,13 @@
           "notes": "The seller's answer to an order: accepted, rejected, or accepted on other terms — a different quantity, a later date, or a substitute product. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes. The advanced response and the order agreement are the same document under other profiles and need no reader of their own; the agreement restates the whole order, certificates and specification documents included."
         },
         {
-          "name": "Order-X — Order, Order Change",
+          "name": "Order-X — Order, Order Change, Order Response",
           "version": "1.0, on CIO D20B",
           "package": "International.EInvoicing.OrderX",
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "The Franco-German order, by the publishers of Factur-X and one document earlier in the chain. CII, but not the Cross Industry Invoice: the Cross Industry Order is a different UN/CEFACT message on version 128 of the same data types, so nothing that reads an invoice reads it. Read, round-tripped element for element and in sequence, and judged by FNFE-MPE's own schema and its 124 assertions against the one document they publish — the COMFORT reference order — with nothing left unmapped. The schemas and rules are fetched rather than shipped: build/fetch-specs.sh order-x, then AddOrderXSchemaFrom and AddOrderXRulesFrom. The order response is not done."
+          "notes": "The Franco-German order, by the publishers of Factur-X and one document earlier in the chain. CII, but not the Cross Industry Invoice: the Cross Industry Order is a different UN/CEFACT message on version 128 of the same data types, so nothing that reads an invoice reads it. Read, round-tripped element for element and in sequence, and judged by FNFE-MPE's own schema and its 124 assertions against the one document they publish — the COMFORT reference order — with nothing left unmapped. The schemas and rules are fetched rather than shipped: build/fetch-specs.sh order-x, then AddOrderXSchemaFrom and AddOrderXRulesFrom. The order response is read and written too; FNFE-MPE publishes no reference response, so it is judged by their schema and rules over a document derived from their order rather than against a published example."
         },
         {
           "name": "ZUGFeRD 1.0",

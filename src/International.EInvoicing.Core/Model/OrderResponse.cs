@@ -32,6 +32,27 @@ public sealed class OrderResponse : InvoiceNode
     /// <summary>Free-text notes about the response.</summary>
     public List<InvoiceNote> Notes { get; } = [];
 
+    /// <summary>What kind of document this is.</summary>
+    public CodeField TypeCode { get; set; }
+
+    /// <summary>What the sender calls this document, when they name it at all.</summary>
+    public TextField Name { get; set; }
+
+    /// <summary>Whether the document is a copy of one already sent.</summary>
+    public IndicatorField IsCopy { get; set; }
+
+    /// <summary>Whether the document is a test rather than a real response.</summary>
+    public IndicatorField IsTest { get; set; }
+
+    /// <summary>Why the document was sent — an original, a replacement, a duplicate.</summary>
+    public CodeField PurposeCode { get; set; }
+
+    /// <summary>What answer the sender wants back, and whether one is wanted at all.</summary>
+    public CodeField RequestedResponseTypeCode { get; set; }
+
+    /// <summary>How long the response stands.</summary>
+    public InvoicingPeriod? ValidityPeriod { get; set; }
+
     /// <summary>The currency the response is expressed in.</summary>
     public CodeField CurrencyCode { get; set; }
 
@@ -76,6 +97,48 @@ public sealed class OrderResponse : InvoiceNode
 
     /// <summary>The contract the order was placed under.</summary>
     public IdentifierField ContractReference { get; set; }
+
+    /// <summary>The quotation the order accepted.</summary>
+    public IdentifierField QuotationReference { get; set; }
+
+    /// <summary>The catalogue the items were chosen from.</summary>
+    public IdentifierField CatalogueReference { get; set; }
+
+    /// <summary>The blanket order the order draws down against.</summary>
+    public IdentifierField BlanketOrderReference { get; set; }
+
+    /// <summary>An earlier response this one supersedes.</summary>
+    public IdentifierField PreviousOrderResponseReference { get; set; }
+
+    /// <summary>The project the order belongs to.</summary>
+    public IdentifierField ProjectReference { get; set; }
+
+    /// <summary>What that project is called.</summary>
+    public TextField ProjectName { get; set; }
+
+    /// <summary>The delivery terms the parties agreed.</summary>
+    public IdentifierField DeliveryTermsCode { get; set; }
+
+    /// <summary>Those terms in words.</summary>
+    public TextField DeliveryTerms { get; set; }
+
+    /// <summary>Which side of the delivery terms is being named — the place of delivery, of despatch.</summary>
+    public CodeField DeliveryTermsFunctionCode { get; set; }
+
+    /// <summary>The place those terms name.</summary>
+    public IdentifierField DeliveryTermsLocation { get; set; }
+
+    /// <summary>What that place is called.</summary>
+    public TextField DeliveryTermsLocationName { get; set; }
+
+    /// <summary>What the parties agreed about payment.</summary>
+    public TextField PaymentTerms { get; set; }
+
+    /// <summary>How the buyer means to pay, when the response says so.</summary>
+    public PaymentInstructions? Payment { get; set; }
+
+    /// <summary>The seller's accounting cost centre.</summary>
+    public TextField AccountingReference { get; set; }
 
     /// <summary>Documents sent with the response.</summary>
     public List<AdditionalDocument> AdditionalDocuments { get; } = [];

@@ -58,6 +58,16 @@ public sealed class OrderDelivery : InvoiceNode
     /// <summary>The latest the seller undertakes to deliver.</summary>
     public DateTimeField PromisedUntil { get; set; }
 
+    /// <summary>
+    /// The day the seller undertakes to deliver, when they name a day rather than a window.
+    /// </summary>
+    /// <remarks>
+    /// Kept apart from the promised window for the same reason <see cref="RequestedAt"/> is kept apart from
+    /// the requested one: Order-X lets a response state both, and reading the pair as one loses whichever
+    /// came second.
+    /// </remarks>
+    public DateTimeField PromisedAt { get; set; }
+
     /// <summary>The shipment's identifier, when the buyer names one.</summary>
     public IdentifierField ShipmentIdentifier { get; set; }
 

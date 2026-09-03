@@ -126,6 +126,8 @@ International.EInvoicing.EInvoicing.KnownProfiles.get -> System.Collections.Gene
 International.EInvoicing.EInvoicing.Lifecycle.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.LifecycleStatusMessage!>!
 International.EInvoicing.EInvoicing.LifecycleWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.LifecycleStatusMessage!>!
 International.EInvoicing.EInvoicing.OrderX.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.Order!>!
+International.EInvoicing.EInvoicing.OrderXResponse.get -> International.EInvoicing.Documents.IDocumentReader<International.EInvoicing.Model.OrderResponse!>!
+International.EInvoicing.EInvoicing.OrderXResponseWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.OrderResponse!>!
 International.EInvoicing.EInvoicing.OrderXWriter.get -> International.EInvoicing.Documents.IDocumentWriter<International.EInvoicing.Model.Order!>!
 International.EInvoicing.EInvoicing.Profiles.get -> International.EInvoicing.Profiles.IProfileResolver!
 International.EInvoicing.EInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!

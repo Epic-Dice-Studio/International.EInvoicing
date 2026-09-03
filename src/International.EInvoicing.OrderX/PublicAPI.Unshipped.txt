@@ -11,6 +11,18 @@ International.EInvoicing.OrderX.Reading.OrderXOrderReader.Read(System.IO.Stream!
 International.EInvoicing.OrderX.Reading.OrderXOrderReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.Order!>!
 International.EInvoicing.OrderX.Reading.OrderXOrderReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.Order!>!>!
 International.EInvoicing.OrderX.Reading.OrderXOrderReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.OrderX.Reading.OrderXOrderResponseReader
+International.EInvoicing.OrderX.Reading.OrderXOrderResponseReader.OrderXOrderResponseReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.OrderX.Reading.OrderXOrderResponseReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.OrderResponse!>!
+International.EInvoicing.OrderX.Reading.OrderXOrderResponseReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.OrderResponse!>!
+International.EInvoicing.OrderX.Reading.OrderXOrderResponseReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.OrderResponse!>!>!
+International.EInvoicing.OrderX.Reading.OrderXOrderResponseReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.OrderX.Writing.OrderXOrderResponseWriter
+International.EInvoicing.OrderX.Writing.OrderXOrderResponseWriter.OrderXOrderResponseWriter() -> void
+International.EInvoicing.OrderX.Writing.OrderXOrderResponseWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.OrderX.Writing.OrderXOrderResponseWriter.Write(International.EInvoicing.Model.OrderResponse! document, System.IO.Stream! destination) -> void
+International.EInvoicing.OrderX.Writing.OrderXOrderResponseWriter.WriteAsync(International.EInvoicing.Model.OrderResponse! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.OrderX.Writing.OrderXOrderResponseWriter.WriteToString(International.EInvoicing.Model.OrderResponse! document) -> string!
 International.EInvoicing.OrderX.Writing.OrderXOrderWriter
 International.EInvoicing.OrderX.Writing.OrderXOrderWriter.OrderXOrderWriter() -> void
 International.EInvoicing.OrderX.Writing.OrderXOrderWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax

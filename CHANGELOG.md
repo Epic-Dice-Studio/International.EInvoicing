@@ -6,6 +6,21 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Order-X order response**, which completes the format: all three documents Order-X carries are now
+  read and written. A response fills `OrderResponse`, is told from an order by its type code, and carries the
+  seller's answer — a status on the document, a status on each line, and an agreed quantity beside the
+  requested one, because the difference between those two is the whole point of a response that is not a
+  plain acceptance.
+- `OrderResponse` and `OrderResponseLine` gained the terms Order-X states and the model had nowhere to put:
+  the document's own name and type, whether it is a copy or a test, the validity period, the delivery terms
+  and payment means, the quotation, catalogue, blanket-order and project references, and on a line the
+  allowances, the partial-delivery indicator and the package quantities. `OrderDelivery.PromisedAt` is kept
+  apart from the promised window for the same reason `RequestedAt` is kept apart from the requested one.
+- **There is no published reference response.** The tests derive one from FNFE-MPE's published order by
+  changing only what a response changes, and say so — it proves reader and writer are inverse and that what
+  is written satisfies the publisher's schema and rules, which is not the same as having been checked against
+  a real document.
+
 - **CII documents are validated against D16B, not D22B.** EN 16931's CII syntax binding names D16B, and so do
   XRechnung, Factur-X and Peppol — every CII profile this library implements. The two revisions share their
   namespaces, so the D22B schemas attached silently to D16B documents and rejected values D16B allows: a

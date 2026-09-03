@@ -25,6 +25,30 @@ public sealed class OrderResponseLine : InvoiceNode
     /// <summary>The most the seller will place on back order.</summary>
     public QuantityField MaximumBackorderQuantity { get; set; }
 
+    /// <summary>
+    /// What the buyer asked for on this line, carried back so the two can be compared.
+    /// </summary>
+    /// <remarks>
+    /// Order-X states the requested quantity and the agreed one side by side, and the difference between
+    /// them is the whole point of a response that is not a plain acceptance.
+    /// </remarks>
+    public QuantityField RequestedQuantity { get; set; }
+
+    /// <summary>What the line references.</summary>
+    public List<AdditionalDocument> AdditionalDocuments { get; } = [];
+
+    /// <summary>The allowances and charges the seller applies to this line.</summary>
+    public List<AllowanceCharge> AllowancesAndCharges { get; } = [];
+
+    /// <summary>Whether the seller will deliver this line in parts.</summary>
+    public IndicatorField PartialDeliveryAccepted { get; set; }
+
+    /// <summary>How many packages the agreed quantity comes in.</summary>
+    public QuantityField PackageQuantity { get; set; }
+
+    /// <summary>How many units are in each of them.</summary>
+    public QuantityField UnitsPerPackage { get; set; }
+
     /// <summary>What the line comes to, as agreed.</summary>
     public AmountField NetAmount { get; set; }
 
