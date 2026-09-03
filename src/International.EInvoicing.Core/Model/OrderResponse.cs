@@ -29,8 +29,8 @@ public sealed class OrderResponse : InvoiceNode
     /// </summary>
     public CodeField ResponseCode { get; set; }
 
-    /// <summary>A free-text note about the response as a whole.</summary>
-    public TextField Note { get; set; }
+    /// <summary>Free-text notes about the response.</summary>
+    public List<InvoiceNote> Notes { get; } = [];
 
     /// <summary>The currency the response is expressed in.</summary>
     public CodeField CurrencyCode { get; set; }

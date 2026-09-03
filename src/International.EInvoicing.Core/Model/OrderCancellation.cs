@@ -21,8 +21,8 @@ public sealed class OrderCancellation : InvoiceNode
     /// <summary>When it was issued.</summary>
     public DateTimeField IssuedAt { get; set; }
 
-    /// <summary>A free-text note about the cancellation.</summary>
-    public TextField Note { get; set; }
+    /// <summary>Free-text notes about the cancellation.</summary>
+    public List<InvoiceNote> Notes { get; } = [];
 
     /// <summary>Why the order is being withdrawn.</summary>
     public TextField Reason { get; set; }

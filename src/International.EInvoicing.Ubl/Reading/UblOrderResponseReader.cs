@@ -105,7 +105,10 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
             UblOrderReader.Take(root, UblNames.Cbc + "IssueTime", mapped));
         response.ResponseCode = values.ReadCode(
             UblOrderReader.Take(root, UblNames.Cbc + "OrderResponseCode", mapped));
-        response.Note = values.ReadText(UblOrderReader.Take(root, UblNames.Cbc + "Note", mapped));
+        foreach (XElement note in UblOrderReader.TakeAll(root, UblNames.Cbc + "Note", mapped))
+        {
+            response.Notes.Add(values.ReadNote(note));
+        }
         response.CurrencyCode = values.ReadCode(
             UblOrderReader.Take(root, UblNames.Cbc + "DocumentCurrencyCode", mapped));
         response.BuyerReference = values.ReadText(
@@ -262,7 +265,10 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
         {
             owners[item] = line;
             line.Identifier = values.ReadIdentifier(UblOrderReader.Take(item, UblNames.Cbc + "ID", mapped));
-            line.Note = values.ReadText(UblOrderReader.Take(item, UblNames.Cbc + "Note", mapped));
+            foreach (XElement note in UblOrderReader.TakeAll(item, UblNames.Cbc + "Note", mapped))
+            {
+                line.Notes.Add(values.ReadNote(note));
+            }
             line.StatusCode = values.ReadCode(UblOrderReader.Take(item, UblNames.Cbc + "LineStatusCode", mapped));
             line.Quantity = values.ReadQuantity(UblOrderReader.Take(item, UblNames.Cbc + "Quantity", mapped));
             line.NetAmount = values.ReadAmount(

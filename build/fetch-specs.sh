@@ -26,6 +26,7 @@ XRECHNUNG_TESTSUITE_REF="master"
 PHIVE_RULES_REF="master"
 FRENCH_RULES_VERSION="1.4.0.03"
 FRENCH_FLUX10_VERSION="1.0"
+MUSTANG_REF="master"
 
 log()  { printf '\033[1m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[33m!!\033[0m %s\n' "$*" >&2; }
@@ -231,6 +232,31 @@ fetch_cii_schemas() {
     done < <(grep -o '"path": "[^"]*/d22b/cii/[^"]*\.xsd"' "$listing" | cut -d'"' -f4)
 }
 
+# Order-X: the Franco-German order, order response and order change, in CII. FNFE-MPE and FeRD publish the
+# package as a registration-walled archive; mustangproject carries the same normative artefacts — the three
+# profile schemas, the three source Schematron rule sets, and the reference document — under Apache-2.0.
+fetch_orderx() {
+    local src="$WORK_DIR/mustang"
+    clone_at https://github.com/ZUGFeRD/mustangproject.git "$MUSTANG_REF" "$src"
+
+    local resources="$src/validator/src/main/resources"
+    rm -rf "$SPECS_DIR/order-x"
+
+    local profile
+    for profile in basic comfort extended; do
+        sync_into "$resources/schema/OX_10/$profile" "$SPECS_DIR/order-x/schema"
+        sync_into "$resources/schematron/OX_10/$profile" "$SPECS_DIR/order-x/schematron"
+    done
+
+    # The one published reference document, and the hybrid PDF carrying it.
+    sync_into "$src/library/src/test/resources/ORDER-X_EX01_ORDER_FULL_DATA-COMFORTorder-x.xml" \
+        "$SPECS_DIR/order-x/examples"
+    sync_into "$src/library/src/test/resources/ORDER-X_EX01_ORDER_FULL_DATA-COMFORT.pdf" \
+        "$SPECS_DIR/order-x/examples"
+
+    copy_licence "$src" "$SPECS_DIR/order-x"
+}
+
 fetch_manual() {
     cat >&2 <<'MANUAL'
 
@@ -260,9 +286,10 @@ main() {
         xrechnung) fetch_xrechnung ;;
         ubl)       fetch_ubl_schemas ;;
         cii)       fetch_cii_schemas ;;
+        order-x)   fetch_orderx ;;
         france)    fetch_france ;;
-        all)       fetch_en16931; fetch_peppol; fetch_poacc; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_cii_schemas; fetch_manual ;;
-        *)         warn "unknown target '$target' (en16931 | peppol | poacc | pint | national | xrechnung | france | all)"; exit 2 ;;
+        all)       fetch_en16931; fetch_peppol; fetch_poacc; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_cii_schemas; fetch_orderx; fetch_manual ;;
+        *)         warn "unknown target '$target' (en16931 | peppol | poacc | pint | national | xrechnung | france | ubl | cii | order-x | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"
 }

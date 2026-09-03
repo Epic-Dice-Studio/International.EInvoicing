@@ -31,6 +31,18 @@ public sealed class OrderItem : InvoiceNode
     /// <summary>The identifier from a standard scheme, a GTIN above all.</summary>
     public IdentifierField StandardIdentifier { get; set; }
 
+    /// <summary>The batch the goods are to come from, when the buyer names one.</summary>
+    public IdentifierField BatchIdentifier { get; set; }
+
+    /// <summary>The brand asked for, which is not always what the item is called.</summary>
+    public TextField BrandName { get; set; }
+
+    /// <summary>Where the goods are to come from.</summary>
+    public CodeField OriginCountryCode { get; set; }
+
+    /// <summary>How the item is to be packed.</summary>
+    public ItemPackaging? Packaging { get; set; }
+
     /// <summary>The specification the buyer is ordering against.</summary>
     public IdentifierField SpecificationReference { get; set; }
 

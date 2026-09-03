@@ -11,8 +11,8 @@ public sealed class OrderResponseLine : InvoiceNode
     /// <summary>The line's identifier in this response.</summary>
     public IdentifierField Identifier { get; set; }
 
-    /// <summary>A free-text note about this line.</summary>
-    public TextField Note { get; set; }
+    /// <summary>Free-text notes about this line.</summary>
+    public List<InvoiceNote> Notes { get; } = [];
 
     /// <summary>
     /// What the seller is doing with the line, from UNTDID 1229 — accepted, changed, rejected.

@@ -145,6 +145,20 @@ internal sealed class UblDocument : IDisposable
         }
     }
 
+    /// <summary>
+    /// Writes the notes of a document or a line. UBL has no element for the subject code: it is a prefix on
+    /// the note itself, which is why these do not go through <see cref="Text"/> unchanged.
+    /// </summary>
+    public void Notes(IEnumerable<InvoiceNote> notes)
+    {
+        ArgumentNullException.ThrowIfNull(notes);
+
+        foreach (InvoiceNote note in notes)
+        {
+            Text("Note", new TextField(UblNoteSubject.Join(note.SubjectCode.Value, note.Text.Value ?? string.Empty)));
+        }
+    }
+
     public void Code(string localName, CodeField field)
     {
         if (Start(localName, field))

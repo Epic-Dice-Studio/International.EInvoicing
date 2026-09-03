@@ -27,8 +27,32 @@ public sealed class Order : InvoiceNode
     /// <summary>What kind of order this is.</summary>
     public CodeField TypeCode { get; set; }
 
-    /// <summary>A free-text note about the order as a whole.</summary>
-    public TextField Note { get; set; }
+    /// <summary>What the sender calls this document, when they name it at all.</summary>
+    public TextField Name { get; set; }
+
+    /// <summary>Whether the document is a copy of one already sent.</summary>
+    public IndicatorField IsCopy { get; set; }
+
+    /// <summary>
+    /// Whether the document is a test rather than a real order.
+    /// </summary>
+    /// <remarks>
+    /// Worth keeping rather than dropping: a receiver that ignores it books a test order as a real one.
+    /// </remarks>
+    public IndicatorField IsTest { get; set; }
+
+    /// <summary>Why the document was sent — an original, a replacement, a duplicate.</summary>
+    public CodeField PurposeCode { get; set; }
+
+    /// <summary>What answer the buyer wants back, and whether one is wanted at all.</summary>
+    public CodeField RequestedResponseTypeCode { get; set; }
+
+    /// <summary>Free-text notes about the order as a whole.</summary>
+    /// <remarks>
+    /// A list rather than one note, because both UBL and Order-X allow several and each may carry its own
+    /// subject code — a delivery instruction and a payment instruction are not the same note.
+    /// </remarks>
+    public List<InvoiceNote> Notes { get; } = [];
 
     /// <summary>The currency the order is expressed in.</summary>
     public CodeField CurrencyCode { get; set; }
@@ -75,6 +99,18 @@ public sealed class Order : InvoiceNode
     /// <summary>The project the order belongs to.</summary>
     public IdentifierField ProjectReference { get; set; }
 
+    /// <summary>What that project is called.</summary>
+    public TextField ProjectName { get; set; }
+
+    /// <summary>The blanket order this one draws down against.</summary>
+    public IdentifierField BlanketOrderReference { get; set; }
+
+    /// <summary>The order change this document supersedes.</summary>
+    public IdentifierField PreviousOrderChangeReference { get; set; }
+
+    /// <summary>The order response this document answers.</summary>
+    public IdentifierField PreviousOrderResponseReference { get; set; }
+
     /// <summary>Documents sent with the order.</summary>
     public List<AdditionalDocument> AdditionalDocuments { get; } = [];
 
@@ -99,11 +135,20 @@ public sealed class Order : InvoiceNode
     /// <summary>The delivery terms in words.</summary>
     public TextField DeliveryTerms { get; set; }
 
+    /// <summary>Which side of the delivery terms is being named — the place of delivery, of despatch.</summary>
+    public CodeField DeliveryTermsFunctionCode { get; set; }
+
     /// <summary>Where the delivery terms take effect.</summary>
     public IdentifierField DeliveryTermsLocation { get; set; }
 
+    /// <summary>What that place is called.</summary>
+    public TextField DeliveryTermsLocationName { get; set; }
+
     /// <summary>The payment terms the buyer expects.</summary>
     public TextField PaymentTerms { get; set; }
+
+    /// <summary>How the buyer means to pay, when the order says so.</summary>
+    public PaymentInstructions? Payment { get; set; }
 
     /// <summary>Allowances and charges applying to the whole order.</summary>
     public List<AllowanceCharge> AllowancesAndCharges { get; } = [];

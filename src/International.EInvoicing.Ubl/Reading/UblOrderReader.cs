@@ -102,7 +102,10 @@ public sealed class UblOrderReader : IDocumentReader<Order>
             Take(root, UblNames.Cbc + "IssueDate", mapped),
             Take(root, UblNames.Cbc + "IssueTime", mapped));
         order.TypeCode = values.ReadCode(Take(root, UblNames.Cbc + "OrderTypeCode", mapped));
-        order.Note = values.ReadText(Take(root, UblNames.Cbc + "Note", mapped));
+        foreach (XElement note in TakeAll(root, UblNames.Cbc + "Note", mapped))
+        {
+            order.Notes.Add(values.ReadNote(note));
+        }
         order.CurrencyCode = values.ReadCode(Take(root, UblNames.Cbc + "DocumentCurrencyCode", mapped));
         order.BuyerReference = values.ReadText(Take(root, UblNames.Cbc + "CustomerReference", mapped));
         order.AccountingReference = values.ReadText(Take(root, UblNames.Cbc + "AccountingCost", mapped));
@@ -391,10 +394,12 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         Dictionary<XElement, InvoiceNode> owners,
         DocumentLimits limits)
     {
-        var line = new OrderLine
+        var line = new OrderLine();
+
+        foreach (XElement note in TakeAll(element, UblNames.Cbc + "Note", mapped))
         {
-            Note = values.ReadText(Take(element, UblNames.Cbc + "Note", mapped)),
-        };
+            line.Notes.Add(values.ReadNote(note));
+        }
 
         if (Take(element, UblNames.Cac + "LineItem", mapped) is not { } item)
         {

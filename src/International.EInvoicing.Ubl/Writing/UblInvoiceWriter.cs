@@ -128,14 +128,7 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
         WriteDate(writer, "DueDate", invoice.DueDate);
         WriteCode(writer, shape.TypeCode.LocalName, invoice.TypeCode);
 
-        foreach (InvoiceNote note in invoice.Notes)
-        {
-            // UBL has no element for BT-21: the subject code is a prefix on the note itself.
-            WriteText(
-                writer,
-                "Note",
-                new Values.TextField(UblNoteSubject.Join(note.SubjectCode.Value, note.Text.Value ?? string.Empty)));
-        }
+        writer.Notes(invoice.Notes);
 
         WriteDate(writer, "TaxPointDate", invoice.TaxPointDate);
         WriteCode(writer, "DocumentCurrencyCode", invoice.CurrencyCode);

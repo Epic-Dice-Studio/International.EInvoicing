@@ -85,7 +85,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             writer.Code("OrderTypeCode", order.TypeCode);
         }
 
-        writer.Text("Note", order.Note);
+        writer.Notes(order.Notes);
         writer.Code("DocumentCurrencyCode", order.CurrencyCode);
         writer.Text("CustomerReference", order.BuyerReference);
         writer.Text("AccountingCost", order.AccountingReference);
@@ -476,7 +476,7 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
     private static void WriteLine(OrderLine line, UblDocument writer, string? currency)
     {
         writer.StartCac("OrderLine", line.Extensions);
-        writer.Text("Note", line.Note);
+        writer.Notes(line.Notes);
 
         writer.StartCac("LineItem");
         writer.Identifier("ID", line.Identifier);

@@ -8,8 +8,8 @@ public sealed class OrderLine : InvoiceNode
     /// <summary>The line's identifier within the order.</summary>
     public IdentifierField Identifier { get; set; }
 
-    /// <summary>A free-text note about this line.</summary>
-    public TextField Note { get; set; }
+    /// <summary>Free-text notes about this line.</summary>
+    public List<InvoiceNote> Notes { get; } = [];
 
     /// <summary>
     /// What is happening to the line, when the document amends an earlier order.
@@ -22,6 +22,12 @@ public sealed class OrderLine : InvoiceNode
 
     /// <summary>How much is wanted.</summary>
     public QuantityField Quantity { get; set; }
+
+    /// <summary>How many packages that quantity comes in.</summary>
+    public QuantityField PackageQuantity { get; set; }
+
+    /// <summary>How many units are in each of them.</summary>
+    public QuantityField UnitsPerPackage { get; set; }
 
     /// <summary>What the line is expected to come to, before tax.</summary>
     public AmountField NetAmount { get; set; }
@@ -43,6 +49,27 @@ public sealed class OrderLine : InvoiceNode
 
     /// <summary>Allowances and charges applying to this line.</summary>
     public List<AllowanceCharge> AllowancesAndCharges { get; } = [];
+
+    /// <summary>The line of an earlier order this one restates.</summary>
+    public IdentifierField OrderLineReference { get; set; }
+
+    /// <summary>The quotation this line accepts, and the line of it.</summary>
+    public IdentifierField QuotationReference { get; set; }
+
+    /// <summary>Which line of that quotation.</summary>
+    public IdentifierField QuotationLineReference { get; set; }
+
+    /// <summary>The catalogue the item was chosen from, and the line of it.</summary>
+    public IdentifierField CatalogueReference { get; set; }
+
+    /// <summary>Which line of that catalogue.</summary>
+    public IdentifierField CatalogueLineReference { get; set; }
+
+    /// <summary>The line of the blanket order this one draws down against.</summary>
+    public IdentifierField BlanketOrderLineReference { get; set; }
+
+    /// <summary>Documents sent with this line.</summary>
+    public List<AdditionalDocument> AdditionalDocuments { get; } = [];
 
     /// <summary>What was ordered.</summary>
     public OrderItem? Item { get; set; }

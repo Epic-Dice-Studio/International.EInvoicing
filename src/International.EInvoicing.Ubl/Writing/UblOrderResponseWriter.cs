@@ -75,7 +75,7 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
         writer.Identifier("SalesOrderID", response.SalesOrderNumber);
         writer.Moment("IssueDate", "IssueTime", response.IssuedAt);
         writer.Code("OrderResponseCode", response.ResponseCode);
-        writer.Text("Note", response.Note);
+        writer.Notes(response.Notes);
         writer.Code("DocumentCurrencyCode", response.CurrencyCode);
         writer.Text("CustomerReference", response.BuyerReference);
 
@@ -185,7 +185,7 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
 
         writer.StartCac("LineItem");
         writer.Identifier("ID", line.Identifier);
-        writer.Text("Note", line.Note);
+        writer.Notes(line.Notes);
         writer.Code("LineStatusCode", line.StatusCode);
         writer.Quantity("Quantity", line.Quantity);
         writer.Amount("LineExtensionAmount", line.NetAmount, currency);

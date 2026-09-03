@@ -23,6 +23,9 @@ public sealed class OrderDelivery : InvoiceNode
     /// <summary>Who receives the goods there.</summary>
     public Party? Recipient { get; set; }
 
+    /// <summary>Who the goods are to be collected from, when that is not the seller.</summary>
+    public Party? Consignor { get; set; }
+
     /// <summary>The earliest the buyer wants them.</summary>
     public DateTimeField RequestedFrom { get; set; }
 

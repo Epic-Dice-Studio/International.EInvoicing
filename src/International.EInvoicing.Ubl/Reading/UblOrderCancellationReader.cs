@@ -94,7 +94,10 @@ public sealed class UblOrderCancellationReader : IDocumentReader<OrderCancellati
         cancellation.IssuedAt = UblMoment.Read(
             UblOrderReader.Take(root, UblNames.Cbc + "IssueDate", mapped),
             UblOrderReader.Take(root, UblNames.Cbc + "IssueTime", mapped));
-        cancellation.Note = values.ReadText(UblOrderReader.Take(root, UblNames.Cbc + "Note", mapped));
+        foreach (XElement note in UblOrderReader.TakeAll(root, UblNames.Cbc + "Note", mapped))
+        {
+            cancellation.Notes.Add(values.ReadNote(note));
+        }
         cancellation.Reason = values.ReadText(
             UblOrderReader.Take(root, UblNames.Cbc + "CancellationNote", mapped));
 

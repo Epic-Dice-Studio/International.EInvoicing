@@ -73,6 +73,13 @@ specs/peppol/poacc/
 specs/en16931/compiled/
 specs/national/
 
+# Order-X: the schemas and rule sets are FNFE-MPE's and FeRD's, carried by a third party's repository.
+# Their own package is registration-walled, so nothing here may be redistributed on their behalf.
+specs/order-x/schema/
+specs/order-x/schematron/
+specs/order-x/examples/
+specs/order-x/LICENSE.upstream.txt
+
 # French rule sets: published by the DGFiP, carried by a repository that declares no licence
 specs/fr-dse/rules/
 specs/fr-dse/samples/

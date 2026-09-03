@@ -67,7 +67,7 @@ public sealed class UblOrderCancellationWriter : IDocumentWriter<OrderCancellati
         writer.Identifier("ProfileID", cancellation.BusinessProcessType);
         writer.Identifier("ID", cancellation.Number);
         writer.Moment("IssueDate", "IssueTime", cancellation.IssuedAt);
-        writer.Text("Note", cancellation.Note);
+        writer.Notes(cancellation.Notes);
         writer.Text("CancellationNote", cancellation.Reason);
 
         if (cancellation.OrderReference.IsSet)
