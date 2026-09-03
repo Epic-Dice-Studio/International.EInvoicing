@@ -1,0 +1,32 @@
+#nullable enable
+International.EInvoicing.OrderX.OrderXDiagnostics
+International.EInvoicing.OrderX.OrderXNames
+International.EInvoicing.OrderX.OrderXProfiles
+International.EInvoicing.OrderX.OrderXTypeCodes
+International.EInvoicing.OrderX.Reading.OrderXOrderReader
+International.EInvoicing.OrderX.Reading.OrderXOrderReader.OrderXOrderReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.OrderX.Reading.OrderXOrderReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.Order!>!
+International.EInvoicing.OrderX.Reading.OrderXOrderReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.Order!>!
+International.EInvoicing.OrderX.Reading.OrderXOrderReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.Order!>!>!
+International.EInvoicing.OrderX.Reading.OrderXOrderReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.OrderX.Writing.OrderXOrderWriter
+International.EInvoicing.OrderX.Writing.OrderXOrderWriter.OrderXOrderWriter() -> void
+International.EInvoicing.OrderX.Writing.OrderXOrderWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.OrderX.Writing.OrderXOrderWriter.Write(International.EInvoicing.Model.Order! document, System.IO.Stream! destination) -> void
+International.EInvoicing.OrderX.Writing.OrderXOrderWriter.WriteAsync(International.EInvoicing.Model.Order! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.OrderX.Writing.OrderXOrderWriter.WriteToString(International.EInvoicing.Model.Order! document) -> string!
+const International.EInvoicing.OrderX.OrderXTypeCodes.Order = "220" -> string!
+const International.EInvoicing.OrderX.OrderXTypeCodes.OrderChange = "230" -> string!
+const International.EInvoicing.OrderX.OrderXTypeCodes.OrderResponse = "231" -> string!
+static International.EInvoicing.OrderX.OrderXDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.OrderX.OrderXDiagnostics.UnknownDocumentType.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.OrderX.OrderXDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.OrderX.OrderXNames.Qdt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.OrderX.OrderXNames.Ram.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.OrderX.OrderXNames.Root.get -> System.Xml.Linq.XName!
+static International.EInvoicing.OrderX.OrderXNames.Rsm.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.OrderX.OrderXNames.Udt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.OrderX.OrderXProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.OrderX.OrderXProfiles.Basic.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.OrderX.OrderXProfiles.Comfort.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.OrderX.OrderXProfiles.Extended.get -> International.EInvoicing.Profiles.Profile!

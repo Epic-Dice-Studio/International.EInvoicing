@@ -32,6 +32,16 @@ public sealed class OrderDelivery : InvoiceNode
     /// <summary>The latest the buyer wants them.</summary>
     public DateTimeField RequestedUntil { get; set; }
 
+    /// <summary>
+    /// The day delivery is wanted, when the buyer names a day rather than a window.
+    /// </summary>
+    /// <remarks>
+    /// Kept apart from the window rather than folded into it, because Order-X lets a buyer state both: a
+    /// window they will accept and a date they would prefer. Reading the pair as one loses whichever came
+    /// second.
+    /// </remarks>
+    public DateTimeField RequestedAt { get; set; }
+
     /// <summary>When the buyer wants them despatched.</summary>
     public DateTimeField RequestedDespatchAt { get; set; }
 

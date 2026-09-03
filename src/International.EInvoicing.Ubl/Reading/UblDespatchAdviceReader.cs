@@ -330,8 +330,8 @@ public sealed class UblDespatchAdviceReader : IDocumentReader<DespatchAdvice>
         foreach (XElement classification in TakeAll(element, UblNames.Cac + "CommodityClassification", mapped))
         {
             owners[classification] = item;
-            item.ClassificationCodes.Add(
-                values.ReadCode(Take(classification, UblNames.Cbc + "ItemClassificationCode", mapped)));
+            item.Classifications.Add(
+                UblClassification.Read(Take(classification, UblNames.Cbc + "ItemClassificationCode", mapped), values));
         }
 
         if (Take(element, UblNames.Cac + "HazardousItem", mapped) is { } hazard)

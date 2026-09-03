@@ -557,10 +557,10 @@ public sealed class UblOrderWriter : IDocumentWriter<Order>
             WriteItemIdentifier("ItemSpecificationDocumentReference", item.SpecificationReference, writer);
         }
 
-        foreach (CodeField classification in item.ClassificationCodes)
+        foreach (ItemClassification classification in item.Classifications)
         {
             writer.StartCac("CommodityClassification");
-            writer.Code("ItemClassificationCode", classification);
+            UblClassification.Write(writer, classification);
             writer.End();
         }
 

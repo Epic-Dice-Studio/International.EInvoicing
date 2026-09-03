@@ -258,6 +258,10 @@ International.EInvoicing.Model.AdditionalDocument.ExternalLocation.get -> Intern
 International.EInvoicing.Model.AdditionalDocument.ExternalLocation.set -> void
 International.EInvoicing.Model.AdditionalDocument.Identifier.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.AdditionalDocument.Identifier.set -> void
+International.EInvoicing.Model.AdditionalDocument.LineReference.get -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Model.AdditionalDocument.LineReference.set -> void
+International.EInvoicing.Model.AdditionalDocument.ReferenceTypeCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.AdditionalDocument.ReferenceTypeCode.set -> void
 International.EInvoicing.Model.AdditionalDocument.TypeCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.AdditionalDocument.TypeCode.set -> void
 International.EInvoicing.Model.AllowanceCharge
@@ -282,12 +286,16 @@ International.EInvoicing.Model.AllowanceReasonCodes
 International.EInvoicing.Model.ChargeReasonCodes
 International.EInvoicing.Model.Contact
 International.EInvoicing.Model.Contact.Contact() -> void
+International.EInvoicing.Model.Contact.Department.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.Contact.Department.set -> void
 International.EInvoicing.Model.Contact.Email.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.Contact.Email.set -> void
 International.EInvoicing.Model.Contact.Name.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.Contact.Name.set -> void
 International.EInvoicing.Model.Contact.Telephone.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.Contact.Telephone.set -> void
+International.EInvoicing.Model.Contact.TypeCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.Contact.TypeCode.set -> void
 International.EInvoicing.Model.CountryCodes
 International.EInvoicing.Model.CreditTransfer
 International.EInvoicing.Model.CreditTransfer.AccountIdentifier.get -> International.EInvoicing.Values.IdentifierField
@@ -348,7 +356,7 @@ International.EInvoicing.Model.DespatchItem.BuyerIdentifier.set -> void
 International.EInvoicing.Model.DespatchItem.BuyerIdentifierExtension.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.DespatchItem.BuyerIdentifierExtension.set -> void
 International.EInvoicing.Model.DespatchItem.Characteristics.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemCharacteristic!>!
-International.EInvoicing.Model.DespatchItem.ClassificationCodes.get -> System.Collections.Generic.List<International.EInvoicing.Values.CodeField>!
+International.EInvoicing.Model.DespatchItem.Classifications.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemClassification!>!
 International.EInvoicing.Model.DespatchItem.DangerousGoodsCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.DespatchItem.DangerousGoodsCode.set -> void
 International.EInvoicing.Model.DespatchItem.Description.get -> International.EInvoicing.Values.TextField
@@ -613,7 +621,7 @@ International.EInvoicing.Model.Item
 International.EInvoicing.Model.Item.BuyerIdentifier.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.Item.BuyerIdentifier.set -> void
 International.EInvoicing.Model.Item.Characteristics.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemCharacteristic!>!
-International.EInvoicing.Model.Item.ClassificationCodes.get -> System.Collections.Generic.List<International.EInvoicing.Values.CodeField>!
+International.EInvoicing.Model.Item.Classifications.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemClassification!>!
 International.EInvoicing.Model.Item.Description.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.Item.Description.set -> void
 International.EInvoicing.Model.Item.Item() -> void
@@ -631,6 +639,12 @@ International.EInvoicing.Model.ItemCharacteristic.Name.get -> International.EInv
 International.EInvoicing.Model.ItemCharacteristic.Name.set -> void
 International.EInvoicing.Model.ItemCharacteristic.Value.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.ItemCharacteristic.Value.set -> void
+International.EInvoicing.Model.ItemClassification
+International.EInvoicing.Model.ItemClassification.Code.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.ItemClassification.Code.set -> void
+International.EInvoicing.Model.ItemClassification.ItemClassification() -> void
+International.EInvoicing.Model.ItemClassification.Name.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.ItemClassification.Name.set -> void
 International.EInvoicing.Model.ItemClassificationSchemeCodes
 International.EInvoicing.Model.ItemInstance
 International.EInvoicing.Model.ItemInstance.BestBeforeDate.get -> International.EInvoicing.Values.DateField
@@ -688,6 +702,7 @@ International.EInvoicing.Model.LifecycleStatusMessage.StatusIssuedAt.set -> void
 International.EInvoicing.Model.LifecycleStatusMessage.TypeCode.get -> International.EInvoicing.Values.CodeField
 International.EInvoicing.Model.LifecycleStatusMessage.TypeCode.set -> void
 International.EInvoicing.Model.LinePrice
+International.EInvoicing.Model.LinePrice.Adjustments.get -> System.Collections.Generic.List<International.EInvoicing.Model.AllowanceCharge!>!
 International.EInvoicing.Model.LinePrice.BaseQuantity.get -> International.EInvoicing.Values.QuantityField
 International.EInvoicing.Model.LinePrice.BaseQuantity.set -> void
 International.EInvoicing.Model.LinePrice.Discount.get -> International.EInvoicing.Values.AmountField
@@ -839,6 +854,8 @@ International.EInvoicing.Model.OrderDelivery.Quantity.get -> International.EInvo
 International.EInvoicing.Model.OrderDelivery.Quantity.set -> void
 International.EInvoicing.Model.OrderDelivery.Recipient.get -> International.EInvoicing.Model.Party?
 International.EInvoicing.Model.OrderDelivery.Recipient.set -> void
+International.EInvoicing.Model.OrderDelivery.RequestedAt.get -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Model.OrderDelivery.RequestedAt.set -> void
 International.EInvoicing.Model.OrderDelivery.RequestedDespatchAt.get -> International.EInvoicing.Values.DateTimeField
 International.EInvoicing.Model.OrderDelivery.RequestedDespatchAt.set -> void
 International.EInvoicing.Model.OrderDelivery.RequestedFrom.get -> International.EInvoicing.Values.DateTimeField
@@ -858,7 +875,7 @@ International.EInvoicing.Model.OrderItem.BuyerIdentifier.get -> International.EI
 International.EInvoicing.Model.OrderItem.BuyerIdentifier.set -> void
 International.EInvoicing.Model.OrderItem.Certificates.get -> System.Collections.Generic.List<International.EInvoicing.Model.OrderItemCertificate!>!
 International.EInvoicing.Model.OrderItem.Characteristics.get -> System.Collections.Generic.List<International.EInvoicing.Model.OrderItemProperty!>!
-International.EInvoicing.Model.OrderItem.ClassificationCodes.get -> System.Collections.Generic.List<International.EInvoicing.Values.CodeField>!
+International.EInvoicing.Model.OrderItem.Classifications.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemClassification!>!
 International.EInvoicing.Model.OrderItem.Description.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.OrderItem.Description.set -> void
 International.EInvoicing.Model.OrderItem.Instances.get -> System.Collections.Generic.List<International.EInvoicing.Model.ItemInstance!>!
@@ -1759,6 +1776,8 @@ static International.EInvoicing.Model.InvoiceTypeCodes.ForInvoices.get -> System
 static International.EInvoicing.Model.InvoiceTypeCodes.IsCreditNote(string? typeCode) -> bool
 static International.EInvoicing.Model.InvoiceTypeCodes.IsInvoice(string? typeCode) -> bool
 static International.EInvoicing.Model.InvoiceTypeCodes.IsKnown(string? typeCode) -> bool
+static International.EInvoicing.Model.ItemClassification.FromCode(International.EInvoicing.Values.CodeField code) -> International.EInvoicing.Model.ItemClassification!
+static International.EInvoicing.Model.ItemClassification.implicit operator International.EInvoicing.Model.ItemClassification!(International.EInvoicing.Values.CodeField code) -> International.EInvoicing.Model.ItemClassification!
 static International.EInvoicing.Model.ItemClassificationSchemeCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.Model.ItemClassificationSchemeCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Model.LineStatusReasonCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
@@ -1773,6 +1792,7 @@ static International.EInvoicing.Model.VatExemptionReasonCodes.All.get -> System.
 static International.EInvoicing.Model.VatExemptionReasonCodes.IsKnown(string? code) -> bool
 static International.EInvoicing.Profiles.DocumentSyntax.Cdar.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Cii.get -> International.EInvoicing.Profiles.DocumentSyntax
+static International.EInvoicing.Profiles.DocumentSyntax.OrderX.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Ubl.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.Unknown.get -> International.EInvoicing.Profiles.DocumentSyntax
 static International.EInvoicing.Profiles.DocumentSyntax.operator !=(International.EInvoicing.Profiles.DocumentSyntax left, International.EInvoicing.Profiles.DocumentSyntax right) -> bool

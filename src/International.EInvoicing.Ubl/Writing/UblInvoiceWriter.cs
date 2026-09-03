@@ -665,11 +665,11 @@ public sealed class UblInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        foreach (CodeField classification in item.ClassificationCodes.Where(c => c.IsSet))
+        foreach (ItemClassification classification in item.Classifications.Where(c => c.Code.IsSet))
         {
             StartCac(writer, "CommodityClassification");
-            WriteCode(writer, "ItemClassificationCode", classification);
-            writer.WriteEndElement();
+            UblClassification.Write(writer, classification);
+            writer.End();
         }
 
         if (line.VatCategoryCode.IsSet)

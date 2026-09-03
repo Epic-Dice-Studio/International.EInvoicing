@@ -85,12 +85,12 @@ public class CiusHrTests
         Failures(withoutProcess).ShouldContain("HR-BR-34");
 
         EInvoice withoutClassification = AnInvoice();
-        withoutClassification.Lines[0].Item!.ClassificationCodes.Clear();
+        withoutClassification.Lines[0].Item!.Classifications.Clear();
 
         Failures(withoutClassification).ShouldContain("HR-BR-25");
 
         EInvoice withAnInventedCode = AnInvoice();
-        withAnInventedCode.Lines[0].Item!.ClassificationCodes[0] = new CodeField("70.22", ListId: "CG");
+        withAnInventedCode.Lines[0].Item!.Classifications[0] = new CodeField("70.22", ListId: "CG");
 
         // The rule carries the whole KPD list, so a plausible code that is not in it is still refused.
         Failures(withAnInventedCode).ShouldContain("HR-BR-CL-2");
@@ -227,7 +227,7 @@ public class CiusHrTests
             .WithNetAmount(3000m)
             .WithVat("S", 25m)
             // HR-BR-25 and HR-BR-CL-2: a KPD (CPA) code, under list CG, out of the 3 359 the rule carries.
-            .Extend(line => line.Item!.ClassificationCodes.Add(new CodeField("70.20.11", ListId: "CG"))))
+            .Extend(line => line.Item!.Classifications.Add(new CodeField("70.20.11", ListId: "CG"))))
         .Extend(invoice =>
         {
             invoice.BusinessProcessType = "P1";

@@ -207,7 +207,7 @@ public class PeppolTaxDataTests
             .WithNetPrice(100m)
             .WithNetAmount(300m)
             .WithVat("S", 23m)
-            .Extend(line => line.Item!.ClassificationCodes.Add(new CodeField("70.20.11", ListId: "CG"))))
+            .Extend(line => line.Item!.Classifications.Add(new CodeField("70.20.11", ListId: "CG"))))
         .WithComputedVatBreakdown()
         .WithComputedTotals()
         .Build();

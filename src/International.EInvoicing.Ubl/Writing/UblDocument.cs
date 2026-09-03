@@ -159,13 +159,25 @@ internal sealed class UblDocument : IDisposable
         }
     }
 
-    public void Code(string localName, CodeField field)
+    /// <summary>
+    /// Writes a code. <paramref name="extra"/> carries attributes that belong to this code and not to codes
+    /// in general — an item classification's <c>name</c>, which UBL puts on the code rather than beside it.
+    /// </summary>
+    public void Code(string localName, CodeField field, params (string Name, string? Value)[] extra)
     {
+        ArgumentNullException.ThrowIfNull(extra);
+
         if (Start(localName, field))
         {
             Attribute("listID", field.ListId);
             Attribute("listVersionID", field.ListVersionId);
             Attribute("listAgencyID", field.ListAgencyId);
+
+            foreach ((string name, string? value) in extra)
+            {
+                Attribute(name, value);
+            }
+
             Value(field.Raw ?? field.Value);
         }
     }

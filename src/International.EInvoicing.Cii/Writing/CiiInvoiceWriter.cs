@@ -192,10 +192,11 @@ public sealed class CiiInvoiceWriter : IDocumentWriter<EInvoice>
             writer.WriteEndElement();
         }
 
-        foreach (CodeField classification in item.ClassificationCodes.Where(c => c.IsSet))
+        foreach (ItemClassification classification in item.Classifications.Where(c => c.Code.IsSet))
         {
             StartRam(writer, "DesignatedProductClassification");
-            WriteCode(writer, "ClassCode", classification);
+            WriteCode(writer, "ClassCode", classification.Code);
+            WriteText(writer, "ClassName", classification.Name);
             writer.WriteEndElement();
         }
 

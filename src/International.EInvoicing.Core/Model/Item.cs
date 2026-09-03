@@ -20,8 +20,8 @@ public sealed class Item : InvoiceNode
     /// <summary>BT-157 — a standard identifier such as a GTIN, with its scheme.</summary>
     public IdentifierField StandardIdentifier { get; set; }
 
-    /// <summary>BT-158 — classification codes, such as CPV or UNSPSC, with their list identifiers.</summary>
-    public List<CodeField> ClassificationCodes { get; } = [];
+    /// <summary>BT-158 — classifications, such as CPV or UNSPSC, each with its list and its name.</summary>
+    public List<ItemClassification> Classifications { get; } = [];
 
     /// <summary>BT-159 — the item's country of origin.</summary>
     public CodeField OriginCountryCode { get; set; }

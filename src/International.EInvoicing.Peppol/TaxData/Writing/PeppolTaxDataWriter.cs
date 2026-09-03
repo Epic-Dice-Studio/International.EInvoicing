@@ -456,17 +456,18 @@ public sealed class PeppolTaxDataWriter
         Cbc_(writer, "Description", item.Description.Value);
         Cbc_(writer, "Name", item.Name.Value);
 
-        foreach (CodeField classification in item.ClassificationCodes)
+        foreach (ItemClassification classification in item.Classifications)
         {
-            if (string.IsNullOrEmpty(classification.Value))
+            if (string.IsNullOrEmpty(classification.Code.Value))
             {
                 continue;
             }
 
             writer.WriteStartElement("cac", "CommodityClassification", Cac);
             writer.WriteStartElement("cbc", "ItemClassificationCode", Cbc);
-            WriteAttributeIfSet(writer, "listID", classification.ListId);
-            writer.WriteString(XmlCharacters.Sanitize(classification.Value!));
+            WriteAttributeIfSet(writer, "listID", classification.Code.ListId);
+            WriteAttributeIfSet(writer, "name", classification.Name.Value);
+            writer.WriteString(XmlCharacters.Sanitize(classification.Code.Value!));
             writer.WriteEndElement();
             writer.WriteEndElement();
         }

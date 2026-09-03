@@ -374,10 +374,10 @@ public sealed class UblDespatchAdviceWriter : IDocumentWriter<DespatchAdvice>
         WriteItemIdentifier("SellersItemIdentification", item.SellerIdentifier, item.SellerIdentifierExtension, writer);
         WriteItemIdentifier("StandardItemIdentification", item.StandardIdentifier, item.StandardIdentifierExtension, writer);
 
-        foreach (CodeField classification in item.ClassificationCodes)
+        foreach (ItemClassification classification in item.Classifications)
         {
             writer.StartCac("CommodityClassification");
-            writer.Code("ItemClassificationCode", classification);
+            UblClassification.Write(writer, classification);
             writer.End();
         }
 

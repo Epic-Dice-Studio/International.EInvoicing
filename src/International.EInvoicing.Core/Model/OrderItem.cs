@@ -62,7 +62,7 @@ public sealed class OrderItem : InvoiceNode
     public List<OrderItemCertificate> Certificates { get; } = [];
 
     /// <summary>How the item is classified, in whichever scheme the code names.</summary>
-    public List<CodeField> ClassificationCodes { get; } = [];
+    public List<ItemClassification> Classifications { get; } = [];
 
     /// <summary>Named properties of the item — colour, size, anything the parties agreed on.</summary>
     public List<OrderItemProperty> Characteristics { get; } = [];

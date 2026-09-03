@@ -26,6 +26,7 @@
     <Project Path="src/International.EInvoicing.Countries.Belgium/International.EInvoicing.Countries.Belgium.csproj" />
     <Project Path="src/International.EInvoicing.Countries.France/International.EInvoicing.Countries.France.csproj" />
     <Project Path="src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
+    <Project Path="src/International.EInvoicing.OrderX/International.EInvoicing.OrderX.csproj" />
     <Project Path="src/International.EInvoicing.FacturX.PdfSharp/International.EInvoicing.FacturX.PdfSharp.csproj" />
     <Project Path="src/International.EInvoicing.FacturX/International.EInvoicing.FacturX.csproj" />
     <Project Path="src/International.EInvoicing.Peppol/International.EInvoicing.Peppol.csproj" />
@@ -43,6 +44,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/International.EInvoicing.Cdar.Tests/International.EInvoicing.Cdar.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.OrderX.Tests/International.EInvoicing.OrderX.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Cii.Tests/International.EInvoicing.Cii.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Core.Tests/International.EInvoicing.Core.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Countries.Norway.Tests/International.EInvoicing.Countries.Norway.Tests.csproj" />

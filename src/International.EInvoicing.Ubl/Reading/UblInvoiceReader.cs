@@ -619,8 +619,8 @@ public sealed class UblInvoiceReader : IDocumentReader<EInvoice>
 
         foreach (XElement classification in DescendAll(values, element, UblNames.Cac + "CommodityClassification"))
         {
-            item.ClassificationCodes.Add(
-                values.ReadCode(classification.Element(UblNames.Cbc + "ItemClassificationCode")));
+            item.Classifications.Add(
+                UblClassification.Read(classification.Element(UblNames.Cbc + "ItemClassificationCode"), values));
         }
 
         foreach (XElement property in DescendAll(values, element, UblNames.Cac + "AdditionalItemProperty"))

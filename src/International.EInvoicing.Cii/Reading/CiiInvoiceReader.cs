@@ -535,7 +535,11 @@ public sealed class CiiInvoiceReader : IDocumentReader<EInvoice>
 
         foreach (XElement classification in AllIn(values, element, CiiNames.Ram + "DesignatedProductClassification"))
         {
-            item.ClassificationCodes.Add(values.ReadCode(In(values, classification, CiiNames.Ram + "ClassCode")));
+            item.Classifications.Add(new ItemClassification
+            {
+                Code = values.ReadCode(In(values, classification, CiiNames.Ram + "ClassCode")),
+                Name = values.ReadText(In(values, classification, CiiNames.Ram + "ClassName")),
+            });
         }
 
         foreach (XElement characteristic in AllIn(values, element, CiiNames.Ram + "ApplicableProductCharacteristic"))

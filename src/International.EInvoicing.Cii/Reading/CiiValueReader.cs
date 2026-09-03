@@ -13,10 +13,17 @@ namespace International.EInvoicing.Cii.Reading;
 /// field keeps the raw text, carries the diagnostic explaining why, and the document goes on being read.
 /// </summary>
 /// <remarks>
+/// <para>
 /// Reading an element also marks it as mapped, so whatever is left at the end of the document is exactly what
 /// nobody claimed, and can be kept as extension data.
+/// </para>
+/// <para>
+/// Public because the Cross Industry Invoice is not the only message in its family: Order-X is the Cross
+/// Industry Order, on a later version of the same data types, and reads its values with exactly this. Anyone
+/// teaching the library another UN/CEFACT message needs the same, and should not have to write it again.
+/// </para>
 /// </remarks>
-internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XElement> mapped)
+public sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XElement> mapped)
 {
     /// <summary>Where anything this reader could not do is reported.</summary>
     public DiagnosticCollector Diagnostics => diagnostics;
@@ -52,11 +59,13 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
         }
     }
 
+    /// <summary>Reads free text, keeping the language it was written in.</summary>
     public TextField ReadText(XElement? element) =>
         Consume(element)
             ? new TextField(element.Value, Attribute(element, "languageID"), Source(element))
             : TextField.Unset;
 
+    /// <summary>Reads a code, keeping which list it was drawn from.</summary>
     public CodeField ReadCode(XElement? element) =>
         Consume(element)
             ? new CodeField(
@@ -67,6 +76,7 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
                 Source(element))
             : CodeField.Unset;
 
+    /// <summary>Reads an identifier, keeping the scheme that gives it meaning.</summary>
     public IdentifierField ReadIdentifier(XElement? element) =>
         Consume(element)
             ? new IdentifierField(
@@ -77,6 +87,7 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
                 Source(element))
             : IdentifierField.Unset;
 
+    /// <summary>Reads a monetary amount, keeping the currency stated on it.</summary>
     public AmountField ReadAmount(XElement? element, string? businessTerm = null)
     {
         if (!Consume(element))
@@ -91,6 +102,7 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
             : new AmountField(null, currency, Source(element, Report(element, "an amount", businessTerm)));
     }
 
+    /// <summary>Reads a quantity, keeping the unit it is counted in.</summary>
     public QuantityField ReadQuantity(XElement? element, string? businessTerm = null)
     {
         if (!Consume(element))
@@ -105,6 +117,7 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
             : new QuantityField(null, unit, null, Source(element, Report(element, "a quantity", businessTerm)));
     }
 
+    /// <summary>Reads a bare number — a percentage, a factor.</summary>
     public Field<decimal> ReadDecimal(XElement? element, string? businessTerm = null)
     {
         if (!Consume(element))
@@ -117,9 +130,10 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
             : new Field<decimal>(null, Source(element, Report(element, "a number", businessTerm)));
     }
 
+    /// <summary>Reads a true or false, whether written as a word or as a digit.</summary>
     public IndicatorField ReadIndicator(XElement? element)
     {
-        XElement? indicator = Child(element, CiiNames.Udt + "Indicator") ?? element;
+        XElement? indicator = ChildNamed(element, "Indicator") ?? element;
         if (!Consume(indicator))
         {
             return IndicatorField.Unset;
@@ -149,10 +163,7 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
         // Most dates in CII are a DateTimeString; the tax point date inside the breakdown is a DateString,
         // which is the same value in the same format and a different element name. Reading only the first
         // meant BT-7 arrived unset and left as extension data.
-        XElement? element = Child(parent, CiiNames.Udt + "DateTimeString")
-            ?? Child(parent, CiiNames.Qdt + "DateTimeString")
-            ?? Child(parent, CiiNames.Udt + "DateString")
-            ?? Child(parent, CiiNames.Qdt + "DateString");
+        XElement? element = ChildNamed(parent, "DateTimeString") ?? ChildNamed(parent, "DateString");
         if (!Consume(element))
         {
             return DateField.Unset;
@@ -179,6 +190,50 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
         return new DateField(null, format, Source(element, diagnostic));
     }
 
+    /// <summary>
+    /// Reads a moment rather than a day.
+    /// </summary>
+    /// <remarks>
+    /// An invoice's dates are days, so <see cref="ReadDate"/> is what reads most of CII. An order's issue
+    /// time is a moment: Order-X writes it as <c>CCYYMMDDHHMM</c> (format 203), and lifecycle messages write
+    /// <c>CCYYMMDDHHMMSS</c> (204). All three of those and a plain day are accepted, because a sender who
+    /// states less precision than the format allows has still stated the moment they meant.
+    /// </remarks>
+    public DateTimeField ReadDateTime(XElement? parent, string? businessTerm = null)
+    {
+        if (!Consume(parent))
+        {
+            return DateTimeField.Unset;
+        }
+
+        XElement? element = ChildNamed(parent, "DateTimeString") ?? ChildNamed(parent, "DateString");
+        if (!Consume(element))
+        {
+            return DateTimeField.Unset;
+        }
+
+        string? format = Attribute(element, "format");
+        string text = element.Value.Trim();
+
+        foreach (string pattern in (string[])["yyyyMMddHHmmss", "yyyyMMddHHmm", "yyyyMMdd"])
+        {
+            if (DateTime.TryParseExact(
+                text,
+                pattern,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out DateTime moment))
+            {
+                return new DateTimeField(new DateTimeOffset(moment, TimeSpan.Zero), format, Source(element));
+            }
+        }
+
+        return DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset parsed)
+            ? new DateTimeField(parsed, format, Source(element))
+            : new DateTimeField(null, format, Source(element, Report(element, "a timestamp", businessTerm)));
+    }
+
+    /// <summary>Where an element sits, so a diagnostic can name the place rather than the value.</summary>
     public static SourceLocation LocationOf(XElement element)
     {
         var lineInfo = (IXmlLineInfo)element;
@@ -189,6 +244,18 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
     }
 
     private static XElement? Child(XElement? parent, XName name) => parent?.Element(name);
+
+    /// <summary>
+    /// Finds a child by local name, whatever namespace it is in.
+    /// </summary>
+    /// <remarks>
+    /// The data-type namespaces carry a version — <c>UnqualifiedDataType:100</c> for the Cross Industry
+    /// Invoice, <c>:128</c> for the Order-X order — and either may be qualified or unqualified for the same
+    /// element. A value's local name is unambiguous inside its parent, so matching on it reads both without
+    /// a namespace to configure.
+    /// </remarks>
+    private static XElement? ChildNamed(XElement? parent, string localName) =>
+        parent?.Elements().FirstOrDefault(child => child.Name.LocalName == localName);
 
     private static string PathOf(XElement element)
     {
@@ -201,25 +268,32 @@ internal sealed class CiiValueReader(DiagnosticCollector diagnostics, HashSet<XE
         return "/" + string.Join('/', segments);
     }
 
+    // A diagnostic names the path a reader was at, so the prefix has to be recognised by what the namespace
+    // is rather than by which version of it: the same reader sees ReusableAggregate...:100 in an invoice and
+    // :128 in an Order-X order.
     private static string PrefixOf(XElement element)
     {
-        XNamespace ns = element.Name.Namespace;
-        if (ns == CiiNames.Ram)
+        string ns = element.Name.NamespaceName;
+
+        if (ns.Contains("ReusableAggregateBusinessInformationEntity", StringComparison.Ordinal))
         {
             return CiiNames.RamPrefix + ":";
         }
 
-        if (ns == CiiNames.Udt)
+        if (ns.Contains("UnqualifiedDataType", StringComparison.Ordinal))
         {
             return CiiNames.UdtPrefix + ":";
         }
 
-        if (ns == CiiNames.Qdt)
+        if (ns.Contains("QualifiedDataType", StringComparison.Ordinal))
         {
             return CiiNames.QdtPrefix + ":";
         }
 
-        return ns == CiiNames.Rsm ? CiiNames.RsmPrefix + ":" : string.Empty;
+        return ns.Contains("CrossIndustryInvoice", StringComparison.Ordinal)
+            || ns.Contains("SCRDMCCBDACIOMessageStructure", StringComparison.Ordinal)
+                ? CiiNames.RsmPrefix + ":"
+                : string.Empty;
     }
 
     private static string? Attribute(XElement element, string name) => element.Attribute(name)?.Value;

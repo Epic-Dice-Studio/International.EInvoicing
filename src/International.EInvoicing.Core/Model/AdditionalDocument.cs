@@ -20,6 +20,18 @@ public sealed class AdditionalDocument : InvoiceNode
     /// </remarks>
     public CodeField TypeCode { get; set; }
 
+    /// <summary>
+    /// What kind of reference the identifier is — an order number, a contract number, a despatch note.
+    /// </summary>
+    /// <remarks>
+    /// UNTDID 1153. The identifier alone says which document; this says what that document is to the sender,
+    /// which is what tells a receiver whether it may act on it.
+    /// </remarks>
+    public CodeField ReferenceTypeCode { get; set; }
+
+    /// <summary>The line of the referenced document, when the reference is to one line of it.</summary>
+    public IdentifierField LineReference { get; set; }
+
     /// <summary>BT-124 — where the document can be retrieved, when it is not attached.</summary>
     public TextField ExternalLocation { get; set; }
 
