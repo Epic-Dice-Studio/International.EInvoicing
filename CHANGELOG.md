@@ -12,11 +12,19 @@ All notable changes to this project are documented here. The format follows
   payload hold different documents and both are confident. Nothing else in the chain notices: no Schematron
   rule looks at a PDF, and neither does a schema. Both the Factur-X and ZUGFeRD namespaces are read, and
   metadata that says nothing about an invoice stays silent rather than becoming noise.
-- **And it found that our own container does not carry that block.** PDFsharp writes its own XMP as it saves
-  and puts it in the catalogue whatever was there, so the Factur-X metadata this library writes sits in the
-  file as an object nothing points at — every hybrid PDF it produces is affected. The block is still written,
-  a test pins exactly what is wrong, and the roadmap carries the fix: appending it as a PDF incremental
-  update, which leaves every existing byte offset alone.
+- **And it found that our own container did not carry that block — now it does.** PDFsharp writes its own
+  XMP as it saves and points the catalogue at it whatever was there, so the Factur-X metadata this library
+  wrote sat in the file as an object nothing referenced: every hybrid PDF it produced was affected. It is now
+  written after the save as a **PDF incremental update**, superseding the object the catalogue points at with
+  what the backend wrote plus the Factur-X block, and leaving every existing byte offset where it is. Read
+  back from the catalogue — by this library and by an unrelated PDF engine — the profile is there.
+- **The PDF/A extension schema for the `fx` properties**, which the specification requires and this library
+  omitted. PDF/A allows no metadata property it cannot describe, so a container carrying the Factur-X
+  namespace without it was refused by a conformance checker with every other rule satisfied.
+- **A conformance level is the source document's to claim.** Attaching XML to a PDF does not make it PDF/A
+  ([ADR 0010](docs/adr/0010-no-pdf-rendering.md)), so a document that declared none is still given none — and
+  one that declared PDF/A-3 keeps saying so, where the backend regenerating the metadata used to drop the
+  declaration on the way out.
 - **The playground converts between syntaxes**, with the loss report beside the result — UBL to CII and back,
   from a pasted document or any of the samples. What did not cross is listed by name and by where it was,
   because a silent conversion is the dangerous kind. A Factur-X PDF is opened under *Look inside one* first:

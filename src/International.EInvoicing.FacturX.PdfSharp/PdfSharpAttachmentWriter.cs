@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.Text;
+using System.Xml.Linq;
 using International.EInvoicing.FacturX.Pdf;
 using International.EInvoicing.Profiles;
 using PdfSharp.Pdf;
@@ -19,6 +21,8 @@ namespace International.EInvoicing.FacturX.PdfSharp;
 public sealed class PdfSharpAttachmentWriter : IPdfAttachmentWriter
 {
     private const string FacturXNamespace = "urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#";
+    private const string PdfANamespace = "http://www.aiim.org/pdfa/ns/id/";
+    private const string EndOfDescriptions = "</rdf:RDF>";
 
     /// <inheritdoc />
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
@@ -31,12 +35,16 @@ public sealed class PdfSharpAttachmentWriter : IPdfAttachmentWriter
 
         using PdfDocument document = PdfReader.Open(source, PdfDocumentOpenMode.Modify);
 
+        string? pdfaIdentification = DeclaredPdfAIdentification(document);
+
         PdfDictionary specification = CreateFileSpecification(document, attachment);
         DeclareAsAssociatedFile(document, specification);
         RegisterInNameTree(document, specification, attachment.FileName);
-        WriteMetadata(document, attachment, profile);
 
-        document.Save(destination, closeStream: false);
+        using var saved = new MemoryStream();
+        document.Save(saved, closeStream: false);
+
+        WriteMetadata(document, saved.ToArray(), attachment, profile, pdfaIdentification, destination);
     }
 
     private static PdfDictionary CreateFileSpecification(PdfDocument document, FacturXAttachment attachment)
@@ -104,44 +112,176 @@ public sealed class PdfSharpAttachmentWriter : IPdfAttachmentWriter
     /// Writes the XMP metadata a Factur-X reader looks for: the file name, the profile, and the document
     /// type. Without it the payload is just an attachment, and conforming readers will not find it.
     /// </summary>
-    private static void WriteMetadata(PdfDocument document, FacturXAttachment attachment, Profile profile)
+    /// <remarks>
+    /// It goes in after the save rather than before it, as a PDF incremental update. PDFsharp generates XMP
+    /// of its own while saving and points the catalogue at that, whatever the catalogue held before, so a
+    /// block written beforehand survives in the file as an object nothing references — present in the bytes
+    /// and invisible to every reader that follows the specification. The update supersedes the object the
+    /// catalogue does point at, with what that object holds plus the Factur-X block, and leaves every byte
+    /// the backend produced where it is.
+    /// </remarks>
+    private static void WriteMetadata(
+        PdfDocument document,
+        byte[] saved,
+        FacturXAttachment attachment,
+        Profile profile,
+        string? pdfaIdentification,
+        Stream destination)
     {
-        string xmp = $"""
-            <?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
-            <x:xmpmeta xmlns:x="adobe:ns:meta/">
-              <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                <rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/">
-                  <pdfaid:part>3</pdfaid:part>
-                  <pdfaid:conformance>B</pdfaid:conformance>
-                </rdf:Description>
-                <rdf:Description rdf:about="" xmlns:fx="{FacturXNamespace}">
-                  <fx:DocumentType>INVOICE</fx:DocumentType>
-                  <fx:DocumentFileName>{attachment.FileName}</fx:DocumentFileName>
-                  <fx:Version>1.0</fx:Version>
-                  <fx:ConformanceLevel>{FacturXProfiles.ConformanceLevelOf(profile)}</fx:ConformanceLevel>
-                </rdf:Description>
-              </rdf:RDF>
-            </x:xmpmeta>
-            <?xpacket end="w"?>
-            """;
+        PdfReference metadata = document.Internals.Catalog.Elements.GetReference("/Metadata")
+            ?? throw new InvalidOperationException("The saved PDF has no metadata object to supersede.");
 
-        // A PdfMetadata rather than a plain dictionary, and this is not decoration: PDFsharp writes its own
-        // XMP as it saves, and replaces anything in /Metadata that is not one of these. The Factur-X block
-        // then survives in the file as an object nobody points at, which is the same as not writing it —
-        // a receiver reading the document's metadata sees the PDF library's, with no profile in it.
-        // A PdfMetadata rather than a plain dictionary, which is as close as this backend gets: PDFsharp
-        // writes its own XMP while saving and puts it in /Metadata whatever was there, so the Factur-X block
-        // below ends up in the file as an object nothing points at. A receiver reading the document's
-        // metadata sees PDFsharp's, with no profile in it. The block is still written, and the day the
-        // backend stops overwriting it the document is conformant with no further change here — but it is a
-        // known gap today, pinned by a test and recorded in the roadmap.
-        var metadata = new PdfMetadata(document);
-        metadata.Stream.Value = System.Text.Encoding.UTF8.GetBytes(xmp);
-        metadata.Elements["/Type"] = new PdfName("/Metadata");
-        metadata.Elements["/Subtype"] = new PdfName("/XML");
+        string generated = Encoding.UTF8.GetString(((PdfDictionary)metadata.Value).Stream.UnfilteredValue);
 
-        document.Internals.Catalog.Elements["/Metadata"] = metadata.ReferenceNotNull;
+        PdfIncrementalUpdate.RewriteStreamObject(
+            saved,
+            metadata.ObjectID,
+            "/Type/Metadata/Subtype/XML",
+            Encoding.UTF8.GetBytes(WithFacturXDescriptions(generated, attachment, profile, pdfaIdentification)),
+            destination);
     }
+
+    private static string WithFacturXDescriptions(
+        string xmp,
+        FacturXAttachment attachment,
+        Profile profile,
+        string? pdfaIdentification)
+    {
+        int end = xmp.IndexOf(EndOfDescriptions, StringComparison.Ordinal);
+        if (end < 0)
+        {
+            throw new InvalidOperationException("The saved PDF has metadata that is not an XMP packet.");
+        }
+
+        return xmp[..end] + pdfaIdentification + ExtensionSchema + FacturXDescription(attachment, profile) + xmp[end..];
+    }
+
+    private static string FacturXDescription(FacturXAttachment attachment, Profile profile) =>
+        $"""
+          <rdf:Description rdf:about="" xmlns:fx="{FacturXNamespace}">
+           <fx:DocumentType>INVOICE</fx:DocumentType>
+           <fx:DocumentFileName>{Escaped(attachment.FileName)}</fx:DocumentFileName>
+           <fx:Version>1.0</fx:Version>
+           <fx:ConformanceLevel>{Escaped(FacturXProfiles.ConformanceLevelOf(profile))}</fx:ConformanceLevel>
+          </rdf:Description>
+
+        """;
+
+    /// <summary>
+    /// The PDF/A extension schema for the four Factur-X properties.
+    /// </summary>
+    /// <remarks>
+    /// PDF/A allows no metadata property it cannot describe, so a file carrying the <c>fx</c> namespace
+    /// without this block is rejected by a conformance checker even when every other rule is satisfied. It
+    /// is written whether or not the document claims PDF/A: it describes the properties, and describing them
+    /// is true either way.
+    /// </remarks>
+    private const string ExtensionSchema = """
+         <rdf:Description rdf:about="" xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/" xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#" xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#">
+          <pdfaExtension:schemas>
+           <rdf:Bag>
+            <rdf:li rdf:parseType="Resource">
+             <pdfaSchema:schema>Factur-X PDFA Extension Schema</pdfaSchema:schema>
+             <pdfaSchema:namespaceURI>urn:factur-x:pdfa:CrossIndustryDocument:invoice:1p0#</pdfaSchema:namespaceURI>
+             <pdfaSchema:prefix>fx</pdfaSchema:prefix>
+             <pdfaSchema:property>
+              <rdf:Seq>
+               <rdf:li rdf:parseType="Resource">
+                <pdfaProperty:name>DocumentFileName</pdfaProperty:name>
+                <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                <pdfaProperty:category>external</pdfaProperty:category>
+                <pdfaProperty:description>The name of the embedded XML document</pdfaProperty:description>
+               </rdf:li>
+               <rdf:li rdf:parseType="Resource">
+                <pdfaProperty:name>DocumentType</pdfaProperty:name>
+                <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                <pdfaProperty:category>external</pdfaProperty:category>
+                <pdfaProperty:description>The type of the hybrid document in capital letters, e.g. INVOICE or ORDER</pdfaProperty:description>
+               </rdf:li>
+               <rdf:li rdf:parseType="Resource">
+                <pdfaProperty:name>Version</pdfaProperty:name>
+                <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                <pdfaProperty:category>external</pdfaProperty:category>
+                <pdfaProperty:description>The actual version of the standard applying to the embedded XML document</pdfaProperty:description>
+               </rdf:li>
+               <rdf:li rdf:parseType="Resource">
+                <pdfaProperty:name>ConformanceLevel</pdfaProperty:name>
+                <pdfaProperty:valueType>Text</pdfaProperty:valueType>
+                <pdfaProperty:category>external</pdfaProperty:category>
+                <pdfaProperty:description>The conformance level of the embedded XML document</pdfaProperty:description>
+               </rdf:li>
+              </rdf:Seq>
+             </pdfaSchema:property>
+            </rdf:li>
+           </rdf:Bag>
+          </pdfaExtension:schemas>
+         </rdf:Description>
+
+        """;
+
+    /// <summary>
+    /// The PDF/A conformance the incoming document declares, as the XMP description that declares it, or
+    /// <c>null</c> when it declares none.
+    /// </summary>
+    /// <remarks>
+    /// This library attaches XML to a PDF and does not make one PDF/A (ADR 0010), so it must not stamp a
+    /// conformance level the file has not earned. What it must not do either is lose one: the backend
+    /// regenerates the metadata while saving, and a caller who started from the PDF/A-3 file Factur-X asks
+    /// for would otherwise get back a document that no longer says so.
+    /// </remarks>
+    private static string? DeclaredPdfAIdentification(PdfDocument source)
+    {
+        if (source.Internals.Catalog.Elements.GetDictionary("/Metadata") is not { Stream: not null } metadata)
+        {
+            return null;
+        }
+
+        XDocument packet;
+        try
+        {
+            packet = XDocument.Parse(XmpPacket(Encoding.UTF8.GetString(metadata.Stream.UnfilteredValue)));
+        }
+        catch (System.Xml.XmlException)
+        {
+            return null;
+        }
+
+        XNamespace pdfa = PdfANamespace;
+        string? part = Declared(packet, pdfa + "part");
+        string? conformance = Declared(packet, pdfa + "conformance");
+
+        // Values out of somebody else’s file end up inside XMP this library writes, so only the shapes
+        // PDF/A defines are carried over and anything else counts as no declaration at all.
+        return part is { Length: <= 2 } && part.All(char.IsAsciiDigit)
+            && conformance is { Length: 1 } && char.IsAsciiLetterUpper(conformance[0])
+            ? $"""
+               <rdf:Description rdf:about="" xmlns:pdfaid="{PdfANamespace}">
+                <pdfaid:part>{part}</pdfaid:part>
+                <pdfaid:conformance>{conformance}</pdfaid:conformance>
+               </rdf:Description>
+
+              """
+            : null;
+    }
+
+    /// <remarks>XMP says the same thing two ways, as a child element or as an attribute of the description.</remarks>
+    private static string? Declared(XDocument packet, XName name)
+    {
+        string? value = packet.Descendants(name).FirstOrDefault()?.Value
+            ?? packet.Descendants().Attributes(name).FirstOrDefault()?.Value;
+
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    }
+
+    private static string XmpPacket(string metadata)
+    {
+        int start = metadata.IndexOf("<x:xmpmeta", StringComparison.Ordinal);
+        int end = metadata.IndexOf("</x:xmpmeta>", StringComparison.Ordinal);
+
+        return start >= 0 && end > start ? metadata[start..(end + "</x:xmpmeta>".Length)] : metadata;
+    }
+
+    private static string Escaped(string value) => new XText(value).ToString();
 
     private static string FormatDate(DateTimeOffset moment) =>
         moment.ToString("'D:'yyyyMMddHHmmss'Z'", CultureInfo.InvariantCulture);
