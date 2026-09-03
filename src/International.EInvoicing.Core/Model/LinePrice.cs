@@ -16,4 +16,7 @@ public sealed class LinePrice : InvoiceNode
 
     /// <summary>BT-149 — the quantity the price applies to. Defaults to one when absent.</summary>
     public QuantityField BaseQuantity { get; set; }
+
+    /// <summary>What kind of price this is — a list price, a net price, a contract price.</summary>
+    public CodeField PriceTypeCode { get; set; }
 }

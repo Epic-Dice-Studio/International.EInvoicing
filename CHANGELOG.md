@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The Peppol Order Agreement** — the third profile on the `OrderResponse` root, and the fullest: it
+  restates the whole order as the parties settled it, with the totals, the VAT breakdown, the allowances, the
+  extra parties, and on each item the certificates and the specification document agreed against. Every
+  element of the published document is mapped and comes back in place.
+- Modelling it rather than keeping it as extension data is the point: **an element of an agreement left
+  unmapped is a term of a contract nobody can see.** A buyer who agreed to a certified product and received
+  an uncertified one did not get what they agreed to, so `OrderItemCertificate` carries the label, its type,
+  and who issued it.
+
 - **The Peppol Order Cancellation**, and the **advanced Order Response**. The cancellation withdraws an order
   and says why — a cancellation the seller cannot explain is one they will query rather than act on. The
   advanced response needed no reader of its own: it is the *same document* as the ordinary order response

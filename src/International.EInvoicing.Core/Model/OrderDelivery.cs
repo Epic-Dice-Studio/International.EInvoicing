@@ -8,6 +8,9 @@ public sealed class OrderDelivery : InvoiceNode
     /// <summary>The delivery's identifier, when the parties number them.</summary>
     public IdentifierField Identifier { get; set; }
 
+    /// <summary>How much is to be delivered here, when a line is split across deliveries.</summary>
+    public QuantityField Quantity { get; set; }
+
     /// <summary>Where the goods go.</summary>
     public IdentifierField LocationIdentifier { get; set; }
 

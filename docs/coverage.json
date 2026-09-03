@@ -72,7 +72,7 @@
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "The seller's answer to an order: accepted, rejected, or accepted on other terms — a different quantity, a later date, or a substitute product. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes. The advanced response is the same document under another profile and needs no reader of its own."
+          "notes": "The seller's answer to an order: accepted, rejected, or accepted on other terms — a different quantity, a later date, or a substitute product. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes. The advanced response and the order agreement are the same document under other profiles and need no reader of their own; the agreement restates the whole order, certificates and specification documents included."
         },
         {
           "name": "UN/CEFACT CDAR",
@@ -153,12 +153,12 @@
         },
         {
           "name": "Peppol post-award — Order, Response, Cancellation, Despatch Advice, Invoice Response, MLR",
-          "version": "Order 3, Order Response 3 (simple and advanced), Order Cancellation 3, Despatch Advice 3, Invoice Response 3.1, MLR",
+          "version": "Order 3, Order Response 3 (simple, advanced, agreement), Order Cancellation 3, Despatch Advice 3, Invoice Response 3.1, MLR",
           "package": "International.EInvoicing.Peppol",
           "read": "done",
           "write": "done",
           "validate": "done",
-          "notes": "The chain an invoice sits at the end of: an Order says what was asked for, a Despatch Advice what was sent, an Invoice Response what happened to the invoice, and a Message Level Response whether the message arrived at all. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence. Order Change and Order Agreement are not here."
+          "notes": "The chain an invoice sits at the end of: an Order says what was asked for, a Despatch Advice what was sent, an Invoice Response what happened to the invoice, and a Message Level Response whether the message arrived at all. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence. Order Change is not here."
         }
       ]
     },

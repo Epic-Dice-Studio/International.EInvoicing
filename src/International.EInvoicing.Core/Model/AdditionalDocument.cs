@@ -11,6 +11,15 @@ public sealed class AdditionalDocument : InvoiceNode
     /// <summary>BT-123 — what the supporting document is.</summary>
     public TextField Description { get; set; }
 
+    /// <summary>
+    /// What kind of document it is, as a code, when the sender gives one.
+    /// </summary>
+    /// <remarks>
+    /// EN 16931 has no term for it. UBL's post-award documents do — an order agreement names the product
+    /// description it was agreed against by type as well as by name.
+    /// </remarks>
+    public CodeField TypeCode { get; set; }
+
     /// <summary>BT-124 — where the document can be retrieved, when it is not attached.</summary>
     public TextField ExternalLocation { get; set; }
 

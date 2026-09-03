@@ -125,8 +125,47 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
                 UblOrderReader.Take(change, UblNames.Cbc + "ID", mapped));
         }
 
+        response.OriginatorReference = UblOrderReader.Reference(
+            root, "OriginatorDocumentReference", values, mapped, owners, response);
+        response.ContractReference = UblOrderReader.Reference(
+            root, "Contract", values, mapped, owners, response);
+
+        foreach (XElement attached in UblOrderReader.TakeAll(
+            root, UblNames.Cac + "AdditionalDocumentReference", mapped))
+        {
+            response.AdditionalDocuments.Add(
+                UblAttachments.Read(attached, values, mapped, owners, _options.Limits));
+        }
+
         response.Seller = UblOrderReader.WrappedParty(root, "SellerSupplierParty", values, mapped, owners);
         response.Buyer = UblOrderReader.WrappedParty(root, "BuyerCustomerParty", values, mapped, owners);
+        response.Originator = UblOrderReader.WrappedParty(
+            root, "OriginatorCustomerParty", values, mapped, owners);
+        response.Invoicee = UblOrderReader.WrappedParty(
+            root, "AccountingCustomerParty", values, mapped, owners);
+
+        // The buyer's role element may carry the contact the driver calls, beside the party rather than
+        // inside it — the same shape the despatch advice uses.
+        if (UblOrderReader.Take(root, UblNames.Cac + "BuyerCustomerParty", mapped) is { } buyerRole
+            && UblOrderReader.Take(buyerRole, UblNames.Cac + "DeliveryContact", mapped) is { } contact
+            && response.Buyer is not null)
+        {
+            response.Buyer.Contact ??= UblParties.ReadContact(contact, values, mapped, owners);
+        }
+
+        foreach (XElement allowance in UblOrderReader.TakeAll(root, UblNames.Cac + "AllowanceCharge", mapped))
+        {
+            response.AllowancesAndCharges.Add(
+                UblOrderReader.ReadAllowanceCharge(allowance, values, mapped, owners));
+        }
+
+        ReadTaxTotal(UblOrderReader.Take(root, UblNames.Cac + "TaxTotal", mapped), response, values, mapped, owners);
+        UblOrderReader.ReadTotals(
+            UblOrderReader.Take(root, UblNames.Cac + "LegalMonetaryTotal", mapped),
+            response.Totals,
+            values,
+            mapped,
+            owners);
         response.Delivery = UblOrderReader.ReadDelivery(
             UblOrderReader.Take(root, UblNames.Cac + "Delivery", mapped), values, mapped, owners);
 
@@ -138,7 +177,7 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
                 break;
             }
 
-            OrderResponseLine mappedLine = ReadLine(line, values, mapped, owners);
+            OrderResponseLine mappedLine = ReadLine(line, values, mapped, owners, _options.Limits);
             owners[line] = mappedLine;
             response.Lines.Add(mappedLine);
         }
@@ -156,11 +195,59 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
         return response;
     }
 
+    /// <summary>The tax the parties agreed, and its breakdown by category and rate.</summary>
+    private static void ReadTaxTotal(
+        XElement? element,
+        OrderResponse response,
+        UblValueReader values,
+        HashSet<XElement> mapped,
+        Dictionary<XElement, InvoiceNode> owners)
+    {
+        if (element is null)
+        {
+            return;
+        }
+
+        owners[element] = response;
+        response.TaxAmount = values.ReadAmount(UblOrderReader.Take(element, UblNames.Cbc + "TaxAmount", mapped));
+
+        foreach (XElement subtotal in UblOrderReader.TakeAll(element, UblNames.Cac + "TaxSubtotal", mapped))
+        {
+            var entry = new VatBreakdownEntry
+            {
+                TaxableAmount = values.ReadAmount(
+                    UblOrderReader.Take(subtotal, UblNames.Cbc + "TaxableAmount", mapped)),
+                TaxAmount = values.ReadAmount(
+                    UblOrderReader.Take(subtotal, UblNames.Cbc + "TaxAmount", mapped)),
+            };
+
+            owners[subtotal] = entry;
+
+            if (UblOrderReader.Take(subtotal, UblNames.Cac + "TaxCategory", mapped) is { } category)
+            {
+                owners[category] = entry;
+                entry.CategoryCode = values.ReadCode(
+                    UblOrderReader.Take(category, UblNames.Cbc + "ID", mapped));
+                entry.Rate = values.ReadDecimal(
+                    UblOrderReader.Take(category, UblNames.Cbc + "Percent", mapped));
+
+                if (UblOrderReader.Take(category, UblNames.Cac + "TaxScheme", mapped) is { } scheme)
+                {
+                    owners[scheme] = entry;
+                    UblOrderReader.Take(scheme, UblNames.Cbc + "ID", mapped);
+                }
+            }
+
+            response.VatBreakdown.Add(entry);
+        }
+    }
+
     private static OrderResponseLine ReadLine(
         XElement element,
         UblValueReader values,
         HashSet<XElement> mapped,
-        Dictionary<XElement, InvoiceNode> owners)
+        Dictionary<XElement, InvoiceNode> owners,
+        DocumentLimits limits)
     {
         var line = new OrderResponseLine();
 
@@ -178,6 +265,8 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
             line.Note = values.ReadText(UblOrderReader.Take(item, UblNames.Cbc + "Note", mapped));
             line.StatusCode = values.ReadCode(UblOrderReader.Take(item, UblNames.Cbc + "LineStatusCode", mapped));
             line.Quantity = values.ReadQuantity(UblOrderReader.Take(item, UblNames.Cbc + "Quantity", mapped));
+            line.NetAmount = values.ReadAmount(
+                UblOrderReader.Take(item, UblNames.Cbc + "LineExtensionAmount", mapped));
             line.MaximumBackorderQuantity = values.ReadQuantity(
                 UblOrderReader.Take(item, UblNames.Cbc + "MaximumBackorderQuantity", mapped));
             line.Delivery = UblOrderReader.ReadDelivery(
@@ -185,7 +274,7 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
             line.Price = UblOrderReader.ReadPrice(
                 UblOrderReader.Take(item, UblNames.Cac + "Price", mapped), values, mapped, owners);
             line.Item = UblOrderReader.ReadItem(
-                UblOrderReader.Take(item, UblNames.Cac + "Item", mapped), values, mapped, owners);
+                UblOrderReader.Take(item, UblNames.Cac + "Item", mapped), values, mapped, owners, limits);
         }
 
         // What the seller offers instead of what was ordered.
@@ -195,7 +284,7 @@ public sealed class UblOrderResponseReader : IDocumentReader<OrderResponse>
             line.SubstitutedIdentifier = values.ReadIdentifier(
                 UblOrderReader.Take(substitute, UblNames.Cbc + "ID", mapped));
             line.SubstitutedItem = UblOrderReader.ReadItem(
-                UblOrderReader.Take(substitute, UblNames.Cac + "Item", mapped), values, mapped, owners);
+                UblOrderReader.Take(substitute, UblNames.Cac + "Item", mapped), values, mapped, owners, limits);
         }
 
         return line;

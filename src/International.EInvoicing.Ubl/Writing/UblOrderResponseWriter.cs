@@ -92,9 +92,33 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
             writer.End();
         }
 
+        UblOrderWriter.WriteReference("OriginatorDocumentReference", response.OriginatorReference, writer);
+
+        foreach (AdditionalDocument document in response.AdditionalDocuments)
+        {
+            UblOrderWriter.WriteAttachment(document, writer);
+        }
+
+        UblOrderWriter.WriteReference("Contract", response.ContractReference, writer);
+
         UblOrderWriter.WriteWrappedParty(response.Seller, "SellerSupplierParty", writer);
-        UblOrderWriter.WriteWrappedParty(response.Buyer, "BuyerCustomerParty", writer);
+        WriteBuyer(response.Buyer, writer);
+        UblOrderWriter.WriteWrappedParty(response.Originator, "OriginatorCustomerParty", writer);
+        UblOrderWriter.WriteWrappedParty(response.Invoicee, "AccountingCustomerParty", writer);
+
         UblOrderWriter.WriteDelivery(response.Delivery, writer);
+
+        foreach (AllowanceCharge allowanceCharge in response.AllowancesAndCharges)
+        {
+            UblOrderWriter.WriteAllowanceCharge(allowanceCharge, writer, currency, withTaxCategory: true);
+        }
+
+        WriteTaxTotal(response, writer, currency);
+
+        if (response.Totals.DuePayableAmount.IsSet || response.Totals.LineTotalAmount.IsSet)
+        {
+            UblOrderWriter.WriteTotals("LegalMonetaryTotal", response.Totals, writer, currency);
+        }
 
         foreach (OrderResponseLine line in response.Lines)
         {
@@ -102,6 +126,58 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
         }
 
         writer.Extensions(response.Extensions);
+    }
+
+    /// <summary>The buyer's role element, whose contact sits beside the party rather than inside it.</summary>
+    private static void WriteBuyer(Party? buyer, UblDocument writer)
+    {
+        if (buyer is null)
+        {
+            return;
+        }
+
+        writer.StartCac("BuyerCustomerParty");
+        UblOrderWriter.WriteParty(buyer, writer, contactBesideParty: true);
+
+        if (buyer.Contact is { } contact)
+        {
+            writer.StartCac("DeliveryContact");
+            writer.Text("Name", contact.Name);
+            writer.Text("Telephone", contact.Telephone);
+            writer.Text("ElectronicMail", contact.Email);
+            writer.End();
+        }
+
+        writer.End();
+    }
+
+    private static void WriteTaxTotal(OrderResponse response, UblDocument writer, string? currency)
+    {
+        if (!response.TaxAmount.IsSet && response.VatBreakdown.Count == 0)
+        {
+            return;
+        }
+
+        writer.StartCac("TaxTotal");
+        writer.Amount("TaxAmount", response.TaxAmount, currency);
+
+        foreach (VatBreakdownEntry entry in response.VatBreakdown)
+        {
+            writer.StartCac("TaxSubtotal");
+            writer.Amount("TaxableAmount", entry.TaxableAmount, currency);
+            writer.Amount("TaxAmount", entry.TaxAmount, currency);
+            writer.StartCac("TaxCategory");
+            writer.Code("ID", entry.CategoryCode);
+            writer.Decimal("Percent", entry.Rate);
+            writer.StartCac("TaxScheme");
+            writer.Cbc("ID", "VAT");
+            writer.End();
+            writer.End();
+            writer.Extensions(entry.Extensions);
+            writer.End();
+        }
+
+        writer.End();
     }
 
     private static void WriteLine(OrderResponseLine line, UblDocument writer, string? currency)
@@ -113,6 +189,7 @@ public sealed class UblOrderResponseWriter : IDocumentWriter<OrderResponse>
         writer.Text("Note", line.Note);
         writer.Code("LineStatusCode", line.StatusCode);
         writer.Quantity("Quantity", line.Quantity);
+        writer.Amount("LineExtensionAmount", line.NetAmount, currency);
         writer.Quantity("MaximumBackorderQuantity", line.MaximumBackorderQuantity);
         UblOrderWriter.WriteDelivery(line.Delivery, writer);
         UblOrderWriter.WritePrice(line.Price, writer, currency);

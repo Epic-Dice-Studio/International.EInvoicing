@@ -18,6 +18,9 @@ public sealed class OrderItemProperty : InvoiceNode
     /// <summary>What the property is called.</summary>
     public TextField Name { get; set; }
 
+    /// <summary>The same, as a code from whichever list the parties use.</summary>
+    public CodeField NameCode { get; set; }
+
     /// <summary>The value, as words.</summary>
     public TextField Value { get; set; }
 

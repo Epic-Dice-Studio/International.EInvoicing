@@ -145,7 +145,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
             order.TaxAmount = values.ReadAmount(Take(tax, UblNames.Cbc + "TaxAmount", mapped));
         }
 
-        ReadTotals(Take(root, UblNames.Cac + "AnticipatedMonetaryTotal", mapped), order, values, mapped, owners);
+        ReadTotals(Take(root, UblNames.Cac + "AnticipatedMonetaryTotal", mapped), order.Totals, values, mapped, owners);
 
         foreach (XElement line in TakeAll(root, UblNames.Cac + "OrderLine", mapped))
         {
@@ -155,7 +155,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
                 break;
             }
 
-            OrderLine mappedLine = ReadLine(line, values, mapped, owners);
+            OrderLine mappedLine = ReadLine(line, values, mapped, owners, _options.Limits);
             owners[line] = mappedLine;
             order.Lines.Add(mappedLine);
         }
@@ -174,7 +174,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
     }
 
     /// <summary>A reference element whose only content this model keeps is its identifier.</summary>
-    private static IdentifierField Reference(
+    internal static IdentifierField Reference(
         XElement root,
         string localName,
         UblValueReader values,
@@ -248,6 +248,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         var delivery = new OrderDelivery
         {
             Identifier = values.ReadIdentifier(Take(element, UblNames.Cbc + "ID", mapped)),
+            Quantity = values.ReadQuantity(Take(element, UblNames.Cbc + "Quantity", mapped)),
         };
 
         owners[element] = delivery;
@@ -328,9 +329,9 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         }
     }
 
-    private static void ReadTotals(
+    internal static void ReadTotals(
         XElement? element,
-        Order order,
+        DocumentTotals totals,
         UblValueReader values,
         HashSet<XElement> mapped,
         Dictionary<XElement, InvoiceNode> owners)
@@ -340,18 +341,18 @@ public sealed class UblOrderReader : IDocumentReader<Order>
             return;
         }
 
-        owners[element] = order.Totals;
-        order.Totals.LineTotalAmount = values.ReadAmount(Take(element, UblNames.Cbc + "LineExtensionAmount", mapped));
-        order.Totals.TaxExclusiveAmount = values.ReadAmount(Take(element, UblNames.Cbc + "TaxExclusiveAmount", mapped));
-        order.Totals.TaxInclusiveAmount = values.ReadAmount(Take(element, UblNames.Cbc + "TaxInclusiveAmount", mapped));
-        order.Totals.AllowanceTotalAmount = values.ReadAmount(Take(element, UblNames.Cbc + "AllowanceTotalAmount", mapped));
-        order.Totals.ChargeTotalAmount = values.ReadAmount(Take(element, UblNames.Cbc + "ChargeTotalAmount", mapped));
-        order.Totals.PrepaidAmount = values.ReadAmount(Take(element, UblNames.Cbc + "PrepaidAmount", mapped));
-        order.Totals.RoundingAmount = values.ReadAmount(Take(element, UblNames.Cbc + "PayableRoundingAmount", mapped));
-        order.Totals.DuePayableAmount = values.ReadAmount(Take(element, UblNames.Cbc + "PayableAmount", mapped));
+        owners[element] = totals;
+        totals.LineTotalAmount = values.ReadAmount(Take(element, UblNames.Cbc + "LineExtensionAmount", mapped));
+        totals.TaxExclusiveAmount = values.ReadAmount(Take(element, UblNames.Cbc + "TaxExclusiveAmount", mapped));
+        totals.TaxInclusiveAmount = values.ReadAmount(Take(element, UblNames.Cbc + "TaxInclusiveAmount", mapped));
+        totals.AllowanceTotalAmount = values.ReadAmount(Take(element, UblNames.Cbc + "AllowanceTotalAmount", mapped));
+        totals.ChargeTotalAmount = values.ReadAmount(Take(element, UblNames.Cbc + "ChargeTotalAmount", mapped));
+        totals.PrepaidAmount = values.ReadAmount(Take(element, UblNames.Cbc + "PrepaidAmount", mapped));
+        totals.RoundingAmount = values.ReadAmount(Take(element, UblNames.Cbc + "PayableRoundingAmount", mapped));
+        totals.DuePayableAmount = values.ReadAmount(Take(element, UblNames.Cbc + "PayableAmount", mapped));
     }
 
-    private static AllowanceCharge ReadAllowanceCharge(
+    internal static AllowanceCharge ReadAllowanceCharge(
         XElement element,
         UblValueReader values,
         HashSet<XElement> mapped,
@@ -384,7 +385,8 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         XElement element,
         UblValueReader values,
         HashSet<XElement> mapped,
-        Dictionary<XElement, InvoiceNode> owners)
+        Dictionary<XElement, InvoiceNode> owners,
+        DocumentLimits limits)
     {
         var line = new OrderLine
         {
@@ -414,7 +416,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         }
 
         line.Price = ReadPrice(Take(item, UblNames.Cac + "Price", mapped), values, mapped, owners);
-        line.Item = ReadItem(Take(item, UblNames.Cac + "Item", mapped), values, mapped, owners);
+        line.Item = ReadItem(Take(item, UblNames.Cac + "Item", mapped), values, mapped, owners, limits);
 
         return line;
     }
@@ -434,6 +436,7 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         {
             NetPrice = values.ReadAmount(Take(element, UblNames.Cbc + "PriceAmount", mapped)),
             BaseQuantity = values.ReadQuantity(Take(element, UblNames.Cbc + "BaseQuantity", mapped)),
+            PriceTypeCode = values.ReadCode(Take(element, UblNames.Cbc + "PriceType", mapped)),
         };
 
         owners[element] = price;
@@ -454,7 +457,8 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         XElement? element,
         UblValueReader values,
         HashSet<XElement> mapped,
-        Dictionary<XElement, InvoiceNode> owners)
+        Dictionary<XElement, InvoiceNode> owners,
+        DocumentLimits limits)
     {
         if (element is null)
         {
@@ -473,7 +477,12 @@ public sealed class UblOrderReader : IDocumentReader<Order>
         item.SellerIdentifier = Nested(element, "SellersItemIdentification", values, mapped, owners, item);
         item.ManufacturerIdentifier = Nested(element, "ManufacturersItemIdentification", values, mapped, owners, item);
         item.StandardIdentifier = Nested(element, "StandardItemIdentification", values, mapped, owners, item);
-        item.SpecificationReference = Nested(element, "ItemSpecificationDocumentReference", values, mapped, owners, item);
+        if (Take(element, UblNames.Cac + "ItemSpecificationDocumentReference", mapped) is { } specification)
+        {
+            AdditionalDocument document = UblAttachments.Read(specification, values, mapped, owners, limits);
+            item.SpecificationReference = document.Identifier;
+            item.SpecificationDocument = document.Attachment.IsSet || document.Description.IsSet ? document : null;
+        }
 
         foreach (XElement classification in TakeAll(element, UblNames.Cac + "CommodityClassification", mapped))
         {
@@ -490,12 +499,42 @@ public sealed class UblOrderReader : IDocumentReader<Order>
             Consume(Take(category, UblNames.Cac + "TaxScheme", mapped), item, mapped, owners);
         }
 
+        if (Take(element, UblNames.Cac + "TransactionConditions", mapped) is { } conditions)
+        {
+            owners[conditions] = item;
+            item.TransactionActionCode = values.ReadCode(Take(conditions, UblNames.Cbc + "ActionCode", mapped));
+        }
+
+        foreach (XElement certificate in TakeAll(element, UblNames.Cac + "Certificate", mapped))
+        {
+            var mappedCertificate = new OrderItemCertificate
+            {
+                Identifier = values.ReadIdentifier(Take(certificate, UblNames.Cbc + "ID", mapped)),
+                TypeCode = values.ReadCode(Take(certificate, UblNames.Cbc + "CertificateTypeCode", mapped)),
+                Type = values.ReadText(Take(certificate, UblNames.Cbc + "CertificateType", mapped)),
+                Remarks = values.ReadText(Take(certificate, UblNames.Cbc + "Remarks", mapped)),
+            };
+
+            owners[certificate] = mappedCertificate;
+            mappedCertificate.Issuer = UblParties.Read(
+                Take(certificate, UblNames.Cac + "IssuerParty", mapped), values, mapped, owners);
+
+            if (Take(certificate, UblNames.Cac + "DocumentReference", mapped) is { } certificateDocument)
+            {
+                owners[certificateDocument] = mappedCertificate;
+                mappedCertificate.DocumentReference = values.ReadIdentifier(
+                    Take(certificateDocument, UblNames.Cbc + "ID", mapped));
+            }
+            item.Certificates.Add(mappedCertificate);
+        }
+
         foreach (XElement property in TakeAll(element, UblNames.Cac + "AdditionalItemProperty", mapped))
         {
             var characteristic = new OrderItemProperty
             {
                 Identifier = values.ReadIdentifier(Take(property, UblNames.Cbc + "ID", mapped)),
                 Name = values.ReadText(Take(property, UblNames.Cbc + "Name", mapped)),
+                NameCode = values.ReadCode(Take(property, UblNames.Cbc + "NameCode", mapped)),
                 Value = values.ReadText(Take(property, UblNames.Cbc + "Value", mapped)),
                 ValueQualifier = values.ReadText(Take(property, UblNames.Cbc + "ValueQualifier", mapped)),
                 ValueQuantity = values.ReadQuantity(Take(property, UblNames.Cbc + "ValueQuantity", mapped)),

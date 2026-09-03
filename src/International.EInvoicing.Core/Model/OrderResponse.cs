@@ -65,6 +65,39 @@ public sealed class OrderResponse : InvoiceNode
     /// <summary>When the seller undertakes to deliver the order as a whole.</summary>
     public OrderDelivery? Delivery { get; set; }
 
+    /// <summary>Who asked for the order, when a third party did.</summary>
+    public Party? Originator { get; set; }
+
+    /// <summary>Who will be invoiced, when that is not the buyer.</summary>
+    public Party? Invoicee { get; set; }
+
+    /// <summary>The originator's own document reference.</summary>
+    public IdentifierField OriginatorReference { get; set; }
+
+    /// <summary>The contract the order was placed under.</summary>
+    public IdentifierField ContractReference { get; set; }
+
+    /// <summary>Documents sent with the response.</summary>
+    public List<AdditionalDocument> AdditionalDocuments { get; } = [];
+
+    /// <summary>
+    /// Allowances and charges applying to the whole order, as agreed.
+    /// </summary>
+    /// <remarks>
+    /// Carried by the order agreement, which is this document restating the whole order as the two parties
+    /// settled it, rather than by the plain response, which only answers.
+    /// </remarks>
+    public List<AllowanceCharge> AllowancesAndCharges { get; } = [];
+
+    /// <summary>The tax the parties have agreed.</summary>
+    public AmountField TaxAmount { get; set; }
+
+    /// <summary>That tax broken down by category and rate.</summary>
+    public List<VatBreakdownEntry> VatBreakdown { get; } = [];
+
+    /// <summary>What the order comes to, as agreed.</summary>
+    public DocumentTotals Totals { get; } = new();
+
     /// <summary>The answer line by line, when it differs from the answer as a whole.</summary>
     public List<OrderResponseLine> Lines { get; } = [];
 

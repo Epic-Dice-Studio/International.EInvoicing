@@ -34,6 +34,21 @@ public sealed class OrderItem : InvoiceNode
     /// <summary>The specification the buyer is ordering against.</summary>
     public IdentifierField SpecificationReference { get; set; }
 
+    /// <summary>
+    /// That specification as a document, when the parties send it rather than just name it.
+    /// </summary>
+    /// <remarks>
+    /// An order agreement may carry the product description it was agreed against, attached — which is the
+    /// difference between the parties agreeing on a number and agreeing on a thing.
+    /// </remarks>
+    public AdditionalDocument? SpecificationDocument { get; set; }
+
+    /// <summary>What is being done with the item, from the transaction conditions.</summary>
+    public CodeField TransactionActionCode { get; set; }
+
+    /// <summary>What the item is certified as — an eco-label, a standard it meets.</summary>
+    public List<OrderItemCertificate> Certificates { get; } = [];
+
     /// <summary>How the item is classified, in whichever scheme the code names.</summary>
     public List<CodeField> ClassificationCodes { get; } = [];
 

@@ -25,6 +25,9 @@ public sealed class OrderResponseLine : InvoiceNode
     /// <summary>The most the seller will place on back order.</summary>
     public QuantityField MaximumBackorderQuantity { get; set; }
 
+    /// <summary>What the line comes to, as agreed.</summary>
+    public AmountField NetAmount { get; set; }
+
     /// <summary>What the seller will charge.</summary>
     public LinePrice? Price { get; set; }
 

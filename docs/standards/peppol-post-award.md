@@ -2,7 +2,7 @@
 
 ## Scope and version
 
-Seven Peppol documents that are not invoices — the chain an invoice sits at the end of.
+Eight Peppol documents that are not invoices — the chain an invoice sits at the end of.
 
 | | What it answers |
 |---|---|
@@ -12,6 +12,7 @@ Seven Peppol documents that are not invoices — the chain an invoice sits at th
 | **Order** — `urn:fdc:peppol.eu:poacc:trns:order:3` | *What did the buyer ask for?* The document the others are answered against. |
 | **Order Response** — `urn:fdc:peppol.eu:poacc:trns:order_response:3` | *Will the seller supply it?* Accepted, rejected, or accepted on other terms. |
 | **Order Response (advanced)** — `…:order_response_advanced:3` | The same document, answering line by line. |
+| **Order Agreement** — `urn:fdc:peppol.eu:poacc:trns:order_agreement:3` | The same document again, restating the whole order as the parties settled it. |
 | **Order Cancellation** — `urn:fdc:peppol.eu:poacc:trns:order_cancellation:3` | *The buyer has withdrawn the order*, and why. |
 
 An Invoice Response is what a receiver **owes** a sender: without it, a supplier who has sent an invoice into
@@ -212,12 +213,22 @@ trip introduces no schema error the document did not already have**. Asserting "
 either excluding the document or pretending it was clean; asserting that we do not make a document worse is
 true of all of them, and is what a caller actually needs to know.
 
+## The order agreement
+
+The third profile on the `OrderResponse` root, and the fullest: it restates the whole order as the two
+parties settled it. So it carries what the plain response does not — the totals, the VAT breakdown, the
+allowances, the extra parties, and on each item the certificates and the specification document the parties
+agreed against.
+
+That last part is the reason to model it rather than keep it as extension data: **an element of an agreement
+left unmapped is a term of a contract nobody can see.** A buyer who agreed to a certified product and
+received an uncertified one did not get what they agreed to, so `OrderItemCertificate` carries the label, its
+type, and who issued it — a certificate nobody issued being worth nothing.
+
 ## What is not here
 
-**Order Change** and **Order Agreement**. The change is its own document; the agreement is the order response
-restating the whole order, and carries the totals, allowances, tax and extra parties that the simple response
-does not — eighteen elements this library does not yet map, each currently kept as extension data and
-reported.
+**Order Change.** The buyer amending an order already sent: its own root and its own model, and the last
+transaction of the family.
 
 ## Prior art
 

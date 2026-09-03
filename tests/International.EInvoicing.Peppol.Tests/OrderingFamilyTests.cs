@@ -37,6 +37,8 @@ public class OrderingFamilyTests
     public static TheoryData<string> AdvancedResponses =>
         Documents(PeppolPostAwardProfiles.OrderResponseAdvanced);
 
+    public static TheoryData<string> Agreements => Documents(PeppolPostAwardProfiles.OrderAgreement);
+
     [Theory]
     [MemberData(nameof(Cancellations))]
     public void EveryPublishedCancellationIsRead(string fileName)
@@ -65,6 +67,45 @@ public class OrderingFamilyTests
         result.RequireOrderResponse().ResponseCode.Value.ShouldNotBeNullOrWhiteSpace();
 
         Unmapped(result).ShouldBeEmpty();
+    }
+
+    /// <summary>
+    /// The order agreement is the order response restating the whole order as the parties settled it.
+    /// </summary>
+    /// <remarks>
+    /// Same root and same reader as the response, and a much fuller payload: the totals, the VAT breakdown,
+    /// the allowances, the extra parties, and on each item the certificates and the specification the
+    /// parties agreed against. It is the document that says what was actually agreed, so an element of it
+    /// left unmapped is a term of a contract nobody can see.
+    /// </remarks>
+    [Theory]
+    [MemberData(nameof(Agreements))]
+    public void AnOrderAgreementRestatesTheWholeOrder(string fileName)
+    {
+        DocumentResult result = Library.Read(ReadCorpusFile(fileName));
+
+        result.Kind.ShouldBe(DocumentKind.UblOrderResponse);
+        OrderResponse agreement = result.RequireOrderResponse();
+
+        agreement.Totals.DuePayableAmount.Value.ShouldNotBeNull();
+        agreement.VatBreakdown.ShouldNotBeEmpty();
+        agreement.AllowancesAndCharges.ShouldNotBeEmpty();
+        agreement.AdditionalDocuments.ShouldNotBeEmpty();
+
+        OrderItem item = agreement.Lines[0].Item.ShouldNotBeNull();
+        item.Certificates.ShouldNotBeEmpty("what an item is certified as is a term of the agreement");
+        item.Certificates[0].Issuer.ShouldNotBeNull("a certificate nobody issued is worth nothing");
+
+        Unmapped(result).ShouldBeEmpty();
+    }
+
+    [Theory]
+    [MemberData(nameof(Agreements))]
+    public void AndComesBackWithEveryOneOfThoseTerms(string fileName)
+    {
+        string xml = ReadCorpusFile(fileName);
+
+        Census(Library.Write(Library.Read(xml).RequireOrderResponse())).ShouldBe(Census(xml));
     }
 
     [Theory]
@@ -97,7 +138,8 @@ public class OrderingFamilyTests
     [Theory]
     [MemberData(nameof(Cancellations))]
     [MemberData(nameof(AdvancedResponses))]
-    public void AndNeitherIsMadeWorseByBeingWrittenBack(string fileName)
+    [MemberData(nameof(Agreements))]
+    public void AndNoneIsMadeWorseByBeingWrittenBack(string fileName)
     {
         string xml = ReadCorpusFile(fileName);
         DocumentResult read = Library.Read(xml);

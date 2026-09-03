@@ -23,6 +23,7 @@ internal static class UblAttachments
         var document = new AdditionalDocument
         {
             Identifier = values.ReadIdentifier(Take(element, UblNames.Cbc + "ID", mapped)),
+            TypeCode = values.ReadCode(Take(element, UblNames.Cbc + "DocumentTypeCode", mapped)),
             Description = values.ReadText(Take(element, UblNames.Cbc + "DocumentType", mapped)),
         };
 
