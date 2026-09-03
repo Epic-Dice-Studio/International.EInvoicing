@@ -259,14 +259,24 @@ public class InvoiceResponseTests
         Library.Write(result.RequireLifecycleStatus(), DocumentSyntax.Ubl).ShouldContain("0d1b6ffe");
     }
 
+    /// <summary>
+    /// One document of the fetched corpus, or a skip when it is not there.
+    /// </summary>
+    /// <remarks>
+    /// The corpus is not committed — OpenPEPPOL declares no licence — so every test that reads it has to
+    /// skip rather than fail when it is absent. Asking for the file by name goes through here for that
+    /// reason: a test naming one document must skip on the same condition as the theories that walk them
+    /// all, and it has to be this method that decides, not each caller.
+    /// </remarks>
     private static string ReadCorpusFile(string fileName)
     {
+        string? path = Corpus().FirstOrDefault(candidate => Path.GetFileName(candidate) == fileName);
+
         Assert.SkipWhen(
-            fileName == "(none fetched)",
+            path is null,
             "The POACC artefacts are not present; run build/fetch-specs.sh poacc.");
 
-        string path = Corpus().Single(candidate => Path.GetFileName(candidate) == fileName);
-        return File.ReadAllText(path);
+        return File.ReadAllText(path!);
     }
 
     private static IEnumerable<string> Corpus()
