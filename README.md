@@ -145,7 +145,7 @@ validation is never presented as a success.
 
 | | Read | Write | Validate | Package |
 |---|---|---|---|---|
-| XSD schema validation (UBL 2.1, CII D22B, Order-X, ZUGFeRD 1.0) <sub>UBL 2.1 · CII D22B · Order-X 1.0 · ZUGFeRD 1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Validation.Xsd` |
+| XSD schema validation (UBL 2.1, CII D16B/D22B, Order-X, ZUGFeRD 1.0) <sub>UBL 2.1 · CII D16B and D22B · Order-X 1.0 · ZUGFeRD 1.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Validation.Xsd` |
 | EN 16931 (core invoice model) <sub>1.3.x artefacts</sub> | 📋 | 📋 | ✅ | `International.EInvoicing.Validation.En16931` |
 | Factur-X / ZUGFeRD — MINIMUM → EXTENDED <sub>1.07.3 / 2.3.3</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.FacturX` |
 | Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | ⛔ | `International.EInvoicing.FacturX.PdfSharp` |
@@ -154,7 +154,7 @@ validation is never presented as a success.
 | Peppol tax data document (SK, ViDA) <sub>taxdata sk-1, vida-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 | Peppol post-award — the whole family <sub>Order 3, Order Change 3, Order Cancellation 3, Order Response 3 (simple, advanced, agreement), Despatch Advice 3, Invoice Response 3.1, MLR</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 
-> **XSD schema validation (UBL 2.1, CII D22B, Order-X, ZUGFeRD 1.0)** — The OASIS and UN/CEFACT schemas, embedded and offline, as rule sets like any other. They judge what no business rule looks at — element order and cardinality are normative in both syntaxes — and they earned their keep twice: they caught the shape this library shipped (two bank accounts in one cac:PaymentMeans) and then, on the official corpora, fifteen EN 16931 terms that were read by nothing and written by nothing. Both corpora now round-trip with their shape intact and nothing unmapped.
+> **XSD schema validation (UBL 2.1, CII D16B/D22B, Order-X, ZUGFeRD 1.0)** — The OASIS and UN/CEFACT schemas, embedded and offline, as rule sets like any other. They judge what no business rule looks at — element order and cardinality are normative in both syntaxes — and they earned their keep twice: they caught the shape this library shipped (two bank accounts in one cac:PaymentMeans) and then, on the official corpora, fifteen EN 16931 terms that were read by nothing and written by nothing. Both corpora now round-trip with their shape intact and nothing unmapped.
 
 > **EN 16931 (core invoice model)** — The published Schematron artefacts are executed as data. Measured against the 23 official example documents and the 80 CIUS documents of the XRechnung test suite: all accepted.
 

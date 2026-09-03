@@ -33,16 +33,35 @@ public class CiiSchemaTests
     {
         Schema.AppliesTo(DocumentSyntax.Cii, KnownProfiles.En16931Cii.Id).ShouldBeTrue();
         Schema.AppliesTo(DocumentSyntax.Ubl, KnownProfiles.En16931Ubl.Id).ShouldBeFalse();
-        Schema.Version.ShouldBe("D22B");
+        Schema.Version.ShouldBe("D16B", "EN 16931's CII syntax binding names D16B, and the default follows it");
+    }
+
+    /// <summary>
+    /// And the later revision is there for whoever needs it, without being what an EN 16931 invoice is
+    /// judged by.
+    /// </summary>
+    /// <remarks>
+    /// The revisions share their namespaces, so nothing in a document says which one it was written against
+    /// and the wrong schema attaches silently. This was a real defect: D22B was the default, and a
+    /// conforming XRechnung invoice with an allowance reason code of <c>TAC</c> — which D16B allows and D22B
+    /// dropped — came back invalid. The KoSIT cross-check found it.
+    /// </remarks>
+    [Fact]
+    public void AndTheLaterRevisionIsAvailableToWhoeverKnowsTheyNeedIt()
+    {
+        new CiiSchemaRuleSet(CiiSchemaVersion.D22B).Version.ShouldBe("D22B");
+        new CiiSchemaRuleSet(CiiSchemaVersion.D16B).Version.ShouldBe("D16B");
     }
 
     /// <summary>
     /// Every official example, read and written back, keeps its shape and leaves nothing unmapped.
     /// </summary>
     /// <remarks>
-    /// Two of the examples are schema-invalid **as published** — they carry allowance reason codes outside
-    /// the D22B enumeration — so what is asserted is that this library adds nothing: the rewrite is refused
-    /// for the same reasons as the source and no others.
+    /// What is asserted is that this library adds nothing: the rewrite is refused for the same reasons as
+    /// the source and no others. This used to note that two examples were "schema-invalid as published"
+    /// because of allowance reason codes outside the D22B enumeration. They were not invalid; they are
+    /// EN 16931 documents, EN 16931 binds D16B, and D16B allows those codes. The judge was wrong, not the
+    /// documents.
     /// </remarks>
     [Theory]
     [MemberData(nameof(OfficialExamples))]

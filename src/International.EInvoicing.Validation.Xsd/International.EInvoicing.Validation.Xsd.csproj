@@ -22,9 +22,12 @@
     <EmbeddedResource Include="../../specs/ubl-2.1/xsd/common/*.xsd" LogicalName="ubl/%(Filename)%(Extension)" />
   </ItemGroup>
 
-  <!-- Redistributed under UN/CEFACT's terms, which allow it. Element order is normative in CII as well. -->
+  <!-- Redistributed under UN/CEFACT's terms, which allow it. Element order is normative in CII as well.
+       Two revisions, because the CII namespaces do not carry the revision: EN 16931's syntax binding names
+       D16B, and so a D22B schema applied to an EN 16931 invoice silently rejects values D16B allows. -->
   <ItemGroup>
-    <EmbeddedResource Include="../../specs/cii-d22b/xsd/*.xsd" LogicalName="cii/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../specs/cii-d16b/xsd/*.xsd" LogicalName="cii16b/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../specs/cii-d22b/xsd/*.xsd" LogicalName="cii22b/%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>

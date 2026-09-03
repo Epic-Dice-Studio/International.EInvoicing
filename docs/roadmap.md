@@ -72,8 +72,24 @@ in both syntaxes and against EN 16931 underneath. That found two real gaps on th
 business process, which EN 16931 does not require and the network does, and an invalid Belgian enterprise
 number our own checker would have caught.
 
-**Still to do:** the external comparison. Running the KoSIT validator alongside our engine and failing on
-disagreement is the part no corpus can replace, and it needs a Java toolchain in CI.
+**Done, September 2026.** The external comparison runs. "It needs a Java toolchain in CI" turned out to be
+`actions/setup-java` — one step, not a blocker, and worth remembering before accepting the next one.
+`tests/International.EInvoicing.CrossCheck.Tests` runs the KoSIT validator over the official XRechnung
+corpus, compares acceptance *and* which rules each engine fires, and skips when the JVM or the artefacts are
+absent.
+
+**It paid for itself on the first run.** This library was validating every CII document against the **D22B**
+schemas, where EN 16931's CII syntax binding — and XRechnung, and Factur-X, and Peppol — name **D16B**. The
+two revisions share their namespaces, so the wrong schema attached silently and rejected values the right one
+allows: a conforming XRechnung invoice with an allowance reason code of `TAC` came back invalid. No corpus
+could have caught it, because our CII corpus and our CII schema were never run against each other. `D16B` is
+now the default, `AddCiiSchema(CiiSchemaVersion.D22B)` is there for a document that needs it.
+
+**What is still open:** four documents of the eighty-six where this library rejects what the reference
+accepts — `BR-CL-13` twice, `BR-CL-10` with `BR-CL-21`, and `BR-CO-16`. All four are EN 16931 rules rather
+than German ones, and three are code-list rules, so a difference in code-list vintage is the likeliest
+explanation — likeliest, not established. They are listed in the test by name, so a *new* disagreement still
+fails the build.
 
 ### 4. Locking the public API ✅ *done, August 2026*
 

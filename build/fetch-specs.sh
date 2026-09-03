@@ -27,6 +27,9 @@ PHIVE_RULES_REF="master"
 FRENCH_RULES_VERSION="1.4.0.03"
 FRENCH_FLUX10_VERSION="1.0"
 MUSTANG_REF="master"
+KOSIT_VALIDATOR_VERSION="1.6.3"
+KOSIT_XRECHNUNG_CONFIG_TAG="v2026-08-31"
+KOSIT_XRECHNUNG_CONFIG="xrechnung-3.0.2-validator-configuration-2026-08-31"
 
 log()  { printf '\033[1m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[33m!!\033[0m %s\n' "$*" >&2; }
@@ -216,20 +219,31 @@ fetch_ubl_schemas() {
 # The UN/CEFACT CII D22B schemas. UNECE publishes them as an archive; phax/ph-cii carries the same files
 # unpacked, which is what makes them fetchable one by one. Free to use and redistribute, per UN/CEFACT.
 fetch_cii_schemas() {
-    local base="https://raw.githubusercontent.com/phax/ph-cii/master/ph-cii-d22b/src/main/resources/external/schemas/d22b/cii"
-    local target="$SPECS_DIR/cii-d22b/xsd"
     local listing="$WORK_DIR/ph-cii.json"
-    local path name
-
-    log "fetching UN/CEFACT CII D22B schemas"
-    mkdir -p "$target"
+    local path name target
 
     curl -fsS "https://api.github.com/repos/phax/ph-cii/git/trees/HEAD?recursive=1" -o "$listing"
 
+    # D16B is what EN 16931's CII syntax binding names, and what XRechnung, Factur-X and Peppol are written
+    # against. D22B is the later revision; it shares D16B's namespaces, so the wrong one applies silently and
+    # rejects values the right one allows. Both are fetched, and the profiles decide which judges a document.
+    log "fetching UN/CEFACT CII D16B schemas"
+    target="$SPECS_DIR/cii-d16b/xsd"
+    mkdir -p "$target"
+
     while read -r path; do
         name="$(basename "$path")"
-        curl -fsS "$base/$name" -o "$target/$name"
-    done < <(grep -o '"path": "[^"]*/d22b/cii/[^"]*\.xsd"' "$listing" | cut -d'"' -f4)
+        curl -fsS "https://raw.githubusercontent.com/phax/ph-cii/master/$path" -o "$target/$name"
+    done < <(grep -o '"path": "ph-cii-d16b/[^"]*/d16b/[^"]*\.xsd"' "$listing" | cut -d'"' -f4)
+
+    log "fetching UN/CEFACT CII D22B schemas"
+    target="$SPECS_DIR/cii-d22b/xsd"
+    mkdir -p "$target"
+
+    while read -r path; do
+        name="$(basename "$path")"
+        curl -fsS "https://raw.githubusercontent.com/phax/ph-cii/master/$path" -o "$target/$name"
+    done < <(grep -o '"path": "ph-cii-d22b/[^"]*/d22b/cii/[^"]*\.xsd"' "$listing" | cut -d'"' -f4)
 }
 
 # Order-X: the Franco-German order, order response and order change, in CII. FNFE-MPE and FeRD publish the
@@ -282,6 +296,26 @@ fetch_zugferd1() {
     copy_licence "$src" "$SPECS_DIR/zugferd-1.0"
 }
 
+# The KoSIT validator: the reference implementation German authorities actually run. Fetched so this
+# library's engine can be compared against another engine rather than only against expected results — a rule
+# both we and a corpus author read the same wrong way is invisible to every corpus.
+fetch_kosit() {
+    local target="$SPECS_DIR/kosit"
+    local jar="validator-$KOSIT_VALIDATOR_VERSION-standalone.jar"
+
+    log "fetching the KoSIT validator $KOSIT_VALIDATOR_VERSION and its XRechnung configuration"
+    rm -rf "$target"
+    mkdir -p "$target/configuration"
+
+    curl -fsSL -o "$target/$jar" \
+        "https://github.com/itplr-kosit/validator/releases/download/v$KOSIT_VALIDATOR_VERSION/$jar"
+
+    curl -fsSL -o "$WORK_DIR/configuration.zip" \
+        "https://github.com/itplr-kosit/validator-configuration-xrechnung/releases/download/$KOSIT_XRECHNUNG_CONFIG_TAG/$KOSIT_XRECHNUNG_CONFIG.zip"
+
+    unzip -q "$WORK_DIR/configuration.zip" -d "$target/configuration"
+}
+
 fetch_manual() {
     cat >&2 <<'MANUAL'
 
@@ -313,9 +347,10 @@ main() {
         cii)       fetch_cii_schemas ;;
         order-x)   fetch_orderx ;;
         zugferd1)  fetch_zugferd1 ;;
+        kosit)     fetch_kosit ;;
         france)    fetch_france ;;
         all)       fetch_en16931; fetch_peppol; fetch_poacc; fetch_pint; fetch_national; fetch_xrechnung; fetch_france; fetch_ubl_schemas; fetch_cii_schemas; fetch_orderx; fetch_zugferd1; fetch_manual ;;
-        *)         warn "unknown target '$target' (en16931 | peppol | poacc | pint | national | xrechnung | france | ubl | cii | order-x | zugferd1 | all)"; exit 2 ;;
+        *)         warn "unknown target '$target' (en16931 | peppol | poacc | pint | national | xrechnung | france | ubl | cii | order-x | zugferd1 | kosit | all)"; exit 2 ;;
     esac
     log "done — update the PROVENANCE.md of each folder you refreshed"
 }

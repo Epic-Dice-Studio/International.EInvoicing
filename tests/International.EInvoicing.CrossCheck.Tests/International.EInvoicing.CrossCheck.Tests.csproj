@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(TestAllTargetFrameworks)' == 'true'">net8.0;net10.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/International.EInvoicing.Countries.Germany/International.EInvoicing.Countries.Germany.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Validation.Xsd/International.EInvoicing.Validation.Xsd.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.Validation.XRechnung/International.EInvoicing.Validation.XRechnung.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing/International.EInvoicing.csproj" />
+  </ItemGroup>
+
+</Project>

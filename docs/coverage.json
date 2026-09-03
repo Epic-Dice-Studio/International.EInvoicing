@@ -107,8 +107,8 @@
       "title": "Profiles",
       "entries": [
         {
-          "name": "XSD schema validation (UBL 2.1, CII D22B, Order-X, ZUGFeRD 1.0)",
-          "version": "UBL 2.1 · CII D22B · Order-X 1.0 · ZUGFeRD 1.0",
+          "name": "XSD schema validation (UBL 2.1, CII D16B/D22B, Order-X, ZUGFeRD 1.0)",
+          "version": "UBL 2.1 · CII D16B and D22B · Order-X 1.0 · ZUGFeRD 1.0",
           "package": "International.EInvoicing.Validation.Xsd",
           "read": "done",
           "write": "done",

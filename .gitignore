@@ -80,6 +80,10 @@ specs/order-x/schematron/
 specs/order-x/examples/
 specs/order-x/LICENSE.upstream.txt
 
+# The KoSIT validator: somebody else's software, a 10 MB binary, fetched to be run rather than shipped.
+specs/kosit/validator-*.jar
+specs/kosit/configuration/
+
 # ZUGFeRD 1.0: FeRD replaced the format in 2019 and no longer publishes it; what exists is carried by a
 # third party's repository, and nothing here may be redistributed on FeRD's behalf.
 specs/zugferd-1.0/schema/

@@ -22,13 +22,25 @@ public static class XsdBuilderExtensions
         return builder.AddRules(new UblSchemaRuleSet());
     }
 
-    /// <summary>Adds the UN/CEFACT CII D22B schemas to what <c>Validate</c> runs.</summary>
+    /// <summary>
+    /// Adds the UN/CEFACT Cross Industry Invoice schemas to what <c>Validate</c> runs.
+    /// </summary>
+    /// <remarks>
+    /// D16B by default, because that is the revision EN 16931's CII syntax binding names and what XRechnung,
+    /// Factur-X and Peppol are written against. The revisions share their namespaces, so the wrong one
+    /// attaches silently and rejects values the right one allows — pass
+    /// <see cref="CiiSchemaVersion.D22B"/> only for a document you know to be written against it.
+    /// </remarks>
+    /// <param name="builder">The library being assembled.</param>
+    /// <param name="version">Which revision to judge by. D16B unless you have a reason.</param>
     /// <exception cref="ArgumentNullException"><paramref name="builder"/> is <c>null</c>.</exception>
-    public static EInvoicingBuilder AddCiiSchema(this EInvoicingBuilder builder)
+    public static EInvoicingBuilder AddCiiSchema(
+        this EInvoicingBuilder builder,
+        CiiSchemaVersion version = CiiSchemaVersion.D16B)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.AddRules(new CiiSchemaRuleSet());
+        return builder.AddRules(new CiiSchemaRuleSet(version));
     }
 
     /// <summary>

@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **CII documents are validated against D16B, not D22B.** EN 16931's CII syntax binding names D16B, and so do
+  XRechnung, Factur-X and Peppol — every CII profile this library implements. The two revisions share their
+  namespaces, so the D22B schemas attached silently to D16B documents and rejected values D16B allows: a
+  conforming XRechnung invoice with an allowance reason code of `TAC` came back invalid. `AddCiiSchema()` is
+  now D16B; `AddCiiSchema(CiiSchemaVersion.D22B)` is there for a document written against the later revision.
+- **The engine is now compared against another engine.** `build/fetch-specs.sh kosit` brings the KoSIT
+  validator — the reference implementation German authorities run — and the cross-check tests compare
+  acceptance and rule-by-rule findings over the official XRechnung corpus. That is what found the schema
+  defect above; no corpus of expected results could have.
+- Four documents remain where this library rejects what the reference accepts, all EN 16931 code-list or
+  calculation rules. They are listed by name in the test so a new disagreement still fails the build.
+
 - **ZUGFeRD 1.0, for reading** — `International.EInvoicing.Zugferd1`. The 2013 German hybrid invoice,
   replaced in 2019 and still sitting in archives. CII from before CII settled: FeRD's own document namespace
   and versions 12 and 15 of the data types, so it needs its own reader rather than a flag on the CII one.

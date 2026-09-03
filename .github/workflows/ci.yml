@@ -62,6 +62,41 @@ jobs:
           name: test-results-${{ matrix.os }}
           path: "**/TestResults/**"
 
+  crosscheck:
+    name: cross-check against the KoSIT validator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      # The reference implementation is a JVM program. This is the whole of what "needs a Java toolchain in
+      # CI" amounted to.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Fetch the reference validator and the corpus it judges
+        run: |
+          build/fetch-specs.sh kosit
+          build/fetch-specs.sh xrechnung
+
+      - name: Compare the two engines
+        run: >
+          dotnet test tests/International.EInvoicing.CrossCheck.Tests -c Release
+          --logger "trx;LogFileName=crosscheck.trx"
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crosscheck-results
+          path: "**/TestResults/**"
+
   pack:
     name: pack
     runs-on: ubuntu-latest
