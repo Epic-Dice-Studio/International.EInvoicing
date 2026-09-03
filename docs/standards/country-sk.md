@@ -20,7 +20,7 @@ assertions** that judge it.
 | Capability | Package | Status |
 |---|---|---|
 | Peppol BIS Billing 3.0, both syntaxes | `.Peppol` | done |
-| The tax data document, built from the invoice it reports | `.Peppol` | done — `PeppolTaxData`, `PeppolTaxDataWriter` |
+| The tax data document, built from the invoice it reports | `.Peppol` | done — `PeppolTaxData`, `PeppolTaxDataWriter`, `PeppolTaxDataReader` |
 | The 88 published assertions | `.Peppol` | run once fetched — `PeppolTaxDataValidator` |
 | Reading a tax data document back | — | not yet: a receiver's job, and no caller has needed it |
 | Transmitting either document | — | permanently out of scope: no network I/O |

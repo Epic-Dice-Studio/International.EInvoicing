@@ -75,6 +75,11 @@ International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.TaxDataTypes.i
 International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator
 International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
 International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator.Version.get -> string!
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.PeppolTaxDataReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData!>!
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData!>!
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData!>!>!
 International.EInvoicing.Peppol.TaxData.Writing.PeppolTaxDataWriter
 International.EInvoicing.Peppol.TaxData.Writing.PeppolTaxDataWriter.PeppolTaxDataWriter() -> void
 International.EInvoicing.Peppol.TaxData.Writing.PeppolTaxDataWriter.Write(International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData! document, System.IO.Stream! destination) -> void
@@ -104,6 +109,7 @@ const International.EInvoicing.Peppol.PeppolResponseCodes.Rejected = "RE" -> str
 const International.EInvoicing.Peppol.PeppolResponseCodes.UnderQuery = "UQ" -> string!
 const International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint.ServiceProviderScheme = "0242" -> string!
 const International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.ProfileId = "urn:peppol:taxreporting" -> string!
+const International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.RootElement = "TaxData" -> string!
 override International.EInvoicing.Peppol.PeppolParticipant.GetHashCode() -> int
 override International.EInvoicing.Peppol.PeppolParticipant.ToString() -> string!
 override International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Equals(object? obj) -> bool
@@ -158,4 +164,5 @@ static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.operato
 static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.operator ==(International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction? left, International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction? right) -> bool
 static International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator.LoadFrom(string! directory) -> International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator!
 static International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator.LoadFrom(string! directory, International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction! jurisdiction) -> International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator!
+static International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.LooksLikeTaxData(string! xml) -> bool
 ~override International.EInvoicing.Peppol.PeppolParticipant.Equals(object obj) -> bool

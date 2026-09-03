@@ -139,7 +139,7 @@ validation is never presented as a success.
 | Factur-X hybrid PDF <sub>CII payload</sub> | ✅ | ✅ | ⛔ | `International.EInvoicing.FacturX.PdfSharp` |
 | Peppol BIS Billing <sub>3.0</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 | XRechnung (CIUS + Extension) <sub>3.x</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Countries.Germany` |
-| Peppol tax data document (SK, ViDA) <sub>taxdata sk-1, vida-1</sub> | 🚧 | ✅ | ✅ | `International.EInvoicing.Peppol` |
+| Peppol tax data document (SK, ViDA) <sub>taxdata sk-1, vida-1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 | Peppol post-award — Invoice Response, MLR, Despatch Advice <sub>Invoice Response 3.1, MLR, Despatch Advice 3</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Peppol` |
 
 > **XSD schema validation (UBL 2.1, CII D22B)** — The OASIS and UN/CEFACT schemas, embedded and offline, as rule sets like any other. They judge what no business rule looks at — element order and cardinality are normative in both syntaxes — and they earned their keep twice: they caught the shape this library shipped (two bank accounts in one cac:PaymentMeans) and then, on the official corpora, fifteen EN 16931 terms that were read by nothing and written by nothing. Both corpora now round-trip with their shape intact and nothing unmapped.
@@ -154,7 +154,7 @@ validation is never presented as a success.
 
 > **XRechnung (CIUS + Extension)** — Profiles for both syntaxes and the published rule sets, embedded. Measured against all 86 documents of the official KoSIT test suite.
 
-> **Peppol tax data document (SK, ViDA)** — The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job.
+> **Peppol tax data document (SK, ViDA)** — The document a reporting mandate sends to the tax authority beside the invoice, as OpenPeppol specifies it per jurisdiction. Slovakia's rule set and the EU's ViDA one differ by one assertion out of 88, by a namespace and by an identifier, so one writer serves both and both are measured. The Gulf ones are a second dialect — the Emirati and Omani documents require a source document, a reporter's representative and content of their own — and are not carried yet. Reading one back is a receiver's job. Read as well as written: the reported document is handed to the UBL invoice reader after three element renames, so a business term the invoice reader maps is one a tax authority gets back. Reading it back showed what the projection actually omits — the supplier has no name in a tax data document, only a VAT identifier.
 
 > **Peppol post-award — Invoice Response, MLR, Despatch Advice** — An Invoice Response is what a receiver owes a sender — in process, accepted, rejected, under query, paid; a Message Level Response answers whether the message arrived at all; a Despatch Advice says what was sent. Peppol's own rules run from the compiled artefacts, each scoped to the transaction it governs; the rules and the corpus are fetched rather than shipped, since OpenPEPPOL declares no licence. Ordering is not here.
 

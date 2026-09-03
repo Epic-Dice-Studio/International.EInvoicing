@@ -39,12 +39,40 @@ PeppolTaxData report = new()
 string xml = new PeppolTaxDataWriter().WriteToString(report);
 ```
 
+## Reading one back
+
+The receiver's side — the tax authority's, or a service provider checking what it is about to send:
+
+```csharp
+ParseResult<PeppolTaxData> result = new PeppolTaxDataReader(options, profiles).Read(xml);
+
+PeppolTaxData report = result.Value!;
+EInvoice reported = report.ReportedDocument!;   // the projection, read as the invoice it projects
+```
+
+`PeppolTaxDataReader.LooksLikeTaxData(xml)` tells one from an invoice by its root element.
+
+**The reported document is read by the UBL invoice reader**, not by a second mapping written beside it. The
+projection renames exactly three elements — `pxs:DocumentTypeCode`, `pxs:MonetaryTotal` and
+`pxs:DocumentLine` — and is otherwise UBL as published, so the reader translates those and delegates. A
+business term the invoice reader maps is a term a tax authority gets back, without anyone remembering to add
+it twice.
+
+A jurisdiction this library does not carry still reads: the envelope is the same everywhere, only the code
+lists differ. What is lost is the checking of those lists, and that is reported as `EIV1042` rather than
+passed off as a document nobody had to judge.
+
 ## The reported document is a projection
 
 Every rule describing it is written as *"MUST NOT contain elements other than…"*. The writer emits the
 allowed subset of the invoice and drops the rest — the buyer reference, the payment terms, the due date, the
 seller's contact. **An invoice you can send is not a report you can send**, and a writer that passes the
 invoice through is the straightforward way to get that wrong.
+
+Reading one back makes the shape of that subset visible, and the sharpest edge is the supplier: the rules
+define no `cac:PartyLegalEntity` under `cac:AccountingSupplierParty`, so **the report carries no supplier
+name at all** — only their VAT identifier and country. A receiver expecting to learn who sent the invoice
+from the report alone will not.
 
 ## What the rules will not tell you
 

@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Reading a tax data document** — [the standard page](docs/standards/peppol-taxdata.md). It was the one
+  place this library did not read back what it writes, and that parity is what lets an integrator test their
+  own output and a receiver use the same library as the sender. `PeppolTaxDataReader` closes it, for
+  Slovakia, ViDA, and a jurisdiction this library does not carry — the envelope is the same everywhere, and
+  the loss of the code-list checking is reported rather than passed off.
+- The reported document is read **by the UBL invoice reader**, not by a second mapping written beside it: the
+  projection renames three elements and is otherwise UBL as published, so the reader translates those and
+  delegates. A business term the invoice reader learns is one a tax authority gets back.
+- Reading one back is also the first time the projection's shape was visible from the outside, and it has a
+  sharp edge worth knowing: **a tax data document carries no supplier name.** The rules define no
+  `cac:PartyLegalEntity` under the supplier, so the report identifies who sent the invoice by VAT identifier
+  and country alone.
+
 - **The Peppol Despatch Advice** — what actually left the warehouse, which is the document an invoice is
   reconciled against. An invoice says what is owed and an order says what was asked for; only this says what
   was sent, and receiving ten of an ordered twelve is the whole reason `cbc:OutstandingQuantity` exists.
