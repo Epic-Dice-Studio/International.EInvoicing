@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/International.EInvoicing.OrderX/International.EInvoicing.OrderX.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing.Validation.Xsd/International.EInvoicing.Validation.Xsd.csproj" />
+    <ProjectReference Include="../../src/International.EInvoicing.FacturX.PdfSharp/International.EInvoicing.FacturX.PdfSharp.csproj" />
     <ProjectReference Include="../../src/International.EInvoicing/International.EInvoicing.csproj" />
   </ItemGroup>
 

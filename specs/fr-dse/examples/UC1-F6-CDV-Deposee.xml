@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsm:CrossDomainAcknowledgementAndResponse xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossDomainAcknowledgementAndResponse:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<rsm:ExchangedDocumentContext>
+		<!-- MDB-1 : Contrôle du processus -->
+		<ram:BusinessProcessSpecifiedDocumentContextParameter>
+			<!-- MDG-2 : Type de processus métier -->
+			<ram:ID>S1</ram:ID>
+			<!-- MDT-2 : Type de profil, permet de préciser le cadre du flux (e-invoicing ou e-reporting) -->
+		</ram:BusinessProcessSpecifiedDocumentContextParameter>
+		<ram:GuidelineSpecifiedDocumentContextParameter>
+			<!-- MDG-3 : Références spécifications -->
+			<ram:ID>urn.cpro.gouv.fr:1p0:CDV:einvoicingF2</ram:ID>
+			<!-- MDT-3 : Id référence spécifications -->
+		</ram:GuidelineSpecifiedDocumentContextParameter>
+	</rsm:ExchangedDocumentContext>
+	<rsm:ExchangedDocument>
+		<!-- MDB-2 : Document d'échange -->
+		<ram:ID>UC1-02-CDV-DEPOSEE</ram:ID>
+		<!-- MDT-4 : Id document, identifiant du flux généré par l'émetteur -->
+		<ram:Name>Cycle de vie - Facture déposée</ram:Name>
+		<!-- MDT-5 : Nom document, nom du flux généré par l'émetteur -->
+		<ram:IssueDateTime>
+			<!-- MDG-4 : Horodatage -->
+			<udt:DateTimeString format="204">20230101180000</udt:DateTimeString>
+			<!-- MDT-8 : Date et heure du flux -->
+		</ram:IssueDateTime>
+		<ram:SenderTradeParty>
+		<!-- MDG-9 : Emetteur du flux PDP -->
+			<ram:GlobalID schemeID="0238">1111</ram:GlobalID>
+			<!-- MDT-19 : Id destinataire (global) @MDT-18 : Type Id récepteur: (0238) Matricule -->
+			<ram:RoleCode>WK</ram:RoleCode>
+			<!-- MDT-21 : Code rôle -->
+		</ram:SenderTradeParty>
+		<ram:IssuerTradeParty>
+		<!-- MDG-16 : Emetteur du document PDP -->
+			<ram:GlobalID schemeID="0238">1111</ram:GlobalID>
+			<!-- MDT-38 : Id destinataire (global) @MDT-37 : Type Id récepteur: (0238) Matricule -->
+			<ram:RoleCode>WK</ram:RoleCode>
+			<!-- MDT-40 : Code rôle -->
+		</ram:IssuerTradeParty>
+		<ram:RecipientTradeParty>
+			<!-- MDG-23 : Destinataire PPF -->
+			<ram:GlobalID schemeID="0238">0000</ram:GlobalID>
+			<!-- MDT-57 : Id destinataire (global) @MDT-56 : Type Id récepteur: (0238) Matricule -->
+			<ram:RoleCode>DFH</ram:RoleCode>
+			<!-- MDT-59 : Code rôle -->
+		</ram:RecipientTradeParty>
+	</rsm:ExchangedDocument>
+	<rsm:AcknowledgementDocument>
+		<!-- MDB-03 : DOCUMENT REPONSE -->
+		<ram:MultipleReferencesIndicator>
+			<!-- MDG-30 : Indicateur de références multiples -->
+			<udt:Indicator>false</udt:Indicator>
+			<!-- MDT-74 : Indicateur, "false" = référence à une seule facture/e-reporting -->
+		</ram:MultipleReferencesIndicator>
+		<ram:IssueDateTime>
+			<!-- MDG-31 : Horodatage -->
+			<udt:DateTimeString format="204">20230101170000</udt:DateTimeString>
+			<!-- MDT-78 : Date et heure du bloc Acknowledgement -->
+		</ram:IssueDateTime>
+		<ram:ReferenceReferencedDocument>
+			<!-- MDG-32 : Objet de la réponse -->
+			<ram:IssuerAssignedID>UC1_2023001_F</ram:IssuerAssignedID>
+			<!-- MDT-87 : ID objet -->
+			<ram:TypeCode>380</ram:TypeCode>
+			<!-- MDT-91 : Code type de l'objet -->
+			<ram:ReceiptDateTime>
+				<!-- MDG-34 : Date réception objet (facture ou e-reporting) -->
+				<udt:DateTimeString format="204">20230101150000</udt:DateTimeString>
+				<!-- MDT-95 : Date-heure -->
+			</ram:ReceiptDateTime>
+			<ram:ReferenceTypeCode>urn.cpro.gouv.fr:1p0:CDV:einvoicingF2</ram:ReferenceTypeCode>
+			<!-- MDT-97 : Code type référence -->
+			<ram:FormattedIssueDateTime>
+				<!-- MDG-35 : Date objet -->
+				<qdt:DateTimeString format="204">20230101120000</qdt:DateTimeString>
+				<!-- MDT-100 : Date d'édition de la facture ou données de e-reporting -->
+			</ram:FormattedIssueDateTime>
+			<ram:ProcessConditionCode>200</ram:ProcessConditionCode>
+			<!-- MDT-105 : Code statut traitement -->
+			<ram:ProcessCondition>Déposée</ram:ProcessCondition>
+			<!-- MDT-106 : Libellé statut traitement -->
+			<ram:IssuerTradeParty>
+				<!-- MDG-40 : Emetteur du document référencé -->
+				<ram:GlobalID schemeID="0002">100000009</ram:GlobalID>
+			<!-- MDT-129 : ID émetteur document référencé -->
+				<ram:RoleCode>SE</ram:RoleCode>
+			<!-- MDT-130 : code rôle -->
+			</ram:IssuerTradeParty>
+		</ram:ReferenceReferencedDocument>
+	</rsm:AcknowledgementDocument>
+</rsm:CrossDomainAcknowledgementAndResponse>

@@ -1,4 +1,5 @@
 #nullable enable
+International.EInvoicing.OrderX.OrderXAttachment
 International.EInvoicing.OrderX.OrderXBuilderExtensions
 International.EInvoicing.OrderX.OrderXDiagnostics
 International.EInvoicing.OrderX.OrderXNames
@@ -29,9 +30,11 @@ International.EInvoicing.OrderX.Writing.OrderXOrderWriter.Syntax.get -> Internat
 International.EInvoicing.OrderX.Writing.OrderXOrderWriter.Write(International.EInvoicing.Model.Order! document, System.IO.Stream! destination) -> void
 International.EInvoicing.OrderX.Writing.OrderXOrderWriter.WriteAsync(International.EInvoicing.Model.Order! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 International.EInvoicing.OrderX.Writing.OrderXOrderWriter.WriteToString(International.EInvoicing.Model.Order! document) -> string!
+const International.EInvoicing.OrderX.OrderXAttachment.FileName = "order-x.xml" -> string!
 const International.EInvoicing.OrderX.OrderXTypeCodes.Order = "220" -> string!
 const International.EInvoicing.OrderX.OrderXTypeCodes.OrderChange = "230" -> string!
 const International.EInvoicing.OrderX.OrderXTypeCodes.OrderResponse = "231" -> string!
+static International.EInvoicing.OrderX.OrderXAttachment.KnownFileNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
 static International.EInvoicing.OrderX.OrderXBuilderExtensions.AddOrderXRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory, string! version = "1.0") -> International.EInvoicing.Configuration.EInvoicingBuilder!
 static International.EInvoicing.OrderX.OrderXDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
 static International.EInvoicing.OrderX.OrderXDiagnostics.UnknownDocumentType.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!

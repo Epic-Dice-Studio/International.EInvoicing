@@ -6,6 +6,40 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **Factur-X, Belgium and France have document corpora at last.** Factur-X — the format both France and
+  Germany run on — had none: every Factur-X test in this repository used an invoice written in this
+  repository, which measures the library against its own idea of one. There are now 58 published documents
+  across all five profiles, 36 published Belgian invoices, and the DGFiP's own worked examples.
+- **A profile that extends EN 16931 is judged by its own rule set, not by EN 16931 as well.** Registering
+  both rejects invoices the publishers call valid: 8 of the 58 Factur-X documents and 17 of the 36 Belgian
+  ones. Factur-X EXTENDED allows grouped lines, where a heading's amount is the sum of its children, and
+  EN 16931's BR-CO-10 adds the headings to the details and finds the total twice over; `GLOBALUBL.BE`
+  bundles the EN 16931 rules and *adapts* several, and the unmodified originals re-impose what Belgium
+  relaxed. Both are pinned as tests, and whether `AddDefaults()` should refuse to attach EN 16931 to a
+  document whose declared profile derives from it is on the roadmap.
+- The French examples come from the published specification rather than a repository: the DGFiP ships an
+  `Exemples` folder inside `specifications-externes-v3.0.zip` — an invoice in both syntaxes, the lifecycle
+  messages and the three e-reporting flows. v3.1 and v3.2 dropped it.
+- **Hybrid PDFs are checked against the shapes they actually arrive in**: a CSV beside the XML, other files
+  listed first, several attachments of assorted types, a second XML that is a supporting document, both
+  known payload names present at once, a name matched whatever its case, and an invoice filed only in the
+  EmbeddedFiles name tree or named only by `/UF`.
+- **Order-X hybrid PDFs can be opened.** An order is filed as `order-x.xml`, and a reader handed only the
+  invoice names found nothing in a perfectly good order. `OrderXAttachment` says the name, and the PDF
+  FNFE-MPE publishes is read end to end.
+
+- **EN 16931's own unit cases now run** — 281 documents, each named after the rule it exercises and each
+  declaring whether that rule should fire. Until now this library measured itself against the standard's
+  *examples*, which are all conformant: a corpus of conformant documents can only show an engine is not too
+  strict, never that it is not too lax, and too lax is the direction that lets a bad invoice through.
+  277 pass; three are listed in the test as known and unexplained.
+- The cases ship in the same repository as the artefacts and are fetched at the same tag, which is what makes
+  them readable as a verdict. A negative corpus from a *different* version proves nothing: a rule identifier
+  outlives the rule's wording, so a document written to break a rule in one release can satisfy the same
+  rule's later wording, and the disagreement says nothing about the engine.
+- `SchematronRuleSet.RuleIdentifiers` says which rules a rule set carries, so "this document satisfies the
+  rule" can be told from "this rule set has no such rule". The two look identical in a report.
+
 - **The Order-X order response**, which completes the format: all three documents Order-X carries are now
   read and written. A response fills `OrderResponse`, is told from an order by its type code, and carries the
   seller's answer — a status on the document, a status on each line, and an agreed quantity beside the
@@ -79,8 +113,6 @@ All notable changes to this project are documented here. The format follows
   held one amount, so `LinePrice.Adjustments` is the full account and `Discount` is their total; a delivery
   event may state **both** a preferred date and an acceptable window, so `OrderDelivery.RequestedAt` is kept
   apart from the window; and a contact's department and function code had nowhere to go.
-- **The Order-X order response is not done.** It fills `OrderResponse` rather than `Order`, and there is no
-  published reference document for it — tracked on the roadmap.
 
 - **Unmapped content is written back where it was read from, in UBL.** An element nobody maps used to be kept
   verbatim and flushed at the end of the node holding it. UBL's element order is normative, so content in the
