@@ -80,6 +80,29 @@ public class En16931UnitCaseTests
         IReadOnlyCollection<string> rules = En16931Rules.For(DocumentSyntax.Ubl).RuleIdentifiers;
         string[] covered = [.. named.Where(name => rules.Contains(name, StringComparer.OrdinalIgnoreCase))];
 
+        // The unit-case folders only: test/testfiles holds sample documents, which name no rule and are
+        // exercised elsewhere.
+        string[] uncarried =
+        [
+            .. ((string[])["Invoice-unit-UBL", "CreditNote-unit-UBL", "cii"])
+                .Select(folder => Path.Combine(root, folder))
+                .Where(Directory.Exists)
+                .SelectMany(folder => Directory.EnumerateFiles(folder, "*.xml"))
+                .Where(file => !Carried(file, file.Contains($"{Path.DirectorySeparatorChar}cii{Path.DirectorySeparatorChar}", StringComparison.Ordinal)
+                    ? DocumentSyntax.Cii
+                    : DocumentSyntax.Ubl))
+                .Select(Path.GetFileNameWithoutExtension)
+                .Select(name => name!)
+                .Order(StringComparer.Ordinal),
+        ];
+
+        // Only rules the 1.3.16 artefacts genuinely lack: BR-CO-25, and the IGIC and IPSI families.
+        uncarried.ShouldAllBe(
+            name => name.StartsWith("BR-CO-25", StringComparison.Ordinal)
+                || name.StartsWith("BR-IG-", StringComparison.Ordinal)
+                || name.StartsWith("BR-IP-", StringComparison.Ordinal),
+            $"a case stopped being judged for a reason nobody expected: {string.Join(", ", uncarried)}");
+
         covered.Length.ShouldBeGreaterThan(
             (int)(named.Length * 0.8),
             "the cases and the artefacts come from the same tag, so nearly every case should name a rule "
@@ -87,34 +110,51 @@ public class En16931UnitCaseTests
     }
 
     /// <summary>
-    /// The three cases this library does not yet agree with, and what is known about them.
+    /// A case naming a rule the artefacts of this version do not carry cannot be judged, and says so.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// Every one is a rule the standard expects to fire and this library does not — the permissive
-    /// direction, which is the one worth worrying about. They are listed rather than tolerated: the other
-    /// 278 cases still guard the engine, and a *new* disagreement still fails the build.
-    /// </para>
-    /// <para>
-    /// What has been ruled out for BR-IC-11, so the next person does not repeat it: the XPath is right in
-    /// isolation — quantified expressions, sequence construction and comparison, chained predicates, a
-    /// function call in a step position, and the string-value of an element holding only a comment all
-    /// evaluate correctly, and the rule fires on a hand-built document of the same shape. What differs is
-    /// something in the published case that has not been isolated yet.
-    /// </para>
+    /// <c>BR-CO-25</c> is the one: the standard publishes a unit case for it at this tag and its own
+    /// Schematron does not implement it, so there is no rule to fire and nothing to conclude. Measured
+    /// against <see cref="SchematronRuleSet.RuleIdentifiers"/> rather than listed by hand, so a rule that
+    /// arrives later stops being skipped without anyone remembering to look.
     /// </remarks>
-    private static readonly HashSet<string> Unexplained =
-        new(StringComparer.OrdinalIgnoreCase) { "BR-CO-25", "BR-IC-11", "BR-IC-12" };
+    private static bool Carried(string path, DocumentSyntax syntax)
+    {
+        IReadOnlyCollection<string> carried = En16931Rules.For(syntax).RuleIdentifiers;
+
+        // A file may be a variant of a case rather than a case of its own: BR-S-08-1, BR-S-08-2 and
+        // BR-S-08-3 all exercise BR-S-08. Strip the trailing counter before deciding the rule is missing,
+        // or three quarters of the skips are cases that could perfectly well have been judged.
+        for (string name = Path.GetFileNameWithoutExtension(path); name.Length > 0;)
+        {
+            if (carried.Contains(name, StringComparer.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            int dash = name.LastIndexOf('-');
+            if (dash < 0 || !name[(dash + 1)..].All(char.IsAsciiDigit))
+            {
+                return false;
+            }
+
+            name = name[..dash];
+        }
+
+        return false;
+    }
 
     private static void Measure(string path, DocumentSyntax syntax)
     {
         Assert.SkipWhen(path.Length == 0, "run build/fetch-specs.sh en16931");
 
         Assert.SkipUnless(
-            !Unexplained.Contains(Path.GetFileNameWithoutExtension(path)),
-            "a known disagreement, listed and unexplained — see Unexplained");
+            Carried(path, syntax),
+            $"the EN 16931 artefacts of this version carry no {Path.GetFileNameWithoutExtension(path)} rule");
 
-        XDocument set = XDocument.Load(path);
+        // PreserveWhitespace, and DisableFormatting below: a unit case is a document somebody wrote,
+        // and reformatting it before judging it changes what the rules see.
+        XDocument set = XDocument.Load(path, LoadOptions.PreserveWhitespace);
         var validator = new SchematronValidator();
         SchematronRuleSet rules = En16931Rules.For(syntax);
         var disagreements = new List<string>();
@@ -130,7 +170,9 @@ public class En16931UnitCaseTests
             }
 
             disagreements.AddRange(
-                Compare(expectations, [.. validator.Validate(document.ToString(), rules).Messages]));
+                Compare(
+                    expectations,
+                    [.. validator.Validate(document.ToString(SaveOptions.DisableFormatting), rules).Messages]));
         }
 
         disagreements.ShouldBeEmpty(

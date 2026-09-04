@@ -6,6 +6,17 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **The three EN 16931 unit cases that disagreed were not the engine.** Two of them — `BR-IC-11` and
+  `BR-IC-12` — were the test runner reformatting a published document before judging it: an element holding
+  nothing but a comment gains whitespace when pretty-printed, and rules asking whether a field was filled in
+  start answering yes. Both runners now load with `PreserveWhitespace` and serialise with
+  `DisableFormatting`, so a case is judged as its author wrote it.
+- The third, `BR-CO-25`, is a rule the EN 16931 1.3.16 artefacts do not implement, though the standard ships
+  a unit case for it at that tag. It is skipped with that reason, measured against the rule set rather than
+  listed by hand — as are the IGIC and IPSI families, for the same reason. A guard fails if any other case
+  stops being judged.
+- There is no baseline of unexplained disagreements any more, because there are none.
+
 - **A profile's rules supersede the ones they were built on, when they carry them.** Registering EN 16931
   beside Factur-X or `GLOBALUBL.BE` used to reject invoices those publishers call valid — eight of Factur-X's
   own 58 documents and seventeen of Belgium's 36 — because both artefacts already carry the EN 16931 rules
