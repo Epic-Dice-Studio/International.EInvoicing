@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnnuaireActualisation xmlns:ac="annuaire-common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<BlocCodesRoutage>
+		<ac:CodeRoutage>
+			<ac:Statut>I</ac:Statut>
+			<ac:IdSIRET qualifiant="0009">32345678900001</ac:IdSIRET>
+			<ac:IdRoutage qualifiant="0224">Service Ressources Humaines</ac:IdRoutage>
+			<ac:Nom>ENTITE TROIS</ac:Nom>
+			<ac:LigneAdresse1>39, place de Ribeiro</ac:LigneAdresse1>
+			<ac:LigneAdresse2>Résidence des Peupliers</ac:LigneAdresse2>
+			<ac:LigneAdresse3>Appartement 37</ac:LigneAdresse3>
+			<ac:Localite>Lacombe-sur-Mer</ac:Localite>
+			<ac:CP>39338</ac:CP>
+			<ac:CodePays>250</ac:CodePays>
+		</ac:CodeRoutage>
+	</BlocCodesRoutage>
+</AnnuaireActualisation>

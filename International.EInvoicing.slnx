@@ -45,6 +45,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/International.EInvoicing.Cdar.Tests/International.EInvoicing.Cdar.Tests.csproj" />
+    <Project Path="tests/International.EInvoicing.Conformance.Tests/International.EInvoicing.Conformance.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.OrderX.Tests/International.EInvoicing.OrderX.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.Zugferd1.Tests/International.EInvoicing.Zugferd1.Tests.csproj" />
     <Project Path="tests/International.EInvoicing.CrossCheck.Tests/International.EInvoicing.CrossCheck.Tests.csproj" />

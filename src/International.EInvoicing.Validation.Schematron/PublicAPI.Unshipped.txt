@@ -9,13 +9,14 @@ International.EInvoicing.Validation.Schematron.SchematronDocumentRuleSet.Version
 International.EInvoicing.Validation.Schematron.SchematronRuleSet
 International.EInvoicing.Validation.Schematron.SchematronRuleSet.AssertionCount.get -> int
 International.EInvoicing.Validation.Schematron.SchematronRuleSet.Name.get -> string!
+International.EInvoicing.Validation.Schematron.SchematronRuleSet.RuleIdentifiers.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 International.EInvoicing.Validation.Schematron.SchematronRuleSet.Version.get -> string!
 International.EInvoicing.Validation.Schematron.SchematronServiceCollectionExtensions
 International.EInvoicing.Validation.Schematron.SchematronValidator
 International.EInvoicing.Validation.Schematron.SchematronValidator.SchematronValidator() -> void
-International.EInvoicing.Validation.Schematron.SchematronValidator.Validate(string! xml, International.EInvoicing.Validation.Schematron.SchematronRuleSet! ruleSet) -> International.EInvoicing.Validation.ValidationReport!
 International.EInvoicing.Validation.Schematron.SchematronValidator.Validate(System.IO.Stream! stream, International.EInvoicing.Validation.Schematron.SchematronRuleSet! ruleSet, International.EInvoicing.Xml.DocumentLimits? limits = null) -> International.EInvoicing.Validation.ValidationReport!
 International.EInvoicing.Validation.Schematron.SchematronValidator.Validate(System.Xml.Linq.XDocument! document, International.EInvoicing.Validation.Schematron.SchematronRuleSet! ruleSet) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Validation.Schematron.SchematronValidator.Validate(string! xml, International.EInvoicing.Validation.Schematron.SchematronRuleSet! ruleSet) -> International.EInvoicing.Validation.ValidationReport!
 International.EInvoicing.Validation.Schematron.XPath.XPathException
 International.EInvoicing.Validation.Schematron.XPath.XPathException.XPathException() -> void
 International.EInvoicing.Validation.Schematron.XPath.XPathException.XPathException(string! message) -> void

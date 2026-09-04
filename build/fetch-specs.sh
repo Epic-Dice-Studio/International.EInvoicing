@@ -25,7 +25,10 @@ XRECHNUNG_SCHEMATRON_REF="master"
 XRECHNUNG_TESTSUITE_REF="master"
 PHIVE_RULES_REF="master"
 FRENCH_RULES_VERSION="1.4.0.03"
+ZUGFERD_TEST_VERSION="2.5.2"
+UBLBE_TEST_VERSION="v1.31"
 FRENCH_FLUX10_VERSION="1.0"
+DGFIP_SPEC_VERSION="v3.0"
 MUSTANG_REF="master"
 KOSIT_VALIDATOR_VERSION="1.6.3"
 KOSIT_XRECHNUNG_CONFIG_TAG="v2026-08-31"
@@ -68,6 +71,13 @@ fetch_en16931() {
     # The official examples: what the engine is measured against, rather than documents we wrote ourselves.
     sync_into "$src/ubl/examples" "$SPECS_DIR/en16931/ubl"
     sync_into "$src/cii/examples" "$SPECS_DIR/en16931/cii"
+
+    # And the unit cases: 278 documents named after the rule each exercises, every one declaring whether that
+    # rule should fire. Examples can only show the engine is not too strict; these are what show it is not
+    # too lax. They ship in the same repository as the artefacts, so they match them exactly — which matters,
+    # because a rule identifier outlives the rule's wording and a corpus from another version proves nothing.
+    sync_into "$src/test" "$SPECS_DIR/en16931"
+
     copy_licence "$src" "$SPECS_DIR/en16931"
 }
 
@@ -112,6 +122,22 @@ fetch_france() {
         "$SPECS_DIR/fr-dse/schemas/flux10"
     # The DGFiP lifecycle samples: what the CDAR rules are measured against.
     sync_into "$french/test-files/ctc/$FRENCH_RULES_VERSION" "$SPECS_DIR/fr-dse/samples"
+
+    # And the DGFiP's own worked examples, which ship inside the published specification rather than in
+    # anybody's repository: an invoice in both syntaxes, the lifecycle messages, and the three e-reporting
+    # flows. The v3.0 package is the last one to carry them — v3.1 and v3.2 dropped the Exemples folder.
+    log "fetching the DGFiP worked examples ($DGFIP_SPEC_VERSION)"
+    local base="https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion"
+    local page="290_facturation_electronique/specification_externes_b2b"
+
+    if curl -fsSL "$base/$page/specifications-externes-$DGFIP_SPEC_VERSION.zip" \
+        -o "$WORK_DIR/dgfip.zip"; then
+        mkdir -p "$SPECS_DIR/fr-dse/examples"
+        unzip -qo -j "$WORK_DIR/dgfip.zip" "*Exemples*/*.xml" "*Exemples*/*.XML" \
+            -d "$SPECS_DIR/fr-dse/examples"
+    else
+        warn "the DGFiP specification could not be downloaded; French example tests will skip"
+    fi
 }
 
 # Peppol PINT: the specification every Peppol jurisdiction outside Europe runs on. OpenPEPPOL publishes it
@@ -147,6 +173,17 @@ fetch_national() {
         sync_into "$src/phive-rules-$module/src/main/resources/external/schematron" \
             "$SPECS_DIR/national/$module"
     done
+
+    # And the documents those rule sets are meant to accept, at the versions fetched above. Until these
+    # arrived, Factur-X — the format both France and Germany run on — had no document corpus at all: every
+    # Factur-X test in this repository was written here, which measures the library against its own opinion.
+    # The version matters and is easy to get wrong: AddFacturXRulesFrom registers the newest rule set it
+    # finds, so the documents have to be the newest too. A corpus from an older release is judged by rules
+    # whose wording has moved on, and the disagreements say nothing about this library.
+    sync_into "$src/phive-rules-zugferd/src/test/resources/external/test-files/$ZUGFERD_TEST_VERSION" \
+        "$SPECS_DIR/national/zugferd/test-files"
+    sync_into "$src/phive-rules-ublbe/src/test/resources/external/test-files/en16931/$UBLBE_TEST_VERSION" \
+        "$SPECS_DIR/national/ublbe/test-files"
 }
 
 # The Peppol post-award documents that are not invoices: the Invoice Response and the Message Level
