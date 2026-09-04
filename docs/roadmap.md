@@ -84,8 +84,10 @@ rule set, defaults to false, and every claim is measured against the artefact by
 corpus of *conformant* documents — the EN 16931 examples, the XRechnung test suite, the Peppol use cases.
 Those can only show the engine is not too strict. EN 16931 publishes unit cases as well: 281 documents, each
 named after the rule it exercises and each declaring whether that rule should fire, shipped in the same
-repository as the artefacts and fetched at the same tag. 277 pass; `BR-CO-25`, `BR-IC-11` and `BR-IC-12` are
-listed in the test as known and unexplained, with what has been ruled out written beside them.
+repository as the artefacts and fetched at the same tag. All of them are judged that the artefacts carry a rule for, and all of them agree. The three that once
+disagreed were not the engine: `BR-IC-11` and `BR-IC-12` were the runner pretty-printing a document before
+judging it — an element holding only a comment gains whitespace, and a rule asking whether a field was filled
+in starts answering yes — and `BR-CO-25` is a rule 1.3.16 ships a unit case for and does not implement.
 
 **A negative corpus is only readable at its own version.** The largest collection of labelled e-invoicing
 documents is phive-rules — thousands of them, with a `bad/` folder naming the rule each breaks. It looked

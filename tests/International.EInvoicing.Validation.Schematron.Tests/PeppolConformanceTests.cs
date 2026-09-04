@@ -51,7 +51,10 @@ public class PeppolConformanceTests
     {
         Assert.SkipWhen(path.Length == 0, "The Peppol artefacts are not present; run build/fetch-specs.sh peppol.");
 
-        XDocument set = XDocument.Load(path);
+        // As published: reformatting a document before judging it changes what the rules see —
+        // an element holding only a comment gains whitespace, and rules asking whether a field was
+        // filled in start answering yes.
+        XDocument set = XDocument.Load(path, LoadOptions.PreserveWhitespace);
         var validator = new SchematronValidator();
         SchematronRuleSet peppol = Rules(syntax, "PEPPOL");
         SchematronRuleSet cen = Rules(syntax, "CEN");
@@ -67,7 +70,7 @@ public class PeppolConformanceTests
                 continue;
             }
 
-            string xml = document.ToString();
+            string xml = document.ToString(SaveOptions.DisableFormatting);
             List<ValidationMessage> reported =
             [
                 .. validator.Validate(xml, peppol).Messages,
