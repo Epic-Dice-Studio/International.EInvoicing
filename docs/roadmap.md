@@ -72,6 +72,20 @@ in both syntaxes and against EN 16931 underneath. That found two real gaps on th
 business process, which EN 16931 does not require and the network does, and an invalid Belgian enterprise
 number our own checker would have caught.
 
+**And the corpora were all positive.** Every conformance corpus this library ran until September 2026 was a
+corpus of *conformant* documents — the EN 16931 examples, the XRechnung test suite, the Peppol use cases.
+Those can only show the engine is not too strict. EN 16931 publishes unit cases as well: 281 documents, each
+named after the rule it exercises and each declaring whether that rule should fire, shipped in the same
+repository as the artefacts and fetched at the same tag. 277 pass; `BR-CO-25`, `BR-IC-11` and `BR-IC-12` are
+listed in the test as known and unexplained, with what has been ruled out written beside them.
+
+**A negative corpus is only readable at its own version.** The largest collection of labelled e-invoicing
+documents is phive-rules — thousands of them, with a `bad/` folder naming the rule each breaks. It looked
+ideal and is not usable as a verdict: XRechnung publishes those only for its 2.x artefacts, and
+`ubl-inv-br-de-16-test-bt-151-26-code-G.xml` satisfies the BR-DE-16 of 3.0 because the rule's *wording*
+changed while its identifier did not. A rule identifier outlives the rule. Only a version-matched corpus says
+anything about an engine.
+
 **Done, September 2026.** The external comparison runs. "It needs a Java toolchain in CI" turned out to be
 `actions/setup-java` — one step, not a blocker, and worth remembering before accepting the next one.
 `tests/International.EInvoicing.CrossCheck.Tests` runs the KoSIT validator over the official XRechnung

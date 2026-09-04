@@ -6,6 +6,18 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **EN 16931's own unit cases now run** — 281 documents, each named after the rule it exercises and each
+  declaring whether that rule should fire. Until now this library measured itself against the standard's
+  *examples*, which are all conformant: a corpus of conformant documents can only show an engine is not too
+  strict, never that it is not too lax, and too lax is the direction that lets a bad invoice through.
+  277 pass; three are listed in the test as known and unexplained.
+- The cases ship in the same repository as the artefacts and are fetched at the same tag, which is what makes
+  them readable as a verdict. A negative corpus from a *different* version proves nothing: a rule identifier
+  outlives the rule's wording, so a document written to break a rule in one release can satisfy the same
+  rule's later wording, and the disagreement says nothing about the engine.
+- `SchematronRuleSet.RuleIdentifiers` says which rules a rule set carries, so "this document satisfies the
+  rule" can be told from "this rule set has no such rule". The two look identical in a report.
+
 - **CII documents are validated against D16B, not D22B.** EN 16931's CII syntax binding names D16B, and so do
   XRechnung, Factur-X and Peppol — every CII profile this library implements. The two revisions share their
   namespaces, so the D22B schemas attached silently to D16B documents and rejected values D16B allows: a

@@ -68,6 +68,13 @@ fetch_en16931() {
     # The official examples: what the engine is measured against, rather than documents we wrote ourselves.
     sync_into "$src/ubl/examples" "$SPECS_DIR/en16931/ubl"
     sync_into "$src/cii/examples" "$SPECS_DIR/en16931/cii"
+
+    # And the unit cases: 278 documents named after the rule each exercises, every one declaring whether that
+    # rule should fire. Examples can only show the engine is not too strict; these are what show it is not
+    # too lax. They ship in the same repository as the artefacts, so they match them exactly — which matters,
+    # because a rule identifier outlives the rule's wording and a corpus from another version proves nothing.
+    sync_into "$src/test" "$SPECS_DIR/en16931"
+
     copy_licence "$src" "$SPECS_DIR/en16931"
 }
 

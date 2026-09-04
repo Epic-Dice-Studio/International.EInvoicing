@@ -63,6 +63,21 @@ public sealed partial class SchematronRuleSet
     /// <summary>How many assertions it carries. Useful for confirming an artefact loaded in full.</summary>
     public int AssertionCount => Patterns.Sum(pattern => pattern.Rules.Sum(rule => rule.Assertions.Count));
 
+    /// <summary>
+    /// The identifier of every assertion it carries — <c>BR-DE-1</c>, <c>PEPPOL-EN16931-R001</c>.
+    /// </summary>
+    /// <remarks>
+    /// What a rule set covers, so a caller can tell "this document satisfies the rule" from "this rule set
+    /// has no such rule". The two look identical in a report, and telling them apart is what stops a test
+    /// passing because nothing was checked.
+    /// </remarks>
+    public IReadOnlyCollection<string> RuleIdentifiers =>
+        [.. Patterns
+            .SelectMany(pattern => pattern.Rules)
+            .SelectMany(rule => rule.Assertions)
+            .Select(assertion => assertion.Identifier)
+            .Distinct(StringComparer.OrdinalIgnoreCase)];
+
     internal IReadOnlyDictionary<string, string> Namespaces { get; }
 
     internal IReadOnlyList<SchematronPattern> Patterns { get; }
