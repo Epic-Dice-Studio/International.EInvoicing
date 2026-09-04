@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnnuaireActualisation xmlns:ac="annuaire-common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<BlocLignesAnnuaire>
+		<ac:LigneAnnuaire>
+			<ac:Nature>M</ac:Nature>
+			<ac:DateEffet>
+				<ac:DateDebut>20250101</ac:DateDebut>
+			</ac:DateEffet>
+			<ac:InfoAdressage>
+				<ac:Identifiant>
+					<ac:IdLinSIREN qualifiant="0002">123456789</ac:IdLinSIREN>
+                    <ac:IdLinSIRET qualifiant="0009">12345678900001</ac:IdLinSIRET>
+			        <ac:IdLinRoutage qualifiant="0224">Service Juridique</ac:IdLinRoutage>
+				</ac:Identifiant>
+			</ac:InfoAdressage>
+			<ac:IdPlateforme>4444</ac:IdPlateforme>
+		</ac:LigneAnnuaire>
+	</BlocLignesAnnuaire>
+</AnnuaireActualisation>

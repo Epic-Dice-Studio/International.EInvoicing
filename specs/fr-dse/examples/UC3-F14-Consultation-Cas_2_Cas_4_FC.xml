@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnnuaireConsultationF14 xmlns:ac="annuaire-common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<HorodateProduction>20250103000000</HorodateProduction>
+	<DernierHorodateProduction>20241227000000</DernierHorodateProduction>
+	<TypeFlux>C</TypeFlux>
+	<BlocUnitesLegales>
+		<ac:UniteLegale>
+			<ac:IdInstance>2</ac:IdInstance>
+			<ac:MotifPresence>C</ac:MotifPresence>
+			<ac:Statut>A</ac:Statut>
+			<ac:IdSIREN qualifiant="0009">223456789</ac:IdSIREN>
+			<ac:Nom>SOCIETE DEUX</ac:Nom>
+			<ac:TypeEntite>A</ac:TypeEntite>
+		</ac:UniteLegale>
+	</BlocUnitesLegales>
+	<BlocEtablissements>
+		<ac:Etablissement>
+			<ac:IdInstance>3</ac:IdInstance>
+			<ac:MotifPresence>C</ac:MotifPresence>
+			<ac:Statut>A</ac:Statut>
+			<ac:IdSIRET qualifiant="0002">22345678900001</ac:IdSIRET>
+			<ac:TypeEtablissement>P</ac:TypeEtablissement>
+			<ac:Nom>ETABLISSEMENT DEUX</ac:Nom>
+			<ac:LigneAdresse1>229, boulevard Audrey Noel</ac:LigneAdresse1>
+			<ac:Localite>Hubert-sur-Vasseur</ac:Localite>
+			<ac:CP>43374</ac:CP>
+			<ac:CodePays>250</ac:CodePays>
+		</ac:Etablissement>
+	</BlocEtablissements>
+	<BlocCodesRoutage>
+		<ac:CodeRoutage>
+			<ac:IdInstance>1</ac:IdInstance>
+			<ac:MotifPresence>C</ac:MotifPresence>
+			<ac:Statut>A</ac:Statut>
+			<ac:IdSIRET qualifiant="0002">22345678900001</ac:IdSIRET>
+			<ac:IdRoutage qualifiant="0224">Service Juridique</ac:IdRoutage>
+			<ac:Nom>Service Juridique</ac:Nom>
+			<ac:LigneAdresse1>229, boulevard Audrey Noel</ac:LigneAdresse1>
+			<ac:Localite>Hubert-sur-Vasseur</ac:Localite>
+			<ac:CP>43374</ac:CP>
+			<ac:CodePays>250</ac:CodePays>
+		</ac:CodeRoutage>
+	</BlocCodesRoutage>
+	<BlocIdPlateformesReception>
+		<ac:IdPlateformeReception>
+			<ac:IdInstance>1</ac:IdInstance>
+			<ac:MotifPresence>P</ac:MotifPresence>
+			<ac:Statut>A</ac:Statut>
+			<ac:TypePlateforme>PDP</ac:TypePlateforme>
+			<ac:Matricule>4444</ac:Matricule>
+			<ac:IdSIREN qualifiant="0002">444444444</ac:IdSIREN>
+			<ac:Nom>PDP QUATRE</ac:Nom>
+			<ac:NomCommercial>QUATRE</ac:NomCommercial>
+			<ac:Contact>4444@quatre.com</ac:Contact>
+			<ac:DateDebutImmatriculation>20241231</ac:DateDebutImmatriculation>
+			<ac:DateFinImmatriculation>20271231</ac:DateFinImmatriculation>
+		</ac:IdPlateformeReception>
+		<ac:IdPlateformeReception>
+			<ac:IdInstance>2</ac:IdInstance>
+			<ac:MotifPresence>C</ac:MotifPresence>
+			<ac:Statut>A</ac:Statut>
+			<ac:TypePlateforme>PDP</ac:TypePlateforme>
+			<ac:Matricule>2222</ac:Matricule>
+			<ac:IdSIREN qualifiant="0009">222222222</ac:IdSIREN>
+			<ac:Nom>PDP DEUX</ac:Nom>
+			<ac:NomCommercial>DEUX</ac:NomCommercial>
+			<ac:Contact>2222@deux.com</ac:Contact>
+			<ac:DateDebutImmatriculation>20241231</ac:DateDebutImmatriculation>
+			<ac:DateFinImmatriculation>20301231</ac:DateFinImmatriculation>
+		</ac:IdPlateformeReception>
+	</BlocIdPlateformesReception>
+	<BlocLignesAnnuaire>
+		<ac:LigneAnnuaire>
+			<ac:IdInstance>2</ac:IdInstance>
+			<ac:MotifPresence>C</ac:MotifPresence>
+			<ac:Nature>A</ac:Nature>
+			<ac:DateEffet>
+				<ac:DateDebut>20250101</ac:DateDebut>
+                <ac:DateFin>20271231</ac:DateFin>
+				<ac:DateFinEffective>20271231</ac:DateFinEffective>
+			</ac:DateEffet>
+			<ac:InfoAdressage>
+				<ac:Identifiant>223456789_12345678900001_Service Juridique</ac:Identifiant>
+					<ac:IdLinSIREN qualifiant="0002">223456789</ac:IdLinSIREN>
+                    <ac:IdLinSIRET qualifiant="0009">22345678900001</ac:IdLinSIRET>
+			        <ac:IdRoutage qualifiant="0224">Service Juridique</ac:IdRoutage>
+			</ac:InfoAdressage>
+			<ac:IdPlateforme>4444</ac:IdPlateforme>
+		</ac:LigneAnnuaire>
+		<ac:LigneAnnuaire>
+			<ac:IdInstance>3</ac:IdInstance>
+			<ac:MotifPresence>V</ac:MotifPresence>
+			<ac:Nature>A</ac:Nature>
+			<ac:DateEffet>
+				<ac:DateDebut>20280101</ac:DateDebut>
+                <ac:DateFin>20291231</ac:DateFin>
+				<ac:DateFinEffective>20291231</ac:DateFinEffective>
+			</ac:DateEffet>
+			<ac:InfoAdressage>
+				<ac:Identifiant>223456789_12345678900001_Service Juridique</ac:Identifiant>
+					<ac:IdLinSIREN qualifiant="0002">223456789</ac:IdLinSIREN>
+                    <ac:IdLinSIRET qualifiant="0009">22345678900001</ac:IdLinSIRET>
+			        <ac:IdRoutage qualifiant="0224">Service Juridique</ac:IdRoutage>
+			</ac:InfoAdressage>
+			<ac:IdPlateforme>2222</ac:IdPlateforme>
+		</ac:LigneAnnuaire>
+		<ac:LigneAnnuaire>
+			<ac:IdInstance>4</ac:IdInstance>
+			<ac:MotifPresence>V</ac:MotifPresence>
+			<ac:Nature>A</ac:Nature>
+			<ac:DateEffet>
+				<ac:DateDebut>20280101</ac:DateDebut>
+                <ac:DateFin>20291231</ac:DateFin>
+				<ac:DateFinEffective>20291231</ac:DateFinEffective>
+			</ac:DateEffet>
+			<ac:InfoAdressage>
+				<ac:Identifiant>223456789_12345678900001_Service Ressources Humaines</ac:Identifiant>
+					<ac:IdLinSIREN qualifiant="0002">223456789</ac:IdLinSIREN>
+                    <ac:IdLinSIRET qualifiant="0009">22345678900001</ac:IdLinSIRET>
+			        <ac:IdRoutage qualifiant="0224">Service Ressources Humaines</ac:IdRoutage>
+			</ac:InfoAdressage>
+			<ac:IdPlateforme>2222</ac:IdPlateforme>
+		</ac:LigneAnnuaire>
+	</BlocLignesAnnuaire>
+</AnnuaireConsultationF14>

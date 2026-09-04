@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnnuaireConsultationF14 xmlns:ac="annuaire-common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<HorodateProduction>20250101235959</HorodateProduction>
+	<DernierHorodateProduction>20241231235959</DernierHorodateProduction>
+	<TypeFlux>D</TypeFlux>
+	<BlocEtablissements>
+		<ac:Etablissement>
+			<ac:IdInstance>2</ac:IdInstance>
+			<ac:MotifPresence>P</ac:MotifPresence>
+			<ac:Statut>A</ac:Statut>
+			<ac:IdSIRET qualifiant="0009">12345678900001</ac:IdSIRET>
+			<ac:TypeEtablissement>S</ac:TypeEtablissement>
+			<ac:Nom>SIRET 2</ac:Nom>
+			<ac:LigneAdresse1>70 boulevard Bonneau</ac:LigneAdresse1>
+			<ac:Localite>Leduc</ac:Localite>
+			<ac:CP>11579</ac:CP>
+			<ac:CodePays>250</ac:CodePays>
+		</ac:Etablissement>
+	</BlocEtablissements>
+	<BlocCodesRoutage>
+		<ac:CodeRoutage>
+			<ac:IdInstance>1</ac:IdInstance>
+			<ac:MotifPresence>P</ac:MotifPresence>
+			<ac:Statut>A</ac:Statut>
+			<ac:IdSIRET qualifiant="0009">12345678900001</ac:IdSIRET>
+			<ac:IdRoutage qualifiant="0224">Service Juridique</ac:IdRoutage>
+			<ac:Nom>ENTITE UN</ac:Nom>
+			<ac:LigneAdresse1>70 boulevard Bonneau</ac:LigneAdresse1>
+			<ac:Localite>Leduc</ac:Localite>
+			<ac:CP>11579</ac:CP>
+			<ac:CodePays>250</ac:CodePays>
+		</ac:CodeRoutage>
+	</BlocCodesRoutage>
+	<BlocIdPlateformesReception>
+		<ac:IdPlateformeReception>
+			<ac:IdInstance>1</ac:IdInstance>
+			<ac:MotifPresence>P</ac:MotifPresence>
+			<ac:Statut>A</ac:Statut>
+			<ac:TypePlateforme>PDP</ac:TypePlateforme>
+			<ac:Matricule>4444</ac:Matricule>
+			<ac:IdSIREN qualifiant="0002">444444444</ac:IdSIREN>
+			<ac:Nom>PDP QUATRE</ac:Nom>
+			<ac:NomCommercial>QUATRE</ac:NomCommercial>
+			<ac:Contact>4444@quatre.com</ac:Contact>
+			<ac:DateDebutImmatriculation>20241231</ac:DateDebutImmatriculation>
+			<ac:DateFinImmatriculation>20271231</ac:DateFinImmatriculation>
+		</ac:IdPlateformeReception>
+	</BlocIdPlateformesReception>
+	<BlocLignesAnnuaire>
+		<ac:LigneAnnuaire>
+			<ac:IdInstance>1</ac:IdInstance>
+			<ac:MotifPresence>P</ac:MotifPresence>
+			<ac:Nature>D</ac:Nature>
+			<ac:DateEffet>
+				<ac:DateDebut>20250101</ac:DateDebut>
+				<ac:DateFinEffective>20271231</ac:DateFinEffective>
+			</ac:DateEffet>
+			<ac:InfoAdressage>
+				<ac:Identifiant>123456789_12345678900001_Service Juridique</ac:Identifiant>
+					<ac:IdLinSIREN qualifiant="0002">123456789</ac:IdLinSIREN>
+                    <ac:IdLinSIRET qualifiant="0009">12345678900001</ac:IdLinSIRET>
+			        <ac:IdLinRoutage qualifiant="0224">Service Juridique</ac:IdLinRoutage>
+			</ac:InfoAdressage>
+			<ac:IdPlateforme>4444</ac:IdPlateforme>
+		</ac:LigneAnnuaire>
+	</BlocLignesAnnuaire>
+</AnnuaireConsultationF14>
