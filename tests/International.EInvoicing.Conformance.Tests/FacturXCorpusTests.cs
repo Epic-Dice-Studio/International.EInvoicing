@@ -73,29 +73,25 @@ public class FacturXCorpusTests
     }
 
     /// <summary>
-    /// Registering plain EN 16931 beside the Factur-X rules rejects invoices Factur-X publishes as valid.
+    /// The EN 16931 rules stand aside for the profile's own, and say so.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is a trap worth having written down. <c>AddDefaults()</c> registers the EN 16931 rules for every
-    /// CII document, and Factur-X EXTENDED is a <em>superset</em> of EN 16931: it allows grouped lines, where
-    /// a heading's amount is the sum of its children. EN 16931 has no such concept, so its BR-CO-10 adds the
-    /// headings to the details and finds the line total twice what the document says.
+    /// This used to be the other way round, and it is worth remembering why. <c>AddDefaults()</c> registers
+    /// the EN 16931 rules for every CII document, and Factur-X EXTENDED is a <em>superset</em>: it allows
+    /// grouped lines, where a heading's amount is the sum of its children. EN 16931 has no such concept, so
+    /// its BR-CO-10 added the headings to the details and found the line total twice what the document said.
+    /// <c>factur-x-22.xml</c> is exactly that — four detail lines totalling 1500 and two headings summing
+    /// them — and eight of the 58 published documents were rejected for obeying their own specification.
     /// </para>
     /// <para>
-    /// <c>factur-x-22.xml</c> is exactly that: six lines totalling 3000, of which four are details totalling
-    /// 1500 and two are headings summing them. The document is right and the judge is wrong. Eight of the 58
-    /// published documents fail this way.
-    /// </para>
-    /// <para>
-    /// So the rule is: a profile that extends EN 16931 is judged by <em>its own</em> rule set, which bundles
-    /// the EN 16931 rules it inherits and adapts the ones it changes. That is also how the KoSIT validator is
-    /// configured. Whether <c>AddDefaults()</c> should refuse to attach EN 16931 to a document declaring a
-    /// profile derived from it is a design question for the library, and is on the roadmap.
+    /// A profile's rule set now supersedes the base it was built on. What must not happen is a silent skip:
+    /// the report says the base did not run and why, because "clean" and "never looked at" must not read the
+    /// same.
     /// </para>
     /// </remarks>
     [Fact]
-    public void AndPlainEn16931RulesAreNotTheJudgeOfAProfileThatExtendsThem()
+    public void TheEn16931RulesStandAsideForTheProfileSOwnAndSaySo()
     {
         string path = Files("extended").FirstOrDefault(file => Path.GetFileName(file) == "factur-x-22.xml")
             ?? string.Empty;
@@ -103,25 +99,43 @@ public class FacturXCorpusTests
         Assert.SkipWhen(path.Length == 0, "run build/fetch-specs.sh national");
 
         string schematron = Path.Combine(Corpora.RepositoryRoot(), "specs", "national", "zugferd", "schematron");
-        string document = File.ReadAllText(path);
 
-        ValidationReport byItsOwnRules = EInvoicing
-            .Create(builder => builder.AddFacturX().AddFacturXRulesFrom(schematron))
-            .Validate(document);
-
-        ValidationReport withEn16931Added = EInvoicing
+        ValidationReport report = EInvoicing
             .Create(builder => builder.AddDefaults().AddFacturXRulesFrom(schematron))
-            .Validate(document);
+            .Validate(File.ReadAllText(path));
 
-        byItsOwnRules.Errors.ShouldBeEmpty("Factur-X publishes this document as a valid EXTENDED invoice");
+        report.Errors.ShouldBeEmpty(
+            "Factur-X publishes this as a valid EXTENDED invoice, and registering EN 16931 as well must not "
+            + "change that:" + Environment.NewLine
+            + string.Join(Environment.NewLine, report.Errors.Select(error => error.ToString())));
 
-        withEn16931Added.Errors
-            .Select(error => error.RuleIdentifier)
-            .ShouldContain(
-                "BR-CO-10",
-                "adding EN 16931 to a Factur-X EXTENDED document rejects it for arithmetic the document got "
-                + "right; if this ever stops being true, the library has been taught about grouped lines and "
-                + "this test should become an assertion that both agree");
+        report.RuleSets.ShouldContain(
+            outcome => outcome.Ran && outcome.Name.Contains("Factur-X", StringComparison.Ordinal),
+            "the profile's own rules are what judged it");
+
+        report.NotRun.ShouldContain(
+            outcome => outcome.Name.Contains("EN 16931", StringComparison.Ordinal)
+                && outcome.SkippedBecause!.Contains("superseded", StringComparison.Ordinal),
+            "and the base must say it stood aside rather than vanish from the report");
+    }
+
+    /// <summary>
+    /// And with no profile rules registered the base still runs: standing aside for nobody would mean
+    /// checking nothing.
+    /// </summary>
+    [Fact]
+    public void AndWithNoProfileRulesRegisteredTheBaseStillRuns()
+    {
+        IReadOnlyList<string> documents = Files("en16931");
+        string path = documents.Count > 0 ? documents[0] : string.Empty;
+        Assert.SkipWhen(path.Length == 0, "run build/fetch-specs.sh national");
+
+        ValidationReport report = EInvoicing.Create(builder => builder.AddDefaults())
+            .Validate(File.ReadAllText(path));
+
+        report.RuleSets.ShouldContain(
+            outcome => outcome.Ran && outcome.Name.Contains("EN 16931", StringComparison.Ordinal),
+            "with nothing more specific registered there is nothing to stand aside for");
     }
 
     private static void Measure(string path)

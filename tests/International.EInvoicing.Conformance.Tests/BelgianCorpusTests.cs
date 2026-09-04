@@ -60,25 +60,16 @@ public class BelgianCorpusTests
     }
 
     /// <summary>
-    /// Adding plain EN 16931 beside GLOBALUBL.BE rejects invoices Belgium publishes as valid.
+    /// And registering EN 16931 as well changes nothing, because GLOBALUBL.BE supersedes it.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// The same trap as Factur-X EXTENDED, in a second country and a second syntax, which is what makes it
-    /// worth stating as a rule rather than a quirk. GLOBALUBL.BE bundles the EN 16931 rules and
-    /// <em>adapts</em> some of them; registering the unmodified originals alongside re-imposes exactly what
-    /// Belgium relaxed. Seventeen of the 36 published invoices are rejected that way, for BR-CL-22,
-    /// BR-DEC-23, UBL-DT-01, BR-S-08 and BR-E-08 — all attributed to <c>EN 16931-1:2017 (UBL)</c>.
-    /// </para>
-    /// <para>
-    /// So: a document declaring a national or sectoral profile is judged by that profile's rule set, which
-    /// already carries whatever of EN 16931 still applies. Whether the library should refuse to attach the
-    /// EN 16931 rules to a document whose declared profile derives from them is a design question, and it is
-    /// on the roadmap.
-    /// </para>
+    /// The same correction as Factur-X EXTENDED, in a second country and a second syntax. GLOBALUBL.BE
+    /// bundles the EN 16931 rules and <em>adapts</em> several of them; registering the unmodified originals
+    /// alongside used to re-impose exactly what Belgium relaxed, and seventeen of these 36 published invoices
+    /// were rejected for BR-CL-22, BR-DEC-23, UBL-DT-01, BR-S-08 and BR-E-08.
     /// </remarks>
     [Fact]
-    public void AndPlainEn16931RulesAreNotTheJudgeOfANationalProfile()
+    public void AndRegisteringEn16931AsWellChangesNothing()
     {
         IReadOnlyList<string> documents = Documents();
         Assert.SkipWhen(documents.Count == 0, "run build/fetch-specs.sh national");
@@ -88,15 +79,17 @@ public class BelgianCorpusTests
             .AddBelgium()
             .AddBelgianRulesFrom(Rules())).Library;
 
-        int rejected = documents.Count(path => withEn16931Added.Validate(File.ReadAllText(path)).Errors.Any());
+        string[] rejected =
+        [
+            .. documents
+                .Where(path => withEn16931Added.Validate(File.ReadAllText(path)).Errors.Any())
+                .Select(Path.GetFileName)
+                .Select(name => name!),
+        ];
 
-        rejected.ShouldBeGreaterThan(
-            0,
-            "if this ever reaches zero, the library has learnt that a national profile's rule set is the "
-            + "judge, and this test should become an assertion that both setups agree");
-
-        documents.Count(path => Library().Validate(File.ReadAllText(path)).Errors.Any())
-            .ShouldBe(0, "and the publisher's own rules accept all of them");
+        rejected.ShouldBeEmpty(
+            "Belgium publishes all of these as valid; adding the rules its own rule set already adapts must "
+            + "not reject them: " + string.Join(", ", rejected));
     }
 
     private static string Rules() =>

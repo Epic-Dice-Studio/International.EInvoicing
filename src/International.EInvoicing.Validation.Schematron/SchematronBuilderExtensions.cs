@@ -11,17 +11,29 @@ public static class SchematronBuilderExtensions
     /// <param name="syntax">The syntax the rules are written against.</param>
     /// <param name="rules">The rules themselves.</param>
     /// <param name="appliesTo">Which declared profiles they govern. Omit for every document in that syntax.</param>
+    /// <param name="isBaseline">
+    /// Whether these are the rules a family of profiles is built on rather than one profile's own. See
+    /// <see cref="IDocumentRuleSet.IsBaseline"/>; only EN 16931 sets it.
+    /// </param>
+    /// <param name="supersedesBaseline">
+    /// Whether these already carry the base's rules, adapted. See
+    /// <see cref="IDocumentRuleSet.SupersedesBaseline"/>.
+    /// </param>
     /// <exception cref="ArgumentNullException">An argument is <c>null</c>.</exception>
     public static EInvoicingBuilder AddRules(
         this EInvoicingBuilder builder,
         DocumentSyntax syntax,
         SchematronRuleSet rules,
-        Func<ProfileIdentifier, bool>? appliesTo = null)
+        Func<ProfileIdentifier, bool>? appliesTo = null,
+        bool isBaseline = false,
+        bool supersedesBaseline = false)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
         builder.ConfigureServices(services => services.AddSchematronValidation());
-        return builder.AddRules(new SchematronDocumentRuleSet(rules, syntax, appliesTo));
+
+        return builder.AddRules(
+            new SchematronDocumentRuleSet(rules, syntax, appliesTo, isBaseline, supersedesBaseline));
     }
 
     /// <summary>

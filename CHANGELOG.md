@@ -6,6 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- **A profile's rules supersede the ones they were built on, when they carry them.** Registering EN 16931
+  beside Factur-X or `GLOBALUBL.BE` used to reject invoices those publishers call valid — eight of Factur-X's
+  own 58 documents and seventeen of Belgium's 36 — because both artefacts already carry the EN 16931 rules
+  their profile keeps, *adapted*: Factur-X EXTENDED permits grouped lines and its BR-CO-10 knows it, where
+  EN 16931's adds the headings to the details. They now say so, and the base stands aside for them.
+- **Only for the profiles whose artefacts actually carry it.** XRechnung carries none of EN 16931 — the KoSIT
+  validator runs the two as separate steps — so nothing is superseded there. Writing this the other way round
+  first cost fifteen rule firings on the German corpus, which is exactly what the KoSIT cross-check is for.
+  `IDocumentRuleSet.SupersedesBaseline` defaults to false, and a test measures every claim against the
+  artefact rather than trusting the declaration.
+- When the base does stand aside, the report says which rule set superseded it. A rule set that did not run
+  must never read the same as one that found nothing.
+
 - **Factur-X, Belgium and France have document corpora at last.** Factur-X — the format both France and
   Germany run on — had none: every Factur-X test in this repository used an invoice written in this
   repository, which measures the library against its own idea of one. There are now 58 published documents
