@@ -1,8 +1,1 @@
 #nullable enable
-const International.EInvoicing.Countries.Portugal.PtProfiles.Prefix = "urn:cen.eu:en16931:2017#compliant#urn:feap.gov.pt:CIUS-PT:" -> string!
-International.EInvoicing.Countries.Portugal.PortugalServiceCollectionExtensions
-International.EInvoicing.Countries.Portugal.PtProfiles
-static International.EInvoicing.Countries.Portugal.PortugalServiceCollectionExtensions.AddPortugal(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
-static International.EInvoicing.Countries.Portugal.PortugalServiceCollectionExtensions.AddPortugueseRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
-static International.EInvoicing.Countries.Portugal.PtProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
-static International.EInvoicing.Countries.Portugal.PtProfiles.CiusPtUbl.get -> International.EInvoicing.Profiles.Profile!

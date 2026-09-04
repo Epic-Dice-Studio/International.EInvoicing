@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-05
+
+The first stable release. Everything below was built before it; what makes this 1.0 rather than another
+preview is that the public API is now declared shipped, so removing or changing any of it is a breaking
+change the build refuses rather than a diff nobody notices.
+
 - **The three EN 16931 unit cases that disagreed were not the engine.** Two of them — `BR-IC-11` and
   `BR-IC-12` — were the test runner reformatting a published document before judging it: an element holding
   nothing but a comment gains whitespace when pretty-printed, and rules asking whether a field was filled in

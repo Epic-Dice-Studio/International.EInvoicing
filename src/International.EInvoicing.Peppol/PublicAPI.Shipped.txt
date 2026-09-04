@@ -1,1 +1,174 @@
 #nullable enable
+International.EInvoicing.Peppol.PeppolBusinessProcess
+International.EInvoicing.Peppol.PeppolEndpointScheme
+International.EInvoicing.Peppol.PeppolInvoiceBuilderExtensions
+International.EInvoicing.Peppol.PeppolParticipant
+International.EInvoicing.Peppol.PeppolParticipant.Equals(International.EInvoicing.Peppol.PeppolParticipant other) -> bool
+International.EInvoicing.Peppol.PeppolParticipant.HasKnownScheme.get -> bool
+International.EInvoicing.Peppol.PeppolParticipant.IsSet.get -> bool
+International.EInvoicing.Peppol.PeppolParticipant.PeppolParticipant() -> void
+International.EInvoicing.Peppol.PeppolParticipant.Scheme.get -> string!
+International.EInvoicing.Peppol.PeppolParticipant.ToElectronicAddress() -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Peppol.PeppolParticipant.ToQualifiedString() -> string!
+International.EInvoicing.Peppol.PeppolParticipant.Value.get -> string!
+International.EInvoicing.Peppol.PeppolPintProfiles
+International.EInvoicing.Peppol.PeppolPintRules
+International.EInvoicing.Peppol.PeppolPostAwardProfiles
+International.EInvoicing.Peppol.PeppolProfiles
+International.EInvoicing.Peppol.PeppolResponseCodes
+International.EInvoicing.Peppol.PeppolServiceCollectionExtensions
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority.Id.get -> string!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority.Id.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority.Name.get -> string?
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority.Name.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority.PeppolTaxAuthority() -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.Authority.get -> International.EInvoicing.Peppol.TaxData.Model.PeppolTaxAuthority!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.Authority.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.DocumentScope.get -> string!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.DocumentScope.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.IssuedAt.get -> System.DateTimeOffset
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.IssuedAt.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.Jurisdiction.get -> International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.Jurisdiction.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.PeppolTaxData() -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReceivingParty.get -> International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReceivingParty.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReportedDocument.get -> International.EInvoicing.Model.EInvoice?
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReportedDocument.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReportedDocumentUuid.get -> string!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReportedDocumentUuid.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReporterRole.get -> string!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReporterRole.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReportersRepresentative.get -> International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint?
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReportersRepresentative.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReportingParty.get -> International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.ReportingParty.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.TaxDataTypeCode.get -> string!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.TaxDataTypeCode.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.Uuid.get -> string!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData.Uuid.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint.Id.get -> string!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint.Id.set -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint.PeppolTaxDataEndpoint() -> void
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint.SchemeId.get -> string!
+International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint.SchemeId.set -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.<Clone>$() -> International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction!
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.CustomizationId.get -> string!
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.CustomizationId.init -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Deconstruct(out string! Name, out string! Namespace, out string! CustomizationId, out System.Collections.Generic.IReadOnlyList<string!>! TaxDataTypes, out System.Collections.Generic.IReadOnlyList<string!>! DocumentScopes, out System.Collections.Generic.IReadOnlyList<string!>! ReporterRoles) -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.DocumentScopes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.DocumentScopes.init -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Equals(International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction? other) -> bool
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Name.get -> string!
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Name.init -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Namespace.get -> string!
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Namespace.init -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.PeppolTaxDataJurisdiction(string! Name, string! Namespace, string! CustomizationId, System.Collections.Generic.IReadOnlyList<string!>! TaxDataTypes, System.Collections.Generic.IReadOnlyList<string!>! DocumentScopes, System.Collections.Generic.IReadOnlyList<string!>! ReporterRoles) -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.ReporterRoles.get -> System.Collections.Generic.IReadOnlyList<string!>!
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.ReporterRoles.init -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.TaxDataTypes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.TaxDataTypes.init -> void
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator.Version.get -> string!
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.PeppolTaxDataReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData!>!
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData!>!
+International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData!>!>!
+International.EInvoicing.Peppol.TaxData.Writing.PeppolTaxDataWriter
+International.EInvoicing.Peppol.TaxData.Writing.PeppolTaxDataWriter.PeppolTaxDataWriter() -> void
+International.EInvoicing.Peppol.TaxData.Writing.PeppolTaxDataWriter.Write(International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData! document, System.IO.Stream! destination) -> void
+International.EInvoicing.Peppol.TaxData.Writing.PeppolTaxDataWriter.WriteToString(International.EInvoicing.Peppol.TaxData.Model.PeppolTaxData! document) -> string!
+const International.EInvoicing.Peppol.PeppolBusinessProcess.Billing = "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0" -> string!
+const International.EInvoicing.Peppol.PeppolBusinessProcess.PintBilling = "urn:peppol:bis:billing" -> string!
+const International.EInvoicing.Peppol.PeppolBusinessProcess.PintSelfBilling = "urn:peppol:bis:selfbilling" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.ArtefactVersion = "1.3.16" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.BelgianEnterprise = "0208" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.DanishOrganisation = "0184" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.DanishSeNumber = "0198" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.FrenchRoutingAddress = "0225" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.FrenchSiren = "0002" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.GlobalLocationNumber = "0088" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.ItalianFiscalCode = "0210" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.ItalianPublicAdministration = "0201" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.ItalianVat = "0211" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.NorwegianOrganisation = "0192" -> string!
+const International.EInvoicing.Peppol.PeppolEndpointScheme.SwedishOrganisation = "0007" -> string!
+const International.EInvoicing.Peppol.PeppolParticipant.Qualifier = "iso6523-actorid-upis" -> string!
+const International.EInvoicing.Peppol.PeppolResponseCodes.Acknowledged = "AB" -> string!
+const International.EInvoicing.Peppol.PeppolResponseCodes.Approved = "AP" -> string!
+const International.EInvoicing.Peppol.PeppolResponseCodes.ConditionallyAccepted = "CA" -> string!
+const International.EInvoicing.Peppol.PeppolResponseCodes.InProcess = "IP" -> string!
+const International.EInvoicing.Peppol.PeppolResponseCodes.Paid = "PD" -> string!
+const International.EInvoicing.Peppol.PeppolResponseCodes.Rejected = "RE" -> string!
+const International.EInvoicing.Peppol.PeppolResponseCodes.UnderQuery = "UQ" -> string!
+const International.EInvoicing.Peppol.TaxData.Model.PeppolTaxDataEndpoint.ServiceProviderScheme = "0242" -> string!
+const International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.ProfileId = "urn:peppol:taxreporting" -> string!
+const International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.RootElement = "TaxData" -> string!
+override International.EInvoicing.Peppol.PeppolParticipant.GetHashCode() -> int
+override International.EInvoicing.Peppol.PeppolParticipant.ToString() -> string!
+override International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Equals(object? obj) -> bool
+override International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.GetHashCode() -> int
+override International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.ToString() -> string!
+static International.EInvoicing.Peppol.PeppolBusinessProcess.Numbered(string! number) -> string!
+static International.EInvoicing.Peppol.PeppolEndpointScheme.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Peppol.PeppolEndpointScheme.IsKnown(string? code) -> bool
+static International.EInvoicing.Peppol.PeppolEndpointScheme.Require(string! code) -> string!
+static International.EInvoicing.Peppol.PeppolInvoiceBuilderExtensions.ForPeppol(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! businessProcess = "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0") -> International.EInvoicing.Building.EInvoiceBuilder!
+static International.EInvoicing.Peppol.PeppolInvoiceBuilderExtensions.ForPeppolPint(this International.EInvoicing.Building.EInvoiceBuilder! builder, string! businessProcess = "urn:peppol:bis:billing") -> International.EInvoicing.Building.EInvoiceBuilder!
+static International.EInvoicing.Peppol.PeppolParticipant.Create(string! scheme, string! value) -> International.EInvoicing.Peppol.PeppolParticipant
+static International.EInvoicing.Peppol.PeppolParticipant.IsValid(string? value) -> bool
+static International.EInvoicing.Peppol.PeppolParticipant.Parse(string! value) -> International.EInvoicing.Peppol.PeppolParticipant
+static International.EInvoicing.Peppol.PeppolParticipant.TryParse(string? value, out International.EInvoicing.Peppol.PeppolParticipant participant) -> bool
+static International.EInvoicing.Peppol.PeppolParticipant.operator !=(International.EInvoicing.Peppol.PeppolParticipant left, International.EInvoicing.Peppol.PeppolParticipant right) -> bool
+static International.EInvoicing.Peppol.PeppolParticipant.operator ==(International.EInvoicing.Peppol.PeppolParticipant left, International.EInvoicing.Peppol.PeppolParticipant right) -> bool
+static International.EInvoicing.Peppol.PeppolPintProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Peppol.PeppolPintProfiles.ArtefactFolders.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+static International.EInvoicing.Peppol.PeppolPintProfiles.Billing.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingAe.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingAuNz.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingEu.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingJp.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingMy.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingOm.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.BillingSg.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintProfiles.ForJurisdiction(string? countryCode) -> International.EInvoicing.Profiles.Profile?
+static International.EInvoicing.Peppol.PeppolPintProfiles.SelfBillingAe.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPintRules.Folders.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+static International.EInvoicing.Peppol.PeppolPintRules.For(International.EInvoicing.Profiles.Profile! profile, string! directory) -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Validation.Schematron.SchematronRuleSet!>!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.DespatchAdvice.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.InvoiceResponse.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.MessageLevelResponse.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.Order.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderAgreement.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderCancellation.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderChange.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderResponse.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.OrderResponseAdvanced.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolPostAwardProfiles.RuleSets.get -> System.Collections.Generic.IReadOnlyDictionary<string!, International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Peppol.PeppolProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Peppol.PeppolProfiles.BillingCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolProfiles.BillingUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Peppol.PeppolProfiles.RuleSetFileNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Peppol.PeppolResponseCodes.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Peppol.PeppolResponseCodes.RequiringClarification.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppol(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppolPintRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppolPostAwardRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory, string! version = "3.0") -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Peppol.PeppolServiceCollectionExtensions.AddPeppolRulesFrom(this International.EInvoicing.Configuration.EInvoicingBuilder! builder, string! directory, string! version = "3.0") -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction!>!
+static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.IsValid(System.Collections.Generic.IReadOnlyList<string!>! list, string? value) -> bool
+static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.Slovakia.get -> International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction!
+static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.ViDA.get -> International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction!
+static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.operator !=(International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction? left, International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction? right) -> bool
+static International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction.operator ==(International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction? left, International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction? right) -> bool
+static International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator.LoadFrom(string! directory) -> International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator!
+static International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator.LoadFrom(string! directory, International.EInvoicing.Peppol.TaxData.PeppolTaxDataJurisdiction! jurisdiction) -> International.EInvoicing.Peppol.TaxData.PeppolTaxDataValidator!
+static International.EInvoicing.Peppol.TaxData.Reading.PeppolTaxDataReader.LooksLikeTaxData(string! xml) -> bool
+~override International.EInvoicing.Peppol.PeppolParticipant.Equals(object obj) -> bool

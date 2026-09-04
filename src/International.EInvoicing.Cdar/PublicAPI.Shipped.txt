@@ -1,1 +1,27 @@
 #nullable enable
+International.EInvoicing.Cdar.CdarDiagnostics
+International.EInvoicing.Cdar.CdarNames
+International.EInvoicing.Cdar.CdarProfiles
+International.EInvoicing.Cdar.CdarServiceCollectionExtensions
+International.EInvoicing.Cdar.Reading.CdarReader
+International.EInvoicing.Cdar.Reading.CdarReader.CdarReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Cdar.Reading.CdarReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!
+International.EInvoicing.Cdar.Reading.CdarReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!
+International.EInvoicing.Cdar.Reading.CdarReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.LifecycleStatusMessage!>!>!
+International.EInvoicing.Cdar.Reading.CdarReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Cdar.Writing.CdarWriter
+International.EInvoicing.Cdar.Writing.CdarWriter.CdarWriter() -> void
+International.EInvoicing.Cdar.Writing.CdarWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Cdar.Writing.CdarWriter.Write(International.EInvoicing.Model.LifecycleStatusMessage! document, System.IO.Stream! destination) -> void
+International.EInvoicing.Cdar.Writing.CdarWriter.WriteAsync(International.EInvoicing.Model.LifecycleStatusMessage! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.Cdar.Writing.CdarWriter.WriteToString(International.EInvoicing.Model.LifecycleStatusMessage! document) -> string!
+static International.EInvoicing.Cdar.CdarDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Cdar.CdarDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Cdar.CdarNames.Qdt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cdar.CdarNames.Ram.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cdar.CdarNames.Rsm.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cdar.CdarNames.Udt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cdar.CdarProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Cdar.CdarProfiles.FrenchLifecycleStatus.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Cdar.CdarServiceCollectionExtensions.AddCdar(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Cdar.CdarServiceCollectionExtensions.AddCdarServices(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

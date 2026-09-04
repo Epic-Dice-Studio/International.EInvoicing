@@ -1,1 +1,26 @@
 #nullable enable
+International.EInvoicing.Countries.Japan.JapanEInvoicing
+International.EInvoicing.Countries.Japan.JapanEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.CreditNote(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Describe(International.EInvoicing.Building.PartyBuilder! party, string! registrationNumber, string! name) -> International.EInvoicing.Building.PartyBuilder!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Japan.JapanEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
+International.EInvoicing.Countries.Japan.JapanServiceCollectionExtensions
+International.EInvoicing.Countries.Japan.JpProfiles
+static International.EInvoicing.Countries.Japan.JapanEInvoicing.Create() -> International.EInvoicing.Countries.Japan.JapanEInvoicing!
+static International.EInvoicing.Countries.Japan.JapanEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Japan.JapanEInvoicing!
+static International.EInvoicing.Countries.Japan.JapanEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Japan.JapanEInvoicing!
+static International.EInvoicing.Countries.Japan.JapanEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Japan.JapanEInvoicing!
+static International.EInvoicing.Countries.Japan.JapanEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Japan.JapanEInvoicing!
+static International.EInvoicing.Countries.Japan.JapanServiceCollectionExtensions.AddJapan(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Japan.JpProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Japan.JpProfiles.PintBilling.get -> International.EInvoicing.Profiles.Profile!

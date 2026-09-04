@@ -485,8 +485,17 @@ different syntax; they are different documents. Either the canonical model grows
 EN 16931 invoice", or those countries get their own model the way e-reporting did. E-reporting suggests the
 second answer is the honest one.
 
-**Publishing 1.0.** Everything above is easier before it and dearer after. The gate should be: no known
-correctness gap, the public API locked, and one country complete end to end. France is closest.
+**Publishing 1.0 — the gate is met, September 2026.** No known correctness gap: the last one, EN 16931
+running beside profiles that carry it, is fixed, and the three unit cases that disagreed turned out to be the
+test runner and a rule the artefacts do not implement. The public API is locked in the sense that matters —
+4,166 symbols moved from *unshipped* to *shipped*, so removing or changing one now fails the build rather
+than passing unnoticed. France is complete end to end.
+
+*What "no known correctness gap" is worth:* no gap that the corpora on hand reveal. Those are now
+substantial — EN 16931's own unit cases, the official XRechnung suite, Peppol's, Factur-X's 58 across five
+profiles, Belgium's 36, the DGFiP's worked examples — and one engine-to-engine comparison, against KoSIT.
+That comparison covers XRechnung only; there is no equivalent reference implementation wired up for Peppol
+or Factur-X, and until there is, those two rest on corpora alone.
 
 ---
 
