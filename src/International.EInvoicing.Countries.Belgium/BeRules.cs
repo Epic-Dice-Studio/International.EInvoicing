@@ -53,7 +53,10 @@ public static class BeRules
                 File.ReadAllText(newest),
                 "GLOBALUBL.BE",
                 Path.GetFileName(Path.GetDirectoryName(newest)) ?? "unknown"),
-            specification => string.Equals(specification.Value, identifier, StringComparison.Ordinal));
+            specification => string.Equals(specification.Value, identifier, StringComparison.Ordinal),
+            // GLOBALUBL.BE bundles the EN 16931 rules — 94% of them by identifier — and adapts several.
+            // Registering the originals alongside re-imposes exactly what Belgium relaxed.
+            supersedesBaseline: true);
     }
 
     /// <summary>Orders version folders — <c>v1.2.8</c> after <c>v1.2.7</c>, which text ordering gets right

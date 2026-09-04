@@ -732,10 +732,32 @@ public sealed class EInvoicing
         ValidationReport report = ValidationReport.Empty;
         bool ranSomething = false;
 
-        foreach (IDocumentRuleSet ruleSet in _ruleSets)
+        IDocumentRuleSet[] applicable =
+            [.. _ruleSets.Where(ruleSet => ruleSet.AppliesTo(documentSyntax, declared))];
+
+        // A profile's rules supersede the base only when they say they carry it. Factur-X and UBL.BE do,
+        // adapted; XRechnung carries none of it and is meant to run beside it. Assuming either way is how a
+        // library either rejects valid invoices or quietly stops checking — both have happened here.
+        IDocumentRuleSet[] specific = [.. applicable.Where(ruleSet => ruleSet.SupersedesBaseline)];
+        bool supersede = specific.Length > 0;
+
+        foreach (IDocumentRuleSet ruleSet in applicable)
         {
-            if (!ruleSet.AppliesTo(documentSyntax, declared))
+            if (supersede && ruleSet.IsBaseline)
             {
+                // Said out loud rather than silently skipped: "clean" and "never looked at" must not read
+                // the same, which is the whole reason a report carries outcomes as well as messages.
+                report = report.And(new ValidationReport(
+                    [],
+                    [
+                        new RuleSetOutcome(
+                            ruleSet.Name,
+                            ruleSet.Version,
+                            Ran: false,
+                            $"superseded by {string.Join(", ", specific.Select(rules => rules.Name))}, "
+                            + "which carry the rules of the profile this document declares"),
+                    ]));
+
                 continue;
             }
 

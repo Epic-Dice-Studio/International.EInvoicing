@@ -1358,7 +1358,9 @@ International.EInvoicing.Profiles.ProfileResolver.Registry.get -> International.
 International.EInvoicing.Profiles.ProfileResolver.Resolve(International.EInvoicing.Profiles.ProfileIdentifier declared, International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Profiles.ProfileResolution!
 International.EInvoicing.Validation.IDocumentRuleSet
 International.EInvoicing.Validation.IDocumentRuleSet.AppliesTo(International.EInvoicing.Profiles.DocumentSyntax syntax, International.EInvoicing.Profiles.ProfileIdentifier specification) -> bool
+International.EInvoicing.Validation.IDocumentRuleSet.IsBaseline.get -> bool
 International.EInvoicing.Validation.IDocumentRuleSet.Name.get -> string!
+International.EInvoicing.Validation.IDocumentRuleSet.SupersedesBaseline.get -> bool
 International.EInvoicing.Validation.IDocumentRuleSet.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
 International.EInvoicing.Validation.IDocumentRuleSet.Version.get -> string!
 International.EInvoicing.Validation.RuleSetOutcome

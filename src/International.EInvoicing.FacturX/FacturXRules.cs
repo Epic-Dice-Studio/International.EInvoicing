@@ -77,7 +77,11 @@ public static class FacturXRules
                     File.ReadAllText(path),
                     $"Factur-X {fileName["FACTUR-X_".Length..]}",
                     Path.GetFileName(newest)),
-                specification => string.Equals(specification.Value, identifier, StringComparison.Ordinal));
+                specification => string.Equals(specification.Value, identifier, StringComparison.Ordinal),
+                // Each Factur-X artefact carries the EN 16931 rules its profile keeps, adapted where the
+                // profile adapts them — EXTENDED's BR-CO-10 knows about grouped lines, for one. Running the
+                // unmodified originals as well rejects invoices FNFE-MPE publishes as valid.
+                supersedesBaseline: true);
         }
 
         return builder;

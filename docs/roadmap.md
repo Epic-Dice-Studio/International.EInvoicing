@@ -72,13 +72,13 @@ in both syntaxes and against EN 16931 underneath. That found two real gaps on th
 business process, which EN 16931 does not require and the network does, and an invalid Belgian enterprise
 number our own checker would have caught.
 
-**Open design question: which rule sets judge a document.** Registering EN 16931 beside a profile that
-extends it rejects invoices the publishers call valid — 8 of 58 published Factur-X documents and 17 of 36
-Belgian ones. Factur-X EXTENDED permits grouped lines that EN 16931's BR-CO-10 double-counts; `GLOBALUBL.BE`
-adapts EN 16931 rules that the unmodified originals then re-impose. Judging by the publisher's own rule set
-is correct and is what the tests now do, but `AddDefaults()` attaches EN 16931 to every document of its
-syntax, so a caller who registers both gets false rejections. Whether the library should decline to attach
-EN 16931 to a document whose declared profile derives from it is the decision to take.
+**Which rule sets judge a document — settled, September 2026.** A profile's rule set supersedes the base it
+was built on *when it carries it*. Factur-X and `GLOBALUBL.BE` do, adapted, and registering EN 16931 beside
+them rejected 8 of 58 and 17 of 36 published invoices respectively. XRechnung does not — KoSIT runs EN 16931
+beside it as a separate step — and the first attempt, which superseded on the strength of the profile being
+specific rather than on what its artefact contained, quietly dropped fifteen rule firings from the German
+corpus. The cross-check caught it the same afternoon. `IDocumentRuleSet.SupersedesBaseline` is declared per
+rule set, defaults to false, and every claim is measured against the artefact by a test.
 
 **And the corpora were all positive.** Every conformance corpus this library ran until September 2026 was a
 corpus of *conformant* documents — the EN 16931 examples, the XRechnung test suite, the Peppol use cases.
