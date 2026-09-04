@@ -117,7 +117,7 @@ validation is never presented as a success.
 | UBL 2.1 — Despatch Advice <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Order <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
 | UBL 2.1 — Order Response <sub>OASIS UBL 2.1</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Ubl` |
-| Order-X — Order, Order Change <sub>1.0, on CIO D20B</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.OrderX` |
+| Order-X — Order, Order Change, Order Response <sub>1.0, on CIO D20B</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.OrderX` |
 | ZUGFeRD 1.0 <sub>1.0, 2014</sub> | ✅ | ⛔ | ✅ | `International.EInvoicing.Zugferd1` |
 | UN/CEFACT CDAR <sub>generic</sub> | ✅ | ✅ | ✅ | `International.EInvoicing.Cdar` |
 
@@ -135,7 +135,7 @@ validation is never presented as a success.
 
 > **UBL 2.1 — Order Response** — The seller's answer to an order: accepted, rejected, or accepted on other terms — a different quantity, a later date, or a substitute product. Read, round-tripped, schema-checked and judged by Peppol's own rules against all six documents OpenPEPPOL publishes. The advanced response and the order agreement are the same document under other profiles and need no reader of their own; the agreement restates the whole order, certificates and specification documents included.
 
-> **Order-X — Order, Order Change** — The Franco-German order, by the publishers of Factur-X and one document earlier in the chain. CII, but not the Cross Industry Invoice: the Cross Industry Order is a different UN/CEFACT message on version 128 of the same data types, so nothing that reads an invoice reads it. Read, round-tripped element for element and in sequence, and judged by FNFE-MPE's own schema and its 124 assertions against the one document they publish — the COMFORT reference order — with nothing left unmapped. The schemas and rules are fetched rather than shipped: build/fetch-specs.sh order-x, then AddOrderXSchemaFrom and AddOrderXRulesFrom. The order response is not done.
+> **Order-X — Order, Order Change, Order Response** — The Franco-German order, by the publishers of Factur-X and one document earlier in the chain. CII, but not the Cross Industry Invoice: the Cross Industry Order is a different UN/CEFACT message on version 128 of the same data types, so nothing that reads an invoice reads it. Read, round-tripped element for element and in sequence, and judged by FNFE-MPE's own schema and its 124 assertions against the one document they publish — the COMFORT reference order — with nothing left unmapped. The schemas and rules are fetched rather than shipped: build/fetch-specs.sh order-x, then AddOrderXSchemaFrom and AddOrderXRulesFrom. The order response is read and written too; FNFE-MPE publishes no reference response, so it is judged by their schema and rules over a document derived from their order rather than against a published example.
 
 > **ZUGFeRD 1.0** — The 2013 German hybrid invoice, replaced in 2019 and still sitting in archives. CII from before CII settled: FeRD's own document namespace and versions 12 and 15 of the data types. Reading only, on purpose — what an archive needs is a way forward, not a way to make more. All four reference documents are read with nothing dropped, they satisfy FeRD's own schema and rule set, and the migration forward is judged against mustangproject's own ZUGFeRD 2 conversion of one of them: same totals, same parties, same lines. Fetched rather than shipped, because FeRD no longer publishes it.
 

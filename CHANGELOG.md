@@ -40,6 +40,21 @@ All notable changes to this project are documented here. The format follows
 - `SchematronRuleSet.RuleIdentifiers` says which rules a rule set carries, so "this document satisfies the
   rule" can be told from "this rule set has no such rule". The two look identical in a report.
 
+- **The Order-X order response**, which completes the format: all three documents Order-X carries are now
+  read and written. A response fills `OrderResponse`, is told from an order by its type code, and carries the
+  seller's answer — a status on the document, a status on each line, and an agreed quantity beside the
+  requested one, because the difference between those two is the whole point of a response that is not a
+  plain acceptance.
+- `OrderResponse` and `OrderResponseLine` gained the terms Order-X states and the model had nowhere to put:
+  the document's own name and type, whether it is a copy or a test, the validity period, the delivery terms
+  and payment means, the quotation, catalogue, blanket-order and project references, and on a line the
+  allowances, the partial-delivery indicator and the package quantities. `OrderDelivery.PromisedAt` is kept
+  apart from the promised window for the same reason `RequestedAt` is kept apart from the requested one.
+- **There is no published reference response.** The tests derive one from FNFE-MPE's published order by
+  changing only what a response changes, and say so — it proves reader and writer are inverse and that what
+  is written satisfies the publisher's schema and rules, which is not the same as having been checked against
+  a real document.
+
 - **CII documents are validated against D16B, not D22B.** EN 16931's CII syntax binding names D16B, and so do
   XRechnung, Factur-X and Peppol — every CII profile this library implements. The two revisions share their
   namespaces, so the D22B schemas attached silently to D16B documents and rejected values D16B allows: a
@@ -49,8 +64,11 @@ All notable changes to this project are documented here. The format follows
   validator — the reference implementation German authorities run — and the cross-check tests compare
   acceptance and rule-by-rule findings over the official XRechnung corpus. That is what found the schema
   defect above; no corpus of expected results could have.
-- Four documents remain where this library rejects what the reference accepts, all EN 16931 code-list or
-  calculation rules. They are listed by name in the test so a new disagreement still fails the build.
+- The comparison is rule-by-rule and runs both ways: every rule the reference reports as an error this
+  library reports too, and the reverse. **Not** acceptance — KoSIT's is decided by its scenario's own
+  `acceptMatch`, and the XRechnung scenarios accept documents that broke EN 16931 rules, so comparing it
+  against `IsValid` compares two different questions. On the eighty-six official documents the two engines
+  agree exactly.
 
 - **ZUGFeRD 1.0, for reading** — `International.EInvoicing.Zugferd1`. The 2013 German hybrid invoice,
   replaced in 2019 and still sitting in archives. CII from before CII settled: FeRD's own document namespace
@@ -95,8 +113,6 @@ All notable changes to this project are documented here. The format follows
   held one amount, so `LinePrice.Adjustments` is the full account and `Discount` is their total; a delivery
   event may state **both** a preferred date and an acceptable window, so `OrderDelivery.RequestedAt` is kept
   apart from the window; and a contact's department and function code had nowhere to go.
-- **The Order-X order response is not done.** It fills `OrderResponse` rather than `Order`, and there is no
-  published reference document for it — tracked on the roadmap.
 
 - **Unmapped content is written back where it was read from, in UBL.** An element nobody maps used to be kept
   verbatim and flushed at the end of the node holding it. UBL's element order is normative, so content in the

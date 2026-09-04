@@ -194,8 +194,8 @@ public sealed class DocumentHandlers
             [new UblDespatchAdviceWriter()],
             [new UblOrderReader(options, profiles), new OrderXOrderReader(options, profiles)],
             [new UblOrderWriter(), new OrderXOrderWriter()],
-            [new UblOrderResponseReader(options, profiles)],
-            [new UblOrderResponseWriter()],
+            [new UblOrderResponseReader(options, profiles), new OrderXOrderResponseReader(options, profiles)],
+            [new UblOrderResponseWriter(), new OrderXOrderResponseWriter()],
             [new UblOrderCancellationReader(options, profiles)],
             [new UblOrderCancellationWriter()],
             writeSteps);

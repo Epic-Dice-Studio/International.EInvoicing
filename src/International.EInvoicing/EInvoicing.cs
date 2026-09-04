@@ -180,6 +180,14 @@ public sealed class EInvoicing
     public IDocumentWriter<Order> OrderXWriter =>
         Required(Handlers.OrderWriterFor(DocumentSyntax.OrderX), "write Order-X orders");
 
+    /// <summary>The reader for an Order-X order response — what the seller says about an order.</summary>
+    public IDocumentReader<OrderResponse> OrderXResponse =>
+        Required(Handlers.OrderResponseReaderFor(DocumentSyntax.OrderX), "read Order-X order responses");
+
+    /// <summary>The writer for an Order-X order response.</summary>
+    public IDocumentWriter<OrderResponse> OrderXResponseWriter =>
+        Required(Handlers.OrderResponseWriterFor(DocumentSyntax.OrderX), "write Order-X order responses");
+
     /// <summary>The reader for a UBL <c>OrderResponse</c> — the seller's answer to an order.</summary>
     public IDocumentReader<OrderResponse> UblOrderResponse =>
         Required(Handlers.OrderResponseReaderFor(DocumentSyntax.Ubl), "read UBL order responses");
@@ -335,6 +343,7 @@ public sealed class EInvoicing
             DocumentKind.UblOrderChange => FromOrder(DocumentKind.UblOrderChange, UblOrder.Read(text)),
             DocumentKind.OrderX => FromOrder(DocumentKind.OrderX, OrderX.Read(text)),
             DocumentKind.OrderXOrderChange => FromOrder(DocumentKind.OrderXOrderChange, OrderX.Read(text)),
+            DocumentKind.OrderXOrderResponse => FromOrderResponse(OrderXResponse.Read(text)),
             DocumentKind.UblOrderResponse => FromOrderResponse(UblOrderResponse.Read(text)),
             DocumentKind.UblOrderCancellation => FromOrderCancellation(UblOrderCancellation.Read(text)),
             _ => new DocumentResult
