@@ -1,1 +1,43 @@
 #nullable enable
+International.EInvoicing.Countries.Iceland.IcelandServiceCollectionExtensions
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.CreditNote(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Describe(International.EInvoicing.Building.PartyBuilder! party, string! identifier, string! name) -> International.EInvoicing.Building.PartyBuilder!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
+International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala
+International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.Equals(International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala other) -> bool
+International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.IsKennitala() -> void
+International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.IsSet.get -> bool
+International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.ToField() -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.ToFormattedString() -> string!
+International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.Value.get -> string!
+International.EInvoicing.Countries.Iceland.IsProfiles
+const International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.Scheme = "0196" -> string!
+override International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.GetHashCode() -> int
+override International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.ToString() -> string!
+static International.EInvoicing.Countries.Iceland.IcelandServiceCollectionExtensions.AddIceland(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Create() -> International.EInvoicing.Countries.Iceland.IcelandicEInvoicing!
+static International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Iceland.IcelandicEInvoicing!
+static International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Iceland.IcelandicEInvoicing!
+static International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Iceland.IcelandicEInvoicing!
+static International.EInvoicing.Countries.Iceland.IcelandicEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Iceland.IcelandicEInvoicing!
+static International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.IsValid(string? value) -> bool
+static International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.Parse(string! value) -> International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala
+static International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.TryParse(string? value, out International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala kennitala) -> bool
+static International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.operator !=(International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala left, International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala right) -> bool
+static International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.operator ==(International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala left, International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala right) -> bool
+static International.EInvoicing.Countries.Iceland.IsProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Iceland.IsProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Iceland.IsProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
+~override International.EInvoicing.Countries.Iceland.Identifiers.IsKennitala.Equals(object obj) -> bool

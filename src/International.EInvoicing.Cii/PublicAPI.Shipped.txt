@@ -1,1 +1,43 @@
 #nullable enable
+International.EInvoicing.Cii.CiiDiagnostics
+International.EInvoicing.Cii.CiiNames
+International.EInvoicing.Cii.CiiServiceCollectionExtensions
+International.EInvoicing.Cii.CreditTransferSchemes
+International.EInvoicing.Cii.Reading.CiiInvoiceReader
+International.EInvoicing.Cii.Reading.CiiInvoiceReader.CiiInvoiceReader(International.EInvoicing.Configuration.EInvoicingOptions! options, International.EInvoicing.Profiles.IProfileResolver! profiles) -> void
+International.EInvoicing.Cii.Reading.CiiInvoiceReader.Read(System.IO.Stream! stream) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Cii.Reading.CiiInvoiceReader.Read(string! xml) -> International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!
+International.EInvoicing.Cii.Reading.CiiInvoiceReader.ReadAsync(System.IO.Stream! stream, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.Diagnostics.ParseResult<International.EInvoicing.Model.EInvoice!>!>!
+International.EInvoicing.Cii.Reading.CiiInvoiceReader.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Cii.Reading.CiiValueReader
+International.EInvoicing.Cii.Reading.CiiValueReader.CiiValueReader(International.EInvoicing.Diagnostics.DiagnosticCollector! diagnostics, System.Collections.Generic.HashSet<System.Xml.Linq.XElement!>! mapped) -> void
+International.EInvoicing.Cii.Reading.CiiValueReader.Consume(System.Xml.Linq.XElement? element) -> bool
+International.EInvoicing.Cii.Reading.CiiValueReader.Diagnostics.get -> International.EInvoicing.Diagnostics.DiagnosticCollector!
+International.EInvoicing.Cii.Reading.CiiValueReader.Limits.get -> International.EInvoicing.Xml.DocumentLimits!
+International.EInvoicing.Cii.Reading.CiiValueReader.Limits.init -> void
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadAmount(System.Xml.Linq.XElement? element, string? businessTerm = null) -> International.EInvoicing.Values.AmountField
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadCode(System.Xml.Linq.XElement? element) -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadDate(System.Xml.Linq.XElement? parent, string? businessTerm = null) -> International.EInvoicing.Values.DateField
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadDateTime(System.Xml.Linq.XElement? parent, string? businessTerm = null) -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadDecimal(System.Xml.Linq.XElement? element, string? businessTerm = null) -> International.EInvoicing.Values.Field<decimal>
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadIdentifier(System.Xml.Linq.XElement? element) -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadIndicator(System.Xml.Linq.XElement? element) -> International.EInvoicing.Values.IndicatorField
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadQuantity(System.Xml.Linq.XElement? element, string? businessTerm = null) -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Cii.Reading.CiiValueReader.ReadText(System.Xml.Linq.XElement? element) -> International.EInvoicing.Values.TextField
+International.EInvoicing.Cii.Reading.CiiValueReader.Release(System.Xml.Linq.XElement? element) -> void
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter.CiiInvoiceWriter() -> void
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter.Syntax.get -> International.EInvoicing.Profiles.DocumentSyntax
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter.Write(International.EInvoicing.Model.EInvoice! document, System.IO.Stream! destination) -> void
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter.WriteAsync(International.EInvoicing.Model.EInvoice! document, System.IO.Stream! destination, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+International.EInvoicing.Cii.Writing.CiiInvoiceWriter.WriteToString(International.EInvoicing.Model.EInvoice! document) -> string!
+const International.EInvoicing.Cii.CreditTransferSchemes.Proprietary = "proprietary" -> string!
+static International.EInvoicing.Cii.CiiDiagnostics.MalformedDocument.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Cii.CiiDiagnostics.UnmappedElement.get -> International.EInvoicing.Diagnostics.DiagnosticDescriptor!
+static International.EInvoicing.Cii.CiiNames.Qdt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cii.CiiNames.Ram.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cii.CiiNames.Rsm.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cii.CiiNames.Udt.get -> System.Xml.Linq.XNamespace!
+static International.EInvoicing.Cii.CiiServiceCollectionExtensions.AddCii(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Cii.CiiServiceCollectionExtensions.AddCiiServices(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static International.EInvoicing.Cii.Reading.CiiValueReader.LocationOf(System.Xml.Linq.XElement! element) -> International.EInvoicing.Diagnostics.SourceLocation

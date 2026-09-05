@@ -1,6 +1,1 @@
-const International.EInvoicing.Validation.XRechnung.XRechnungRules.ArtefactVersion = "3.0" -> string!
-International.EInvoicing.Validation.XRechnung.XRechnungBuilderExtensions
-International.EInvoicing.Validation.XRechnung.XRechnungRules
-static International.EInvoicing.Validation.XRechnung.XRechnungBuilderExtensions.AddXRechnungRules(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
-static International.EInvoicing.Validation.XRechnung.XRechnungRules.Covers(International.EInvoicing.Profiles.DocumentSyntax syntax) -> bool
-static International.EInvoicing.Validation.XRechnung.XRechnungRules.For(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Validation.Schematron.SchematronRuleSet!
+#nullable enable

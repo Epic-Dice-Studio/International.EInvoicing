@@ -1,0 +1,68 @@
+#nullable enable
+International.EInvoicing.Testing.EInvoicingAssertionException
+International.EInvoicing.Testing.EInvoicingAssertionException.EInvoicingAssertionException() -> void
+International.EInvoicing.Testing.EInvoicingAssertionException.EInvoicingAssertionException(string! message) -> void
+International.EInvoicing.Testing.EInvoicingAssertionException.EInvoicingAssertionException(string! message, System.Exception! innerException) -> void
+International.EInvoicing.Testing.Expect
+International.EInvoicing.Testing.HostileDocument
+International.EInvoicing.Testing.HostileDocument.<Clone>$() -> International.EInvoicing.Testing.HostileDocument!
+International.EInvoicing.Testing.HostileDocument.Bytes.get -> byte[]!
+International.EInvoicing.Testing.HostileDocument.Bytes.init -> void
+International.EInvoicing.Testing.HostileDocument.Deconstruct(out string! Name, out string! Xml, out bool StaysUsable, out string? ExpectedDiagnostic, out string! What) -> void
+International.EInvoicing.Testing.HostileDocument.Equals(International.EInvoicing.Testing.HostileDocument? other) -> bool
+International.EInvoicing.Testing.HostileDocument.ExpectedDiagnostic.get -> string?
+International.EInvoicing.Testing.HostileDocument.ExpectedDiagnostic.init -> void
+International.EInvoicing.Testing.HostileDocument.HostileDocument(string! Name, string! Xml, bool StaysUsable, string? ExpectedDiagnostic, string! What) -> void
+International.EInvoicing.Testing.HostileDocument.Name.get -> string!
+International.EInvoicing.Testing.HostileDocument.Name.init -> void
+International.EInvoicing.Testing.HostileDocument.StaysUsable.get -> bool
+International.EInvoicing.Testing.HostileDocument.StaysUsable.init -> void
+International.EInvoicing.Testing.HostileDocument.What.get -> string!
+International.EInvoicing.Testing.HostileDocument.What.init -> void
+International.EInvoicing.Testing.HostileDocument.Xml.get -> string!
+International.EInvoicing.Testing.HostileDocument.Xml.init -> void
+International.EInvoicing.Testing.HostileDocuments
+International.EInvoicing.Testing.RoundTrip
+International.EInvoicing.Testing.RoundTripResult
+International.EInvoicing.Testing.RoundTripResult.<Clone>$() -> International.EInvoicing.Testing.RoundTripResult!
+International.EInvoicing.Testing.RoundTripResult.Deconstruct(out string! Original, out string! Written, out International.EInvoicing.Model.EInvoice? Reread, out System.Collections.Generic.IReadOnlyList<string!>! Lost, out System.Collections.Generic.IReadOnlyList<string!>! Gained) -> void
+International.EInvoicing.Testing.RoundTripResult.Equals(International.EInvoicing.Testing.RoundTripResult? other) -> bool
+International.EInvoicing.Testing.RoundTripResult.Gained.get -> System.Collections.Generic.IReadOnlyList<string!>!
+International.EInvoicing.Testing.RoundTripResult.Gained.init -> void
+International.EInvoicing.Testing.RoundTripResult.IsFaithful.get -> bool
+International.EInvoicing.Testing.RoundTripResult.Lost.get -> System.Collections.Generic.IReadOnlyList<string!>!
+International.EInvoicing.Testing.RoundTripResult.Lost.init -> void
+International.EInvoicing.Testing.RoundTripResult.Original.get -> string!
+International.EInvoicing.Testing.RoundTripResult.Original.init -> void
+International.EInvoicing.Testing.RoundTripResult.Reread.get -> International.EInvoicing.Model.EInvoice?
+International.EInvoicing.Testing.RoundTripResult.Reread.init -> void
+International.EInvoicing.Testing.RoundTripResult.RoundTripResult(string! Original, string! Written, International.EInvoicing.Model.EInvoice? Reread, System.Collections.Generic.IReadOnlyList<string!>! Lost, System.Collections.Generic.IReadOnlyList<string!>! Gained) -> void
+International.EInvoicing.Testing.RoundTripResult.Written.get -> string!
+International.EInvoicing.Testing.RoundTripResult.Written.init -> void
+International.EInvoicing.Testing.SampleInvoices
+const International.EInvoicing.Testing.SampleInvoices.HouseNamespace = "urn:example:house:1p0" -> string!
+override International.EInvoicing.Testing.HostileDocument.Equals(object? obj) -> bool
+override International.EInvoicing.Testing.HostileDocument.GetHashCode() -> int
+override International.EInvoicing.Testing.HostileDocument.ToString() -> string!
+override International.EInvoicing.Testing.RoundTripResult.Equals(object? obj) -> bool
+override International.EInvoicing.Testing.RoundTripResult.GetHashCode() -> int
+override International.EInvoicing.Testing.RoundTripResult.ToString() -> string!
+static International.EInvoicing.Testing.Expect.Checked(International.EInvoicing.Validation.ValidationReport! report, string! ruleSetName) -> void
+static International.EInvoicing.Testing.Expect.Conforming(International.EInvoicing.Validation.ValidationReport! report) -> void
+static International.EInvoicing.Testing.Expect.Failed(International.EInvoicing.Validation.ValidationReport! report, string! ruleIdentifier) -> void
+static International.EInvoicing.Testing.Expect.LostNothing(International.EInvoicing.Testing.RoundTripResult! result) -> void
+static International.EInvoicing.Testing.Expect.Passed(International.EInvoicing.Validation.ValidationReport! report, string! ruleIdentifier) -> void
+static International.EInvoicing.Testing.Expect.Raw(International.EInvoicing.Values.IField! field, string! expectedRaw) -> void
+static International.EInvoicing.Testing.Expect.Reported(International.EInvoicing.DocumentResult! result, string! diagnosticCode) -> void
+static International.EInvoicing.Testing.Expect.Usable(International.EInvoicing.DocumentResult! result) -> void
+static International.EInvoicing.Testing.HostileDocument.operator !=(International.EInvoicing.Testing.HostileDocument? left, International.EInvoicing.Testing.HostileDocument? right) -> bool
+static International.EInvoicing.Testing.HostileDocument.operator ==(International.EInvoicing.Testing.HostileDocument? left, International.EInvoicing.Testing.HostileDocument? right) -> bool
+static International.EInvoicing.Testing.HostileDocuments.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Testing.HostileDocument!>!
+static International.EInvoicing.Testing.HostileDocuments.Survivable.get -> System.Collections.Generic.IEnumerable<International.EInvoicing.Testing.HostileDocument!>!
+static International.EInvoicing.Testing.RoundTrip.Check(International.EInvoicing.EInvoicing! library, International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> International.EInvoicing.Testing.RoundTripResult!
+static International.EInvoicing.Testing.RoundTrip.Check(International.EInvoicing.EInvoicing! library, string! document) -> International.EInvoicing.Testing.RoundTripResult!
+static International.EInvoicing.Testing.RoundTripResult.operator !=(International.EInvoicing.Testing.RoundTripResult? left, International.EInvoicing.Testing.RoundTripResult? right) -> bool
+static International.EInvoicing.Testing.RoundTripResult.operator ==(International.EInvoicing.Testing.RoundTripResult? left, International.EInvoicing.Testing.RoundTripResult? right) -> bool
+static International.EInvoicing.Testing.SampleInvoices.Conforming(International.EInvoicing.Profiles.ProfileIdentifier? specification = null, System.Action<International.EInvoicing.Building.EInvoiceBuilder!>? configure = null) -> International.EInvoicing.Model.EInvoice!
+static International.EInvoicing.Testing.SampleInvoices.ConformingCreditNote(International.EInvoicing.Profiles.ProfileIdentifier? specification = null, System.Action<International.EInvoicing.Building.EInvoiceBuilder!>? configure = null) -> International.EInvoicing.Model.EInvoice!
+static International.EInvoicing.Testing.SampleInvoices.WithSomethingUnmapped(International.EInvoicing.Profiles.ProfileIdentifier? specification = null) -> International.EInvoicing.Model.EInvoice!

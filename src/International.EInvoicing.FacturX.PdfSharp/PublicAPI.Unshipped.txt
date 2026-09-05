@@ -1,10 +1,1 @@
 #nullable enable
-International.EInvoicing.FacturX.PdfSharp.PdfSharpAttachmentReader
-International.EInvoicing.FacturX.PdfSharp.PdfSharpAttachmentReader.FindAttachment(System.IO.Stream! pdf, System.Collections.Generic.IReadOnlyList<string!>! fileNames, long maximumBytes) -> International.EInvoicing.FacturX.Pdf.FacturXAttachment?
-International.EInvoicing.FacturX.PdfSharp.PdfSharpAttachmentReader.FindMetadata(System.IO.Stream! pdf) -> string?
-International.EInvoicing.FacturX.PdfSharp.PdfSharpAttachmentReader.PdfSharpAttachmentReader() -> void
-International.EInvoicing.FacturX.PdfSharp.PdfSharpAttachmentWriter
-International.EInvoicing.FacturX.PdfSharp.PdfSharpAttachmentWriter.Attach(System.IO.Stream! source, International.EInvoicing.FacturX.Pdf.FacturXAttachment! attachment, International.EInvoicing.Profiles.Profile! profile, System.IO.Stream! destination) -> void
-International.EInvoicing.FacturX.PdfSharp.PdfSharpAttachmentWriter.PdfSharpAttachmentWriter() -> void
-International.EInvoicing.FacturX.PdfSharp.PdfSharpServiceCollectionExtensions
-static International.EInvoicing.FacturX.PdfSharp.PdfSharpServiceCollectionExtensions.AddFacturXPdfSharp(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

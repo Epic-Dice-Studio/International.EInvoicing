@@ -1,1 +1,44 @@
 #nullable enable
+International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber
+International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.Equals(International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber other) -> bool
+International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.IsSet.get -> bool
+International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.SeOrganisationNumber() -> void
+International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.ToField() -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.ToFormattedString() -> string!
+International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.Value.get -> string!
+International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.VatNumber.get -> string!
+International.EInvoicing.Countries.Sweden.SeProfiles
+International.EInvoicing.Countries.Sweden.SwedenServiceCollectionExtensions
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.CreditNote(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Describe(International.EInvoicing.Building.PartyBuilder! party, string! identifier, string! name) -> International.EInvoicing.Building.PartyBuilder!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
+const International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.Scheme = "0007" -> string!
+override International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.GetHashCode() -> int
+override International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.ToString() -> string!
+static International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.IsValid(string? value) -> bool
+static International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.Parse(string! value) -> International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber
+static International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.TryParse(string? value, out International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber number) -> bool
+static International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.operator !=(International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber left, International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber right) -> bool
+static International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.operator ==(International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber left, International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber right) -> bool
+static International.EInvoicing.Countries.Sweden.SeProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Sweden.SeProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Sweden.SeProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Sweden.SwedenServiceCollectionExtensions.AddSweden(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Create() -> International.EInvoicing.Countries.Sweden.SwedishEInvoicing!
+static International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Sweden.SwedishEInvoicing!
+static International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Sweden.SwedishEInvoicing!
+static International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Sweden.SwedishEInvoicing!
+static International.EInvoicing.Countries.Sweden.SwedishEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Sweden.SwedishEInvoicing!
+~override International.EInvoicing.Countries.Sweden.Identifiers.SeOrganisationNumber.Equals(object obj) -> bool

@@ -1,1 +1,46 @@
 #nullable enable
+International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber
+International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.Equals(International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber other) -> bool
+International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.IsSet.get -> bool
+International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.NoOrganisationNumber() -> void
+International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.ToField() -> International.EInvoicing.Values.IdentifierField
+International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.ToFormattedString() -> string!
+International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.Value.get -> string!
+International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.VatNumber.get -> string!
+International.EInvoicing.Countries.Norway.NoProfiles
+International.EInvoicing.Countries.Norway.NorwayServiceCollectionExtensions
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.CreditNote() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.CreditNote(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Describe(International.EInvoicing.Building.PartyBuilder! party, string! organisationNumber, string! name) -> International.EInvoicing.Building.PartyBuilder!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Invoice() -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Invoice(International.EInvoicing.Profiles.DocumentSyntax syntax) -> International.EInvoicing.Building.EInvoiceBuilder!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Library.get -> International.EInvoicing.EInvoicing!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Read(System.IO.Stream! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Read(byte[]! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Read(string! document) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.ReadAsync(System.IO.Stream! document, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<International.EInvoicing.DocumentResult!>!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.ReadFile(string! path) -> International.EInvoicing.DocumentResult!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Validate(string! document) -> International.EInvoicing.Validation.ValidationReport!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice) -> string!
+International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Write(International.EInvoicing.Model.EInvoice! invoice, International.EInvoicing.DocumentFormat format) -> string!
+const International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.Scheme = "0192" -> string!
+override International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.GetHashCode() -> int
+override International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.ToString() -> string!
+static International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.IsValid(string? value) -> bool
+static International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.Parse(string! value) -> International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber
+static International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.TryParse(string? value, out International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber number) -> bool
+static International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.operator !=(International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber left, International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber right) -> bool
+static International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.operator ==(International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber left, International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber right) -> bool
+static International.EInvoicing.Countries.Norway.NoProfiles.All.get -> System.Collections.Generic.IReadOnlyList<International.EInvoicing.Profiles.Profile!>!
+static International.EInvoicing.Countries.Norway.NoProfiles.Ehf3Cii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Norway.NoProfiles.Ehf3Ubl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Norway.NoProfiles.PeppolBillingCii.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Norway.NoProfiles.PeppolBillingUbl.get -> International.EInvoicing.Profiles.Profile!
+static International.EInvoicing.Countries.Norway.NorwayServiceCollectionExtensions.AddNorway(this International.EInvoicing.Configuration.EInvoicingBuilder! builder) -> International.EInvoicing.Configuration.EInvoicingBuilder!
+static International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Create() -> International.EInvoicing.Countries.Norway.NorwegianEInvoicing!
+static International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Create(International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Norway.NorwegianEInvoicing!
+static International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure) -> International.EInvoicing.Countries.Norway.NorwegianEInvoicing!
+static International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Create(System.Action<International.EInvoicing.Configuration.EInvoicingBuilder!>! configure, International.EInvoicing.FacturX.Pdf.IPdfAttachmentReader? pdf) -> International.EInvoicing.Countries.Norway.NorwegianEInvoicing!
+static International.EInvoicing.Countries.Norway.NorwegianEInvoicing.Over(International.EInvoicing.EInvoicing! library) -> International.EInvoicing.Countries.Norway.NorwegianEInvoicing!
+~override International.EInvoicing.Countries.Norway.Identifiers.NoOrganisationNumber.Equals(object obj) -> bool
