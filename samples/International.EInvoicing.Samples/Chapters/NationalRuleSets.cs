@@ -59,7 +59,7 @@ internal static class NationalRuleSets
         {
             Report.Say("No fetched artefacts here. `build/fetch-specs.sh peppol france` brings them, and then:");
             Report.Note(".AddPeppolRulesFrom(\"specs/peppol/rules\")");
-            Report.Note(".AddRulesFromFile(DocumentSyntax.Cdar, \"…BR-FR-CDV…sch\", \"BR-FR-CDV\", \"1.4.0.03\")");
+            Report.Note(".AddRulesFromFile(DocumentSyntax.Cdar, \"…BR-FR-CDV…sch\", \"BR-FR-CDV\", \"1.4.0.04\")");
             return;
         }
 
@@ -75,7 +75,7 @@ internal static class NationalRuleSets
 
             if (french is not null)
             {
-                library.AddRulesFromFile(DocumentSyntax.Cdar, french, "BR-FR-CDV (CDAR)", "1.4.0.03");
+                library.AddRulesFromFile(DocumentSyntax.Cdar, french, "BR-FR-CDV (CDAR)", "1.4.0.04");
             }
         });
 

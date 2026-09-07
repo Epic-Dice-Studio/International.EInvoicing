@@ -19,7 +19,7 @@ namespace International.EInvoicing.Countries.France.Tests;
 public class FrRuleSetTests
 {
     /// <summary>The version of the DGFiP artefacts these tests are pinned to.</summary>
-    private const string ArtefactVersion = "1.4.0.03";
+    private const string ArtefactVersion = "1.4.0.04";
 
     private static string? RulesDirectory
     {

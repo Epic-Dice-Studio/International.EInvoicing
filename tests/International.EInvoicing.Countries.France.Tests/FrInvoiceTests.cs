@@ -47,7 +47,7 @@ public class FrInvoiceTests
             SchematronRuleSet rules = SchematronRuleSet.Load(
                 File.ReadAllText(path),
                 Path.GetFileNameWithoutExtension(path),
-                "1.4.0.03");
+                "1.4.0.04");
 
             ValidationReport report = new SchematronValidator().Validate(xml, rules);
 

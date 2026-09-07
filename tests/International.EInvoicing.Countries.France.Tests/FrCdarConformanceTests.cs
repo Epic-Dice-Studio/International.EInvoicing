@@ -249,7 +249,7 @@ public class FrCdarConformanceTests
 
         Assert.SkipWhen(path is null, "The French artefacts are not present; run build/fetch-specs.sh france.");
 
-        return SchematronRuleSet.Load(File.ReadAllText(path!), "BR-FR-CDV (CDAR)", "1.4.0.03");
+        return SchematronRuleSet.Load(File.ReadAllText(path!), "BR-FR-CDV (CDAR)", "1.4.0.04");
     }
 
     private static IEnumerable<string> SamplePaths()
