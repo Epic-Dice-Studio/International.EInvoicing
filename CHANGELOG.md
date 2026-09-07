@@ -6,6 +6,45 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-07
+
+Read against the DGFiP external specifications v3.2, the first release to say so.
+
+### Added
+
+- **The status characteristic block a French lifecycle message carries, in full.**
+  `DocumentStatusCharacteristic` gained `ValueMeasure`, `ValueDateTime`, `ValueCode`, `ValueQuantity`,
+  `ValueNumeric`, `Description` and `AdjustmentDirectionCode` — MDT-210 to MDT-224 as the DGFiP profiles
+  them, written and read in the order the annexe gives.
+- `ValueMeasure` is a `QuantityField` because v3.2 made MDT-217 a measured quantity rather than a unit code,
+  moving the unit to a new MDT-217-1 `@unitCode`.
+
+### Fixed
+
+- **A payment date could not be read or built.** The DGFiP's own CDV-211 sample dates the payment inside the
+  status characteristic, as `CCYYMMDD` under format 102 rather than the `CCYYMMDDHHMMSS` the rest of a
+  lifecycle message uses. The reader kept it as unmapped extension data — nothing was lost — but it was not
+  in the model. The CDAR reader and writer now both honour format 102.
+- **The French rule sets were a version behind.** phive-rules had carried the DGFiP's 1.4.0.04 artefacts
+  since 3 September while `build/fetch-specs.sh` still synced the 4 August ones, and nothing would have said
+  so. The weekly specification check had never once run to completion: it interpolated its own report into a
+  shell, so the report's backticks ran as commands, and the `specs` label it wanted did not exist. Three of
+  the four repositories it watched were compared against the literal string `unpinned`, which no release tag
+  can equal, so every run reported a difference whatever upstream did.
+
+### Changed
+
+- The specification check reports only what someone has to go and change, and watches what it could not
+  before: `KOSIT_VALIDATOR_VERSION`, the two French rule-set directories phive-rules publishes without a
+  release tag, and the DGFiP package itself — a file on impots.gouv.fr with no feed, so the job asks for the
+  next version numbers directly. `DGFIP_SPEC_REVIEWED` records what the model was last measured against.
+
+Everything else v3.2 moved was already true of this library, because the rule sets and the flux 10 schemas
+come from phive-rules at `master` and the French code lists were built from those: the deleted `References`
+block was never modelled, `TransactionsCount` was always optional, `FrEReportCodes` only ever offered `IN`
+and `RE`, and the CDV sender has always been the `0238` matricule. `specs/fr-dse/PROVENANCE.md` records the
+review.
+
 ## [1.0.0] - 2026-09-05
 
 The first stable release. Everything below was built before it; what makes this 1.0 rather than another
