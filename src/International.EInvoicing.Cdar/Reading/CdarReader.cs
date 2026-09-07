@@ -219,9 +219,17 @@ public sealed class CdarReader : IDocumentReader<LifecycleStatusMessage>
             Identifier = values.ReadIdentifier(In(values, element, CdarNames.Ram + "ID")),
             TypeCode = values.ReadCode(In(values, element, CdarNames.Ram + "TypeCode")),
             ValueChanged = values.ReadIndicator(In(values, element, CdarNames.Ram + "ValueChangedIndicator")),
+            AdjustmentDirectionCode =
+                values.ReadCode(In(values, element, CdarNames.Ram + "ValueAdjustmentDirectionCode")),
             Name = values.ReadText(In(values, element, CdarNames.Ram + "Name")),
+            Description = values.ReadText(In(values, element, CdarNames.Ram + "Description")),
             Location = values.ReadText(In(values, element, CdarNames.Ram + "Location")),
             ValueAmount = values.ReadAmount(In(values, element, CdarNames.Ram + "ValueAmount")),
+            ValueMeasure = values.ReadQuantity(In(values, element, CdarNames.Ram + "ValueMeasure")),
+            ValueDateTime = values.ReadDateTime(In(values, element, CdarNames.Ram + "ValueDateTime")),
+            ValueCode = values.ReadCode(In(values, element, CdarNames.Ram + "ValueCode")),
+            ValueQuantity = values.ReadQuantity(In(values, element, CdarNames.Ram + "ValueQuantity")),
+            ValueNumeric = values.ReadDecimal(In(values, element, CdarNames.Ram + "ValueNumeric")),
             ValuePercent = values.ReadDecimal(In(values, element, CdarNames.Ram + "ValuePercent")),
             ValueText = values.ReadText(In(values, element, CdarNames.Ram + "ValueText")),
         };
@@ -375,6 +383,21 @@ internal sealed class CdarValueReader(DiagnosticCollector diagnostics, HashSet<X
             : new AmountField(null, currency, Source(element, Report(element, "an amount")));
     }
 
+    public QuantityField ReadQuantity(XElement? element)
+    {
+        if (!Consume(element))
+        {
+            return QuantityField.Unset;
+        }
+
+        string? unit = element.Attribute("unitCode")?.Value;
+        string? version = element.Attribute("unitCodeListVersionID")?.Value;
+
+        return decimal.TryParse(element.Value.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value)
+            ? new QuantityField(value, unit, version, Source(element))
+            : new QuantityField(null, unit, version, Source(element, Report(element, "a quantity")));
+    }
+
     public Field<decimal> ReadDecimal(XElement? element)
     {
         if (!Consume(element))
@@ -399,7 +422,11 @@ internal sealed class CdarValueReader(DiagnosticCollector diagnostics, HashSet<X
             : new Field<int>(null, Source(element, Report(element, "a whole number")));
     }
 
-    /// <summary>Reads a timestamp, which lifecycle messages express as <c>CCYYMMDDHHMMSS</c> (format 204).</summary>
+    /// <summary>
+    /// Reads a timestamp, which lifecycle messages express as <c>CCYYMMDDHHMMSS</c> (format 204) — except
+    /// inside a status characteristic, where the DGFiP's own samples date a payment as <c>CCYYMMDD</c>
+    /// (format 102).
+    /// </summary>
     public DateTimeField ReadDateTime(XElement? parent)
     {
         if (DateString(parent) is not { } element)
@@ -413,6 +440,11 @@ internal sealed class CdarValueReader(DiagnosticCollector diagnostics, HashSet<X
         if (DateTime.TryParseExact(text, "yyyyMMddHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime moment))
         {
             return new DateTimeField(new DateTimeOffset(moment, TimeSpan.Zero), format, Source(element));
+        }
+
+        if (DateTime.TryParseExact(text, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime day))
+        {
+            return new DateTimeField(new DateTimeOffset(day, TimeSpan.Zero), format, Source(element));
         }
 
         if (DateTimeOffset.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset parsed))

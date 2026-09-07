@@ -1,1 +1,15 @@
 #nullable enable
+International.EInvoicing.Model.DocumentStatusCharacteristic.AdjustmentDirectionCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.DocumentStatusCharacteristic.AdjustmentDirectionCode.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.Description.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.DocumentStatusCharacteristic.Description.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueCode.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueDateTime.get -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueDateTime.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueMeasure.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueMeasure.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueNumeric.get -> International.EInvoicing.Values.Field<decimal>
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueNumeric.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueQuantity.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueQuantity.set -> void

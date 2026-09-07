@@ -63,6 +63,11 @@ SchematronRuleSet rules = SchematronRuleSet.Load(
 ValidationReport report = new SchematronValidator().Validate(xml, rules);
 ```
 
+The model was last read against the DGFiP external specifications **v3.2** (30/04/2026), annexe by annexe;
+`build/fetch-specs.sh` records that in `DGFIP_SPEC_REVIEWED`, and the weekly specification check reports a
+newer package as a review to schedule. `specs/fr-dse/PROVENANCE.md` says what v3.2 moved and what it moved
+here.
+
 The French artefacts define twenty of their own functions in XSLT — SIRET and SIREN coherence, decimal
 precision, code-list membership. The engine **runs those definitions** rather than reimplementing them, so a
 revision by the DGFiP takes effect by replacing the file.

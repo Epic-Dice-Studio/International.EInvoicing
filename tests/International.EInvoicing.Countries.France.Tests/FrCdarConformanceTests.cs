@@ -6,6 +6,7 @@ using International.EInvoicing.Model;
 using International.EInvoicing.Profiles;
 using International.EInvoicing.Validation;
 using International.EInvoicing.Validation.Schematron;
+using International.EInvoicing.Values;
 using Shouldly;
 using Xunit;
 
@@ -179,6 +180,93 @@ public class FrCdarConformanceTests
         detail.Characteristics[0].ValuePercent.Value.ShouldBe(10.00m);
         detail.Characteristics[1].TypeCode.Value.ShouldBe(FrStatusValueType.ExpectedValue);
         detail.Characteristics[1].ValueChanged.Value.ShouldBe(true);
+    }
+
+    /// <summary>
+    /// The payment sample dates the payment inside the characteristic, as <c>CCYYMMDD</c> rather than the
+    /// <c>CCYYMMDDHHMMSS</c> the rest of the message uses. It is the one place the DGFiP's own corpus
+    /// exercises a characteristic value this library did not model.
+    /// </summary>
+    [Fact]
+    public void APaymentDateIsReadFromTheCharacteristic()
+    {
+        string? path = SamplePaths()
+            .FirstOrDefault(sample => sample.Contains("Paiement_transmis", StringComparison.Ordinal));
+
+        Assert.SkipWhen(path is null, "The DGFiP samples are not present; run build/fetch-specs.sh france.");
+
+        var reader = new CdarReader(
+            new EInvoicingOptions(),
+            new ProfileResolver(new ProfileRegistry(FrProfiles.All)));
+
+        DocumentStatusCharacteristic characteristic = reader.Read(File.ReadAllText(path!)).Value!
+            .References.ShouldHaveSingleItem()
+            .StatusDetails.ShouldHaveSingleItem()
+            .Characteristics.ShouldHaveSingleItem();
+
+        characteristic.TypeCode.Value.ShouldBe(FrStatusValueType.PaidAmount);
+        characteristic.ValueAmount.Value.ShouldBe(12000m);
+        characteristic.ValueDateTime.Value.ShouldBe(new DateTimeOffset(2025, 7, 30, 0, 0, 0, TimeSpan.Zero));
+        characteristic.ValueDateTime.FormatCode.ShouldBe(DateField.FormatCcyyMmDd);
+        characteristic.ValueDateTime.Diagnostic.ShouldBeNull();
+    }
+
+    /// <summary>
+    /// Every value a status characteristic may carry, MDT-215 to MDT-224, survives a round trip — including
+    /// the measured quantity and its unit that v3.2 of the specification redefined.
+    /// </summary>
+    [Fact]
+    public void EveryCharacteristicValueSurvivesARoundTrip()
+    {
+        LifecycleStatusMessage message = FrCdar
+            .FromBuyer("200000008", "ACHETEUR")
+            .SentBy("0003", "PA-E Vendeur")
+            .ToPublicPortal()
+            .About("F202500003", new DateOnly(2025, 7, 1))
+            .Disputed(FrStatusReason.AllowedFor(FrLifecycleStatus.Disputed)[0], "Motif", Moment);
+
+        DocumentStatusCharacteristic written = new()
+        {
+            Identifier = new IdentifierField("BT-129"),
+            TypeCode = FrStatusValueType.DocumentValue,
+            AdjustmentDirectionCode = "DEC",
+            Name = "Quantité facturée",
+            Description = "La quantité facturée ne correspond pas à la livraison.",
+            Location = "/Invoice/InvoiceLine[1]/InvoicedQuantity",
+            ValueAmount = new AmountField(1200.50m, "EUR"),
+            ValueMeasure = new QuantityField(12.5m, "KGM"),
+            ValueDateTime = new DateTimeField(
+                new DateTimeOffset(2025, 7, 30, 0, 0, 0, TimeSpan.Zero),
+                DateField.FormatCcyyMmDd),
+            ValueCode = "S",
+            ValueQuantity = new QuantityField(3m, "H87"),
+            ValueNumeric = 42.75m,
+            ValuePercent = 20m,
+        };
+
+        message.References[0].StatusDetails[0].Characteristics.Add(written);
+
+        var reader = new CdarReader(
+            new EInvoicingOptions(),
+            new ProfileResolver(new ProfileRegistry(FrProfiles.All)));
+
+        DocumentStatusCharacteristic read = reader.Read(new CdarWriter().WriteToString(message)).Value!
+            .References.ShouldHaveSingleItem()
+            .StatusDetails.ShouldHaveSingleItem()
+            .Characteristics.ShouldHaveSingleItem();
+
+        read.Identifier.Value.ShouldBe("BT-129");
+        read.AdjustmentDirectionCode.Value.ShouldBe("DEC");
+        read.Description.Value.ShouldBe("La quantité facturée ne correspond pas à la livraison.");
+        read.ValueAmount.Value.ShouldBe(1200.50m);
+        read.ValueMeasure.Value.ShouldBe(12.5m);
+        read.ValueMeasure.UnitCode.ShouldBe("KGM");
+        read.ValueDateTime.Value.ShouldBe(new DateTimeOffset(2025, 7, 30, 0, 0, 0, TimeSpan.Zero));
+        read.ValueCode.Value.ShouldBe("S");
+        read.ValueQuantity.Value.ShouldBe(3m);
+        read.ValueQuantity.UnitCode.ShouldBe("H87");
+        read.ValueNumeric.Value.ShouldBe(42.75m);
+        read.ValuePercent.Value.ShouldBe(20m);
     }
 
     [Fact]

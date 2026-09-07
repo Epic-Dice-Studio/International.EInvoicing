@@ -29,6 +29,10 @@ ZUGFERD_TEST_VERSION="2.5.2"
 UBLBE_TEST_VERSION="v1.31"
 FRENCH_FLUX10_VERSION="1.0"
 DGFIP_SPEC_VERSION="v3.0"
+# The package whose semantics this library was last measured against. It moves independently of
+# DGFIP_SPEC_VERSION, which is held at v3.0 for its worked examples alone; spec-sync.yml watches for a
+# package newer than this one, because that is what calls for a review.
+DGFIP_SPEC_REVIEWED="v3.2"
 MUSTANG_REF="master"
 KOSIT_VALIDATOR_VERSION="1.6.3"
 KOSIT_XRECHNUNG_CONFIG_TAG="v2026-08-31"

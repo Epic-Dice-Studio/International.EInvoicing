@@ -59,6 +59,30 @@ jobs:
           check_dir phax/phive-rules "$french/ctc" FRENCH_RULES_VERSION "French CTC rules and lifecycle samples"
           check_dir phax/phive-rules "$french/flux10" FRENCH_FLUX10_VERSION "French e-reporting rules (flux 10)"
 
+          # The DGFiP publishes its specification package as a file on impots.gouv.fr, with no feed of any
+          # kind, so the only way to notice a new one is to ask for it. A newer package than the one this
+          # library was measured against is a review to schedule, not a pin to bump: DGFIP_SPEC_VERSION
+          # deliberately stays on v3.0 for its worked examples.
+          check_dgfip() {
+            local reviewed base url major minor candidate latest=""
+            reviewed="$(pin DGFIP_SPEC_REVIEWED)"
+            major="${reviewed#v}"; minor="${major#*.}"; major="${major%%.*}"
+            base="https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion"
+            base="$base/290_facturation_electronique/specification_externes_b2b"
+
+            for candidate in "v$major.$((minor + 1))" "v$major.$((minor + 2))" "v$((major + 1)).0"; do
+              url="$base/specifications-externes-$candidate.zip"
+              if [[ "$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' -r 0-0 "$url" || true)" =~ ^2 ]]; then
+                latest="$candidate"
+              fi
+            done
+
+            [[ -n "$latest" ]] || return 0
+            report+="- **French DGFiP external specifications**: last reviewed against \`$reviewed\`, \`$latest\` is now published (https://www.impots.gouv.fr/specifications-externes-b2b)"$'\n'
+          }
+
+          check_dgfip
+
           {
             echo "report<<EOREPORT"
             printf '%s' "$report"
@@ -87,7 +111,7 @@ jobs:
           # The report carries backticks: keep it in an environment variable so the shell never expands it.
           printf '%s\n\n%s\n' \
             "$REPORT" \
-            "Update the pinned refs in \`build/fetch-specs.sh\`, run it, refresh the relevant \`PROVENANCE.md\`, and run the conformance tests. Artefacts tracked from \`master\` (Peppol BIS, XRechnung Schematron, phive-rules, Mustang) need no action here, and manually published standards (Factur-X, UBL, CII) are not covered by this check. Neither is \`DGFIP_SPEC_VERSION\`, deliberately held at v3.0 because later packages dropped the worked examples." \
+            "Update the pinned refs in \`build/fetch-specs.sh\`, run it, refresh the relevant \`PROVENANCE.md\`, and run the conformance tests. Artefacts tracked from \`master\` (Peppol BIS, XRechnung Schematron, phive-rules, Mustang) need no action here, and manually published standards (Factur-X, UBL, CII) are not covered by this check. A new DGFiP package is a review to schedule rather than a pin to bump: re-read the annexes against the French model, then move \`DGFIP_SPEC_REVIEWED\`. \`DGFIP_SPEC_VERSION\` stays at v3.0 whatever happens, because later packages dropped the worked examples this repository commits." \
             > "$RUNNER_TEMP/body.md"
 
           gh issue create --title "$TITLE" --label specs --body-file "$RUNNER_TEMP/body.md"
