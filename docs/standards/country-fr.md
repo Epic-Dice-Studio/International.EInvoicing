@@ -49,16 +49,16 @@ That fills two folders, both ignored by git:
 
 | Folder | What it holds |
 |---|---|
-| `specs/fr-dse/rules/ctc/1.4.0.03/` | `BR-FR-CDV` (CDAR), `BR-FR-Flux2` and `EXTENDED-CTC-FR`, for UBL and CII |
+| `specs/fr-dse/rules/ctc/1.4.0.04/` | `BR-FR-CDV` (CDAR), `BR-FR-Flux2` and `EXTENDED-CTC-FR`, for UBL and CII |
 | `specs/fr-dse/rules/flux10/1.0/` | `PPF_Flux10`, the e-reporting rules |
 | `specs/fr-dse/schemas/flux10/1.0/` | The e-reporting XSDs |
-| `specs/fr-dse/samples/1.4.0.03/` | The eleven DGFiP lifecycle sample messages |
+| `specs/fr-dse/samples/1.4.0.04/` | The eleven DGFiP lifecycle sample messages |
 
 They are then ordinary rule sets:
 
 ```csharp
 SchematronRuleSet rules = SchematronRuleSet.Load(
-    File.ReadAllText(path), "BR-FR-CDV (CDAR)", "1.4.0.03");
+    File.ReadAllText(path), "BR-FR-CDV (CDAR)", "1.4.0.04");
 
 ValidationReport report = new SchematronValidator().Validate(xml, rules);
 ```

@@ -158,9 +158,9 @@ Then run them like any other rule set:
 
 ```csharp
 SchematronRuleSet rules = SchematronRuleSet.Load(
-    File.ReadAllText("specs/fr-dse/rules/1.4.0.03/20260804_BR-FR-CDV-Schematron-CDAR_V1.4.0.03.sch"),
+    File.ReadAllText("specs/fr-dse/rules/ctc/1.4.0.04/20260903_BR-FR-CDV-Schematron-CDAR_V1.4.0.04.sch"),
     "BR-FR-CDV (CDAR)",
-    "1.4.0.03");
+    "1.4.0.04");
 
 ValidationReport report = new SchematronValidator().Validate(xml, rules);
 ```

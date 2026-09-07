@@ -71,7 +71,7 @@ public sealed class FrenchEInvoicing
     /// FrenchEInvoicing france = FrenchEInvoicing.Create(library => library
     ///     .AddDefaults()
     ///     .AddFrance()
-    ///     .AddRulesFromFile(DocumentSyntax.Ubl, "…EXTENDED-CTC-FR-UBL….sch", "EXTENDED CTC FR", "1.4.0.03"));
+    ///     .AddRulesFromFile(DocumentSyntax.Ubl, "…EXTENDED-CTC-FR-UBL….sch", "EXTENDED CTC FR", "1.4.0.04"));
     /// </code>
     /// </example>
     /// <exception cref="ArgumentNullException"><paramref name="configure"/> is <c>null</c>.</exception>
