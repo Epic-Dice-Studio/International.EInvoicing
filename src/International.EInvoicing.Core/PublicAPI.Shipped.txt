@@ -413,6 +413,10 @@ International.EInvoicing.Model.DocumentReference.Identifier.set -> void
 International.EInvoicing.Model.DocumentReference.IssueDate.get -> International.EInvoicing.Values.DateField
 International.EInvoicing.Model.DocumentReference.IssueDate.set -> void
 International.EInvoicing.Model.DocumentStatusCharacteristic
+International.EInvoicing.Model.DocumentStatusCharacteristic.AdjustmentDirectionCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.DocumentStatusCharacteristic.AdjustmentDirectionCode.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.Description.get -> International.EInvoicing.Values.TextField
+International.EInvoicing.Model.DocumentStatusCharacteristic.Description.set -> void
 International.EInvoicing.Model.DocumentStatusCharacteristic.DocumentStatusCharacteristic() -> void
 International.EInvoicing.Model.DocumentStatusCharacteristic.Identifier.get -> International.EInvoicing.Values.IdentifierField
 International.EInvoicing.Model.DocumentStatusCharacteristic.Identifier.set -> void
@@ -426,8 +430,18 @@ International.EInvoicing.Model.DocumentStatusCharacteristic.ValueAmount.get -> I
 International.EInvoicing.Model.DocumentStatusCharacteristic.ValueAmount.set -> void
 International.EInvoicing.Model.DocumentStatusCharacteristic.ValueChanged.get -> International.EInvoicing.Values.IndicatorField
 International.EInvoicing.Model.DocumentStatusCharacteristic.ValueChanged.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueCode.get -> International.EInvoicing.Values.CodeField
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueCode.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueDateTime.get -> International.EInvoicing.Values.DateTimeField
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueDateTime.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueMeasure.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueMeasure.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueNumeric.get -> International.EInvoicing.Values.Field<decimal>
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueNumeric.set -> void
 International.EInvoicing.Model.DocumentStatusCharacteristic.ValuePercent.get -> International.EInvoicing.Values.Field<decimal>
 International.EInvoicing.Model.DocumentStatusCharacteristic.ValuePercent.set -> void
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueQuantity.get -> International.EInvoicing.Values.QuantityField
+International.EInvoicing.Model.DocumentStatusCharacteristic.ValueQuantity.set -> void
 International.EInvoicing.Model.DocumentStatusCharacteristic.ValueText.get -> International.EInvoicing.Values.TextField
 International.EInvoicing.Model.DocumentStatusCharacteristic.ValueText.set -> void
 International.EInvoicing.Model.DocumentStatusDetail
