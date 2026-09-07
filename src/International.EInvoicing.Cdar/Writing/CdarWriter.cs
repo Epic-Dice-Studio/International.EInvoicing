@@ -208,9 +208,18 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
             writer.WriteEndElement();
         }
 
+        WriteCode(writer, "ValueAdjustmentDirectionCode", characteristic.AdjustmentDirectionCode);
         WriteText(writer, "Name", characteristic.Name);
+        WriteText(writer, "Description", characteristic.Description);
         WriteText(writer, "Location", characteristic.Location);
+
+        // MDT-215 to MDT-224, in the order the DGFiP profiles them.
         WriteAmount(writer, "ValueAmount", characteristic.ValueAmount);
+        WriteQuantity(writer, "ValueMeasure", characteristic.ValueMeasure);
+        WriteDateTime(writer, "ValueDateTime", characteristic.ValueDateTime);
+        WriteCode(writer, "ValueCode", characteristic.ValueCode);
+        WriteQuantity(writer, "ValueQuantity", characteristic.ValueQuantity);
+        WriteDecimal(writer, "ValueNumeric", characteristic.ValueNumeric);
         WriteDecimal(writer, "ValuePercent", characteristic.ValuePercent);
         WriteText(writer, "ValueText", characteristic.ValueText);
         writer.WriteEndElement();
@@ -307,6 +316,28 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
         writer.WriteEndElement();
     }
 
+    private static void WriteQuantity(AnchoredDocument writer, string localName, QuantityField field)
+    {
+        if (!field.IsSet)
+        {
+            return;
+        }
+
+        writer.WriteStartElement(CdarNames.RamPrefix, localName, CdarNames.Ram.NamespaceName);
+        if (!string.IsNullOrEmpty(field.UnitCode))
+        {
+            writer.WriteAttributeString("unitCode", XmlCharacters.Sanitize(field.UnitCode));
+        }
+
+        if (!string.IsNullOrEmpty(field.UnitCodeListVersion))
+        {
+            writer.WriteAttributeString("unitCodeListVersionID", XmlCharacters.Sanitize(field.UnitCodeListVersion));
+        }
+
+        writer.WriteString(XmlCharacters.Sanitize(field.Raw ?? field.Value?.ToString(CultureInfo.InvariantCulture) ?? string.Empty));
+        writer.WriteEndElement();
+    }
+
     private static void WriteDecimal(AnchoredDocument writer, string localName, Field<decimal> field)
     {
         if (field.IsSet)
@@ -330,11 +361,16 @@ public sealed class CdarWriter : IDocumentWriter<LifecycleStatusMessage>
             return;
         }
 
+        string format = field.FormatCode ?? DateTimeField.FormatCcyyMmDdHhMmSs;
+
+        // The format code says how wide the text is: 102 is a bare day, 204 the full timestamp.
+        string pattern = format == DateField.FormatCcyyMmDd ? "yyyyMMdd" : "yyyyMMddHHmmss";
+
         StartRam(writer, localName);
         writer.WriteStartElement(CdarNames.UdtPrefix, "DateTimeString", CdarNames.Udt.NamespaceName);
-        writer.WriteAttributeString("format", XmlCharacters.Sanitize(field.FormatCode ?? DateTimeField.FormatCcyyMmDdHhMmSs));
+        writer.WriteAttributeString("format", XmlCharacters.Sanitize(format));
         writer.WriteString(XmlCharacters.Sanitize(
-            field.Raw ?? field.Value?.UtcDateTime.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture) ?? string.Empty));
+            field.Raw ?? field.Value?.UtcDateTime.ToString(pattern, CultureInfo.InvariantCulture) ?? string.Empty));
         writer.WriteEndElement();
         writer.WriteEndElement();
     }
