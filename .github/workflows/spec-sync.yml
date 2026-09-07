@@ -1,6 +1,8 @@
 name: Specification sync
 
 # Normative artefacts move on their own schedule. This job notices before our users do.
+# It only reports refs we pin by hand: whatever fetch-specs.sh tracks from master is
+# already picked up by re-running the script, so it is never something to go and fix.
 
 on:
   schedule:
@@ -24,24 +26,43 @@ jobs:
         run: |
           set -euo pipefail
           report=""
+          pin() { grep -oP "^$1=\"\K[^\"]+" build/fetch-specs.sh; }
+          newest() { printf '%s\n' "$@" | sort -V | tail -n1; }
+
+          # The variable is pinned in build/fetch-specs.sh; the tag is what upstream calls
+          # that same release. They differ by a leading "v" for some repos, so compare bare.
           check_repo() {
-            local repo="$1" pinned="$2" name="$3"
-            local latest
+            local repo="$1" variable="$2" name="$3"
+            local pinned latest
+            pinned="$(pin "$variable")"
             latest="$(gh release view --repo "$repo" --json tagName --jq .tagName 2>/dev/null || echo "")"
-            if [[ -n "$latest" && "$latest" != "$pinned" ]]; then
-              report+="- **$name**: pinned \`$pinned\`, upstream \`$latest\` (https://github.com/$repo/releases)"$'\n'
-            fi
+            [[ -n "$latest" && "${latest#v}" != "${pinned#v}" ]] || return 0
+            report+="- **$name**: \`$variable\` pins \`$pinned\`, upstream released \`$latest\` (https://github.com/$repo/releases)"$'\n'
           }
 
-          en16931="$(grep -oP 'EN16931_REF="\K[^"]+' build/fetch-specs.sh)"
-          check_repo ConnectingEurope/eInvoicing-EN16931 "$en16931" "EN 16931 validation artefacts"
-          check_repo OpenPEPPOL/peppol-bis-invoice-3 "unpinned" "Peppol BIS Billing 3.0"
-          check_repo itplr-kosit/xrechnung-schematron "unpinned" "XRechnung Schematron"
-          check_repo itplr-kosit/validator-configuration-xrechnung "unpinned" "KoSIT validator configuration"
+          # The French rule sets carry no release tag of their own: phive-rules simply adds a
+          # directory per DGFiP version, so the newest directory is what our pin is measured against.
+          check_dir() {
+            local repo="$1" path="$2" variable="$3" name="$4"
+            local pinned latest
+            pinned="$(pin "$variable")"
+            latest="$({ gh api "repos/$repo/contents/$path" --jq '.[] | select(.type == "dir") | .name' || true; } | sort -V | tail -n1)"
+            [[ -n "$latest" && "$latest" != "$pinned" && "$(newest "$pinned" "$latest")" == "$latest" ]] || return 0
+            report+="- **$name**: \`$variable\` pins \`$pinned\`, phive-rules now carries \`$latest\` (https://github.com/$repo/tree/master/$path)"$'\n'
+          }
+
+          check_repo ConnectingEurope/eInvoicing-EN16931 EN16931_REF "EN 16931 validation artefacts"
+          check_repo itplr-kosit/validator-configuration-xrechnung KOSIT_XRECHNUNG_CONFIG_TAG "KoSIT XRechnung validator configuration"
+          check_repo itplr-kosit/validator KOSIT_VALIDATOR_VERSION "KoSIT validator"
+
+          french=phive-rules-france/src/test/resources/external/rule-source
+          check_dir phax/phive-rules "$french/ctc" FRENCH_RULES_VERSION "French CTC rules and lifecycle samples"
+          check_dir phax/phive-rules "$french/flux10" FRENCH_FLUX10_VERSION "French e-reporting rules (flux 10)"
 
           {
             echo "report<<EOREPORT"
-            echo "$report"
+            printf '%s' "$report"
+            echo ""
             echo "EOREPORT"
           } >> "$GITHUB_OUTPUT"
 
@@ -49,10 +70,24 @@ jobs:
         if: steps.check.outputs.report != ''
         env:
           GH_TOKEN: ${{ github.token }}
+          REPORT: ${{ steps.check.outputs.report }}
+          TITLE: Upstream normative artefacts have new releases
         run: |
-          gh issue create \
-            --title "Upstream normative artefacts have new releases" \
-            --label "specs" \
-            --body "$(printf '%s\n\n%s\n' \
-              "${{ steps.check.outputs.report }}" \
-              "Update the pinned refs in \`build/fetch-specs.sh\`, run it, refresh the relevant \`PROVENANCE.md\`, and run the conformance tests. Manually published standards (Factur-X, UBL, CII, the French DGFiP package) are not covered by this check.")"
+          set -euo pipefail
+
+          # A weekly job must not stack a duplicate issue on top of the one nobody has closed yet.
+          existing="$(gh issue list --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number // empty')"
+          if [[ -n "$existing" ]]; then
+            echo "Issue #$existing is already open; nothing to file."
+            exit 0
+          fi
+
+          gh label create specs --color 0e8a16 --description "Normative specification artefacts" --force
+
+          # The report carries backticks: keep it in an environment variable so the shell never expands it.
+          printf '%s\n\n%s\n' \
+            "$REPORT" \
+            "Update the pinned refs in \`build/fetch-specs.sh\`, run it, refresh the relevant \`PROVENANCE.md\`, and run the conformance tests. Artefacts tracked from \`master\` (Peppol BIS, XRechnung Schematron, phive-rules, Mustang) need no action here, and manually published standards (Factur-X, UBL, CII) are not covered by this check. Neither is \`DGFIP_SPEC_VERSION\`, deliberately held at v3.0 because later packages dropped the worked examples." \
+            > "$RUNNER_TEMP/body.md"
+
+          gh issue create --title "$TITLE" --label specs --body-file "$RUNNER_TEMP/body.md"
